@@ -13,7 +13,7 @@
                             <!-- <button class="btn btn-icon btn-link btn-primary btn-xs"><span class="fa fa-angle-down"></span></button>
                             <button class="btn btn-icon btn-link btn-primary btn-xs btn-refresh-card"><span class="fa fa-sync-alt"></span></button>
                             <button class="btn btn-icon btn-link btn-primary btn-xs"><span class="fa fa-times"></span></button> -->
-                            <button type="button" class="btn btn-icon btn-round btn-warning"><i class="fa fa-envelope" aria-hidden="true"></i></button>
+                            <button type="button" class="btn btn-icon btn-round btn-warning" data-target="#create-email" data-toggle="modal" ><i class="fa fa-envelope" aria-hidden="true"></i></button>
                             <button type="button" class="btn btn-icon btn-round btn-info"><i class="fa fa-print" aria-hidden="true"></i></button>
                         </div>
                     </div>
@@ -68,8 +68,6 @@
         </div>
    </div>
 @endsection
-
-
 <!-- email -->
 <div id="create-email" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none">
     <div class="modal-dialog">
@@ -80,12 +78,14 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form action="{{url('group/send_mail')}}" method="post" id="FormValidation" enctype="multipart/form-data" autocomplete="off">
+            <form action="{{url('send_mail')}}" method="post" id="FormValidation" enctype="multipart/form-data" autocomplete="off">
                 @csrf
                 <div class="modal-body">
                     <div class="row">
                         <div class="card-body p-t-30" style="padding: 11px;">
                             <div class="form-group">
+                                <input type="hidden" name="group" value="group"> 
+                                <input type="hidden" name="result" value="{{$results}}">
                                 <input type="text" name="from" class="form-control" placeholder="From" required="">
                             </div> 
                             <div class="form-group">  
@@ -99,10 +99,10 @@
                                 <label for="subject" class="control-label">Subject <font color="red">*</font></label>
                                 <input type="text" class="form-control" id="subject" name="subject" placeholder="Subject"  required=""  aria-required="true">
                             </div>
-                            <div class="form-group">
+                            <!-- <div class="form-group">
                                 <label for="field-2" class="control-label">Message <font color="red">*</font></label>
                                 <textarea class="wysihtml5 form-control article-ckeditor" required id="article-ckeditor"  placeholder="Message body" style="height: 100px" name="message" ></textarea>
-                            </div>
+                            </div> -->
                            
                         </div>
                     </div>
@@ -117,3 +117,5 @@
     </div>
 </div>
 <!-- /.modal -->
+
+

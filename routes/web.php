@@ -128,6 +128,11 @@ Route::get('module/delete/{mod_id}','ModuleController@delete');
 /* pdf generate testing */
 Route::get('test-pdf','TestPdfController@index');
 
+
+//send mail by rohit
+Route::post('send_mail','EmailController@sendEmail');
+
+
 /* testing layout */
 Route::get('/test', function () {
     return view('test-department');
