@@ -14,10 +14,12 @@ class GeoStructureController extends Controller
     //
     public function index(){
         $datas = GeoStructure::leftJoin('level', 'geo_structure.level_id', '=', 'level.level_id')
-            ->leftJoin('organisation','geo_structure.org_id','=','organisation.org_id')
-            ->select('geo_structure.*','level.level_name','organisation.org_name')
-            ->orderBy('geo_structure.geo_id','desc')
-            ->get();
+                                ->leftJoin('organisation','geo_structure.org_id','=','organisation.org_id')
+                                ->select('geo_structure.*','level.level_name','organisation.org_name')
+                                ->orderBy('geo_structure.geo_id','desc')
+                                ->get();
+
+                               
 
         // find parent details
         for($i=0;$i<count($datas);$i++){

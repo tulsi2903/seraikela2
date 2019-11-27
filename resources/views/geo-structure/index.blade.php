@@ -14,7 +14,7 @@
                             <button class="btn btn-icon btn-link btn-primary btn-xs btn-refresh-card"><span class="fa fa-sync-alt"></span></button>
                             <button class="btn btn-icon btn-link btn-primary btn-xs"><span class="fa fa-times"></span></button> -->
                             <button type="button" class="btn btn-icon btn-round btn-warning" data-target="#create-email" data-toggle="modal" ><i class="fa fa-envelope" aria-hidden="true"></i></button>
-                            <button type="button" class="btn btn-icon btn-round btn-info"><i class="fa fa-print" aria-hidden="true"></i></button>
+                            <button type="button" class="btn btn-icon btn-round btn-info" id="print-button" onclick="printView();"><i class="fa fa-print" aria-hidden="true"></i></button>
                         </div>
                     </div>
                 </div>
@@ -27,16 +27,16 @@
                         <a class="btn btn-secondary" href="{{url('geo-structure/add')}}" role="button"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;Add</a>
                     </div><br><br>
                     <div class="table-responsive table-hover table-sales">
-                        <table class="table">
+                        <table class="table table-datatable" id="printable-area">
                             <thead style="background: #d6dcff;color: #000;">
                                 <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Name</th>
-                                    <th scope="col">Level</th>
-                                    <th scope="col">Villages</th>
-                                    <th scope="col">Parent</th>
-                                    <th scope="col">Organisation</th>
-                                    <th scope="col">Action</th>
+                                    <th>#</th>
+                                    <th>Name</th>
+                                    <th>Level</th>
+                                    <th>Villages</th>
+                                    <th>Parent</th>
+                                    <th>Organisation</th>
+                                    <th class="action-buttons">Action</th>
                                 </tr>
                             </thead>
                             <?php $count=1; ?>
@@ -49,7 +49,7 @@
                                         <td>{{$data->no_of_villages}}</td>
                                         <td>{{$data->parent_name}} <small>{{$data->parent_level_name}}</small></td>
                                         <td>{{$data->org_name}}</td>
-                                        <td>
+                                        <td class="action-buttons">
                                             <a href="{{url('geo-structure/delete')}}/{{$data->geo_id}}" id="delete-button" class="btn btn-secondary btn-sm"><i class="fas fa-trash-alt"></i></a>
                                             &nbsp;&nbsp;<a href="{{url('geo-structure/add')}}?purpose=edit&id={{$data->geo_id}}" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></a>
                                         </td>
@@ -67,6 +67,7 @@
             </div>
         </div>
    </div>
+   
 @endsection
 <!-- email model -->
 <div id="create-email" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none">

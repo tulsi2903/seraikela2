@@ -1,11 +1,7 @@
 @extends('layout.layout')
 
 @section('title', 'Designation')
-@section('page-style')
-    <style>
-        
-    </style>
-@endsection
+
 
 @section('page-content')
 
@@ -21,7 +17,7 @@
                             <button class="btn btn-icon btn-link btn-primary btn-xs btn-refresh-card"><span class="fa fa-sync-alt"></span></button>
                             <button class="btn btn-icon btn-link btn-primary btn-xs"><span class="fa fa-times"></span></button> -->
                             <button type="button" class="btn btn-icon btn-round btn-warning" data-target="#create-email" data-toggle="modal" ><i class="fa fa-envelope" aria-hidden="true"></i></button>
-                            <button type="button" class="btn btn-icon btn-round btn-info"><i class="fa fa-print" aria-hidden="true"></i></button>
+                            <button type="button" class="btn btn-icon btn-round btn-info" id="print-button" onclick="printView();"><i class="fa fa-print" aria-hidden="true"></i></button>
                         </div>
                     </div>
                 </div>
@@ -34,13 +30,13 @@
                         <a class="btn btn-secondary" href="{{url('designation/add')}}" role="button"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;Add</a>
                     </div><br><br>
                     <div class="table-responsive table-hover table-sales">
-                        <table class="table">
+                        <table class="table table-datatable" id="printable-area">
                             <thead style="background: #d6dcff;color: #000;">
                                 <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Name</th>
-                                    <th scope="col">Organisation</th>
-                                    <th scope="col">Actions</th>
+                                    <th>#</th>
+                                    <th>Name</th>
+                                    <th>Organisation</th>
+                                    <th class="action-buttons">Actions</th>
                                 </tr>
                             </thead>
                             <?php $count=1; ?>
@@ -50,7 +46,7 @@
                                         <td width="40px;">{{$count++}}</td>
                                         <td>{{$data->name}}</td>
                                         <td>{{$data->org_name}}</td>
-                                        <td width="250px">
+                                        <td class="action-buttons">
                                             <a href="{{url('designation/delete')}}/{{$data->desig_id}}" id="delete-button" class="btn btn-secondary btn-sm"><i class="fas fa-trash-alt"></i></a>
                                             &nbsp;&nbsp;<a href="{{url('designation/add')}}?purpose=edit&id={{$data->desig_id}}" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></a>
                                         </td>

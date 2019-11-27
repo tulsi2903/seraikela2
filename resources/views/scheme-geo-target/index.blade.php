@@ -14,7 +14,7 @@
                             <button class="btn btn-icon btn-link btn-primary btn-xs btn-refresh-card"><span class="fa fa-sync-alt"></span></button>
                             <button class="btn btn-icon btn-link btn-primary btn-xs"><span class="fa fa-times"></span></button> -->
                             <button type="button" class="btn btn-icon btn-round btn-warning"><i class="fa fa-envelope" aria-hidden="true"></i></button>
-                            <button type="button" class="btn btn-icon btn-round btn-info"><i class="fa fa-print" aria-hidden="true"></i></button>
+                            <button type="button" class="btn btn-icon btn-round btn-info" id="print-button" onclick="printView();"><i class="fa fa-print" aria-hidden="true"></i></button>
                         </div>
                     </div>
                 </div>
@@ -27,17 +27,17 @@
                         <a class="btn btn-secondary" href="{{url('scheme-geo-target/add')}}" role="button"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;Add</a>
                     </div><br><br>
                     <div class="table-responsive table-hover table-sales">
-                        <table class="table">
+                        <table class="table table-datatable" id="printable-area">
                             <thead style="background: #d6dcff;color: #000;">
                                 <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Scheme</th>
-                                    <th scope="col">Panchayat</th>
-                                    <th scope="col">Indicator</th>
-                                    <th scope="col">Asset Group Name</th>
-                                    <th scope="col">Target</th>
-                                    <th scope="col">Year</th>
-                                    <th scope="col">Actions</th>
+                                    <th>#</th>
+                                    <th>Scheme</th>
+                                    <th>Panchayat</th>
+                                    <th>Indicator</th>
+                                    <th>Asset Group Name</th>
+                                    <th>Target</th>
+                                    <th>Year</th>
+                                    <th class="action-buttons">Actions</th>
                                 </tr>
                             </thead>
                             <?php $count=1; ?>
@@ -52,7 +52,7 @@
                                            <td>{{$data->target}}</td>
                                             <td>{{$data->year_value}}</td>
                                         
-                                        <td>
+                                        <td class="action-buttons">
                                             <a href="{{url('scheme-geo-target/delete')}}/{{$data->scheme_geo_target_id}}" id="delete-button" class="btn btn-secondary btn-sm"><i class="fas fa-trash-alt"></i></a>
                                             &nbsp;&nbsp;<a href="{{url('scheme-geo-target/add')}}?purpose=edit&id={{$data->scheme_geo_target_id}}" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></a>
                                         </td>

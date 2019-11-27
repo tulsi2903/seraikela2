@@ -131,6 +131,37 @@
         hr.new2 {
         border-top: 1px dashed #000;
         }
+
+        @media print {
+            body{
+                background: white !important;
+            }
+            body, body * {
+                visibility: hidden;
+            }
+            #printable-area, #printable-area * {
+                visibility: visible;
+            }
+            #printable-area{
+                position: fixed;
+                left: 0;
+                top: 40px;
+                width: 100vw !important;
+            }
+            #print-button, #print-button *{
+                visibility: hidden;
+            }
+            .card-title{
+                visibility: visible !important;
+                position: fixed;
+                left: 0;
+                top: 0px;
+                width: 100vw !important;
+            }
+            .action-buttons{
+                display: none;
+            }
+         } 
     </style>
 
     <!-- respective pages styling -->
@@ -256,6 +287,20 @@
             });
         });
     </script>
+    <script type="text/javascript">
+        
+        function printView()
+        {
+
+          window.print();
+        }
+    </script>
+
+    <script type="text/javascript">
+       $(document).ready( function () {
+            $('.table-datatable').DataTable();
+        } );
+   </script>
 
 	<!-- core scripts starts, footer-scripts  -->
     @include('layout.footer-scripts')

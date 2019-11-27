@@ -12,9 +12,9 @@ class SchemeStructureController extends Controller
     //
     public function index(){
         $datas = SchemeStructure::leftJoin('department', 'scheme_structure.dept_id', '=', 'department.dept_id')
-            ->select('scheme_structure.*','department.dept_name')
-            ->orderBy('scheme_structure.scheme_id','desc')
-            ->get();
+                    ->select('scheme_structure.*','department.dept_name')
+                    ->orderBy('scheme_structure.scheme_id','desc')
+                    ->get();
 
         return view('scheme-structure.index')->with('datas', $datas);
     }
@@ -37,7 +37,8 @@ class SchemeStructureController extends Controller
 
         return view('scheme-structure.add')->with(compact('hidden_input_purpose','hidden_input_id','data','department_datas','scheme_types','departments'));
     }
- public function store(Request $request){
+
+    public function store(Request $request){
         //$response = "failed";
         $scheme_structure = new SchemeStructure;
 

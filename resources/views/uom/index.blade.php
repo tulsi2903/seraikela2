@@ -20,7 +20,7 @@
                             <button class="btn btn-icon btn-link btn-primary btn-xs btn-refresh-card"><span class="fa fa-sync-alt"></span></button>
                             <button class="btn btn-icon btn-link btn-primary btn-xs"><span class="fa fa-times"></span></button> -->
                             <button type="button" class="btn btn-icon btn-round btn-warning"><i class="fa fa-envelope" aria-hidden="true"></i></button>
-                            <button type="button" class="btn btn-icon btn-round btn-info"><i class="fa fa-print" aria-hidden="true"></i></button>
+                            <button type="button" class="btn btn-icon btn-round btn-info" id="print-button" onclick="printView();"><i class="fa fa-print" aria-hidden="true"></i></button>
                         </div>
                     </div>
                 </div>
@@ -33,13 +33,13 @@
                         <a class="btn btn-secondary" href="{{url('uom/add')}}" role="button"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;Add</a>
                     </div><br><br>
                     <div class="table-responsive table-hover table-sales">
-                        <table class="table">
+                        <table class="table table-datatable" id="printable-area">
                             <thead style="background: #d6dcff;color: #000;">
                                 <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Name</th>
+                                    <th>#</th>
+                                    <th>Name</th>
                                     
-                                    <th scope="col">Actions</th>
+                                    <th class="action-buttons">Actions</th>
                                 </tr>
                             </thead>
                             <?php $count=1; ?>
@@ -49,7 +49,7 @@
                                         <td width="40px;">{{$count++}}</td>
                                         <td>{{$data->uom_name}}</td>
                                         
-                                        <td>
+                                        <td class="action-buttons">
                                             <a href="{{url('uom/delete')}}/{{$data->uom_id}}" id="delete-button" class="btn btn-secondary btn-sm"><i class="fas fa-trash-alt"></i></a>
                                             &nbsp;&nbsp;<a href="{{url('uom/add')}}?purpose=edit&id={{$data->uom_id}}" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></a>
                                         </td>
