@@ -1,6 +1,6 @@
 @extends('layout.layout')
 
-@section('title', 'Designation')
+@section('title', 'Define Designation')
 
 @section('page-style')
     <style>
@@ -10,13 +10,24 @@
 
 @section('page-content')
     
-       <div class="row row-card-no-pd" style="border-top: 3px solid #5c76b7;">
-            <div class="col-md-12">
-                <div class="card">
-                    <h4 class="card-header">Designation</h4>
-                    <div class="card-body">
-                        <form action="{{url('designation/store')}}" method="POST">
-                        @csrf
+        <div class="row row-card-no-pd" style="border-top: 3px solid #5c76b7;">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-head-row card-tools-still-right" style="background:#fff;">
+                        <h4 class="card-title">Define Designation</h4>
+                        <div class="card-tools">
+                        <a href="{{url('designation')}}" class="btn btn-sm btn-secondary" style="float:right;"><i class="fas fa-arrow-left"></i>&nbsp;&nbsp;Back</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <form action="{{url('designation/store')}}" method="POST">
+                    @csrf
                             <div class="form-group">
                                 <label for="name">Name<span style="color:red;margin-left:5px;">*</span></label>
                                 <input type="text" name="name" id="name" class="form-control" value="{{$data->name}}" autocomplete="off">
