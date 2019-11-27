@@ -2,6 +2,12 @@
 
 @section('title', 'Designation')
 
+@section('page-style')
+    <style>
+        
+    </style>
+@endsection
+
 
 @section('page-content')
 

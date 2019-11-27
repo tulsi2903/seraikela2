@@ -2,6 +2,12 @@
 
 @section('title', 'Define Schemes')
 
+@section('page-style')
+    <style>
+        
+    </style>
+@endsection
+
 @section('page-content')
    <div class="row row-card-no-pd" style="border-top: 3px solid #5c76b7;">
         <div class="col-md-12">
