@@ -132,8 +132,17 @@ Route::get('test-pdf','TestPdfController@index');
 //send mail by rohit
 Route::post('send_mail','EmailController@sendEmail');
 
-
 /* testing layout */
 Route::get('/test', function () {
     return view('test-department');
 });
+
+
+
+
+
+Route::get('mail', function () {
+    return view('index1');
+});
+
+Route::post('sendmail','EmailController@sendmail');
