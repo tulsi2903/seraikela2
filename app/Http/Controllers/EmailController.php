@@ -26,11 +26,11 @@ class EmailController extends Controller
                    
             $user = array('email_from'=>$email_from,'email_to'=>$email_to, 'cc'=>$email_cc, 'subject'=>$send_subject,'results'=>$details);
             $pdf = PDF::loadView('mail.departs',['user'=>$user]);  
-             $data =$pdf; 
+            //$data =$pdf; 
             // echo $data;
             // die;
 
-            Mail::send($pdf,['user'=> $user], function($message) use ($user,$pdf)
+            Mail::send('mail.departs',['user'=> $user], function($message) use ($user,$pdf)
             {
                 $email_to=explode(',',$user['email_to']);
                 foreach($email_to as $key=>$value)
@@ -64,8 +64,12 @@ class EmailController extends Controller
             $send_subject=$request->subject;
             $details=json_decode($request->data);
 
-            $user = array('email_from'=>$email_from,'email_to'=>$email_to, 'cc'=>$email_cc, 'subject'=>$request->subject, 'content'=>$request->message,'results'=>$details);
-            Mail::send('mail.designation',['user'=> $user], function($message) use ($user)
+
+            $user = array('email_from'=>$email_from,'email_to'=>$email_to, 'cc'=>$email_cc, 'subject'=>$send_subject,'results'=>$details);
+            $pdf = PDF::loadView('mail.designation',['user'=>$user]);
+
+            // $user = array('email_from'=>$email_from,'email_to'=>$email_to, 'cc'=>$email_cc, 'subject'=>$request->subject, 'content'=>$request->message,'results'=>$details);
+            Mail::send('mail.designation',['user'=> $user], function($message) use ($user,$pdf)
             {
                 $email_to=explode(',',$user['email_to']);
                 foreach($email_to as $key=>$value)
@@ -81,6 +85,7 @@ class EmailController extends Controller
                     $message->cc($email_cc[$key]);
                 }
                 }
+                $message->attachData($pdf->output(), "designation.pdf");
                 $message->subject($user['subject']);
                 $message->from('rohit18212@gmail.com','seraikela'); 
                 session()->put('alert-class','alert-success');
