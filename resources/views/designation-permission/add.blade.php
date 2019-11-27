@@ -22,7 +22,7 @@
                     <form action="{{url('designation-permission/store')}}" method="POST">
                     @csrf
                         <div class="form-group">
-                                <label for="desig_id">Designation</label>
+                                <label for="desig_id">Designation<span style="color:red;margin-left:5px;">*</span></label>
                                 <select name="desig_id" id="desig_id" class="form-control">
                                     <option value="">---Select---</option>
                                     @foreach($designations as $designation )
@@ -34,7 +34,7 @@
                                 
                             </div>  
                         <div class="form-group">
-                                <label for="mod_id">Module Name</label>
+                                <label for="mod_id">Module Name<span style="color:red;margin-left:5px;">*</span></label>
                                 <select name="mod_id" id="mod_id" class="form-control">
                                     <option value="">---Select---</option>
                                     @foreach($module_names as $module_name )
@@ -46,7 +46,7 @@
                                 
                             </div>  
                             <div class="form-group">
-                                <label for="permissions">Permissions</label>
+                                <label for="permissions">Permissions<span style="color:red;margin-left:5px;">*</span></label>
                                 <div class="row">
                                     <div class="col-md-3">
                                         <input type="checkbox" id="add" name="add" value='1' <?php if($data->add=='1'){ echo "checked"; } ?>>

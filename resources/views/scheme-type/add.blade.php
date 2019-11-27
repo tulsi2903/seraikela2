@@ -24,7 +24,7 @@
                     @csrf
 
                             <div class="form-group">
-                                <label for="sch_type_name">Scheme Name</label>
+                                <label for="sch_type_name">Scheme Name<span style="color:red;margin-left:5px;">*</span></label>
                                 <input type="text" name="sch_type_name" id="sch_type_name" class="form-control" value="{{$data->sch_type_name}}">
                                 <div class="invalid-feedback" id="scheme_name_error_msg"></div>
                             </div>

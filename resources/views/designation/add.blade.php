@@ -18,12 +18,12 @@
                         <form action="{{url('designation/store')}}" method="POST">
                         @csrf
                             <div class="form-group">
-                                <label for="name">Name</label>
+                                <label for="name">Name<span style="color:red;margin-left:5px;">*</span></label>
                                 <input type="text" name="name" id="name" class="form-control" value="{{$data->name}}" autocomplete="off">
                                 <div class="invalid-feedback" id="name_error_msg"></div>
                             </div>
                             <div class="form-group">
-                                <label for="org_id">Organisation</label>
+                                <label for="org_id">Organisation<span style="color:red;margin-left:5px;">*</span></label>
                                 <select name="org_id" id="org_id" class="form-control">
                                     <option value="">-Select-</option>
                                     @foreach($organisation_datas as $organisation_data)

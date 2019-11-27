@@ -22,12 +22,12 @@
                     <form action="{{url('geo-structure/store')}}" method="POST" id="geo-structure-form">
                     @csrf
                             <div class="form-group">
-                                <label for="name">Geo Name</label>
+                                <label for="name">Geo Name<span style="color:red;margin-left:5px;">*</span></label>
                                 <input type="text" name="geo_name" id="geo_name" class="form-control" value="{{$data->geo_name}}">
                                 <div class="invalid-feedback" id="geo_name_error_msg"></div>
                             </div>
                             <div class="form-group">
-                                <label for="org_id">Organisation</label>
+                                <label for="org_id">Organisation<span style="color:red;margin-left:5px;">*</span></label>
                                 <select name="org_id" id="org_id" class="form-control">
                                     <option value="">-Select-</option>
                                     @foreach($organisation_datas as $organisation_data)
@@ -37,7 +37,7 @@
                                 <div class="invalid-feedback" id="org_id_error_msg"></div>
                             </div>
                             <div class="form-group">
-                                <label for="level_id">Level</label>
+                                <label for="level_id">Level<span style="color:red;margin-left:5px;">*</span></label>
                                 <select name="level_id" id="level_id" class="form-control">
                                     <option value="">-Select-</option>
                                     <option value="1" <?php if($data->level_id=='1'){ echo "selected"; } ?>>District</option>
@@ -91,7 +91,7 @@
                                 <div class="invalid-feedback" id="bl_id_error_msg"></div>
                             </div>
                             <div class="form-group">
-                                <label for="officer_id">Officer</label>
+                                <label for="officer_id">Officer<span style="color:red;margin-left:5px;">*</span></label>
                                 <select name="officer_id" id="officer_id" class="form-control">
                                     <option value="">-Select-</option>
                                     @foreach($user_datas as $user_data)
@@ -266,20 +266,7 @@
         }
     }
 
-    //no_of_villages
-    var no_of_villages_val = $("#no_of_villages").val();
-    if(level>=4)
-    {
-        if(no_of_villages_val==""){
-            no_of_villages_error true;
-            $("#no_of_villages").addClass('is-invalid');
-            $('#no_of_villages_error_msg').html("Village shouls not be blank");
-        }
-        else{
-            no_of_villages_error=false;
-            $("#no_of_villages").removeClass('is-invalid');
-        }
-    }
+   
     
 
     

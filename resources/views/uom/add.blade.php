@@ -28,7 +28,7 @@
                     <form action="{{url('uom/store')}}" method="POST">
                     @csrf
                             <div class="form-group">
-                                <label for="uom_name">UoM Name</label>
+                                <label for="uom_name">UoM Name<span style="color:red;margin-left:5px;">*</span></label>
                                 <input type="text" name="uom_name" id="uom_name" class="form-control" value="{{$data->uom_name}}" autocomplete="off">
                                  
                                <div class="invalid-feedback" id="uom_name_error_msg"></div>

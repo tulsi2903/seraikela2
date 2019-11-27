@@ -22,7 +22,7 @@
                     <form action="{{url('module/store')}}" method="POST">
                     @csrf
                         <div class="form-group">
-                                <label for="module_name">Module Name</label>
+                                <label for="module_name">Module Name<span style="color:red;margin-left:5px;">*</span></label>
                                 <input type="text" name="module_name" id="module_name" class="form-control" value="{{$data->mod_name}}" autocomplete="off">
                                  
                                <div class="invalid-feedback" id="module_name_error_msg"></div>

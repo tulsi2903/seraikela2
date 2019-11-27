@@ -22,7 +22,7 @@
                     <form action="{{url('asset-numbers/store')}}" method="POST">
                     @csrf
                            <div class="form-group">
-                                <label for="year">Year</label>
+                                <label for="year">Year<span style="color:red;margin-left:5px;">*</span></label>
                                 <select name="year" id="year" class="form-control">
                                     <option value="">---Select---</option>
                                     @foreach($years as $year)
@@ -33,7 +33,7 @@
 
                             </div>
                             <div class="form-group">
-                                <label for="asset_id">Asset</label>
+                                <label for="asset_id">Asset<span style="color:red;margin-left:5px;">*</span></label>
                                 <select name="asset_id" id="asset_id" class="form-control">
                                     <option value="">---Select---</option>
                                     @foreach( $assets as $asset )
@@ -44,7 +44,7 @@
 
                             </div>
                              <div class="form-group">
-                                <label for="geo_id">Panchayat</label>
+                                <label for="geo_id">Panchayat<span style="color:red;margin-left:5px;">*</span></label>
                                 <select name="geo_id" id="geo_id" class="form-control">
                                     <option value="">---Select---</option>
                                     @foreach($panchayats as $panchayat)

@@ -22,12 +22,12 @@
                     <form action="{{url('asset/store')}}" method="POST">
                     @csrf
                     <div class="form-group">
-                        <label for="asset_name">Asset Name</label>
+                        <label for="asset_name">Asset Name<span style="color:red;margin-left:5px;">*</span></label>
                         <input type="text" name="asset_name" id="asset_name" class="form-control" value="{{$data->asset_name}}" autocomplete="off">
                          <div class="invalid-feedback" id="asset_name_error_msg"></div>
                         </div>
                         <div class="form-group">
-                            <label for="movable">Type</label>
+                            <label for="movable">Type<span style="color:red;margin-left:5px;">*</span></label>
                             <select name="movable" id="movable" class="form-control">
                                 <option value="">---Select---</option>
                                 <option value="1" <?php if($data->movable=='1'){ echo "selected"; } ?>>Movable</option>
@@ -36,7 +36,7 @@
                              <div class="invalid-feedback" id="movable_error_msg"></div>
                         </div>
                         <div class="form-group">
-                            <label for="dept_id">Department Name</label>
+                            <label for="dept_id">Department Name<span style="color:red;margin-left:5px;">*</span></label>
                             <select name="dept_id" id="dept_id" class="form-control">
                                 <option value="">---Select---</option>
                                 @foreach( $departments as $department )

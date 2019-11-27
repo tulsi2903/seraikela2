@@ -18,7 +18,7 @@
                         @csrf
                             
                             <div class="form-group">
-                                <label for="year_value">From</label>
+                                <label for="year_value">From<span style="color:red;margin-left:5px;">*</span></label>
                                 <select name="from_value" id="from_value" class="form-control">
                                     <option value="">--Select---</option>
                                    
@@ -30,7 +30,7 @@
                             </div>
                         
                          <div class="form-group">
-                                <label for="year_value">To</label>
+                                <label for="year_value">To<span style="color:red;margin-left:5px;">*</span></label>
                                 <select name="to_value" id="to_value" class="form-control">
                                     <option value="">--Select---</option>
                                    
@@ -42,7 +42,7 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="status">Is Active</label>
+                                <label for="status">Is Active<span style="color:red;margin-left:5px;">*</span></label>
                                 <select name="status" id="status" class="form-control">
                                     <option value="">---Select---</option>
                                     <option value="1" <?php if($data->status=='1'){ echo "selected"; } ?>>Active</option>
