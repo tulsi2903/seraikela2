@@ -111,7 +111,7 @@ Route::get('scheme-group','GroupController@index');
 Route::get('scheme-group/add','GroupController@add');
 Route::post('scheme-group/store','GroupController@store');
 Route::get('scheme-group/delete/{id}','GroupController@delete');
-Route::post('scheme-group/send_mail','GroupController@sendEmail');
+//Route::post('scheme-group/send_mail','GroupController@sendEmail');
 
 /*Designation Permission*/
 Route::get('designation-permission','DesignationPermissionController@index');

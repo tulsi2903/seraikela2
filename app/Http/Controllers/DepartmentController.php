@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Department;
 use App\Organisation;
 
+
 class DepartmentController extends Controller
 {
     //

@@ -6,39 +6,35 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Mail;
 use PDF;
+use DB;
+
+
 
 
 class EmailController extends Controller
 {
     public function sendEmail(Request $request)
     {
-        ini_set('memory_limit', '-1');
+ 
         if($request->department=="department")
         {
             $email_from=$request->from;
             $email_to=$request->to;
             $email_cc=$request->cc;
             $send_subject=$request->subject;
-            $details=json_decode($request->data);
-            // print_r($details);
-            // exit;
-           
-            
+            $details= DB::table('department')->join('organisation','department.org_id','=','organisation.id')->select('department.*','organisation.org_name')->get();
+                   
             $user = array('email_from'=>$email_from,'email_to'=>$email_to, 'cc'=>$email_cc, 'subject'=>$request->subject, 'content'=>$request->message,'results'=>$details);
-            $pdf = PDF::loadView('mail.departs', $user);
             
-    //         $pdfPath = BUDGETS_DIR . '/' . $outputName;
-    //  $invoice->pdf_url = $outputName;
-    //  $invoice->update();
-    //  // File::put($pdfPath, PDF::loadView($pdf, 'A4', 'portrait')->output());
-    //  $pdf = PDF::loadView('invoicing.invoicepdf', $input)->save($pdfPath);
-           // echo "<pre>";
-            // print_r($pdf->stream('mail.departs',$user));
-            // print_r($user);
-            // exit;
-            // return view('mail.departs')->with('user',$user);
-
-            Mail::send('mail.departs',['user'=> $user], function($message) use ($user,$pdf)
+            //$data = $details;
+           // return view('mail.departs')->with('data',$data);
+          
+            // $pdf = PDF::loadView('mail.departs',compact('data'));
+            // $invoice = 'invoice-'.date('d-m-Y').'.pdf';
+            // $pdf->save('public/pdf/'.$invoice);
+          
+   
+            Mail::send('mail.departs',['user'=> $user], function($message) use ($user)
             {
                 $email_to=explode(',',$user['email_to']);
                 foreach($email_to as $key=>$value)
@@ -53,8 +49,10 @@ class EmailController extends Controller
                 {
                     $message->cc($email_cc[$key]);
                 }
-                }
-                $message->attachData($pdf, "invoice.pdf");
+                } 
+                //$message->attachData('public/pdf/'.$invoice,'records.pdf');
+               
+                //$message->attachData(public_path('pdf'), $invoice);
                 $message->subject($user['subject']);
                 $message->from('rohit18212@gmail.com','seraikela'); 
                 session()->put('alert-class','alert-success');
@@ -292,7 +290,12 @@ class EmailController extends Controller
             $details=json_decode($request->result);
 
             $user = array('email_from'=>$email_from,'email_to'=>$email_to, 'cc'=>$email_cc, 'subject'=>$request->subject, 'content'=>$request->message,'results'=>$details);
-             Mail::send('mail.groups',['user'=> $user], function($message) use ($user)
+            
+            // return view('mail.groups')->with('user',$user);       
+            // print_r($user['results']);
+            // die;
+            
+            Mail::send('mail.groups',['user'=> $user], function($message) use ($user)
              {
                  $email_to=explode(',',$user['email_to']);
                  foreach($email_to as $key=>$value)
@@ -313,10 +316,41 @@ class EmailController extends Controller
                  session()->put('alert-class','alert-success');
                  session()->put('alert-content','Email send');
              });
-              return redirect('group');
+              return redirect('scheme-group');
+        }
+        elseif($request->geo_target=="geo_target"){
+            
+            $email_from=$request->from;
+            $email_to=$request->to;
+            $email_cc=$request->cc;
+            $send_subject=$request->subject;
+            $details=json_decode($request->data);
+
+            $user = array('email_from'=>$email_from,'email_to'=>$email_to, 'cc'=>$email_cc, 'subject'=>$request->subject, 'content'=>$request->message,'results'=>$details);
+            
+            Mail::send('mail.scheme-geo-target',['user'=> $user], function($message) use ($user)
+             {
+                 $email_to=explode(',',$user['email_to']);
+                 foreach($email_to as $key=>$value)
+                {
+                    $message->to($email_to[$key]);
+                }
+
+                if(@$user['cc'])
+                {
+                 $email_cc=explode(',',$user['cc']);
+                    foreach($email_cc as $key=>$value)
+                    {
+                        $message->cc($email_cc[$key]);
+                    }
+                }
+                $message->subject($user['subject']);
+                $message->from('rohit18212@gmail.com','seraikela'); 
+                 session()->put('alert-class','alert-success');
+                 session()->put('alert-content','Email send');
+             });
+              return redirect('scheme-geo-target');
         }
         
     }
-
-
 }

@@ -137,6 +137,7 @@ class ComposerStaticInit7924791ae0e1b668ce6d5ceca4c729b2
         'B' => 
         array (
             'BeyondCode\\DumpServer\\' => 22,
+            'Barryvdh\\DomPDF\\' => 16,
         ),
         'A' => 
         array (
@@ -375,6 +376,10 @@ class ComposerStaticInit7924791ae0e1b668ce6d5ceca4c729b2
         array (
             0 => __DIR__ . '/..' . '/beyondcode/laravel-dump-server/src',
         ),
+        'Barryvdh\\DomPDF\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/barryvdh/laravel-dompdf/src',
+        ),
         'App\\' => 
         array (
             0 => __DIR__ . '/../..' . '/app',
@@ -417,6 +422,7 @@ class ComposerStaticInit7924791ae0e1b668ce6d5ceca4c729b2
         'App\\Console\\Kernel' => __DIR__ . '/../..' . '/app/Console/Kernel.php',
         'App\\Department' => __DIR__ . '/../..' . '/app/Department.php',
         'App\\Designation' => __DIR__ . '/../..' . '/app/Designation.php',
+        'App\\DesignationPermission' => __DIR__ . '/../..' . '/app/DesignationPermission.php',
         'App\\Exceptions\\Handler' => __DIR__ . '/../..' . '/app/Exceptions/Handler.php',
         'App\\GeoStructure' => __DIR__ . '/../..' . '/app/GeoStructure.php',
         'App\\Group' => __DIR__ . '/../..' . '/app/Group.php',
@@ -431,12 +437,16 @@ class ComposerStaticInit7924791ae0e1b668ce6d5ceca4c729b2
         'App\\Http\\Controllers\\Controller' => __DIR__ . '/../..' . '/app/Http/Controllers/Controller.php',
         'App\\Http\\Controllers\\DepartmentController' => __DIR__ . '/../..' . '/app/Http/Controllers/DepartmentController.php',
         'App\\Http\\Controllers\\DesignationController' => __DIR__ . '/../..' . '/app/Http/Controllers/DesignationController.php',
+        'App\\Http\\Controllers\\DesignationPermissionController' => __DIR__ . '/../..' . '/app/Http/Controllers/DesignationPermissionController.php',
+        'App\\Http\\Controllers\\EmailController' => __DIR__ . '/../..' . '/app/Http/Controllers/EmailController.php',
         'App\\Http\\Controllers\\GeoStructureController' => __DIR__ . '/../..' . '/app/Http/Controllers/GeoStructureController.php',
         'App\\Http\\Controllers\\GroupController' => __DIR__ . '/../..' . '/app/Http/Controllers/GroupController.php',
+        'App\\Http\\Controllers\\ModuleController' => __DIR__ . '/../..' . '/app/Http/Controllers/ModuleController.php',
         'App\\Http\\Controllers\\SchemeGeoTargetController' => __DIR__ . '/../..' . '/app/Http/Controllers/SchemeGeoTargetController.php',
         'App\\Http\\Controllers\\SchemeIndicatorController' => __DIR__ . '/../..' . '/app/Http/Controllers/SchemeIndicatorController.php',
         'App\\Http\\Controllers\\SchemeStructureController' => __DIR__ . '/../..' . '/app/Http/Controllers/SchemeStructureController.php',
         'App\\Http\\Controllers\\SchemeTypeController' => __DIR__ . '/../..' . '/app/Http/Controllers/SchemeTypeController.php',
+        'App\\Http\\Controllers\\TestPdfController' => __DIR__ . '/../..' . '/app/Http/Controllers/TestPdfController.php',
         'App\\Http\\Controllers\\UomController' => __DIR__ . '/../..' . '/app/Http/Controllers/UomController.php',
         'App\\Http\\Controllers\\YearController' => __DIR__ . '/../..' . '/app/Http/Controllers/YearController.php',
         'App\\Http\\Kernel' => __DIR__ . '/../..' . '/app/Http/Kernel.php',
@@ -448,6 +458,7 @@ class ComposerStaticInit7924791ae0e1b668ce6d5ceca4c729b2
         'App\\Http\\Middleware\\TrustProxies' => __DIR__ . '/../..' . '/app/Http/Middleware/TrustProxies.php',
         'App\\Http\\Middleware\\VerifyCsrfToken' => __DIR__ . '/../..' . '/app/Http/Middleware/VerifyCsrfToken.php',
         'App\\Level' => __DIR__ . '/../..' . '/app/Level.php',
+        'App\\Module' => __DIR__ . '/../..' . '/app/Module.php',
         'App\\Organisation' => __DIR__ . '/../..' . '/app/Organisation.php',
         'App\\Providers\\AppServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AppServiceProvider.php',
         'App\\Providers\\AuthServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AuthServiceProvider.php',
@@ -462,6 +473,9 @@ class ComposerStaticInit7924791ae0e1b668ce6d5ceca4c729b2
         'App\\User' => __DIR__ . '/../..' . '/app/User.php',
         'App\\UserData' => __DIR__ . '/../..' . '/app/UserData.php',
         'App\\Year' => __DIR__ . '/../..' . '/app/Year.php',
+        'Barryvdh\\DomPDF\\Facade' => __DIR__ . '/..' . '/barryvdh/laravel-dompdf/src/Facade.php',
+        'Barryvdh\\DomPDF\\PDF' => __DIR__ . '/..' . '/barryvdh/laravel-dompdf/src/PDF.php',
+        'Barryvdh\\DomPDF\\ServiceProvider' => __DIR__ . '/..' . '/barryvdh/laravel-dompdf/src/ServiceProvider.php',
         'BeyondCode\\DumpServer\\DumpServerCommand' => __DIR__ . '/..' . '/beyondcode/laravel-dump-server/src/DumpServerCommand.php',
         'BeyondCode\\DumpServer\\DumpServerServiceProvider' => __DIR__ . '/..' . '/beyondcode/laravel-dump-server/src/DumpServerServiceProvider.php',
         'BeyondCode\\DumpServer\\Dumper' => __DIR__ . '/..' . '/beyondcode/laravel-dump-server/src/Dumper.php',

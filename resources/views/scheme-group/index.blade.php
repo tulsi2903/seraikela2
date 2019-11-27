@@ -44,19 +44,19 @@
                             </thead>
                             <?php $count=1; ?>
                             @if(isset($results))
-                                @foreach($results as $results)
+                                @foreach($results as $result)
                                     <tr>
                                         <td width="40px;">{{$count++}}</td>
-                                        <td>{{$results->scheme_group_name}}</td>
-                                        <td><?php if($results->is_active=='1'){
+                                        <td>{{$result->scheme_group_name}}</td>
+                                        <td><?php if($result->is_active=='1'){
                                             echo "Active";
                                         }
                                         else{
                                             echo "Inactive";
                                         } ?></td>
                                         <td class="action-buttons">
-                                            <a href="{{url('scheme-group/delete')}}/{{$results->scheme_group_id}}" id="delete-button" class="btn btn-secondary btn-sm"><i class="fas fa-trash-alt"></i></a>&nbsp;&nbsp;
-                                            <a href="{{url('scheme-group/add')}}?purpose=edit&id={{$results->scheme_group_id}}" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></a>
+                                            <a href="{{url('scheme-group/delete')}}/{{$result->scheme_group_id}}" id="delete-button" class="btn btn-secondary btn-sm"><i class="fas fa-trash-alt"></i></a>&nbsp;&nbsp;
+                                            <a href="{{url('scheme-group/add')}}?purpose=edit&id={{$result->scheme_group_id}}" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></a>
                                         </td>
                                     </tr>
                                 @endforeach
