@@ -71,6 +71,20 @@
 						</ul>
 					</div>
 				</li>
+
+				<li class="nav-item">
+					<a data-toggle="collapse" href="#review" class="collapsed" aria-expanded="false">
+						<i class="fas fa-home"></i>
+						<p>Review</p>
+						<span class="caret"></span>
+					</a>
+					<div class="collapse" id="review">
+						<ul class="nav nav-collapse">
+							<li class="nav-item"><a href="{{url('asset-review')}}"><i class="fas fa-receipt"></i><p>Asset Review</p></a></li>
+							<li class="nav-item"><a href="{{url('scheme-review')}}"><i class="fas fa-receipt"></i><p>Scheme Review</p></a></li>
+						</ul>
+					</div>
+				</li>
                
 			</ul>
 		</div>

@@ -24,17 +24,13 @@ class EmailController extends Controller
             $send_subject=$request->subject;
             $details= DB::table('department')->join('organisation','department.org_id','=','organisation.id')->select('department.*','organisation.org_name')->get();
                    
-            $user = array('email_from'=>$email_from,'email_to'=>$email_to, 'cc'=>$email_cc, 'subject'=>$request->subject, 'content'=>$request->message,'results'=>$details);
-            
-            //$data = $details;
-           // return view('mail.departs')->with('data',$data);
-          
-            // $pdf = PDF::loadView('mail.departs',compact('data'));
-            // $invoice = 'invoice-'.date('d-m-Y').'.pdf';
-            // $pdf->save('public/pdf/'.$invoice);
-          
-   
-            Mail::send('mail.departs',['user'=> $user], function($message) use ($user)
+            $user = array('email_from'=>$email_from,'email_to'=>$email_to, 'cc'=>$email_cc, 'subject'=>$send_subject,'results'=>$details);
+            $pdf = PDF::loadView('mail.departs',['user'=>$user]);  
+            //$data =$pdf; 
+            // echo $data;
+            // die;
+
+            Mail::send('mail.departs',['user'=> $user], function($message) use ($user,$pdf)
             {
                 $email_to=explode(',',$user['email_to']);
                 foreach($email_to as $key=>$value)
@@ -50,9 +46,8 @@ class EmailController extends Controller
                     $message->cc($email_cc[$key]);
                 }
                 } 
-                //$message->attachData('public/pdf/'.$invoice,'records.pdf');
-               
-                //$message->attachData(public_path('pdf'), $invoice);
+            
+                $message->attachData($pdf->output(), "department.pdf");
                 $message->subject($user['subject']);
                 $message->from('rohit18212@gmail.com','seraikela'); 
                 session()->put('alert-class','alert-success');
@@ -69,8 +64,12 @@ class EmailController extends Controller
             $send_subject=$request->subject;
             $details=json_decode($request->data);
 
-            $user = array('email_from'=>$email_from,'email_to'=>$email_to, 'cc'=>$email_cc, 'subject'=>$request->subject, 'content'=>$request->message,'results'=>$details);
-            Mail::send('mail.designation',['user'=> $user], function($message) use ($user)
+
+            $user = array('email_from'=>$email_from,'email_to'=>$email_to, 'cc'=>$email_cc, 'subject'=>$send_subject,'results'=>$details);
+            $pdf = PDF::loadView('mail.designation',['user'=>$user]);
+
+            // $user = array('email_from'=>$email_from,'email_to'=>$email_to, 'cc'=>$email_cc, 'subject'=>$request->subject, 'content'=>$request->message,'results'=>$details);
+            Mail::send('mail.designation',['user'=> $user], function($message) use ($user,$pdf)
             {
                 $email_to=explode(',',$user['email_to']);
                 foreach($email_to as $key=>$value)
@@ -86,6 +85,7 @@ class EmailController extends Controller
                     $message->cc($email_cc[$key]);
                 }
                 }
+                $message->attachData($pdf->output(), "designation.pdf");
                 $message->subject($user['subject']);
                 $message->from('rohit18212@gmail.com','seraikela'); 
                 session()->put('alert-class','alert-success');
@@ -351,6 +351,40 @@ class EmailController extends Controller
              });
               return redirect('scheme-geo-target');
         }
-        
     }
+    // public function mail(){
+    //     return view('index1');
+    // }
+        public function sendmail(Request $request){
+            
+            ini_set('memory_limit', '-1');
+            $data["email"]=$request->get("email");
+            $data["client_name"]=$request->get("client_name");
+            $data["subject"]=$request->get("subject");
+                // print_r($data);
+                // die;
+
+            $pdf = PDF::loadView('mail.test',['data'=>$data] );
+            try{
+                Mail::send('mail.test', $data, function($message)use($data,$pdf) {
+                $message->to($data["email"], $data["client_name"])
+                ->subject($data["subject"])
+                ->attachData($pdf->output(), "invoice.pdf");
+                });
+            }catch(JWTException $exception){
+                $this->serverstatuscode = "0";
+                $this->serverstatusdes = $exception->getMessage();
+            }
+            if (Mail::failures()) {
+                 $this->statusdesc  =   "Error sending mail";
+                 $this->statuscode  =   "0";
+    
+            }else{
+    
+               $this->statusdesc  =   "Message sent Succesfully";
+               $this->statuscode  =   "1";
+            }
+            return response()->json(compact('this'));
+        }
+        
 }

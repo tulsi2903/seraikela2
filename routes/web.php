@@ -105,6 +105,7 @@ Route::get('asset-review', 'AssetReviewController@index');
 Route::POST('asset-review/show', 'AssetReviewController@show');
 Route::get('asset-review/get-datas', 'AssetReviewController@get_datas');
 Route::get('asset-review/get-map-data', 'AssetReviewController@get_map_data');
+Route::get('asset-review/get-panchayat-data', 'AssetReviewController@get_panchayat_data');
 
 
 /* group*///rohit changes 
@@ -126,15 +127,13 @@ Route::get('module/add','ModuleController@add');
 Route::post('module/store','ModuleController@store');
 Route::get('module/delete/{mod_id}','ModuleController@delete');
 
-/* pdf generate testing */
-Route::get('test-pdf','TestPdfController@index');
-
 
 //send mail by rohit
 Route::post('send_mail','EmailController@sendEmail');
 
 
-/* testing layout */
-Route::get('/test', function () {
-    return view('test-department');
+Route::get('mail', function () {
+    return view('index1');
 });
+
+Route::post('sendmail','EmailController@sendmail');

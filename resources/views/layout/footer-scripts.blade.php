@@ -1,5 +1,5 @@
 <!--   Core JS Files   -->
-
+<!-- included in head  i.e. layout/header.blade.php -->
 
 <!-- jQuery UI -->
 <script src="{{url('public/assets/js/plugin/jquery-ui-1.12.1.custom/jquery-ui.min.js')}}"></script>
@@ -9,7 +9,7 @@
 <script src="{{url('public/assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js')}}"></script>
 
 <!-- Chart JS -->
-<script src="{{url('public/assets/js/plugin/chart.js/chart.min.js')}}"></script>
+<script src="{{asset('public/assets/plugins/chart/Chart.min.js')}}"></script>
 
 <!-- jQuery Sparkline -->
 <script src="{{url('public/assets/js/plugin/jquery.sparkline/jquery.sparkline.min.js')}}"></script>
