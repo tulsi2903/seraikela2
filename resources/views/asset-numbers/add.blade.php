@@ -64,7 +64,7 @@
                             </div>
                             <div class="form-group" id="current_value_hide" style="display:none;">
                                 <label for="current_value">Current Value</label>
-                                <input type="text" name="current_value" id="current_value"  value="{{$data->current_value}}" class="form-control">
+                                <input type="text" name="current_value" id="current_value"  value="{{$data->current_value}}" class="form-control" autocomplete="off">
                                 <div class="invalid-feedback" id="current_value_error_msg"></div>
                             </div>
                            
@@ -237,7 +237,7 @@
 </script>
 
 <script>
-    var loc_details=`<td><input type="text" name="location_name[]" id="location_name" class="form-control"></td><td><input type="text" name="latitude[]" id="latitude" class="form-control"></td><td><input type="text" name="longitude[]" id="longitude" class="form-control"></td>`;
+    var loc_details=`<td><input type="text" name="location_name[]" id="location_name" class="form-control" autocomplete="off"></td><td><input type="text" name="latitude[]" id="latitude" class="form-control" autocomplete="off"></td><td><input type="text" name="longitude[]" id="longitude" class="form-control" autocomplete="off"></td>`;
    
 
     $(document).ready(function(){
@@ -257,7 +257,7 @@
             // show location inputs
             if(diff > 0){
                 for(var i=0;i<diff;i++){
-                    $("#append-location #append-location-new").append("<tr><td>"+(i+1)+"</td><td><input type='text' name='location_name[]' class='form-control'></td><td><input type='text' name='latitude[]' class='form-control'></td><td><input type='text' name='longitude[]' class='form-control'></td></tr>");
+                    $("#append-location #append-location-new").append("<tr><td>"+(i+1)+"</td><td><input type='text' name='location_name[]' class='form-control' autocomplete='off'></td><td><input type='text' name='latitude[]' class='form-control' autocomplete='off'></td><td><input type='text' name='longitude[]' class='form-control' autocomplete='off'></td></tr>");
                 }
                 $("#append-location #append-location-new").show(300);
             }

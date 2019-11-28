@@ -38,7 +38,6 @@
                                 <tr>
                                     <th>#</th>
                                     <th>Designation</th>
-
                                     <th>Module Name</th>
                                     <th>Add</th>
                                     <th>Edit</th>

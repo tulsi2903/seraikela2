@@ -59,6 +59,7 @@ Route::get('scheme-geo-target','SchemeGeoTargetController@index');
 Route::get('scheme-geo-target/add','SchemeGeoTargetController@add');
 Route::post('scheme-geo-target/store','SchemeGeoTargetController@store');
 Route::get('scheme-geo-target/get-indicator-name','SchemeGeoTargetController@get_indicator_name');
+Route::get('scheme-geo-target/get-panchayat-name','SchemeGeoTargetController@get_panchayat_name');
 Route::get('scheme-geo-target/delete/{scheme_geo_target_id}','SchemeGeoTargetController@delete');
 
 /*Indicator*/

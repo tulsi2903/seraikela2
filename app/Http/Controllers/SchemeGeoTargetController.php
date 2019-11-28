@@ -20,15 +20,37 @@ class SchemeGeoTargetController extends Controller
                     ->leftJoin('scheme_indicator','scheme_geo_target.indicator_id','=','scheme_indicator.indicator_id')
                     ->leftJoin('year','scheme_geo_target.year_id','=','year.year_id')
                     ->leftJoin('scheme_group','scheme_geo_target.group_id','=','scheme_group.scheme_group_id')
-                    ->select('scheme_geo_target.*','scheme_structure.scheme_name','scheme_structure.scheme_short_name','geo_structure.geo_name','scheme_indicator.indicator_name','year.year_value','scheme_group.scheme_group_name')
+                    ->select('scheme_geo_target.*','scheme_structure.scheme_name','scheme_structure.scheme_short_name','geo_structure.geo_name','geo_structure.level_id','geo_structure.parent_id','scheme_indicator.indicator_name','year.year_value','scheme_group.scheme_group_name')
                     ->orderBy('scheme_geo_target.scheme_geo_target_id','desc')
                     ->get();
 
+        $i=0;
+        foreach($datas as $data){
+            if($data->level_id==4){
+                $tmp = GeoStructure::find($data->parent_id);
+                if($tmp->geo_name)
+                { 
+                    $datas[$i]->bl_name = $tmp->geo_name; 
+                }
+                else{
+                $datas[$i]->bl_name = "NA";
+                }
+                }
+                else{
+                    $datas[$i]->bl_name = "NA";
+                }
+                $i++;
+        }
+
+      
+
         return view('scheme-geo-target.index')->with('datas',$datas);
     }
+
      public function add(Request $request){
         $hidden_input_purpose = "add";
         $hidden_input_id= "NA";
+        $bl_id = "";
 
         
         $scheme_structures = SchemeStructure::orderBy('scheme_name','asc')->get();
@@ -36,6 +58,7 @@ class SchemeGeoTargetController extends Controller
         $indicators = SchemeIndicator::orderBy('indicator_name','asc')->get();
         $years = Year::orderBy('year_value','asc')->get();
         $groups = Group::orderBy('scheme_group_name','asc')->get();
+        $blocks = GeoStructure::orderBy('geo_name','asc')->where('level_id','=','3')->get();
       
 
         $data = new SchemeGeoTarget;
@@ -44,8 +67,21 @@ class SchemeGeoTargetController extends Controller
             $hidden_input_purpose=$request->purpose;
             $hidden_input_id=$request->id;
             $data = $data->find($request->id);
+
+            if($data){
+                $tmp = GeoStructure::select('geo_id')->whereIn('geo_id', GeoStructure::select('bl_id')->where('geo_id', $data->geo_id)->first())->first();
+                $bl_id = $tmp->geo_id;
+
+               
+
+                $indicators = SchemeIndicator::orderBy('indicator_name','asc')->where('scheme_id',$data->scheme_id)->get();
+                
+
+                $panchayats = GeoStructure::orderBy('geo_name','asc')->where('bl_id', $bl_id)->get();
+            }
         }
-        return view('scheme-geo-target.add')->with(compact('hidden_input_purpose','hidden_input_id','data','scheme_structures','panchayats','indicators','years','groups'));
+
+        return view('scheme-geo-target.add')->with(compact('hidden_input_purpose','hidden_input_id','data','bl_id','scheme_structures','panchayats','indicators','years','groups','blocks'));
     }
     public function store(Request $request)
     {
@@ -95,10 +131,17 @@ class SchemeGeoTargetController extends Controller
     {
         // $request->scheme_id;
         $data = SchemeIndicator::where('scheme_id',$request->scheme_id)->get();
+       
         $independent = SchemeStructure::select('independent')->where('scheme_id',$request->scheme_id)->first();
         $independent = $independent->independent;
         return ["scheme_indicator_data"=>$data,"independent"=>$independent];
     }
+    public function get_panchayat_name(Request $request)
+    {
+          $data = GeoStructure::where('bl_id', $request->bl_id)->get();
+          return["panchayat_data"=>$data, "id"=>$request->bl_id];
+    }
+   
     public function delete(Request $request)
     {
          if(SchemeGeoTarget::find($request->scheme_geo_target_id)){

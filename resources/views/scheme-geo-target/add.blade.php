@@ -31,6 +31,26 @@
                                 </select>
                                  <div class="invalid-feedback" id="scheme_name_error_msg"></div>
                             </div>
+                            <div class="form-group">
+                                <label for="indicator">Indicator<span style="color:red;margin-left:5px;">*</span></label>
+                                <select name="indicator" id="indicator" class="form-control">
+                                    <option value="">---Select---</option>
+                                    @foreach( $indicators as $indicator )
+                                     <option value="{{ $indicator->indicator_id }}" <?php if($data->indicator_id==$indicator->indicator_id){ echo "selected"; } ?>>{{ $indicator->indicator_name }}</option>
+                                    @endforeach
+                                </select>
+                                 <div class="invalid-feedback" id="indicator_error_msg"></div>
+                            </div>
+                             <div class="form-group">
+                                <label for="block">Block<span style="color:red;margin-left:5px;">*</span></label>
+                                <select name="block" id="block" class="form-control">
+                                    <option value="">---Select---</option>
+                                    @foreach( $blocks as $block )
+                                     <option value="{{ $block->geo_id }}" <?php if($bl_id==$block->geo_id){ echo "selected"; } ?>>{{ $block->geo_name }}</option>
+                                    @endforeach
+                                </select>
+                                 <div class="invalid-feedback" id="block_error_msg"></div>
+                            </div>
                              <div class="form-group">
                                 <label for="panchayat">Panchayat<span style="color:red;margin-left:5px;">*</span></label>
                                 <select name="panchayat" id="panchayat" class="form-control">
@@ -41,22 +61,13 @@
                                 </select>
                                  <div class="invalid-feedback" id="panchayat_error_msg"></div>
                             </div>
-                             <div class="form-group">
-                                <label for="indicator">Indicator<span style="color:red;margin-left:5px;">*</span></label>
-                                <select name="indicator" id="indicator" class="form-control">
-                                    <option value="">---Select---</option>
-                                    @foreach( $indicators as $indicator )
-                                     <option value="{{ $indicator->indicator_id }}" <?php if($data->indicator_id==$indicator->indicator_id){ echo "selected"; } ?>>{{ $indicator->indicator_name }}</option>
-                                    @endforeach
-                                </select>
-                                 <div class="invalid-feedback" id="indicator_error_msg"></div>
-                            </div>
+                             
                              <div class="form-group" id="scheme_group_block" style="display: none;">
-                                <label for="asset_group_name">Asset Group Name<span style="color:red;margin-left:5px;">*</span></label>
-                                 <select name="asset_group_name" id="asset_group_name" class="form-control">
+                                <label for="scheme_group_name">Asset Group Name<span style="color:red;margin-left:5px;">*</span></label>
+                                 <select name="scheme_group_name" id="scheme_group_name" class="form-control">
                                     <option value="">---Select---</option>
                                     @foreach($groups as $group )
-                                     <option value="{{ $group->asset_group_id }}" <?php if($data->asset_group_id==$group->asset_group_id){ echo "selected"; } ?>>{{ $group->asset_group_name }}</option>
+                                     <option value="{{ $group->scheme_group_id }}" <?php if($data->scheme_group_id==$group->scheme_group_id){ echo "selected"; } ?>>{{ $group->scheme_group_name }}</option>
                                     @endforeach
                                  </select>
                                 <div class="invalid-feedback" id="asset_group_name_error_msg"></div>
@@ -93,6 +104,7 @@
 <script>
 
     var scheme_name_error = true;
+    var block_name_error=true;
    var panchayat_error = true;
    var indicator_error = true;
    var target_error = true;
@@ -106,6 +118,10 @@ $(document).ready(function(){
     $("#scheme_name").change(function(){
        scheme_name_validate();
     });
+    $("#block").change(function(){
+       block_name_validate();
+       ajaxFunc_bl();
+    })
     $("#panchayat").change(function(){
       panchayat_validate();
     });
@@ -125,6 +141,7 @@ $(document).ready(function(){
 });
      function ajaxFunc(){
         var scheme_name_tmp = $("#scheme_name").val();
+       
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -150,6 +167,7 @@ $(document).ready(function(){
                     $("#indicator").append('<option value="'+data.scheme_indicator_data[i].indicator_id+'">'+data.scheme_indicator_data[i].indicator_name+'</option>');
                 }
 
+               
                 if(data.independent==0){
                     $("#scheme_group_block").show();
                 }
@@ -159,6 +177,38 @@ $(document).ready(function(){
                 $(".loader").fadeOut(300);
             }
         });
+    }
+
+    function ajaxFunc_bl(){
+       var bl_id_tmp = $("#block").val();
+       
+       $.ajaxSetup({
+        headers:{
+            'X-CSRF-TOKEN' : $('meta[name="csrf-token"]').attr('content')
+        }
+       });
+      $.ajax({
+        url:"{{url('scheme-geo-target/get-panchayat-name')}}",
+        data: {'bl_id':bl_id_tmp},
+        method:"GET",
+        contentType:'application/json',
+        dataType:"json",
+        beforeSend: function(data){
+            $(".loader").fadeIn(300);
+        },
+        error:function(xhr){
+            alert("error"+xhr.status+","+xhr.statusText);
+            $(".loader").fadeOut(300);
+        },
+        success:function(data){
+            console.log(data);
+             $("#panchayat").html('<option value="">-Select-</option>');
+                for(var i=0;i<data.panchayat_data.length;i++){
+                $("#panchayat").append('<option value="'+data.panchayat_data[i].geo_id+'">'+data.panchayat_data[i].geo_name+'</option>');
+                }
+
+        }
+      });
     }
 
 
@@ -175,6 +225,21 @@ $(document).ready(function(){
             $("#scheme_name").removeClass('is-invalid');
            }
         }
+
+//block name validation
+function block_name_validate(){
+    var block_name_val = $("#block").val();
+    if(block_name_val=="")
+    {
+        block_name_error=true;
+        $("#block").addClass('is-invalid');
+        $("#block_error_msg").html("Block Name should not be blank");
+    }
+    else{
+        block_name_error=false;
+        $("#block").removeClass('is-invalid');
+    }
+}
 
 //panchayat validation
    function panchayat_validate(){
@@ -237,6 +302,7 @@ $(document).ready(function(){
             $("#year").removeClass('is-invalid');
            }
    }
+   
    //asset group validation
    function asset_group_name_validate(){
     var asset_group_name_val = $("#asset_group_name").val();
@@ -260,8 +326,9 @@ $(document).ready(function(){
       target_validate();
        year_validate();
        asset_group_name_validate(); 
+       block_name_validate();
 
-    if(scheme_name_error || panchayat_error || indicator_error || target_error || year_error || asset_group_name_error ){ return false; } // error occured
+    if(scheme_name_error || panchayat_error || indicator_error || target_error || year_error || asset_group_name_error||block_name_error ){ return false; } // error occured
         else{ return true; } // proceed to submit form data
     }
    

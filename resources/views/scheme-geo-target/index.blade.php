@@ -38,8 +38,10 @@
                                 <tr>
                                     <th>#</th>
                                     <th>Scheme</th>
+                                     <th>Indicator</th>
+                                    <th>Block Name</th>
                                     <th>Panchayat</th>
-                                    <th>Indicator</th>
+                                   
                                     <th>Asset Group Name</th>
                                     <th>Target</th>
                                     <th>Year</th>
@@ -52,8 +54,10 @@
                                     <tr>
                                         <td width="40px;">{{$count++}}</td>
                                         <td>{{$data->scheme_name}}({{$data->scheme_short_name}})</td>
+                                        <td>{{$data->indicator_name}}</td>
+                                        <td>{{$data->bl_name}}</td>
                                          <td>{{$data->geo_name}}</td>
-                                          <td>{{$data->indicator_name}}</td>
+                                          
                                           <td>{{$data->asset_group_name}}</td>
                                            <td>{{$data->target}}</td>
                                             <td>{{$data->year_value}}</td>
