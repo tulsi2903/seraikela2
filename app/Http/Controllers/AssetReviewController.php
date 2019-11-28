@@ -29,6 +29,7 @@ class AssetReviewController extends Controller
         return view('asset-review.show')->with(compact('geo_id','year'));
     }
 
+    // to get all views datas
     public function get_datas(Request $request){
         // initializing what to send back
         $tabular_view = []; // tabular data
@@ -38,16 +39,30 @@ class AssetReviewController extends Controller
         $map_view_assets = [];
 
         // received datas
-        $geo_id = explode(",", $request->geo_id); // geo_id received as 
+        $review_for = $request->review_for;
+        $geo_id = explode(",", $request->geo_id); // geo_id received as
+        $panchayat_id = [];
+        if(isset($request->panchayat_id)){
+            $panchayat_id = explode(",", $request->panchayat_id); // panchayat_id received as
+        }
         $no_of_blocks = count($geo_id);
         $dept_id = $request->dept_id;
         $year = $request->year_id;
 
-        // step 1: get bock_count rows according to geo_id (block), dept_id, year_id
-        $datas = AssetBlockCount::whereIn('asset_id', Asset::select('asset_id')->where('dept_id',$dept_id)->get())
-            ->whereIn('geo_id', $geo_id)
-            ->where('year', $year)
-            ->get();
+        // step 1: get asset_block_count/asset_numbers rows according to panchayat_id, geo_id (block), dept_id, year_id
+        if($review_for=="block"){ // block review
+            $datas = AssetBlockCount::whereIn('asset_id', Asset::select('asset_id')->where('dept_id',$dept_id)->get())
+                ->whereIn('geo_id', $geo_id)
+                ->where('year', $year)
+                ->get();
+        }
+        else{ // panchayat review
+            $datas = AssetNumbers::whereIn('asset_id', Asset::select('asset_id')->where('dept_id',$dept_id)->get())
+                ->whereIn('geo_id', $panchayat_id)
+                ->where('year', $year)
+                ->get();
+            //** Important: have to count only last update of each combination
+        }
 
         /* getting unique Asset Ids, map_view_assets*/
         $asset_unique_ids = []; // unique asset ids
@@ -67,46 +82,90 @@ class AssetReviewController extends Controller
             }
         }
 
-        // creating tabular data <thead>, assigning mao view block names&id
-        $tabular_view_tmp=[''];
-        for($i=0;$i<$no_of_blocks;$i++){
-            $geo_name = GeoStructure::select('geo_id','geo_name')->where('geo_id',$geo_id[$i])->first();
-            array_push($tabular_view_tmp, $geo_name->geo_name);
-            array_push($chart_labels, $geo_name->geo_name);
-            array_push($map_view_blocks, ['id'=>$geo_name->geo_id,'name'=>$geo_name->geo_name]);
-        }
-        array_push($tabular_view,$tabular_view_tmp);
-
-        foreach($asset_unique_ids as $asset_unique_id){
-            $asset_name = Asset::select('asset_name')->where('asset_id',$asset_unique_id)->first();
-            $tabular_view_tmp = [$asset_name->asset_name];
-            $chart_datasets_tmp = [];
-            $chart_datasets_tmp['label'] = $asset_name->asset_name;
-            $chart_datasets_tmp['data'] = [];
-
+        // creating tabular data <thead>, assigning chart labels, assigning map view block names & id
+        if($review_for=="block") // block review
+        {
+            $tabular_view_tmp=[''];
             for($i=0;$i<$no_of_blocks;$i++){
-                $found = 0;
-                foreach($datas as $data)
-                {
-                    if($data->asset_id==$asset_unique_id)
+                $geo_name = GeoStructure::select('geo_id','geo_name')->where('geo_id',$geo_id[$i])->first();
+                array_push($tabular_view_tmp, $geo_name->geo_name);
+                array_push($chart_labels, $geo_name->geo_name);
+                array_push($map_view_blocks, ['id'=>$geo_name->geo_id,'name'=>$geo_name->geo_name]);
+            }
+            array_push($tabular_view,$tabular_view_tmp);
+
+            foreach($asset_unique_ids as $asset_unique_id){
+                $asset_name = Asset::select('asset_name')->where('asset_id',$asset_unique_id)->first();
+                $tabular_view_tmp = [$asset_name->asset_name];
+                $chart_datasets_tmp = [];
+                $chart_datasets_tmp['label'] = $asset_name->asset_name;
+                $chart_datasets_tmp['data'] = [];
+
+                for($i=0;$i<$no_of_blocks;$i++){
+                    $found = 0;
+                    foreach($datas as $data)
                     {
-                        if($data->geo_id==$geo_id[$i]){
-                            $geo_name = GeoStructure::select('geo_name')->where('geo_id',$geo_id[$i])->first();
-                            array_push($tabular_view_tmp,$data->count);
-                            array_push($chart_datasets_tmp['data'], $data->count);
-                            $found=1;
+                        if($data->asset_id==$asset_unique_id)
+                        {
+                            if($data->geo_id==$geo_id[$i]){
+                                array_push($tabular_view_tmp,$data->count);
+                                array_push($chart_datasets_tmp['data'], $data->count);
+                                $found=1;
+                            }
                         }
                     }
-                }
 
-                if($found==0){
-                    array_push($tabular_view_tmp, '0');
-                    array_push($chart_datasets_tmp['data'], 0.2);
+                    if($found==0){
+                        array_push($tabular_view_tmp, '0');
+                        array_push($chart_datasets_tmp['data'], 0.2);
+                    }
                 }
+                array_push($tabular_view, $tabular_view_tmp);
+                array_push($chart_datasets, ((object) $chart_datasets_tmp));
             }
-            array_push($tabular_view, $tabular_view_tmp);
-            array_push($chart_datasets, ((object) $chart_datasets_tmp));
         }
+        else // panchayat review
+        {
+            $tabular_view_tmp=[''];
+            for($i=0;$i<count($panchayat_id);$i++){
+                $geo_name = GeoStructure::select('geo_id','geo_name')->where('geo_id',$panchayat_id[$i])->first();
+                array_push($tabular_view_tmp, $geo_name->geo_name);
+                array_push($chart_labels, $geo_name->geo_name);
+                array_push($map_view_blocks, ['id'=>$geo_name->geo_id,'name'=>$geo_name->geo_name]);
+            }
+            array_push($tabular_view,$tabular_view_tmp);
+
+            foreach($asset_unique_ids as $asset_unique_id){
+                $asset_name = Asset::select('asset_name')->where('asset_id',$asset_unique_id)->first();
+                $tabular_view_tmp = [$asset_name->asset_name];
+                $chart_datasets_tmp = [];
+                $chart_datasets_tmp['label'] = $asset_name->asset_name;
+                $chart_datasets_tmp['data'] = [];
+
+                for($i=0;$i<count($panchayat_id);$i++){
+                    $found = 0;
+                    foreach($datas as $data)
+                    {
+                        if($data->asset_id==$asset_unique_id)
+                        {
+                            if($data->geo_id==$panchayat_id[$i]){
+                                array_push($tabular_view_tmp,$data->current_value);
+                                array_push($chart_datasets_tmp['data'], $data->current_value);
+                                $found=1;
+                            }
+                        }
+                    }
+
+                    if($found==0){
+                        array_push($tabular_view_tmp, '0');
+                        array_push($chart_datasets_tmp['data'], 0.2);
+                    }
+                }
+                array_push($tabular_view, $tabular_view_tmp);
+                array_push($chart_datasets, ((object) $chart_datasets_tmp));
+            }
+        }
+
 
         if(count($asset_unique_ids)!=0){
             $response = "success"; // if no records found
@@ -115,16 +174,52 @@ class AssetReviewController extends Controller
             $response = "no_data";
         }
 
-        return ['response'=>$response, 'tabular_view'=>$tabular_view, 'chart_labels'=>$chart_labels, 'chart_datasets'=>$chart_datasets, 'map_view_blocks'=>$map_view_blocks, 'map_view_assets'=>$map_view_assets];
+        return ['review_for'=>$review_for, 'datas'=>$datas, 'response'=>$response, 'tabular_view'=>$tabular_view, 'chart_labels'=>$chart_labels, 'chart_datasets'=>$chart_datasets, 'map_view_blocks'=>$map_view_blocks, 'map_view_assets'=>$map_view_assets];
+    }
+
+    public function get_panchayat_data(Request $request){
+        $data = [];
+        $geo_id = explode(",", $request->geo_id); // geo_id received as
+
+        for($i=0;$i<count($geo_id);$i++){
+            $to_send = ["block_name"=>"","panchayat_data"=>""];
+            $tmp = GeoStructure::select('geo_name')->where('geo_id', $geo_id[$i])
+            ->first();
+            $to_send["block_name"] = $tmp->geo_name;
+            $tmp = GeoStructure::select('geo_id','geo_name')->where('bl_id', $geo_id[$i])
+            ->get();
+            $to_send["panchayat_data"] = $tmp;
+            array_push($data, $to_send);
+        }
+
+        if(count($data)!=0){
+            $response = "success"; // if no records found
+        }
+        else{
+            $response = "no_data";
+        }
+        
+        return ['data'=>$data, 'response'=>$response];
     }
 
     public function get_map_data(Request $request){
-        $data = AssetGeoLocation::leftJoin('geo_structure', 'asset_geo_location.geo_id', '=', 'geo_structure.geo_id')
+        if($request->review_for=="block") // block review
+        {
+            $data = AssetGeoLocation::leftJoin('geo_structure', 'asset_geo_location.geo_id', '=', 'geo_structure.geo_id')
                 ->select('asset_geo_location.*','geo_structure.geo_name')
                 ->whereIn('asset_geo_location.geo_id', GeoStructure::select('geo_id')->where('bl_id',$request->geo_id)->get())
                 ->where('asset_geo_location.asset_id', $request->asset_id)
                 ->where('asset_geo_location.year',$request->year_id)
                 ->get();
+        }
+        else{ // panchayat
+            $data = AssetGeoLocation::leftJoin('geo_structure', 'asset_geo_location.geo_id', '=', 'geo_structure.geo_id')
+                ->select('asset_geo_location.*','geo_structure.geo_name')
+                ->where('asset_geo_location.geo_id', $request->geo_id)
+                ->where('asset_geo_location.asset_id', $request->asset_id)
+                ->where('asset_geo_location.year',$request->year_id)
+                ->get();
+        }
         
         if(count($data)>0){
             $response = "success";
@@ -132,6 +227,13 @@ class AssetReviewController extends Controller
         else{
             $response = "no_data";
         }
-        return ['map_data'=>$data,'response'=>$response];
+        return ['review_for'=>$request->review_for,'map_data'=>$data,'response'=>$response];
     }
 }
+
+
+/*
+
+    {block_name="", },{}
+
+*/

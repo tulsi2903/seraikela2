@@ -27,12 +27,28 @@
     <link rel="stylesheet" href="{{url('public/css/app.css')}}">
     <link rel="stylesheet" href="{{url('public/assets/css/atlantis.min.css')}}">
     <link rel="stylesheet" href="{{url('public/assets/css/bootstrap-datepicker.min.css')}}">
+    <link rel="stylesheet" href="{{asset('public/assets/plugins/chart/Chart.min.css')}}">
 
     <!-- core js file, jquery, bootstrap etc -->
     <script src="{{url('public/js/app.js')}}"></script>
 
     <!-- all pages styling -->
     <style>
+        /* page loader */
+        .custom-loader {
+            position: fixed;
+            text-align: center;
+            z-index: +50;
+            width: 100vw;
+            height: 100vh;
+            padding-top: 250px;
+            top: 0;
+            left: 0;
+            background: rgba(0, 0, 0, 0.4);
+            color: white;
+            display: none;
+        }
+
          .demo-icon {
             margin-top: 7px;
             margin-left: 10px;
@@ -247,6 +263,15 @@
 
 	</div> <!-- wrapper closed -->
 
+
+    <!-- custom loader -->
+    <div class="custom-loader">
+        <div class="spinner-border text-danger" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+        <br/>Loading..
+    </div>
+    
 
     <!-- for delete button, alert/confirm -->
     <script>
