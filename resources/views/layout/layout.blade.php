@@ -93,7 +93,6 @@
         }
         #show-toggle1 {
         padding: 5px;
-        text-align: center;
         background-color: #ffffff;
         margin-bottom: 7px;
         }
@@ -313,10 +312,8 @@
         });
     </script>
     <script type="text/javascript">
-        
         function printView()
         {
-
           window.print();
         }
     </script>
@@ -326,6 +323,16 @@
             $('.table-datatable').DataTable();
         } );
    </script>
+   <script>
+        // Date Picker
+        $(document).ready( function (){
+            jQuery('.datepicker-date').datepicker();
+            jQuery('.datepicker-date-multiple').datepicker({
+                numberOfMonths: 3,
+                showButtonPanel: true
+            });
+        });
+    </script>
 
 	<!-- core scripts starts, footer-scripts  -->
     @include('layout.footer-scripts')
