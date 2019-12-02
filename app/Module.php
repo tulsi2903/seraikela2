@@ -6,6 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Module extends Model
 {
-     protected $table="module";
+    protected $table="module";
     protected $primaryKey="mod_id";
 }

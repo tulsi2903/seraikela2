@@ -45,7 +45,7 @@ class UomController extends Controller
             session()->put('alert-class','alert-danger');
             session()->put('alert-content','This UoM '.$request->uom_name.' already exist !');
         }
-       else if($uom->save()){
+        else if($uom->save()){
             session()->put('alert-class','alert-success');
             session()->put('alert-content','UOM details have been successfully submitted !');
         }

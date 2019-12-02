@@ -12,8 +12,8 @@ class ModuleController extends Controller
    {
     $datas = Module::orderBy('mod_id','desc')->get();
     return view('module.index')->with('datas', $datas);
-    
    }
+
    public function add(Request $request)
      {
          $hidden_input_purpose = "add";
@@ -27,19 +27,29 @@ class ModuleController extends Controller
          }
          return view('module.add')->with(compact('hidden_input_purpose','hidden_input_id','data'));
      }
+
+
+
      public function store(Request $request){
+        $purpose="add";
         $module = new Module;
 
-        if($request->hidden_input_purpose=="edit"){
-            $module = $module->find($request->hidden_input_id);
+        if(isset($request->edit_id)){
+            $module = $module->find($request->edit_id);
+            if(count($module)!=0){
+                $purpose="edit";
+            }
         }
 
         $module->mod_name= $request->module_name;
-        
         $module->created_by = '1';
         $module->updated_by = '1';
 
-        if($module->save()){
+        if(Module::where('mod_name', $request->module_name)->first()&&$purpose!="edit"){
+            session()->put('alert-class','alert-danger');
+            session()->put('alert-content','This module '.$request->module_name.' already exist !');
+        }
+        else if($module->save()){
             session()->put('alert-class','alert-success');
             session()->put('alert-content','A new module details have been successfully submitted');
         }
