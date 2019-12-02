@@ -138,7 +138,8 @@
 
         var form_append = `<tr data-edit-id="`+id+`">
             <td></td>
-            <td><input value="`+edit_values[0]+`" class="form-control" name="dept_icon" id="edit_dept_icon">
+            <td>
+                <input value="`+edit_values[0]+`" class="form-control" name="dept_icon" id="edit_dept_icon">
                 <div class="invalid-feedback" id="edit_dept_icon_error_msg"></div>
             </td>
             <td>
@@ -293,13 +294,14 @@
             is_active_validate();
         });
 
-        
+
         // reset/initiate form
         $(".department-add-button").click(function(){
             initiateForm();
         });
     });
 
+    // intialiate form: reset everything related to the form
     function initiateForm(){
         document.getElementById('department-form').reset();
         $("#dept_name").removeClass('is-invalid');

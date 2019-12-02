@@ -26,20 +26,22 @@ class UomController extends Controller
     }
 
     public function store(Request $request){
-        //$response = "failed";
+        $purpose="add";
         $uom = new Uom;
 
-        if($request->hidden_input_purpose=="edit"){
-            $uom = $uom->find($request->hidden_input_id);
+        if(isset($request->edit_id)){
+            $uom = $uom->find($request->edit_id);
+            if(count($uom)!=0){
+                $purpose="edit";
+            }
         }
 
         $uom->uom_name= $request->uom_name;
-       
         $uom->created_by = '1';
         $uom->updated_by = '1';
 
 
-        if(Uom::where('uom_name',$request->uom_name)->first()&&$request->hidden_input_purpose!="edit"){
+        if(Uom::where('uom_name',$request->uom_name)->first()&&$purpose!="edit"){
             session()->put('alert-class','alert-danger');
             session()->put('alert-content','This UoM '.$request->uom_name.' already exist !');
         }
