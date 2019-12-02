@@ -37,18 +37,22 @@ class DesignationController extends Controller
     }
 
     public function store(Request $request){
+        $purpose="add";
         $desig = new Designation;
 
-        if($request->hidden_input_purpose=="edit"){
-            $desig = $desig->find($request->hidden_input_id);
+        if(isset($request->edit_id)){
+            $desig = $desig->find($request->edit_id);
+            if(count($desig)!=0){
+                $purpose="edit";
+            }
         }
 
         $desig->name= $request->name;
-        $desig->org_id = $request->org_id;
+        $desig->org_id = '1';
         $desig->created_by = '1';
         $desig->updated_by = '1';
 
-        if(Designation::where('name', $request->name)->first()&&$request->hidden_input_purpose!="edit"){
+        if(Designation::where('name', $request->name)->first()&&$purpose!="edit"){
             session()->put('alert-class','alert-danger');
             session()->put('alert-content','This designation '.$request->name.' is already exist !');
         }
