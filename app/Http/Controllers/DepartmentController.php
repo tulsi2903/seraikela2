@@ -9,17 +9,17 @@ use App\Organisation;
 
 class DepartmentController extends Controller
 {
-    //
+    // for homepage
     public function index(){
         $datas = Department::leftJoin('organisation', 'department.org_id', '=', 'organisation.org_id')
             ->select('department.*','organisation.org_name')
             ->orderBy('department.dept_id','desc')
             ->get();
 
-        return view('department.index')->with('datas', $datas);
+        return view('department.index')->with(compact('datas'));
     }
 
-    // to open form (for add & edit)
+    // to open form (for add & edit) ---- (deprecated)
     public function add(Request $request){
         $hidden_input_purpose = "add";
         $hidden_input_id= "NA";
@@ -40,23 +40,28 @@ class DepartmentController extends Controller
 
     // to store in DB (add & edit)
     public function store(Request $request){
+        $purpose="add";
         $dept = new Department;
 
-        if($request->hidden_input_purpose=="edit"){
-            $dept = $dept->find($request->hidden_input_id);
+        if(isset($request->edit_id)){
+            $dept = $dept->find($request->edit_id);
+            if(count($dept)!=0){
+                $purpose="edit";
+            }
         }
 
         $dept->dept_name= $request->dept_name;
         $dept->is_active = $request->is_active;
-        $dept->org_id = $request->org_id;
+        $dept->dept_icon = $request->dept_icon;
+        $dept->org_id = '1';
         $dept->created_by = '1';
         $dept->updated_by = '1';
 
-        if(Department::where('dept_name',$request->dept_name)->first()&&$request->hidden_input_purpose!="edit"){
+        if(Department::where('dept_name',$request->dept_name)->first()&&$purpose!="edit"){
             session()->put('alert-class','alert-danger');
             session()->put('alert-content','This department '.$request->dept_name.' already exist !');
         }
-        else if($dept->save()){
+        else if($dept->save()){ //$purpose == add & no duplicate entry || $purpose == edit
             session()->put('alert-class','alert-success');
             session()->put('alert-content','Department details has been saved');
         }
