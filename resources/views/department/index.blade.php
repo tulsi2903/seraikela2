@@ -139,7 +139,8 @@
         var form_append = `<tr data-edit-id="`+id+`">
             <td></td>
             <td><input value="`+edit_values[0]+`" class="form-control" name="dept_icon" id="edit_dept_icon">
-                <div class="invalid-feedback" id="edit_dept_icon_error_msg"></div></td>
+                <div class="invalid-feedback" id="edit_dept_icon_error_msg"></div>
+            </td>
             <td>
                 <input value="`+edit_values[1]+`" class="form-control" name="dept_name" id="edit_dept_name">
                 <div class="invalid-feedback" id="edit_dept_name_error_msg"></div>
@@ -168,7 +169,6 @@
                 <button type="submit" onclick="return submitFormInline()" class="btn btn-success btn-sm">Save&nbsp;<i class="fas fa-check"></i></button>
                 &nbsp;&nbsp;<button type="button" class="btn btn-dark btn-sm" onclick="closeInlineForm()">Cancel&nbsp;<i class="fas fa-times"></i></button>
             </td>
-        </form>
         </tr>`;
 
 
@@ -293,8 +293,10 @@
             is_active_validate();
         });
 
+        
+        // reset/initiate form
         $(".department-add-button").click(function(){
-            initiateForm(); // reset/initiate form
+            initiateForm();
         });
     });
 

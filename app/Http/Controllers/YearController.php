@@ -29,12 +29,14 @@ class YearController extends Controller
     }
 
     public function store(Request $request){
-            
-        //$response = "failed";
+        $purpose="add";
         $year = new Year;
 
-        if($request->hidden_input_purpose=="edit"){
-            $year = $year->find($request->hidden_input_id);
+        if(isset($request->edit_id)){
+            $year = $year->find($request->edit_id);
+            if(count($year)!=0){
+                $purpose="edit";
+            }
         }
 
         $year->year_value= $request->from_value."-".$request->to_value;
@@ -43,9 +45,9 @@ class YearController extends Controller
         $year->updated_by = '1';
 
         
-        if(Year::where('year_value',$year->year_value)->first()&&$request->hidden_input_purpose!="edit"){
+        if(Year::where('year_value',$year->year_value)->first()&&$purpose!="edit"){
             session()->put('alert-class','alert-danger');
-            session()->put('alert-content','This year '.$request->from_value."-".$request->to_value.' already exist !');
+            session()->put('alert-content','This year '.$year->year_value.' already exist !');
         }
         else if($year->save()){
             session()->put('alert-class','alert-success');
