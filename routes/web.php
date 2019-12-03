@@ -100,12 +100,16 @@ Route::get('asset-numbers/add','AssetNumbersController@add');
 Route::get('asset-numbers/current_value','AssetNumbersController@current_value');
 Route::post('asset-numbers/store','AssetNumbersController@store'); 
 
-/* review */
+/* asset review */
 Route::get('asset-review', 'AssetReviewController@index');
 Route::POST('asset-review/show', 'AssetReviewController@show');
 Route::get('asset-review/get-datas', 'AssetReviewController@get_datas');
 Route::get('asset-review/get-map-data', 'AssetReviewController@get_map_data');
 Route::get('asset-review/get-panchayat-data', 'AssetReviewController@get_panchayat_data');
+
+
+/* scheme review */
+Route::get('scheme-review', 'SchemeReviewController@index');
 
 
 /* group*///rohit changes 
@@ -119,6 +123,7 @@ Route::get('scheme-group/delete/{id}','GroupController@delete');
 Route::get('designation-permission','DesignationPermissionController@index');
 Route::get('designation-permission/add','DesignationPermissionController@add');
 Route::post('designation-permission/store','DesignationPermissionController@store');
+Route::post('designation-permission/save-permissions','DesignationPermissionController@save_permissions');
 Route::get('designation-permission/delete/{desig_permission_id}','DesignationPermissionController@delete');
 
 /*Module*/
