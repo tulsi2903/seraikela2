@@ -85,6 +85,7 @@
 						</ul>
 					</div>
 				</li>
+				<li class="nav-item"><a href="{{url('favourites')}}"><i class="fa fa-bookmark" aria-hidden="true"></i><p>Favourite</p></a></li>
                
 			</ul>
 		</div>

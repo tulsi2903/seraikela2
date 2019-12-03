@@ -137,3 +137,12 @@ Route::get('mail', function () {
 });
 
 Route::post('sendmail','EmailController@sendmail');
+
+
+
+//fav rohit
+Route::get('favourites','FavController@index');
+Route::post('fav_department','FavController@add_fav_departs');
+Route::post('fav_scheme','FavController@add_fav_scheme');
+Route::post('fav_block','FavController@add_fav_block');
+Route::post('fav_panchayat','FavController@add_fav_panchayat');
