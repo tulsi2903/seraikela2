@@ -16,9 +16,6 @@
                     <div class="card-head-row card-tools-still-right" style="background:#fff;">
                         <h4 class="card-title">Designation Permission</h4>
                         <div class="card-tools">
-                            <!-- <button class="btn btn-icon btn-link btn-primary btn-xs"><span class="fa fa-angle-down"></span></button>
-                            <button class="btn btn-icon btn-link btn-primary btn-xs btn-refresh-card"><span class="fa fa-sync-alt"></span></button>
-                            <button class="btn btn-icon btn-link btn-primary btn-xs"><span class="fa fa-times"></span></button> -->
                             <button type="button" class="btn btn-icon btn-round btn-warning"><i class="fa fa-envelope" aria-hidden="true"></i></button>
                             <button type="button" class="btn btn-icon btn-round btn-info" id="print-button" onclick="printView();"><i class="fa fa-print" aria-hidden="true"></i></button>
                         </div>
@@ -29,47 +26,66 @@
         <div class="card-body">
             <div class="row">
                 <div class="col-12">
-                    <div style="display: -webkit-box; float:right;margin-top: -22px;">
-                        <a class="btn btn-secondary" href="{{url('designation-permission/add')}}" role="button"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;Add</a>
-                    </div><br><br>
-                    <div class="table-responsive table-hover table-sales">
-                        <table class="table table-datatable" id="printable-area">
-                            <thead style="background: #d6dcff;color: #000;">
-                                <tr>
-                                    <th>#</th>
-                                    <th>Designation</th>
-                                    <th>Module Name</th>
-                                    <th>Add</th>
-                                    <th>Edit</th>
-                                    <th>View</th>
-                                    <th>Delete</th>
-                                    <th class="action-buttons">Actions</th>
-                                </tr>
-                            </thead>
-                            <?php $count=1; ?>
-                            @if(isset($datas))
-                                @foreach($datas as $data)
-                                    <tr>
-                                        <td width="40px;">{{$count++}}</td>
-                                        <td>{{$data->name}}</td>
-                                        <td>{{$data->mod_name}}</td>
-                                        <td>{{$data->add}}</td>
-                                        <td>{{$data->edit}}</td>
-                                        <td>{{$data->view}}</td>
-                                        <td>{{$data->del}}</td>
-                                        <td class="action-buttons">
-                                            <a href="{{url('designation-permission/delete')}}/{{$data->desig_permission_id}}" id="delete-button" class="btn btn-secondary btn-sm")><i class="fas fa-trash-alt"></i></a>
-                                            &nbsp;&nbsp;<a href="{{url('designation-permission/add')}}?purpose=edit&id={{$data->desig_permission_id}}" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></a>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            @endif
-                            @if($count==1)
-                                <tr>
-                                    <td colspan="8"><center>No data to shown</center></td>
-                                </tr>
-                            @endif
-                        </table>
+                    <ul class="nav nav-pills nav-secondary nav-pills-no-bd" id="pills-tab-without-border" role="tablist">
+                        <?php
+                            for($i=0;$i<count($to_return_designation);$i++){
+                                ?>
+                                    <li class="nav-item">
+                                        <a class="nav-link <?Php if($i==0){ echo "active"; } ?>" id="{{$to_return_designation[$i]->desig_id}}-tab" data-toggle="tab" href="#view-tab-{{$to_return_designation[$i]->desig_id}}" role="tab" aria-selected="true">{{$to_return_designation[$i]->name}}</a>
+                                    </li>
+                                <?php
+                            }
+                        ?>
+                    </ul>
+                    <hr>
+                    <div class="tab-content mt-2 mb-3">
+                        <!-- different views -->
+                        <?php 
+                        for($i=0;$i<count($to_return);$i++){
+                            ?>
+                                <div class="tab-pane fade <?Php if($i==0){ echo "show active"; } ?>" id="view-tab-{{$to_return[$i][0]->desig_id}}" role="tabpanel">
+                                    <h4>{{$to_return[$i][0]->name}} Permissions</h4>
+                                    <form action="{{url('designation-permission/save-permissions')}}" method="POST">
+                                    @csrf
+                                        <table class="table">
+                                            <thead style="background: #d6dcff;color: #000;">
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>Module Name</th>
+                                                    <th>Add</th>
+                                                    <th>Edit</th>
+                                                    <th>View</th>
+                                                    <th>Delete</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <?php
+                                                for($j=0;$j<count($to_return[$i]);$j++)
+                                                {
+                                                    ?>
+                                                        <tr>
+                                                            <td width="40px;">{{$j+1}}</td>
+                                                            <td>{{$to_return[$i][$j]->module}}</td>
+                                                            <td><input type="checkbox" name="add[]" value="{{$to_return[$i][$j]->module_id}}" <?php if($to_return[$i][$j]->add==1){ echo "checked"; } ?>></td>
+                                                            <td><input type="checkbox" name="edit[]" value="{{$to_return[$i][$j]->module_id}}" <?php if($to_return[$i][$j]->edit==1){ echo "checked"; } ?>></td>
+                                                            <td><input type="checkbox" name="view[]" value="{{$to_return[$i][$j]->module_id}}" <?php if($to_return[$i][$j]->view==1){ echo "checked"; } ?>></td>
+                                                            <td><input type="checkbox" name="del[]" value="{{$to_return[$i][$j]->module_id}}" <?php if($to_return[$i][$j]->del==1){ echo "checked"; } ?>></td>
+                                                        </tr>
+                                                    <?php
+                                                }
+                                                ?>
+                                            </tbody>
+                                        </table>
+                                        <input type="text" name="desig_id" value="{{$to_return[$i][0]->desig_id}}" hidden>
+                                        <div style="text-align:right"><button type="submit" class="btn btn-secondary">Save Changes&nbsp;<i class="fas fa-check"></i></button></div>
+                                    </form>
+                                </div>
+                            <?php
+                        }
+                        ?>
+                        <!-- <div class="tab-pane fade show active" id="tabular-view-tab" role="tabpanel">
+                            <h4>DC Permissions</h4>
+                        </div> -->
                     </div>
                 </div>
             </div>
