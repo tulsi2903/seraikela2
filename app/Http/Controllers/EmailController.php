@@ -30,7 +30,7 @@ class EmailController extends Controller
             // echo $data;
             // die;
 
-            Mail::send('mail.departs',['user'=> $user], function($message) use ($user,$pdf)
+            Mail::send('mail.all',['user'=> $user], function($message) use ($user,$pdf)
             {
                 $email_to=explode(',',$user['email_to']);
                 foreach($email_to as $key=>$value)
