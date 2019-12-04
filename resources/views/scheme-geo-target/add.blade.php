@@ -125,7 +125,7 @@ $(document).ready(function(){
        block_name_validate();
        ajaxFunc_get_target();
        
-    })
+    });
     $("#panchayat").change(function(){
         
         panchayat_validate();
@@ -144,7 +144,7 @@ $(document).ready(function(){
     });
     $("#asset_group_name").change(function(){
         asset_group_name_validate();
-    })
+    });
 
 });
      function ajaxFunc(){

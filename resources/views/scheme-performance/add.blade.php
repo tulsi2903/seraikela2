@@ -17,7 +17,7 @@
         <div class="card-body">
             <div class="row justify-content-center">
                 <div class="col-md-6">
-                    <form action="#" method="POST">
+                    <form action="{{url('scheme-performance/store')}}" method="POST">
                     @csrf
                             <div class="form-group">
                                 <label for="year">Year<span style="color:red;margin-left:5px;">*</span></label>
@@ -78,7 +78,7 @@
                                 <select name="scheme_name" id="scheme_name" class="form-control">
                                     <option value="">---Select---</option>
                                     @foreach( $schemes as $scheme )
-                                     <option value="{{ $scheme->scheme_id }}">{{ $scheme->scheme_name }}</option>
+                                     <option value="{{ $scheme->scheme_id }}">{{ $scheme->scheme_name }}({{$scheme->scheme_short_name}})</option>
                                     @endforeach
                                 </select>
                                  <div class="invalid-feedback" id="scheme_type_error_msg"></div>
@@ -93,14 +93,30 @@
                                 </select>
                                  <div class="invalid-feedback" id="indicator_type_error_msg"></div>
                             </div>
-                             
+                             <div class="form-group">
+                                <label for="target">Target<span style="color:red;margin-left:5px;">*</span></label>
+                               <input type="text" name="target" id="target" class="form-control" autocomplete="off">
+                                 <div class="invalid-feedback" id="target_error_msg"></div>
+                                 <div id="error_msg_if_target_not_found" style="color:red;"></div>
+                            </div>
+                            
+                            <div class="form-group" id="pre-value">
+                                <label for="pre_value">Previous Value<span style="color:red;margin-left:5px;">*</span></label>
+                               <input type="text" name="pre_value" id="pre_value" class="form-control" autocomplete="off">
+                            </div>
+                            <div class="form-group" id="current-value">
+                                <label for="current_value">Current Value<span style="color:red;margin-left:5px;">*</span></label>
+                               <input type="text" name="current_value" id="current_value" class="form-control" autocomplete="off">
+                                 <div class="invalid-feedback" id="current_value_error_msg"></div>
+                            </div>
                             
                             
                            
                             <div class="form-group">
                                 <input type="text" name="hidden_input_purpose" value="{{$hidden_input_purpose}}" hidden>
                                 <input type="text" name="hidden_input_id" value="{{$hidden_input_id}}" hidden>
-                                <button type="button" class="btn btn-primary" onclick="return submitForm()">Go&nbsp;&nbsp;<i class="fas fa-check"></i></button>
+                                <input type="text" name="scheme_geo_target_id" id="scheme_geo_target_id" hidden>
+                                <button type="submit" class="btn btn-primary" onclick="return submitForm()">Go&nbsp;&nbsp;<i class="fas fa-check"></i></button>
                                 <button type="reset" class="btn btn-secondary">Reset&nbsp;&nbsp;<i class="fas fa-undo"></i></button>
                             </div>
                         </form>
@@ -118,74 +134,45 @@
    var subdivision_error = true;
    var year_error = true;
    var scheme_type_error = true;
+   var indicator_error = true;
    
 $(document).ready(function(){
     $("#block").change(function(){
        block_name_validate();
        ajaxFunc_bl();
-    })
+       ajaxFunc_get_target();
+    });
     $("#panchayat").change(function(){
       panchayat_validate();
+      ajaxFunc_get_target();
     });
    
     $("#year").change(function(){
         year_validate();
+        ajaxFunc_get_target();
     });
     $("#district").change(function(){
         district_validate();
         ajaxFunc_subdivision();
-    })
+        ajaxFunc_get_target();
+    });
     $("#subdivision").change(function(){
         subdivision_validate();
         ajaxFunc_block();
-    })
+        ajaxFunc_get_target();
+    });
     $("#scheme_name").change(function(){
         scheme_type_validate();
-    })
+        ajaxFunc_indicator();
+        ajaxFunc_get_target();
+    });
+    $("#indicator").change(function(){
+        indicator_validate();
+        ajaxFunc_get_target();
+    });
 
 });
 
-
-//function for fetching indicator_name according to scheme_name
-    //  function ajaxFunc(){
-    //     var scheme_name_tmp = $("#scheme_name").val();
-       
-    //     $.ajaxSetup({
-    //         headers: {
-    //             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-    //         }
-    //     });
-    //     $.ajax({
-    //         url: "{{url('scheme-performance/get-indicator-name')}}",
-    //         data: {'scheme_id': scheme_name_tmp},
-    //         method: "GET",
-    //         contentType: 'application/json',
-    //         dataType: "json",
-    //         beforeSend: function(data){
-    //             $(".loader").fadeIn(300);
-    //         },
-    //         error: function(xhr){
-    //             alert("error"+xhr.status+", "+xhr.statusText);
-    //             $(".loader").fadeOut(300);
-    //         },
-    //         success: function (data){
-    //             console.log(data);
-    //             $("#indicator").html('<option value="">-Select-</option>');
-    //             for(var i=0; i<data.scheme_indicator_data.length; i++){
-    //                 $("#indicator").append('<option value="'+data.scheme_indicator_data[i].indicator_id+'">'+data.scheme_indicator_data[i].indicator_name+'</option>');
-    //             }
-
-               
-    //             if(data.independent==0){
-    //                 $("#scheme_group_block").show();
-    //             }
-    //             else{
-    //                 $("#scheme_group_block").hide();
-    //             }
-    //             $(".loader").fadeOut(300);
-    //         }
-    //     });
-    // }
 
 
 //function for fetching panchayat according to block
@@ -258,8 +245,9 @@ $(document).ready(function(){
 
     //function for fetching subdivions according to district
     function ajaxFunc_subdivision(){
+       
         var dist_id_tmp = $("#district").val();
-
+      
         $.ajaxSetup({
             headers:{
                 'X-CSRF-TOKEN' : $('meta[name="csrf-token"]').attr('content')
@@ -273,11 +261,11 @@ $(document).ready(function(){
             contentType:'application/json',
             dataType:"json",
             beforeSend: function(data){
-                $(".loader").fadeIn(300);
+                $(".custom-loader").fadeIn(300);
             },
             error:function(xhr){
                 alert("error"+xhr.status+","+xhr.statusText);
-                $(".loader").fadeOut(300);
+                $(".custom-loader").fadeOut(300);
             },
             success:function(data){
                 console.log(data);
@@ -285,42 +273,101 @@ $(document).ready(function(){
                     for(var i=0;i<data.subdivision_data.length;i++){
                     $("#subdivision").append('<option value="'+data.subdivision_data[i].geo_id+'">'+data.subdivision_data[i].geo_name+'</option>');
                     }
-
+                     $(".custom-loader").fadeOut(300);
             }
 
         });
     }
 
-    function ajaxFunc_scheme_geo_target(){
-        var geo_id_tmp = $("#panchayat").val();
-        var scheme_id_tmp = $("#scheme_name").val();
-
+     function ajaxFunc_indicator(){
+        var scheme_name_tmp = $("#scheme_name").val();
+       
+       if(scheme_name_tmp)
+       {
         $.ajaxSetup({
-            headers:{
-                'X-CSRF-TOKEN' : $('meta[name="csrf-token"]').attr('content')
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
-
         $.ajax({
-            url:"{{url('scheme-performance/get-geo-target-data')}}",
-            data:{'geo_id':geo_id_tmp,'scheme_id':scheme_id_tmp},
+            url: "{{url('scheme-performance/get-indicator-name')}}",
+            data: {'scheme_id': scheme_name_tmp},
+            method: "GET",
+            contentType: 'application/json',
+            dataType: "json",
+            beforeSend: function(data){
+                $(".custom-loader").fadeIn(300);
+            },
+            error: function(xhr){
+                alert("error"+xhr.status+", "+xhr.statusText);
+                $(".custom-loader").fadeOut(300);
+            },
+            success: function (data){
+                console.log(data);
+                $("#indicator").html('<option value="">-Select-</option>');
+                for(var i=0; i<data.scheme_indicator_data.length; i++){
+                    $("#indicator").append('<option value="'+data.scheme_indicator_data[i].indicator_id+'">'+data.scheme_indicator_data[i].indicator_name+'</option>');
+                }
+
+                $(".custom-loader").fadeOut(300);
+            }
+        });
+    }
+    }
+
+    function ajaxFunc_get_target(){
+        var scheme_id_tmp = $("#scheme_name").val();
+        var geo_id_tmp = $("#panchayat").val();
+        var indicator_id_tmp = $("#indicator").val();
+        var year_id_tmp = $("#year").val();
+       
+
+
+        if(scheme_id_tmp && geo_id_tmp && indicator_id_tmp && year_id_tmp)
+        {
+
+         $.ajaxSetup({
+        headers:{
+            'X-CSRF-TOKEN' : $('meta[name="csrf-token"]').attr('content')
+        }
+       });
+         $.ajax({
+            url:"{{url('scheme-performance/get-target')}}",
+            data:{'scheme_id':scheme_id_tmp,'geo_id':geo_id_tmp,'indicator_id':indicator_id_tmp,'year_id':year_id_tmp},
             method:"GET",
             contentType:'application/json',
             dataType:"json",
             beforeSend:function(data){
-                $(".loader").fadeIn(300);
+               $(".custom-loader").fadeIn(300); 
             },
             error:function(xhr){
                  alert("error"+xhr.status+","+xhr.statusText);
-                $(".loader").fadeOut(300);
+                 $(".custom-loader").fadeOut(300);
             },
-            success:function(data.geo_target_data){
-                console.log(data.geo_target_data);
-                var get_table = `<thead><th>Indicator</th><th>Target</th><th>Previous Value</th><th>Current Value</th></thead>`;
-                                 
-                $(".loader").fadeOut(300);
+            success:function(data){
+                console.log(data);
+                $("#scheme_geo_target_id").val(data.id);
+                $("#pre_value").val(data.pre_value);
+               
+
+                if(data.target_data=='-1')
+                {
+                 $("#error_msg_if_target_not_found").html("No target found!!");
+                  $("#target").val(0);
+                 $("#pre-value").hide();
+                 $("#current-value").hide();
+                }
+                else{
+                $("#target").val(data.target_data);
+               }
+
+                $(".custom-loader").fadeOut(300);
             }
-        });
+         });
+       }
+       else{
+       $("#target").val(0);
+   }
     }
 
 
@@ -417,22 +464,38 @@ function block_name_validate(){
         } 
     }
 
+    //indicator validate
+    function indicator_validate(){
+        var indicator_val = $("#indicator").val();
+
+        if(indicator_val==""){
+            indicator_error = true;
+            $("#indicator").addClass('is-invalid');
+            $("#indicator_error_msg").html("Please select indicator");
+        }
+        else{
+            indicator_error = false;
+            $("#indicator").removeClass('is-invalid');
+        }
+    }
+
 
 
    
 
    function submitForm(){
-     ajaxFunc_scheme_geo_target();
+     
      year_validate();
      district_validate();
      subdivision_validate();
      block_name_validate();
      panchayat_validate();
      scheme_type_validate();
+     indicator_validate();
       
     
 
-    if(  year_error || district_error||subdivision_error  ||block_name_error ||panchayat_error ||scheme_type_error){ return false; } // error occured
+    if(  year_error || district_error||subdivision_error  ||block_name_error ||panchayat_error ||scheme_type_error||indicator_error){ return false; } // error occured
         else{ return true; } // proceed to submit form data
     }
    

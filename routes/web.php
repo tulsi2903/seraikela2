@@ -116,11 +116,12 @@ Route::get('scheme-type/delete/{sch_type_id}','SchemeTypeController@delete');
 
 /*Scheme Performance*/
 Route::get('scheme-performance/add','SchemePerformanceController@add');
-// Route::post('scheme-performance/store','SchemePerformanceController@store');
+Route::post('scheme-performance/store','SchemePerformanceController@store');
 Route::get('scheme-performance/get-subdivision-name','SchemePerformanceController@get_subdivision_name');
 Route::get('scheme-performance/get-block-name','SchemePerformanceController@get_block_name');
 Route::get('scheme-performance/get-panchayat-name','SchemePerformanceController@get_panchayat_name');
-Route::get('scheme-performance/get-geo-target-data','SchemePerformanceController@data_geo_target');
+Route::get('scheme-performance/get-indicator-name','SchemePerformanceController@get_indicator_name');
+Route::get('scheme-performance/get-target','SchemePerformanceController@get_target');
 
 
 /* scheme review */

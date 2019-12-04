@@ -100,20 +100,6 @@ class SchemePerformanceController extends Controller
         $geo_target_data = SchemeGeoTarget::where('geo_id',$request->panchayat)->where('scheme_id',$request->scheme_name)->get();
         return ["geo_target_data"=>$geo_target_data];
 
-        // $get_pre_value = SchemePerformance::where('')
-
-       //  if(SchemePerformance::find($geo_target_data){
-       //      $pre_value = SchemeGeoTarget::where('target',$request->) 
-       //  })
-
-       // $scheme_geo_target = new SchemePerformance;
-       // $scheme_geo_target->scheme_geo_target_id = $geo_target_data;
-       // $scheme_geo_target->pre_value = $request->pre_value;
-       // $scheme_geo_target->current_value = $request->current_value;
-       // $scheme_geo_target->created_by = 1;
-       // $scheme_geo_target->updated_by = 1;
-       // $scheme_geo_target->save();
-
        return view('scheme-performance.index');
 
                           
@@ -136,7 +122,58 @@ class SchemePerformanceController extends Controller
     	$data = GeoStructure::where('sd_id',$request->sd_id)->where('level_id','=','3')->get();
     	return["block_data"=>$data,"id"=>$request->sd_id];
     }
-   
+
+
+    public function get_indicator_name(Request $request)
+    {
+        $data = SchemeIndicator::where('scheme_id',$request->scheme_id)->get();
+        return ["scheme_indicator_data"=>$data];
+    }
+
+
+     public function get_target(Request $request)
+    {
+      $tmp = SchemeGeoTarget::where('scheme_id',$request->scheme_id)->where('geo_id',$request->geo_id)->where('indicator_id',$request->indicator_id)->where('year_id', $request->year_id)->first();  
+      
+       if($tmp)
+      {
+        $target=$tmp->target;
+      }
+      else{
+        $target = -1;
+      }
+
+      $get_pre_value = SchemePerformance::where('scheme_geo_target_id',$tmp->scheme_geo_target_id)
+                                           ->orderBy('scheme_performance_id', 'desc')
+                                           ->first();
+      if($get_pre_value)
+      {
+        $pre_value = $get_pre_value->current_value;
+      }
+      else
+      {
+        $pre_value = 0;
+      }
+
+       return ["target_data"=>$target,"id"=>$tmp->scheme_geo_target_id,"pre_value"=>$pre_value];
+    }
+
+    public function store(Request $request)
+    {
+        $scheme_performance = new SchemePerformance;
+        $scheme_performance->scheme_geo_target_id = $request->scheme_geo_target_id;
+        $scheme_performance->pre_value = $request->pre_value;
+        $scheme_performance->current_value = $request->current_value;
+        $scheme_performance->created_by =1;
+        $scheme_performance->updated_by =1;
+       
+
+        if($scheme_performance->save()){
+            session()->put('alert-class','alert-success');
+            session()->put('alert-content','Scheme performance have been successfully submitted !');
+        }
+        return redirect('scheme-performance/add');
+    }
 
    
 }
