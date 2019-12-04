@@ -21,9 +21,19 @@ Route::get('clear-cache', function () {
 if(version_compare(PHP_VERSION, '7.2.0', '>=')) {
     error_reporting(E_ALL ^ E_NOTICE ^ E_WARNING);
 }
+
+// Auth::routes();
+// Route::get('/home', 'HomeController@index')->name('home');
+
 Route::get('/', function () {
-    return view('index');
+	return view('admin.login');
 });
+Route::post('login','LoginController@login');
+
+//uesr
+Route::get('user','LoginController@index');
+//Route::get('user_login','LoginController@add');
+Route::post('user/store','LoginController@store');
 
 /* custom homepage */
 Route::get("homepage", function(){
