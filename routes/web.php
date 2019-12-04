@@ -60,13 +60,14 @@ Route::get('scheme-geo-target/add','SchemeGeoTargetController@add');
 Route::post('scheme-geo-target/store','SchemeGeoTargetController@store');
 Route::get('scheme-geo-target/get-indicator-name','SchemeGeoTargetController@get_indicator_name');
 Route::get('scheme-geo-target/get-panchayat-name','SchemeGeoTargetController@get_panchayat_name');
+Route::get('scheme-geo-target/get-target','SchemeGeoTargetController@get_target');
 Route::get('scheme-geo-target/delete/{scheme_geo_target_id}','SchemeGeoTargetController@delete');
 
 /*Indicator*/
-Route::get('scheme-indicator','SchemeIndicatorController@index');
-Route::get('scheme-indicator/add','SchemeIndicatorController@add');
-Route::post('scheme-indicator/store','SchemeIndicatorController@store');
-Route::get('scheme-indicator/delete/{indicator_id}','SchemeIndicatorController@delete');
+// Route::get('scheme-indicator','SchemeIndicatorController@index');
+// Route::get('scheme-indicator/add','SchemeIndicatorController@add');
+// Route::post('scheme-indicator/store','SchemeIndicatorController@store');
+// Route::get('scheme-indicator/delete/{indicator_id}','SchemeIndicatorController@delete');
 
 /*year*/
 Route::get('year','YearController@index');
@@ -106,6 +107,20 @@ Route::POST('asset-review/show', 'AssetReviewController@show');
 Route::get('asset-review/get-datas', 'AssetReviewController@get_datas');
 Route::get('asset-review/get-map-data', 'AssetReviewController@get_map_data');
 Route::get('asset-review/get-panchayat-data', 'AssetReviewController@get_panchayat_data');
+
+/*Scheme Type*/
+Route::get('scheme-type','SchemeTypeController@index');
+Route::get('scheme-type/add','SchemeTypeController@add');
+Route::post('scheme-type/store','SchemeTypeController@store');
+Route::get('scheme-type/delete/{sch_type_id}','SchemeTypeController@delete');
+
+/*Scheme Performance*/
+Route::get('scheme-performance/add','SchemePerformanceController@add');
+// Route::post('scheme-performance/store','SchemePerformanceController@store');
+Route::get('scheme-performance/get-subdivision-name','SchemePerformanceController@get_subdivision_name');
+Route::get('scheme-performance/get-block-name','SchemePerformanceController@get_block_name');
+Route::get('scheme-performance/get-panchayat-name','SchemePerformanceController@get_panchayat_name');
+Route::get('scheme-performance/get-geo-target-data','SchemePerformanceController@data_geo_target');
 
 
 /* scheme review */

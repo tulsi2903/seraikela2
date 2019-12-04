@@ -141,7 +141,19 @@ class SchemeGeoTargetController extends Controller
           $data = GeoStructure::where('bl_id', $request->bl_id)->get();
           return["panchayat_data"=>$data, "id"=>$request->bl_id];
     }
-   
+    public function get_target(Request $request)
+    {
+      $tmp = SchemeGeoTarget::where('scheme_id',$request->scheme_id)->where('geo_id',$request->geo_id)->where('indicator_id',$request->indicator_id)->where('year_id', $request->year_id)->first();  
+      
+      if($tmp)
+      {
+        $target=$tmp->target;
+      }
+      else{
+        $target = 0;
+      }
+      return["target_data"=>$target];
+    }
     public function delete(Request $request)
     {
          if(SchemeGeoTarget::find($request->scheme_geo_target_id)){
@@ -152,4 +164,5 @@ class SchemeGeoTargetController extends Controller
 
         return redirect('scheme-geo-target');
     }
+
 }

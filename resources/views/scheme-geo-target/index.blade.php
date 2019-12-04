@@ -51,22 +51,24 @@
                             <?php $count=1; ?>
                             @if(isset($datas))
                                 @foreach($datas as $data)
-                                    <tr>
-                                        <td width="40px;">{{$count++}}</td>
-                                        <td>{{$data->scheme_name}}({{$data->scheme_short_name}})</td>
-                                        <td>{{$data->indicator_name}}</td>
-                                        <td>{{$data->bl_name}}</td>
-                                         <td>{{$data->geo_name}}</td>
-                                          
-                                          <td>{{$data->asset_group_name}}</td>
-                                           <td>{{$data->target}}</td>
-                                            <td>{{$data->year_value}}</td>
-                                        
-                                        <td class="action-buttons">
-                                            <a href="{{url('scheme-geo-target/delete')}}/{{$data->scheme_geo_target_id}}" id="delete-button" class="btn btn-secondary btn-sm"><i class="fas fa-trash-alt"></i></a>
-                                            &nbsp;&nbsp;<a href="{{url('scheme-geo-target/add')}}?purpose=edit&id={{$data->scheme_geo_target_id}}" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></a>
-                                        </td>
-                                    </tr>
+                                    @if($data->level_id=='4')
+                                        <tr>
+                                            <td width="40px;">{{$count++}}</td>
+                                            <td>{{$data->scheme_name}}({{$data->scheme_short_name}})</td>
+                                            <td>{{$data->indicator_name}}</td>
+                                            <td>{{$data->bl_name}}</td>
+                                             <td>{{$data->geo_name}}</td>
+                                              
+                                              <td>{{$data->asset_group_name}}</td>
+                                               <td>{{$data->target}}</td>
+                                                <td>{{$data->year_value}}</td>
+                                            
+                                            <td class="action-buttons">
+                                                <a href="{{url('scheme-geo-target/delete')}}/{{$data->scheme_geo_target_id}}" id="delete-button" class="btn btn-secondary btn-sm"><i class="fas fa-trash-alt"></i></a>
+                                                &nbsp;&nbsp;<a href="{{url('scheme-geo-target/add')}}?purpose=edit&id={{$data->scheme_geo_target_id}}" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></a>
+                                            </td>
+                                        </tr>
+                                    @endif
                                 @endforeach
                             @endif
                             @if($count==1)
