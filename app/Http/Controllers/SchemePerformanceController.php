@@ -134,28 +134,41 @@ class SchemePerformanceController extends Controller
      public function get_target(Request $request)
     {
       $tmp = SchemeGeoTarget::where('scheme_id',$request->scheme_id)->where('geo_id',$request->geo_id)->where('indicator_id',$request->indicator_id)->where('year_id', $request->year_id)->first();  
-      
-       if($tmp)
-      {
-        $target=$tmp->target;
-      }
+      $scheme_geo_target_id="";
+      $pre_value="";
+        if(count($tmp)>0)
+        {
+
+            $scheme_geo_target_id = $tmp->scheme_geo_target_id;
+
+            $target=$tmp->target;
+
+            $get_pre_value = SchemePerformance::where('scheme_geo_target_id',$tmp->scheme_geo_target_id)
+                                               ->orderBy('scheme_performance_id', 'desc')
+                                               ->first();
+
+              if($get_pre_value)
+              {
+                $pre_value = $get_pre_value->current_value;
+              }
+              else
+              {
+                $pre_value = 0;
+              }
+            
+        }
       else{
         $target = -1;
       }
 
-      $get_pre_value = SchemePerformance::where('scheme_geo_target_id',$tmp->scheme_geo_target_id)
-                                           ->orderBy('scheme_performance_id', 'desc')
-                                           ->first();
-      if($get_pre_value)
-      {
-        $pre_value = $get_pre_value->current_value;
-      }
-      else
-      {
-        $pre_value = 0;
-      }
+        return ["target_data"=>$target,"id"=>$scheme_geo_target_id,"pre_value"=>$pre_value];
 
-       return ["target_data"=>$target,"id"=>$tmp->scheme_geo_target_id,"pre_value"=>$pre_value];
+
+      
+
+       // return ["target_data"=>$target,"id"=>$tmp->scheme_geo_target_id,"pre_value"=>$pre_value];
+      // //return ["target_data"=>$target,"id"=>$tmp->scheme_geo_target_id];
+      // return 1;
     }
 
     public function store(Request $request)
@@ -164,6 +177,32 @@ class SchemePerformanceController extends Controller
         $scheme_performance->scheme_geo_target_id = $request->scheme_geo_target_id;
         $scheme_performance->pre_value = $request->pre_value;
         $scheme_performance->current_value = $request->current_value;
+
+         $scheme_performance->attachment = "";
+
+      
+
+        //  $i = 0;
+        //  if($request->hasFile('attachment'))
+        //  {
+
+        //     foreach($request->file('attachment') as $file){
+
+        //         $imageName = time() . $i . '.' . $file->getClientOriginalExtension();
+
+        //         // move the file to desired folder
+        //         $file->move('public/uploaded_documents/', $imageName);
+
+        //         // assign the location of folder to the model
+        //         $scheme_performance->attachment.=":".$imageName;
+
+
+        //         $i++;
+
+        //     } 
+            
+        //     $scheme_performance->attachment = ltrim($scheme_performance->attachment,":");
+        // }
         $scheme_performance->created_by =1;
         $scheme_performance->updated_by =1;
        

@@ -17,7 +17,7 @@
         <div class="card-body">
             <div class="row justify-content-center">
                 <div class="col-md-6">
-                    <form action="{{url('scheme-performance/store')}}" method="POST">
+                    <form action="{{url('scheme-performance/store')}}" method="POST" enctype="multipart/form-data">
                     @csrf
                             <div class="form-group">
                                 <label for="year">Year<span style="color:red;margin-left:5px;">*</span></label>
@@ -109,7 +109,10 @@
                                <input type="text" name="current_value" id="current_value" class="form-control" autocomplete="off">
                                  <div class="invalid-feedback" id="current_value_error_msg"></div>
                             </div>
-                            
+                           <!--  <div class="form-group">
+                                <label for="document_upload">Upload Document</label>
+                                <input type="file" name="attchment" id="attchment" class="form-control" multiple>
+                            </div> -->
                             
                            
                             <div class="form-group">
@@ -349,7 +352,7 @@ $(document).ready(function(){
                 $("#scheme_geo_target_id").val(data.id);
                 $("#pre_value").val(data.pre_value);
                
-
+//alert(target_data);
                 if(data.target_data=='-1')
                 {
                  $("#error_msg_if_target_not_found").html("No target found!!");

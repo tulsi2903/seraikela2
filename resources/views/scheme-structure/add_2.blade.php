@@ -125,7 +125,7 @@
                                 </div>
                             </div>
                         </div> -->
-                            <div class="col-md-2">
+                           <!--  <div class="col-md-2">
                                 <div class="form-check">
                                      <label for="independent">Independent<span style="color:red;margin-left:5px;">*</span></label>
                                 <select name="independent" id="independent" class="form-control">
@@ -134,7 +134,7 @@
                                     <option value="0" <?php if($data->independent=='0'){ echo "selected"; } ?>>No</option>
                                 </select>
                                 <div class="invalid-feedback" id="independent_error_msg"></div>
-                                </div>
+                                </div> -->
                             </div>
                              <div class="col-md-2"><br>
                                 <div class="form-check">
