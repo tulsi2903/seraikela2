@@ -166,11 +166,63 @@
                                             <i class="fas fa-cloud-download-alt"></i>
                                         </span>
                                     </div>
+                                     <?php
+                                        if($data->attachment)
+                                        {
+                                            
+                                            $attachment_array = explode(":",$data->attachment);
+                                            for($i=0;$i<count($attachment_array);$i++)
+                                            {
+                                                
+                                                echo "<table><tr><td>$attachment_array[$i]</td><td>&nbsp;&nbsp;<i class='fas fa-window-close'></i></td></tr></table>";
+
+                                            }
+                                            
+                                        }
+                                    ?>
                                 </div>
+                            </div>
+                         <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="">Scheme Logo</label>
+                                    <div class="input-icon">
+                                        <input type="file" class="form-control" name="scheme_logo" id="scheme_logo" placeholder="Scheme Logo">
+                                        <span class="input-icon-addon">
+                                            <i class="fas fa-cloud-download-alt"></i>
+                                        </span>
+                                    </div>
+                                     <?php
+                                    if($data->scheme_logo)
+                                    {
+                                        echo "<table><tr>$data->scheme_logo</tr><tr>&nbsp;&nbsp;<i class='fas fa-window-close'></i></tr></table>";
+                                       
+                                    }
+                                    ?>
+                                </div>
+                                
+                            </div>
+
+                             <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="">Map Marker Icon</label>
+                                    <div class="input-icon">
+                                        <input type="file" class="form-control" name="scheme_map_marker" id="scheme_map_marker" placeholder="Map Marker Icon">
+                                        <span class="input-icon-addon">
+                                            <i class="fas fa-cloud-download-alt"></i>
+                                        </span>
+                                    </div>
+                                    <?php
+                                if($data->scheme_map_marker)
+                                {
+                                    echo "<table><tr>$data->scheme_map_marker</tr><tr>&nbsp;&nbsp;<i class='fas fa-window-close'></i></tr></table>";
+                                }
+                                ?>
+                                </div>
+
                             </div>
                             <!-- <div class="col-md-2">
                                 <div class="form-group">
-                                    <label for="">Craeted Date<font style="color:red;">*</font></label>
+                                    <label for="">Created Date<font style="color:red;">*</font></label>
                                         <div class="input-group">
                                             <input type="text" class="form-control" placeholder="mm/dd/yyyy" id="datepicker-create-date">
                                     </div>
@@ -184,20 +236,7 @@
                             </div> -->
                         </div> 
                        
-                        <?php
-                        if($data->attachment)
-                        {
-                            $attachment_array = explode(":",$data->attachment);
-                            for($i=0;$i<count($attachment_array);$i++)
-                            {
-                                
-                                echo $attachment_array[$i];
-                                echo "<table><tr>&nbsp;&nbsp;<i class='fas fa-window-close'></i></tr></table>";
-                                echo "<br>";
-
-                            }
-                        }
-                        ?>
+                      
                         <hr class="new2">
                         
                 <div class="col-md-11">
@@ -271,7 +310,10 @@
                             </table>
                         </div>
                     </div> <hr class="new2">
-                    <div class="card-action">   
+                    <div class="card-action"> 
+                        <!-- <input type="text" name="hidden_input_attachment" id="hidden_input_attachment" value="{{$data->attachment}}" hidden> -->
+                        <input type="text" name="hidden_input_scheme_logo" id="hidden_input_scheme_logo" value="{{$data->scheme_logo}}" hidden>
+                        <input type="text" name="hidden_input_map_marker" id="hidden_input_map_marker" value="{{$data->scheme_map_marker}}" hidden>  
                         <input type="text" name="hidden_input_purpose" id="hidden_input_purpose" value="{{$hidden_input_purpose}}" hidden>
                         <input type="text" name="hidden_input_id" value="{{$hidden_input_id}}" hidden>
                         <button class="btn btn-secondary" onclick="return submitForm()">Submit</button>
@@ -398,6 +440,7 @@
           $("#performance").change(function(){
             performance_validate();
         });
+         
     });
 
 

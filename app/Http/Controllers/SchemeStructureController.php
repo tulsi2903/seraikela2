@@ -80,6 +80,25 @@ class SchemeStructureController extends Controller
         else{ $scheme_structure->geo_related = '1';}
 
         $scheme_structure->attachment = "";
+        // if($request->hasFile('attachment'))
+        // {
+        //     //
+        //     $file = $request->file('attachment');
+
+        //     $scheme_structure->attachment = $file->getClientOriginalName();
+        //     $destinationPath = 'public/uploaded_documents';
+        //     $file->move($destinationPath, $file->getClientOriginalName()); 
+        // }
+        // else{
+        //     if($request->hidden_input_purpose=="edit")
+        //     {
+        //         $scheme_structure->attachment = $request->hidden_input_attachment;
+        //     }
+        //     else if($request->hidden_input_purpose=="add")
+        //     {
+        //         // error has to return
+        //     }
+        // }
 
       
 
@@ -103,6 +122,50 @@ class SchemeStructureController extends Controller
             } 
             
             $scheme_structure->attachment = ltrim($scheme_structure->attachment,":");
+        }
+
+        // for scheme_logo
+        $scheme_structure->scheme_logo = "";
+        if($request->hasFile('scheme_logo'))
+        {
+            //
+            $file = $request->file('scheme_logo');
+
+            $scheme_structure->scheme_logo = $file->getClientOriginalName();
+            $destinationPath = 'public/images';
+            $file->move($destinationPath, $file->getClientOriginalName()); 
+        }
+        else{
+            if($request->hidden_input_purpose=="edit")
+            {
+                $scheme_structure->scheme_logo = $request->hidden_input_scheme_logo;
+            }
+            else if($request->hidden_input_purpose=="add")
+            {
+                // error has to return
+            }
+        }
+
+        // for scheme_map_maker
+        $scheme_structure->scheme_map_marker = "";
+        if($request->hasFile('scheme_map_marker'))
+        {
+            //
+            $file = $request->file('scheme_map_marker');
+
+            $scheme_structure->scheme_map_marker = $file->getClientOriginalName();
+            $destinationPath = 'public/images';
+            $file->move($destinationPath, $file->getClientOriginalName()); 
+        }
+        else{
+            if($request->hidden_input_purpose=="edit")
+            {
+                $scheme_structure->scheme_map_marker = $request->hidden_input_map_marker;
+            }
+            else if($request->hidden_input_purpose=="add")
+            {
+                // error has to return
+            }
         }
         
                
