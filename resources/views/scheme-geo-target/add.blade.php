@@ -17,90 +17,122 @@
             </div>
         </div>
         <div class="card-body">
-            <div class="row justify-content-center">
-                <div class="col-md-6">
-                    <form action="{{url('scheme-geo-target/store')}}" method="POST">
-                    @csrf
-
-                     <div class="form-group">
+                <form action="{{url('scheme-geo-target/store')}}" method="POST">
+                @csrf
+                    <div class="row">
+                        <div class="col-md-2">
+                            <div class="form-group">
                                 <label for="year">Year<span style="color:red;margin-left:5px;">*</span></label>
                                 <select name="year" id="year" class="form-control">
                                     <option value="">---Select---</option>
                                     @foreach( $years as $year )
-                                     <option value="{{ $year->year_id }}" <?php if($data->year_id==$year->year_id){ echo "selected"; } ?>>{{ $year->year_value }}</option>
+                                        <option value="{{ $year->year_id }}" <?php if($data->year_id==$year->year_id){ echo "selected"; } ?>>{{ $year->year_value }}</option>
                                     @endforeach 
                                 </select>
-                                 <div class="invalid-feedback" id="year_error_msg"></div>
+                                    <div class="invalid-feedback" id="year_error_msg"></div>
                             </div>
+                        </div>
+                        <div class="col-md-2">
                             <div class="form-group">
                                 <label for="scheme_name">Scheme Name<span style="color:red;margin-left:5px;">*</span></label>
                                 <select name="scheme_name" id="scheme_name" class="form-control">
                                     <option value="">---Select---</option>
                                     @foreach( $scheme_structures as $scheme_structure )
-                                     <option value="{{ $scheme_structure->scheme_id }}" <?php if($data->scheme_id==$scheme_structure->scheme_id){ echo "selected"; } ?>>{{ $scheme_structure->scheme_name }}({{$scheme_structure->scheme_short_name}})</option>
+                                        <option value="{{ $scheme_structure->scheme_id }}" <?php if($data->scheme_id==$scheme_structure->scheme_id){ echo "selected"; } ?>>{{ $scheme_structure->scheme_name }}({{$scheme_structure->scheme_short_name}})</option>
                                     @endforeach
                                 </select>
-                                 <div class="invalid-feedback" id="scheme_name_error_msg"></div>
+                                    <div class="invalid-feedback" id="scheme_name_error_msg"></div>
                             </div>
+                        </div>
+                        <div class="col-md-2">
                             <div class="form-group">
-                                <label for="indicator">Indicator<span style="color:red;margin-left:5px;">*</span></label>
-                                <select name="indicator" id="indicator" class="form-control">
-                                    <option value="">---Select---</option>
-                                    @foreach( $indicators as $indicator )
-                                     <option value="{{ $indicator->indicator_id }}" <?php if($data->indicator_id==$indicator->indicator_id){ echo "selected"; } ?>>{{ $indicator->indicator_name }}</option>
-                                    @endforeach
-                                </select>
-                                 <div class="invalid-feedback" id="indicator_error_msg"></div>
-                            </div>
-                             <div class="form-group">
                                 <label for="block">Block<span style="color:red;margin-left:5px;">*</span></label>
                                 <select name="block" id="block" class="form-control">
                                     <option value="">---Select---</option>
                                     @foreach( $blocks as $block )
-                                     <option value="{{ $block->geo_id }}" <?php if($bl_id==$block->geo_id){ echo "selected"; } ?>>{{ $block->geo_name }}</option>
+                                        <option value="{{ $block->geo_id }}" <?php if($bl_id==$block->geo_id){ echo "selected"; } ?>>{{ $block->geo_name }}</option>
                                     @endforeach
                                 </select>
-                                 <div class="invalid-feedback" id="block_error_msg"></div>
+                                    <div class="invalid-feedback" id="block_error_msg"></div>
                             </div>
-                             <div class="form-group">
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
                                 <label for="panchayat">Panchayat<span style="color:red;margin-left:5px;">*</span></label>
                                 <select name="panchayat" id="panchayat" class="form-control">
                                     <option value="">---Select---</option>
                                     @foreach( $panchayats as $panchayat )
-                                     <option value="{{ $panchayat->geo_id }}" <?php if($data->geo_id==$panchayat->geo_id){ echo "selected"; } ?>>{{ $panchayat->geo_name }}</option>
+                                        <option value="{{ $panchayat->geo_id }}" <?php if($data->geo_id==$panchayat->geo_id){ echo "selected"; } ?>>{{ $panchayat->geo_name }}</option>
                                     @endforeach
                                 </select>
-                                 <div class="invalid-feedback" id="panchayat_error_msg"></div>
+                                    <div class="invalid-feedback" id="panchayat_error_msg"></div>
                             </div>
-                             
-                             <div class="form-group" id="scheme_group_block" style="display: none;">
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group" id="scheme_group_block" style="display: none;">
                                 <label for="scheme_group_name">Asset Group Name<span style="color:red;margin-left:5px;">*</span></label>
-                                 <select name="scheme_group_name" id="scheme_group_name" class="form-control">
+                                    <select name="scheme_group_name" id="scheme_group_name" class="form-control">
                                     <option value="">---Select---</option>
                                     @foreach($groups as $group )
-                                     <option value="{{ $group->scheme_group_id }}" <?php if($data->scheme_group_id==$group->scheme_group_id){ echo "selected"; } ?>>{{ $group->scheme_group_name }}</option>
+                                        <option value="{{ $group->scheme_group_id }}" <?php if($data->scheme_group_id==$group->scheme_group_id){ echo "selected"; } ?>>{{ $group->scheme_group_name }}</option>
                                     @endforeach
-                                 </select>
+                                    </select>
                                 <div class="invalid-feedback" id="asset_group_name_error_msg"></div>
                             </div>
-                             <div class="form-group">
-                                <label for="target">Target<span style="color:red;margin-left:5px;">*</span></label>
-                               <input type="text" name="target" id="target" class="form-control" value="{{$data->target}}" autocomplete="off">
-                                 <div class="invalid-feedback" id="target_error_msg"></div>
-                            </div>
-                            
-                           
-                           
-                            <div class="form-group">
-                                <input type="text" name="hidden_input_purpose" value="{{$hidden_input_purpose}}" hidden>
-                                <input type="text" name="hidden_input_id" value="{{$hidden_input_id}}" hidden>
-                                <button type="submit" class="btn btn-primary" onclick="return submitForm()">Save&nbsp;&nbsp;<i class="fas fa-check"></i></button>
-                                <button type="reset" class="btn btn-secondary">Reset&nbsp;&nbsp;<i class="fas fa-undo"></i></button>
-                            </div>
-                        </form>
+                        </div>
+                    </div><!--end of row-->
+                </form>
+
+                
+          
+        <div class="col-md-11">
+                <button class="btn"  style="margin-left:1.5%;background: #0f85e2!important;color:#fff;"><i class="fas fa-sort-amount-up"></i> &nbsp;Indicator</button>
+                    <div class="card-body" style="background: #f2f6ff; border: 1px solid #a5bbf6;margin-top: -18px;">
+                            <table id="multi-filter-select" class="display table table-striped table-hover" style="margin-top: 10px;">
+                            <thead style="background: #cedcff">
+                                <tr>
+                                    <th>Indicator<span style="color:red;margin-left:5px;">*</span></th>
+                                    <th>Target Value<span style="color:red;margin-left:5px;">*</span></th>
+                                    <th>Upload Document</th>                                          
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <tr> 
+                                <td>
+                                    <div class="form-group">                                     
+                                        <select name="indicator" id="indicator" class="form-control">
+                                            <option value="">---Select---</option>
+                                            @foreach( $indicators as $indicator )
+                                                <option value="{{ $indicator->indicator_id }}" <?php if($data->indicator_id==$indicator->indicator_id){ echo "selected"; } ?>>{{ $indicator->indicator_name }}</option>
+                                            @endforeach
+                                        </select>
+                                            <div class="invalid-feedback" id="indicator_error_msg"></div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-group">                                  
+                                        <input type="text" name="target" id="target" class="form-control" value="{{$data->target}}" autocomplete="off">
+                                        <div class="invalid-feedback" id="target_error_msg"></div>
+                                    </div>
+                                </td>                             
+                                <td>
+                                    <div class="form-group">
+                                        <input type="file" name="attchment" id="attchment" class="form-control" multiple>
+                                    </div>
+                                </td>
+                            </tr>                                                             
+                        </tbody>  
+                    </table>
+                    
+                    <div class="form-group">
+                        <input type="text" name="hidden_input_purpose" value="{{$hidden_input_purpose}}" hidden>
+                        <input type="text" name="hidden_input_id" value="{{$hidden_input_id}}" hidden>
+                        <button type="submit" class="btn btn-primary" onclick="return submitForm()">Save&nbsp;&nbsp;<i class="fas fa-check"></i></button>
+                        <button type="reset" class="btn btn-secondary">Reset&nbsp;&nbsp;<i class="fas fa-undo"></i></button>
                     </div>
-                </div>
-            </div>
+                </div> 
+            </div><br><br>
+            </div><!--end of card body-->
         </div>
    </div>
 <script>

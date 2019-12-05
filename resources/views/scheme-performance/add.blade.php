@@ -15,6 +15,7 @@
         <div class="card-body">
             <form action="{{url('scheme-performance/store')}}" method="POST" enctype="multipart/form-data">
             @csrf
+            
             <div class="col-md-2" style="    margin-left: -16px;">
                 <div class="form-group">
                         <label for="year">Year<span style="color:red;margin-left:5px;">*</span></label>
