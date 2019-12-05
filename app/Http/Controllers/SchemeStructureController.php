@@ -63,7 +63,7 @@ class SchemeStructureController extends Controller
         $scheme_structure->dept_id =  $request->dept_id;
         $scheme_structure->scheme_type_id = $request->scheme_type_id;
        
-        $scheme_structure->independent = $request->independent;
+        // $scheme_structure->independent = $request->independent;
      
      //    $scheme_structure->planned_sd = date("Y-m-d",strtotime($request->planned_sd));
      // if($request->planned_sd== null){ $scheme_structure->planned_sd = "";}

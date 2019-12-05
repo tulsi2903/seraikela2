@@ -163,12 +163,6 @@ class SchemePerformanceController extends Controller
 
         return ["target_data"=>$target,"id"=>$scheme_geo_target_id,"pre_value"=>$pre_value];
 
-
-      
-
-       // return ["target_data"=>$target,"id"=>$tmp->scheme_geo_target_id,"pre_value"=>$pre_value];
-      // //return ["target_data"=>$target,"id"=>$tmp->scheme_geo_target_id];
-      // return 1;
     }
 
     public function store(Request $request)
@@ -182,29 +176,32 @@ class SchemePerformanceController extends Controller
 
       
 
-        //  $i = 0;
-        //  if($request->hasFile('attachment'))
-        //  {
+         $i = 0;
+         if($request->hasFile('attachment'))
+         {
+           
 
-        //     foreach($request->file('attachment') as $file){
+            foreach($request->file('attachment') as $file){
 
-        //         $imageName = time() . $i . '.' . $file->getClientOriginalExtension();
+                $imageName = time() . $i . '.' . $file->getClientOriginalExtension();
 
-        //         // move the file to desired folder
-        //         $file->move('public/uploaded_documents/', $imageName);
+                // move the file to desired folder
+                $file->move('public/uploaded_documents/', $imageName);
 
-        //         // assign the location of folder to the model
-        //         $scheme_performance->attachment.=":".$imageName;
+                // assign the location of folder to the model
+                $scheme_performance->attachment.=":".$imageName;
 
 
-        //         $i++;
+                $i++;
 
-        //     } 
+            } 
             
-        //     $scheme_performance->attachment = ltrim($scheme_performance->attachment,":");
-        // }
+            $scheme_performance->attachment = ltrim($scheme_performance->attachment,":");
+        }
         $scheme_performance->created_by =1;
         $scheme_performance->updated_by =1;
+
+        // return $request;
        
 
         if($scheme_performance->save()){

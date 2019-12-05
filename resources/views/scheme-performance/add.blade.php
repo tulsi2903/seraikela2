@@ -109,17 +109,17 @@
                                <input type="text" name="current_value" id="current_value" class="form-control" autocomplete="off">
                                  <div class="invalid-feedback" id="current_value_error_msg"></div>
                             </div>
-                           <!--  <div class="form-group">
-                                <label for="document_upload">Upload Document</label>
-                                <input type="file" name="attchment" id="attchment" class="form-control" multiple>
-                            </div> -->
+                            <div class="form-group" id="attchment-id">
+                                <label for="attchment" id="attchment">Upload Document</label>
+                                <input type="file" name="attachment[]" id="attchment" class="form-control" multiple>
+                            </div>
                             
                            
                             <div class="form-group">
                                 <input type="text" name="hidden_input_purpose" value="{{$hidden_input_purpose}}" hidden>
                                 <input type="text" name="hidden_input_id" value="{{$hidden_input_id}}" hidden>
                                 <input type="text" name="scheme_geo_target_id" id="scheme_geo_target_id" hidden>
-                                <button type="submit" class="btn btn-primary" onclick="return submitForm()">Go&nbsp;&nbsp;<i class="fas fa-check"></i></button>
+                                <button type="submit" class="btn btn-primary" id="go-button" onclick="return submitForm()">Go&nbsp;&nbsp;<i class="fas fa-check"></i></button>
                                 <button type="reset" class="btn btn-secondary">Reset&nbsp;&nbsp;<i class="fas fa-undo"></i></button>
                             </div>
                         </form>
@@ -352,13 +352,15 @@ $(document).ready(function(){
                 $("#scheme_geo_target_id").val(data.id);
                 $("#pre_value").val(data.pre_value);
                
-//alert(target_data);
+
                 if(data.target_data=='-1')
                 {
                  $("#error_msg_if_target_not_found").html("No target found!!");
                   $("#target").val(0);
                  $("#pre-value").hide();
                  $("#current-value").hide();
+                 $("#attchment-id").hide();
+                 $("#go-button").hide();
                 }
                 else{
                 $("#target").val(data.target_data);
