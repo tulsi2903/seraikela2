@@ -16,7 +16,7 @@
             <form action="{{url('scheme-performance/store')}}" method="POST" enctype="multipart/form-data">
             @csrf
             
-            <div class="col-md-2" style="    margin-left: -16px;">
+            <div class="col-md-2" style="margin-left: -16px;">
                 <div class="form-group">
                         <label for="year">Year<span style="color:red;margin-left:5px;">*</span></label>
                         <select name="year" id="year" class="form-control">
@@ -96,12 +96,14 @@
                     </div>
 
                     <div class="col-md-2"><BR>
-                        <button type="submit" class="btn btn-primary" onclick="return submitForm()" style="margin-top: 5%;">Go&nbsp;&nbsp;<i class="fas fa-check"></i></button>
+                        <button type="button" class="btn btn-primary" onclick="return goForm()" style="margin-top: 5%;">Go&nbsp;&nbsp;<i class="fas fa-check"></i></button>
                     </div>
                 </div><!--end of row-->
             </form><!--end of form-->
 
-        <div class="col-md-11">
+            <div id="error_msg_if_target_not_found" style="color:red;display: none;">No Target Found!!</div>
+
+       <!--  <div class="col-md-11" id="indicator-tab" style="display: none;">
             <button class="btn"  style="margin-left:1.5%;background: #0f85e2!important;color:#fff;"><i class="fas fa-sort-amount-up"></i> &nbsp;Indicator</button>
                 <div class="card-body" style="background: #f2f6ff; border: 1px solid #a5bbf6;margin-top: -18px;">
                         <table id="multi-filter-select" class="display table table-striped table-hover" style="margin-top: 10px;">
@@ -131,39 +133,42 @@
                                 <div class="form-group">
                                     <input type="text" name="target" id="target" class="form-control" autocomplete="off">
                                     <div class="invalid-feedback" id="target_error_msg"></div>
-                                    <div id="error_msg_if_target_not_found" style="color:red;"></div>
+                                    
                                 </div>
                             </td>
                             <td>
-                                <div class="form-group" id="pre-value">
+                                <div class="form-group">
                                     <input type="text" name="pre_value" id="pre_value" class="form-control" autocomplete="off">
                                 </div>
                             </td>
                             <td>
-                                <div class="form-group" id="current-value">
+                                <div class="form-group">
                                     <input type="text" name="current_value" id="current_value" class="form-control" autocomplete="off">
                                     <div class="invalid-feedback" id="current_value_error_msg"></div>
                                 </div>
                             </td>
                             <td>
                                 <div class="form-group">
-                                    <input type="file" name="attchment" id="attchment" class="form-control" multiple>
+                                    <input type="file" name="attchment[]" id="attchment" class="form-control" multiple>
                                 </div>
                             </td>
-                        </tr>                                                             
+                        </tr>
+                                                                                   
                     </tbody>  
-                </table>
+                </table> -->
+                 <div id="append-indicator-row"></div> 
                 <div class="form-group">
                     <input type="text" name="hidden_input_purpose" value="{{$hidden_input_purpose}}" hidden>
                     <input type="text" name="hidden_input_id" value="{{$hidden_input_id}}" hidden>
                     <input type="text" name="scheme_geo_target_id" id="scheme_geo_target_id" hidden>
                     <!-- <button type="submit" class="btn btn-primary" onclick="return submitForm()">Go&nbsp;&nbsp;<i class="fas fa-check"></i></button> -->
-                    <button type="reset" class="btn btn-secondary" style="margin-left: 2%;">Save&nbsp;&nbsp;</button>
+                    <!-- <button type="reset" class="btn btn-secondary" style="margin-left: 2%;">Save&nbsp;&nbsp;</button> -->
                 </div>
             </div> 
         </div><br><br>
+         <button type="submit" class="btn btn-secondary" id="save-button" style="margin-left: 2%;display: none;">Save&nbsp;&nbsp;</button>
 
-        <div class="col-md-11">
+        <!-- <div class="col-md-11">
             <button class="btn"  style="margin-left:1.5%;background: #000;color:#fff;"><i class="fas fa-sort-amount-up"></i> &nbsp;Gallery</button>
                 <div class="card-body" style="background: #f2f6ff; border: 1px solid #a5bbf6;margin-top: -18px;">
                     <div class="form-group">
@@ -192,7 +197,7 @@
                             </div>
                         </div>
                     </div> 
-                </div>
+                </div> -->
             </div>
         </div>
     </div>
@@ -206,39 +211,43 @@
             var indicator_error = true;
             
             $(document).ready(function(){
+                
                 $("#block").change(function(){
-                block_name_validate();
+                // block_name_validate();
                 ajaxFunc_bl();
-                ajaxFunc_get_target();
+                
                 });
                 $("#panchayat").change(function(){
-                panchayat_validate();
-                ajaxFunc_get_target();
+                // panchayat_validate();
+               
                 });
             
                 $("#year").change(function(){
-                    year_validate();
-                    ajaxFunc_get_target();
+                    // year_validate();
+                    
                 });
                 $("#district").change(function(){
-                    district_validate();
+                    // district_validate();
                     ajaxFunc_subdivision();
-                    ajaxFunc_get_target();
+                   
                 });
                 $("#subdivision").change(function(){
-                    subdivision_validate();
+                    // subdivision_validate();
                     ajaxFunc_block();
-                    ajaxFunc_get_target();
+                   
                 });
                 $("#scheme_name").change(function(){
-                    scheme_type_validate();
-                    ajaxFunc_indicator();
-                    ajaxFunc_get_target();
+                    // scheme_type_validate();
+                    // ajaxFunc_indicator();
+                   
                 });
-                $("#indicator").change(function(){
-                    indicator_validate();
-                    ajaxFunc_get_target();
-                });
+                 $("#indicator").change(function(){
+                     ajaxFunc_target();
+
+               
+                 });
+
+
 
             });
 
@@ -373,26 +382,38 @@
                         },
                         success: function (data){
                             console.log(data);
-                            $("#indicator").html('<option value="">-Select-</option>');
-                            for(var i=0; i<data.scheme_indicator_data.length; i++){
-                                $("#indicator").append('<option value="'+data.scheme_indicator_data[i].indicator_id+'">'+data.scheme_indicator_data[i].indicator_name+'</option>');
-                            }
+                            // $("#indicator").html('<option value="">-Select-</option>');
+                            // for(var i=0; i<data.scheme_indicator_data.length; i++){
+                            //     $("#indicator").append('<option value="'+data.scheme_indicator_data[i].indicator_id+'">'+data.scheme_indicator_data[i].indicator_name+'</option>');
+                            // }
+
+                            get_table_data(data);
 
                             $(".custom-loader").fadeOut(300);
+                            
                         }
                     });
                 }
+                 $("#indicator-tab").show();
+                $("#save-button").show();
                 }
 
-                function ajaxFunc_get_target(){
+           
+
+
+
+            function ajaxFunc_target(){
                     var scheme_id_tmp = $("#scheme_name").val();
                     var geo_id_tmp = $("#panchayat").val();
                     var indicator_id_tmp = $("#indicator").val();
                     var year_id_tmp = $("#year").val();
+                    var district_tmp = $("#district").val();
+                    var subdivision_tmp = $("#subdivision").val();
+                    var panchayat_tmp = $("#panchayat").val();
                 
 
 
-                    if(scheme_id_tmp && geo_id_tmp && indicator_id_tmp && year_id_tmp)
+                    if(scheme_id_tmp && geo_id_tmp  && year_id_tmp && indicator_id_tmp )
                     {
 
                     $.ajaxSetup({
@@ -402,7 +423,7 @@
                 });
                     $.ajax({
                         url:"{{url('scheme-performance/get-target')}}",
-                        data:{'scheme_id':scheme_id_tmp,'geo_id':geo_id_tmp,'indicator_id':indicator_id_tmp,'year_id':year_id_tmp},
+                        data:{'scheme_id':scheme_id_tmp,'geo_id':geo_id_tmp,'year_id':year_id_tmp,'indicator_id':indicator_id_tmp},
                         method:"GET",
                         contentType:'application/json',
                         dataType:"json",
@@ -417,27 +438,110 @@
                             console.log(data);
                             $("#scheme_geo_target_id").val(data.id);
                             $("#pre_value").val(data.pre_value);
-                        
-            //alert(target_data);
-                            if(data.target_data=='-1')
+                             if(data.target_get_data=='-1')
                             {
-                            $("#error_msg_if_target_not_found").html("No target found!!");
-                            $("#target").val(0);
-                            $("#pre-value").hide();
-                            $("#current-value").hide();
+
+                               $("#error_msg_if_target_not_found").show();
+                               $("#indicator-tab").hide();
+                                 $("#save-button").hide();
+                               
+
                             }
                             else{
-                            $("#target").val(data.target_data);
-                        }
+                                 $("#error_msg_if_target_not_found").hide();
+                               $("#indicator-tab").show();
+                                 $("#save-button").show();
+                                $("#target").val(data.target_get_data);
+                                
+                            }
 
-                            $(".custom-loader").fadeOut(300);
+                             $(".custom-loader").fadeOut(300);
                         }
                     });
                 }
                 else{
-                $("#target").val(0);
+                // $("#target").val(0);
             }
-                }
+
+
+            }
+
+
+        function get_table_data(data)
+        {
+         var to_append=`<div class="col-md-11" id="indicator-tab">
+        
+            <button class="btn"  style="margin-left:1.5%;background: #0f85e2!important;color:#fff;"><i class="fas fa-sort-amount-up"></i> &nbsp;Indicator</button>
+                <div class="card-body" style="background: #f2f6ff; border: 1px solid #a5bbf6;margin-top: -18px;">
+                        <table id="multi-filter-select" class="display table table-striped table-hover" style="margin-top: 10px;">
+                        <thead style="background: #cedcff">
+                            <tr>
+                                <th>Indicator<span style="color:red;margin-left:5px;">*</span></th>
+                                <th>Target Value<span style="color:red;margin-left:5px;">*</span></th>
+                                <th>Previous Value<span style="color:red;margin-left:5px;">*</span></th>
+                                <th>Current Value<span style="color:red;margin-left:5px;">*</span></th> 
+                                <th>Upload Document</th>                                          
+                            </tr>
+                        </thead>
+                        <tbody id='show'>`;
+                        
+
+                        
+                        $.each(data.scheme_indicator_data,function(value,index){
+
+                            to_append += `<tr> 
+                            <td>
+                                `+index.indicator_id+`
+                            </td>
+                            <td>
+                                <div class="form-group">
+                                    <input type="text" name="target" id="target" class="form-control" autocomplete="off">
+                                    <div class="invalid-feedback" id="target_error_msg"></div>
+                                    
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group">
+                                    <input type="text" name="pre_value" id="pre_value" class="form-control" autocomplete="off">
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group">
+                                    <input type="text" name="current_value" id="current_value" class="form-control" autocomplete="off">
+                                    <div class="invalid-feedback" id="current_value_error_msg"></div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group">
+                                    <input type="file" name="attchment[]" id="attchment" class="form-control" multiple>
+                                </div>
+                            </td>
+                        </tr>`;
+                        alert("hnrdgtu8hrdsss");
+                            
+                        });
+                         // if(data.scheme_indicator_data.length>0)
+                        // {
+                        //     for(i=0;i<data.scheme_indicator_data.length;i++)
+                        //     {
+                              
+                        // }
+
+                   to_append += `</tbody>  
+                </table>`;
+
+                $('#append-indicator-row').append(to_append);
+                
+                // $('#append-indicator-row').append(to_append1);
+                            
+       }
+
+
+                           
+
+
+
+           
 
 
             //year_validation
@@ -548,11 +652,33 @@
                     }
                 }
 
+                //for cuurent value validation
+                function current_value_validate(){
+                    var current_val = $("#current_value").val();
+                    var regexOnlyNumbers=/^[0-9]+$/;
+                    if(current_val=="")
+                    {
+                        current_value_error = true;
+                        $("#current_value").addClass('is-invalid');
+                        $("#current_value_error_msg").html("Please enter current value");
+                    }
+                    else if(!regexOnlyNumbers.test(current_val)){
+                        current_value_error = true;
+                        $("#current_value").addClass('is-invalid');
+                        $("#current_value_error_msg").html("Please enter a valid value");
+
+                    }
+                    else{
+                         current_value_error= false;
+                        $("#current_value").removeClass('is-invalid');
+                    }
+                }
+
 
 
             
 
-            function submitForm(){
+            function goForm(){
                 
                 year_validate();
                 district_validate();
@@ -560,13 +686,20 @@
                 block_name_validate();
                 panchayat_validate();
                 scheme_type_validate();
-                indicator_validate();
+                ajaxFunc_indicator();
                 
                 
 
-                if(  year_error || district_error||subdivision_error  ||block_name_error ||panchayat_error ||scheme_type_error||indicator_error){ return false; } // error occured
-                    else{ return true; } // proceed to submit form data
+                if(year_error || district_error||subdivision_error  ||block_name_error ||panchayat_error ||scheme_type_error){ return false; } // error occured
+                    else{ 
+                    return true;
+                   
+                    // ajaxFunc_target();
+
+                     } // proceed to submit form data
                 }
+
+
             
 
             

@@ -131,6 +131,7 @@ Route::get('scheme-performance/get-subdivision-name','SchemePerformanceControlle
 Route::get('scheme-performance/get-block-name','SchemePerformanceController@get_block_name');
 Route::get('scheme-performance/get-panchayat-name','SchemePerformanceController@get_panchayat_name');
 Route::get('scheme-performance/get-indicator-name','SchemePerformanceController@get_indicator_name');
+// Route::get('scheme-performance/get-indicator-table','SchemePerformanceController@get_indicator_table');
 Route::get('scheme-performance/get-target','SchemePerformanceController@get_target');
 
 

@@ -131,9 +131,9 @@ class SchemePerformanceController extends Controller
     }
 
 
-     public function get_target(Request $request)
+    public function get_target(Request $request)
     {
-      $tmp = SchemeGeoTarget::where('scheme_id',$request->scheme_id)->where('geo_id',$request->geo_id)->where('indicator_id',$request->indicator_id)->where('year_id', $request->year_id)->first();  
+        $tmp = SchemeGeoTarget::where('scheme_id',$request->scheme_id)->where('geo_id',$request->geo_id)->where('indicator_id',$request->indicator_id)->where('year_id', $request->year_id)->first();  
       $scheme_geo_target_id="";
       $pre_value="";
         if(count($tmp)>0)
@@ -161,8 +161,7 @@ class SchemePerformanceController extends Controller
         $target = -1;
       }
 
-        return ["target_data"=>$target,"id"=>$scheme_geo_target_id,"pre_value"=>$pre_value];
-
+        return ["target_get_data"=>$target,"id"=>$scheme_geo_target_id,"pre_value"=>$pre_value]; 
     }
 
     public function store(Request $request)
@@ -201,8 +200,8 @@ class SchemePerformanceController extends Controller
         $scheme_performance->created_by =1;
         $scheme_performance->updated_by =1;
 
-        // return $request;
-       
+     
+       return $scheme_performance;
 
         if($scheme_performance->save()){
             session()->put('alert-class','alert-success');
