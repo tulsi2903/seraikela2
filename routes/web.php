@@ -92,7 +92,6 @@ Route::get('uom/add','UomController@add');
 Route::post('uom/store','UomController@store');
 Route::get('uom/delete/{uom_id}','UomController@delete');
 
-
 /*asset*/
 Route::get('asset','AssetController@index');
 Route::get('asset/add','AssetController@add');
@@ -118,6 +117,12 @@ Route::get('asset-review/get-datas', 'AssetReviewController@get_datas');
 Route::get('asset-review/get-map-data', 'AssetReviewController@get_map_data');
 Route::get('asset-review/get-panchayat-data', 'AssetReviewController@get_panchayat_data');
 
+/* scheme review */
+Route::get('review/{review_type}', 'SchemeReviewController@index');
+Route::get('scheme-review/get-datas', 'SchemeReviewController@get_datas');
+Route::get('scheme-review/get-map-data', 'SchemeReviewController@get_map_data');
+Route::get('scheme-review/get-panchayat-data', 'SchemeReviewController@get_panchayat_data');
+
 /*Scheme Type*/
 Route::get('scheme-type','SchemeTypeController@index');
 Route::get('scheme-type/add','SchemeTypeController@add');
@@ -133,10 +138,6 @@ Route::get('scheme-performance/get-panchayat-name','SchemePerformanceController@
 Route::get('scheme-performance/get-indicator-name','SchemePerformanceController@get_indicator_name');
 // Route::get('scheme-performance/get-indicator-table','SchemePerformanceController@get_indicator_table');
 Route::get('scheme-performance/get-target','SchemePerformanceController@get_target');
-
-
-/* scheme review */
-Route::get('scheme-review', 'SchemeReviewController@index');
 
 
 /* group*///rohit changes 

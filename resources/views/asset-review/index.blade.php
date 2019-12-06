@@ -426,7 +426,7 @@
         }
     }
 
-    function  getDatas(){
+    function getDatas(){
         // getting datas before send to controller
         dept_id = $("#dept_id").val();
         year_id = $("#year_id").val();
@@ -677,10 +677,10 @@
     }
     // validation reset
     $(document).ready(function(){
-        $("#map-view-block").blur(function(){
+        $("#map-view-block").change(function(){
             $(this).removeClass("is-invalid");
         });
-        $("#map-view-asset").blur(function(){
+        $("#map-view-asset").change(function(){
             $(this).removeClass("is-invalid");
         });
     });

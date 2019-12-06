@@ -83,7 +83,8 @@
 					<div class="collapse" id="review">
 						<ul class="nav nav-collapse">
 							<li class="nav-item"><a href="{{url('asset-review')}}"><i class="fas fa-receipt"></i><p>Asset Review</p></a></li>
-							<li class="nav-item"><a href="{{url('scheme-review')}}"><i class="fas fa-receipt"></i><p>Scheme Review</p></a></li>
+							<li class="nav-item"><a href="{{url('review/scheme')}}"><i class="fas fa-receipt"></i><p>Scheme Review</p></a></li>
+							<li class="nav-item"><a href="{{url('review/group')}}"><i class="fas fa-receipt"></i><p>Group Review</p></a></li>
 						</ul>
 					</div>
 				</li>
