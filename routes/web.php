@@ -40,6 +40,9 @@ Route::get("homepage", function(){
    return view("index"); 
 });
 
+/*dashboard*/
+Route::get('dashboard/dc_dashboard','DashboardController@index');
+
 /* department */
 Route::get('department','DepartmentController@index');
 Route::get('department/add','DepartmentController@add');

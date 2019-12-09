@@ -136,14 +136,14 @@
                                 <div class="invalid-feedback" id="independent_error_msg"></div>
                                 </div> 
                             </div>  -->
-                             <div class="col-md-2"><br>
+                             <!-- <div class="col-md-2"><br>
                                 <div class="form-check">
                                     <label class="form-check-label">
                                         <input class="form-check-input" type="checkbox" name="geo_related" id="geo_related" value="1"<?php if($data->geo_related=='1'){ echo "checked"; } ?>>
                                         <span class="form-check-sign">Geo Related</span>
                                     </label>
                                 </div>
-                            </div>   
+                            </div>    -->
                         </div><!--end of row-->  
                         <div class="row">
                             <div class="col-md-11">

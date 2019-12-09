@@ -33,7 +33,7 @@
                         <a class="btn btn-secondary" href="{{url('geo-structure/add')}}" role="button"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;Add</a>
                     </div><br><br>
                     <div class="table-responsive table-hover table-sales">
-                        <table class="table table-datatable" id="printable-area">
+                        <table class="table table-geo-structure-datatable" id="printable-area">
                             <thead style="background: #d6dcff;color: #000;">
                                 <tr>
                                     <th>#</th>
@@ -73,8 +73,16 @@
             </div>
         </div>
    </div>
+
+   <script>
+$(document).ready(function(){
+$('.table-geo-structure-datatable').dataTable( {
+  "pageLength": 15
+} );
+});
+</script>
    
-@endsection
+
 <!-- email model -->
 <div id="create-email" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none">
     <div class="modal-dialog">
@@ -123,4 +131,6 @@
         </div>
     </div>
 </div>
+
 <!-- end model -->
+@endsection

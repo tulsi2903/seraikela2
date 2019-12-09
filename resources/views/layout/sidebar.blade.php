@@ -10,7 +10,7 @@
 					</a>
 					<div class="collapse" id="dashboard">
 						<ul class="nav nav-collapse">
-							<li><a href="{{url('dc_dashboard')}}"><span class="sub-item">DC Dashboard</span></a></li>
+							<li><a href="{{url('dashboard/dc_dashboard')}}"><span class="sub-item">DC Dashboard</span></a></li>
 							<li><a href="{{url('#')}}"><span class="sub-item">BDO Dashboard</span></a></li>
 							<li><a href="{{url('#')}}"><span class="sub-item">PO Dashboard</span></a></li>
 
