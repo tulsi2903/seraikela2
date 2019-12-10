@@ -19,6 +19,8 @@ class GeoStructureController extends Controller
                                 ->orderBy('geo_structure.geo_id','desc')
                                 ->get();
 
+        $get_blocks = GeoStructure::where('level_id','3')->get();
+
                                
 
         // find parent details
@@ -38,7 +40,7 @@ class GeoStructureController extends Controller
             }
         }
 
-        return view('geo-structure.index')->with('datas', $datas);
+        return view('geo-structure.index')->with(compact('datas','get_blocks'));
     }
 
     public function add(Request $request){

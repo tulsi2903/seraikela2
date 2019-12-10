@@ -76,8 +76,8 @@ class SchemeStructureController extends Controller
         $scheme_structure->description = $request->description;
         if($request->description==""){ $scheme_structure->description = ""; }
         
-        if($request->geo_related==""){$scheme_structure->geo_related=0;}
-        else{ $scheme_structure->geo_related = '1';}
+        // if($request->geo_related==""){$scheme_structure->geo_related=0;}
+        // else{ $scheme_structure->geo_related = '1';}
 
         $scheme_structure->attachment = "";
         // if($request->hasFile('attachment'))

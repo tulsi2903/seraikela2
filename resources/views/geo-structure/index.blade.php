@@ -29,6 +29,20 @@
         <div class="card-body">
             <div class="row">
                 <div class="col-12">
+                <br>
+                    <div style="display:-webkit-box float:left;margin-top: -22px;">
+                        
+                        <div class="col-md-3 form-group">
+                            <label for="block">Block</label>
+                                <select name="block" id="block" class="form-control">
+                                    <option value="">---Select---</option>
+                                    @foreach($get_blocks as $get_block)
+                                        <option value="">{{$get_block->geo_name}}</option>
+                                    @endforeach 
+                                </select>
+                                <button type="button" class="btn btn-primary" onclick="block_search();">Search</button>
+                        </div>
+                    </div>
                     <div style="display: -webkit-box; float:right;margin-top: -22px;">
                         <a class="btn btn-secondary" href="{{url('geo-structure/add')}}" role="button"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;Add</a>
                     </div><br><br>
@@ -79,6 +93,14 @@ $(document).ready(function(){
 $('.table-geo-structure-datatable').dataTable( {
   "pageLength": 15
 } );
+
+function block_search()
+{
+var table = $('.table-geo-structure-datatable').DataTable();
+ $('#block').on( 'keyup', function () {
+    table.search( this.value ).draw();
+} );
+}
 });
 </script>
    
@@ -131,6 +153,6 @@ $('.table-geo-structure-datatable').dataTable( {
         </div>
     </div>
 </div>
-
 <!-- end model -->
+
 @endsection

@@ -91,13 +91,13 @@
                 <div class="d-flex align-items-right align-items-md-center flex-column flex-md-row">
                     <div class="ml-md-auto py-2 py-md-0">
                         <a href="#" class="btn btn-white btn-border btn-round mr-2"><i class="icon-directions"></i> &nbsp;My District</a>
-                        <a href="{{url('scheme')}}" class="btn btn-white btn-border btn-round mr-2">Scheme</a>
+                        <a href="{{url('scheme-structure')}}" class="btn btn-white btn-border btn-round mr-2">Scheme</a>
                         <a href="{{url('asset')}}" class="btn btn-white btn-border btn-round mr-2">Asset</a>
                         <a href="{{url('review')}}" class="btn btn-white btn-border btn-round mr-2">Review</a>
                         <a href="#" class="btn btn-white btn-border btn-round mr-2">Report</a>
 
-                        <button type="button" class="btn btn-icon btn-round btn-default"><i class="fa fa-envelope" aria-hidden="true"></i></button>
-                        <button type="button" class="btn btn-icon btn-round btn-default"><i class="fa fa-print" aria-hidden="true"></i></button>
+                        <!-- <button type="button" class="btn btn-icon btn-round btn-default"><i class="fa fa-envelope" aria-hidden="true"></i></button>
+                        <button type="button" class="btn btn-icon btn-round btn-default"><i class="fa fa-print" aria-hidden="true"></i></button> -->
 
                     </div>
                 </div>
@@ -118,7 +118,7 @@
                                 <div class="col-7 col-stats">
                                     <div class="numbers">
                                         <p class="card-category">Subdivision</p>
-                                        <h4 class="card-title">{{$subdivision}}</h4>
+                                        <h4 class="card-title">{{$subdivision_count}}</h4>
                                     </div>
                                 </div>
                             </div>
@@ -209,7 +209,7 @@
                 <div style="margin-top:-11px;">
                     <div class="card" id="card-detail1">
                         <div class="card-body p-3 text-center">
-                            <div class="text-right">6%</div>
+                            <div class="text-right">{{$health_scheme_count}}</div>
                             <div class="h1 m-0"><i class="fa fa-heartbeat" style="font-size:35px; color: #fff;"></i></div>
                             <div class="text-muted mb-3">Health</div>
                         </div>
@@ -217,7 +217,7 @@
 
                     <div class="card" id="card-detail2">
                         <div class="card-body p-3 text-center">
-                            <div class="text-right">6%</div>
+                            <div class="text-right">{{$land_revenue_count}}</div>
                             <i class="fas fa-graduation-cap" style="font-size:35px; color: #fff;"></i>
                             <div class="text-muted mb-3">Land and Revenue</div>
                         </div>
@@ -225,23 +225,23 @@
 
                     <div class="card" id="card-detail3">
                         <div class="card-body p-3 text-center">
-                            <div class="text-right">6%</div>
-                            <div class="h1 m-0"><i class="fas fa-leaf" style="font-size:35px; color: #fff;"></i></div>
+                            <div class="text-right">{{$welfare_count}}</div>
+                            <div class="h1 m-0"><i class="fas fa-hands" style="font-size:35px; color: #fff;"></i></div>
                             <div class="text-muted mb-3">Welfare</div>
                         </div>
                     </div>
 
                     <div class="card" id="card-detail4">
                         <div class="card-body p-3 text-center">
-                            <div class="text-right">6%</div>
-                            <div class="h1 m-0"><i class="fas fa-hands" style="font-size:35px; color: #fff;"></i></div>
+                            <div class="text-right">{{$education_count}}</div>
+                            <div class="h1 m-0"><i class="fas fa-graduation-cap" style="font-size:35px; color: #fff;"></i></div>
                             <div class="text-muted mb-3">Education</div>
                         </div>
                     </div>
 
                     <div class="card" id="card-detail5">
                         <div class="card-body p-3 text-center">
-                            <div class="text-right">6%</div>
+                            <div class="text-right">{{$land_acquisition_count}}</div>
                             <div class="h1 m-0"><i class="fas fa-oil-can"style="font-size:35px; color: #fff;"></i></div>
                             <div class="text-muted mb-3">Land Acquisition</div>
                         </div>
@@ -249,23 +249,23 @@
 
                      <div class="card" id="card-detail6">
                         <div class="card-body p-3 text-center">
-                            <div class="text-right">6%</div>
+                            <div class="text-right">{{$election_count}}</div>
                             <div class="h1 m-0"><i class="fas fa-user-lock" style="font-size:35px; color: #fff;"></i></div>
                             <div class="text-muted mb-3">Election</div>
                         </div>
                     </div>
 
-                   <!-- <div class="card" id="card-detail6">
+                   <div class="card" id="card-detail6">
                         <div class="card-body p-3 text-center">
-                            <div class="text-right">6%</div>
-                            <div class="h1 m-0"><i class="fas fa-user-lock" style="font-size:35px; color: #fff;"></i></div>
+                            <div class="text-right">{{$agriculture_count}}</div>
+                            <div class="h1 m-0"><i class="fas fa-leaf" style="font-size:35px; color: #fff;"></i></div>
                             <div class="text-muted mb-3">Agriculture</div>
                         </div>
                     </div>
 
                     <div class="card" id="card-detail6">
                         <div class="card-body p-3 text-center">
-                            <div class="text-right">6%</div>
+                            <div class="text-right">{{$social_welfare_count}}</div>
                             <div class="h1 m-0"><i class="fas fa-user-lock" style="font-size:35px; color: #fff;"></i></div>
                             <div class="text-muted mb-3">Social Welfare</div>
                         </div>
@@ -273,19 +273,19 @@
 
                     <div class="card" id="card-detail6">
                         <div class="card-body p-3 text-center">
-                            <div class="text-right">6%</div>
-                            <div class="h1 m-0"><i class="fas fa-user-lock" style="font-size:35px; color: #fff;"></i></div>
+                            <div class="text-right">{{$drinking_water_and_sanitation_count}}</div>
+                            <div class="h1 m-0"><i class="fas fa-oil-can" style="font-size:35px; color: #fff;"></i></div>
                             <div class="text-muted mb-3">Drinking Water and Sanitation</div>
                         </div>
                     </div>
 
                     <div class="card" id="card-detail6">
                         <div class="card-body p-3 text-center">
-                            <div class="text-right">6%</div>
+                            <div class="text-right">{{$social_security_scheme_count}}</div>
                             <div class="h1 m-0"><i class="fas fa-user-lock" style="font-size:35px; color: #fff;"></i></div>
                             <div class="text-muted mb-3">Social Security Scheme</div>
                         </div>
-                    </div> -->
+                    </div>
                 </div>
             </div>
 
