@@ -46,6 +46,33 @@ class SchemeStructureController extends Controller
         return view('scheme-structure.add_2')->with(compact('hidden_input_purpose','hidden_input_id','data','indicator_datas','department_datas','scheme_types','departments','uoms'));
     }
 
+    public function view(Request $request){
+
+        $request->scheme_id;
+        $scheme_types = SchemeType::orderBy('sch_type_name','asc')->first();
+         $departments = Department::orderBy('dept_name')->first();
+          $uoms = Uom::orderBy('uom_name','asc')->first();
+        $scheme_details = SchemeStructure::where('scheme_id',$request->scheme_id)->first();
+       
+
+        if($scheme_details->is_active=='1')
+        {
+            $scheme_details->is_active = 'Yes';
+        }
+        else
+        {
+            $scheme_details->is_active = 'No';
+        }
+        
+        $indicator_datas = SchemeIndicator::leftJoin('uom','scheme_indicator.uom','=','uom.uom_id')
+                                            ->select('scheme_indicator.*','uom.uom_name')
+                                            ->where('scheme_indicator.scheme_id',$request->scheme_id)->get();
+
+        
+
+        return view('scheme-structure.view')->with(compact('hidden_input_purpose','hidden_input_id','data','indicator_datas','department_datas','scheme_types','departments','uoms','scheme_details'));
+    }
+
     public function store(Request $request){
         //$response = "failed";
         // return $request;
@@ -75,40 +102,16 @@ class SchemeStructureController extends Controller
      // if($request->actual_ed== null){ $scheme_structure->actual_ed = "";}
         $scheme_structure->description = $request->description;
         if($request->description==""){ $scheme_structure->description = ""; }
-        
-        // if($request->geo_related==""){$scheme_structure->geo_related=0;}
-        // else{ $scheme_structure->geo_related = '1';}
-
-        $scheme_structure->attachment = "";
-        // if($request->hasFile('attachment'))
-        // {
-        //     //
-        //     $file = $request->file('attachment');
-
-        //     $scheme_structure->attachment = $file->getClientOriginalName();
-        //     $destinationPath = 'public/uploaded_documents';
-        //     $file->move($destinationPath, $file->getClientOriginalName()); 
-        // }
-        // else{
-        //     if($request->hidden_input_purpose=="edit")
-        //     {
-        //         $scheme_structure->attachment = $request->hidden_input_attachment;
-        //     }
-        //     else if($request->hidden_input_purpose=="add")
-        //     {
-        //         // error has to return
-        //     }
-        // }
-
       
-
+      
+        $scheme_structure->attachment = "";
          $i = 0;
          if($request->hasFile('attachment'))
          {
 
             foreach($request->file('attachment') as $file){
 
-                $imageName = time() . $i . '.' . $file->getClientOriginalExtension();
+                $imageName =$file->getClientOriginalName(). $i . '.' . $file->getClientOriginalExtension();
 
                 // move the file to desired folder
                 $file->move('public/uploaded_documents/', $imageName);
@@ -134,6 +137,8 @@ class SchemeStructureController extends Controller
             $scheme_structure->scheme_logo = $file->getClientOriginalName();
             $destinationPath = 'public/images';
             $file->move($destinationPath, $file->getClientOriginalName()); 
+
+
         }
         else{
             if($request->hidden_input_purpose=="edit")

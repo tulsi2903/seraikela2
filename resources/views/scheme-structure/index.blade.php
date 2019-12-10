@@ -54,7 +54,7 @@
                                         <td class="action-buttons">
                                             <a href="{{url('scheme-structure/add')}}?purpose=edit&id={{$data->scheme_id}}" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></a>
                                             &nbsp;&nbsp;<a href="{{url('scheme-structure/delete')}}/{{$data->scheme_id}};" id="delete-button" class="btn btn-secondary btn-sm"><i class="fas fa-trash-alt"></i></a> 
-                                            &nbsp;&nbsp;<button type="button" class="btn btn-sm btn-secondary"><i class="fas fa-eye"></i></button> 
+                                            &nbsp;&nbsp;<a href="{{url('scheme-structure/view')}}/{{$data->scheme_id}}" class="btn btn-sm btn-secondary"><i class="fas fa-eye"></i></a>
                                         </td>
                                     </tr>
                                 @endforeach

@@ -47,6 +47,7 @@ class AssetController extends Controller
         $asset->asset_name = $request->asset_name;
         $asset->movable = $request->movable;
         $asset->dept_id = $request->dept_id;
+        $asset->org_id = 1;
         
         $asset->created_by = '1';
         $asset->updated_by = '1';

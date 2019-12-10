@@ -66,6 +66,7 @@ Route::get('scheme-structure','SchemeStructureController@index');
 Route::get('scheme-structure/add','SchemeStructureController@add');
 Route::post('scheme-structure/store','SchemeStructureController@store');
 Route::get('scheme-structure/delete/{scheme_id}','SchemeStructureController@delete');
+Route::get('scheme-structure/view/{scheme_id}','SchemeStructureController@view');
 
 /*Scheme Geo Target*/
 Route::get('scheme-geo-target','SchemeGeoTargetController@index');

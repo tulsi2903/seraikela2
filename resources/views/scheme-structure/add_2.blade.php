@@ -174,7 +174,7 @@
                                             for($i=0;$i<count($attachment_array);$i++)
                                             {
                                                 
-                                                echo "<table><tr><td>$attachment_array[$i]</td><td>&nbsp;&nbsp;<i class='fas fa-window-close'></i></td></tr></table>";
+                                                echo "<table><tr><td>$attachment_array[$i]</td><td>&nbsp;&nbsp;<i class='fas fa-window-close' style='color:red;'></i></td></tr></table>";
 
                                             }
                                             
@@ -186,7 +186,7 @@
                             <div class="form-group">
                                 <label for="">Scheme Logo</label>
                                     <div class="input-icon">
-                                        <input type="file" class="form-control" name="scheme_logo" id="scheme_logo" placeholder="Scheme Logo">
+                                        <input type="file" class="form-control" name="scheme_logo" id="scheme_logo" placeholder="Scheme Logo" accept="image/*">
                                         <span class="input-icon-addon">
                                             <i class="fas fa-cloud-download-alt"></i>
                                         </span>
@@ -194,7 +194,7 @@
                                      <?php
                                     if($data->scheme_logo)
                                     {
-                                        echo "<table><tr>$data->scheme_logo</tr><tr>&nbsp;&nbsp;<i class='fas fa-window-close'></i></tr></table>";
+                                        echo "<table><tr>$data->scheme_logo</tr></table>";
                                        
                                     }
                                     ?>
@@ -206,7 +206,7 @@
                                 <div class="form-group">
                                     <label for="">Map Marker Icon</label>
                                     <div class="input-icon">
-                                        <input type="file" class="form-control" name="scheme_map_marker" id="scheme_map_marker" placeholder="Map Marker Icon">
+                                        <input type="file" class="form-control" name="scheme_map_marker" id="scheme_map_marker" placeholder="Map Marker Icon" accept="image/*">
                                         <span class="input-icon-addon">
                                             <i class="fas fa-cloud-download-alt"></i>
                                         </span>
@@ -214,7 +214,7 @@
                                     <?php
                                 if($data->scheme_map_marker)
                                 {
-                                    echo "<table><tr>$data->scheme_map_marker</tr><tr>&nbsp;&nbsp;<i class='fas fa-window-close'></i></tr></table>";
+                                    echo "<table><tr>$data->scheme_map_marker</tr></table>";
                                 }
                                 ?>
                                 </div>
@@ -311,7 +311,7 @@
                         </div>
                     </div> <hr class="new2">
                     <div class="card-action"> 
-                        <!-- <input type="text" name="hidden_input_attachment" id="hidden_input_attachment" value="{{$data->attachment}}" hidden> -->
+                        <input type="text" name="hidden_input_attachment" id="hidden_input_attachment" value="{{$data->attachment}}" hidden> 
                         <input type="text" name="hidden_input_scheme_logo" id="hidden_input_scheme_logo" value="{{$data->scheme_logo}}" hidden>
                         <input type="text" name="hidden_input_map_marker" id="hidden_input_map_marker" value="{{$data->scheme_map_marker}}" hidden>  
                         <input type="text" name="hidden_input_purpose" id="hidden_input_purpose" value="{{$hidden_input_purpose}}" hidden>
@@ -440,6 +440,7 @@
           $("#performance").change(function(){
             performance_validate();
         });
+    });
          
     });
 
@@ -617,5 +618,7 @@
         if(scheme_name_error || scheme_short_name_error || is_active_error || department_name_error || scheme_type_error || independent_error_msg||indicator_name_error || uom_error || performance_error){ return false; } // error occured
         else{ return true; } // proceed to submit form data
     }
+
 </script>
+
 @endsection
