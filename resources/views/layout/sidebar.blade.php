@@ -20,7 +20,7 @@
 
 				<li class="nav-item">
 					<a data-toggle="collapse" href="#administator" class="collapsed" aria-expanded="false">
-						<i class="fas fa-home"></i>
+							<i class="fas fa-user-tie"></i>
 						<p>Administrator</p>
 						<span class="caret"></span>
 					</a>
@@ -29,35 +29,35 @@
 							
 							<li class="nav-item"><a href="{{url('user')}}"><i class="fas fa-users"></i><p>User</p></a></li>
 							<li class="nav-item"><a href="{{url('department')}}"><i class="fas fa-sitemap"></i><p>Department</p></a></li>
-							<li class="nav-item"><a href="{{url('year')}}"><i class="far fa-calendar-alt"></i><p>Year</p></a></li>
-							<li class="nav-item"><a href="{{url('uom')}}"><i class="fas fa-receipt"></i><p>UoM</p></a></li>
-                            <li class="nav-item"><a href="{{url('module')}}"><i class="fas fa-receipt"></i><p>Module</p></a></li>
-                            <li class="nav-item"><a href="{{url('designation')}}"><i class="fas fa-receipt"></i><p>Define Designation</p></a></li>
-				            <li class="nav-item"><a href="{{url('designation-permission')}}"><i class="fas fa-receipt"></i><p>Designation Permission</p></a></li>
+							<li class="nav-item"><a href="{{url('year')}}"><i class="fas fa-calendar-alt"></i><p>Year</p></a></li>
+							<li class="nav-item"><a href="{{url('uom')}}"><i class="fas fa-list-ol"></i><p>UoM</p></a></li>
+                            <li class="nav-item"><a href="{{url('module')}}"><i class="fas fa-indent"></i><p>Module</p></a></li>
+                            <li class="nav-item"><a href="{{url('designation')}}"><i class="fas fa-user-check"></i><p>Designation</p></a></li>
+				            <li class="nav-item"><a href="{{url('designation-permission')}}"><i class="fas fa-users-cog"></i><p>Designation Permission</p></a></li>
 						</ul>
 					</div>
 				</li>
 
-				 <li class="nav-item"><a href="{{url('geo-structure')}}"><i class="fas fa-receipt"></i><p>Geo Structure</p></a></li>     
+				 <li class="nav-item"><a href="{{url('geo-structure')}}"><i class="fas fa-map-marker-alt"></i><p>Geo Structure</p></a></li>     
 
 
 				<li class="nav-item">
 					<a data-toggle="collapse" href="#asset" class="collapsed" aria-expanded="false">
-						<i class="fas fa-home"></i>
+							<i class="fas fa-layer-group"></i>
 						<p>Asset</p>
 						<span class="caret"></span>
 					</a>
 					<div class="collapse" id="asset">
 						<ul class="nav nav-collapse">
-							<li class="nav-item"><a href="{{url('asset')}}"><i class="fas fa-receipt"></i><p>Define Asset</p></a></li>
-							<li class="nav-item"><a href="{{url('asset-numbers')}}"><i class="fas fa-receipt"></i><p>Asset Numbers</p></a></li>
+							<li class="nav-item"><a href="{{url('asset')}}"><i class="fas fa-list"></i><p>Define Asset</p></a></li>
+							<li class="nav-item"><a href="{{url('asset-numbers')}}"><i class="fas fa-list-ol"></i><p>Asset Numbers</p></a></li>
 						</ul>
 					</div>
 				</li>
 
 				<li class="nav-item">
 					<a data-toggle="collapse" href="#scheme" class="collapsed" aria-expanded="false">
-						<i class="fas fa-home"></i>
+							<i class="fas fa-bezier-curve"></i>
 						<p>Scheme</p>
 						<span class="caret"></span>
 					</a>
@@ -76,7 +76,7 @@
 
 				<li class="nav-item">
 					<a data-toggle="collapse" href="#review" class="collapsed" aria-expanded="false">
-						<i class="fas fa-home"></i>
+							<i class="fas fa-receipt"></i>
 						<p>Review</p>
 						<span class="caret"></span>
 					</a>

@@ -10,7 +10,7 @@
         </button>
     <button class="topbar-toggler more"><i class="icon-options-vertical"></i></button>
     <div class="nav-toggle">
-        <button class="btn btn-toggle toggle-sidebar">
+        <button class="btn btn-toggle toggle-sidebar" style="margin-top: 1em;">
             <i class="icon-menu"></i>
         </button>
     </div>
@@ -38,7 +38,7 @@
                     <div class="icon-preview">
                         <img src="http://jiada.baba.software/public/form/images/toplogo.png" style="height:59px;">
                     </div> 
-                    <div style="margin-top: 7px;">District Seraikela Kharsawan </div>
+                    <div style="margin-top: 7px;font-size: 25px; font-family: initial;">&nbsp;&nbsp;Resource & Scheme Management</div>
                     </div>
 
         </div>
@@ -48,13 +48,13 @@
                     <i class="fa fa-search"></i>
                 </a>
             </li>
-            <li class="nav-item dropdown hidden-caret">
+            <!-- <li class="nav-item dropdown hidden-caret">
                 <a class="nav-link dropdown-toggle" href="#" id="messageDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="display:flex;">
                     <i class="fas fa-user-tie" style="margin-top:7px;"></i> &nbsp;&nbsp;&nbsp;<p style="margin-top: 5px;margin-bottom: 0em;">ADMINISTRATOR</p>
                 </a>
                 <ul class="dropdown-menu messages-notif-box animated fadeIn" aria-labelledby="messageDropdown">
                     <li><br>
-                        <div class="message-notif-scroll scrollbar-outer">
+                         <div class="message-notif-scroll scrollbar-outer">
                             <div class="notif-center">
                                 <a href="#">
                                     <div class="notif-img">
@@ -95,7 +95,7 @@
                         </div>
                     </li>
                 </ul>
-            </li>
+            </li> -->
             <li class="nav-item dropdown hidden-caret">
                 <a class="nav-link dropdown-toggle" href="#" id="notifDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <i class="fa fa-bell"></i>

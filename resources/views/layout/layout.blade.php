@@ -183,7 +183,7 @@
     @yield('page-style')
 </head>
 <body>
-	<div class="wrapper sidebar_minimize">
+	<div class="wrapper static-sidebar">
 		<!-- main-header -->
         @include('layout.header')
         <!-- main-header ends -->
