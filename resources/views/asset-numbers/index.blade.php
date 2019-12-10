@@ -58,7 +58,8 @@
                                             <td>{{$data->current_value}}</td>
                                             <td class="action-buttons">
     <!--                                             <a href="{{url('asset_numbers/delete')}}/{{$data->asset_numbers_id}}/{$data->asset_geo_location_id}/{$data->asset_block_count_id}" id="delete-button" class="btn btn-secondary btn-sm"><i class="fas fa-trash-alt"></i></a>
-    -->                                            &nbsp;&nbsp;<a href="{{url('asset-numbers/add')}}?purpose=edit&id={{$data->asset_numbers_id}}" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></a>
+    -->                                             &nbsp;&nbsp;<a href="{{url('asset-numbers/add')}}?purpose=edit&id={{$data->asset_numbers_id}}" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></a>
+                                                    &nbsp;&nbsp;<a href="{{url('asset-numbers/view')}}/{{$data->asset_numbers_id}}" class="btn btn-sm btn-secondary"><i class="fas fa-eye"></i></a>
                                             </td>
                                         </tr>
                                     @endforeach

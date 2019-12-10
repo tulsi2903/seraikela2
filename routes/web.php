@@ -113,6 +113,7 @@ Route::get('asset-numbers','AssetNumbersController@index');
 Route::get('asset-numbers/add','AssetNumbersController@add');
 Route::get('asset-numbers/current_value','AssetNumbersController@current_value');
 Route::post('asset-numbers/store','AssetNumbersController@store'); 
+Route::get('asset-numbers/view/{asset_numbers_id}','AssetNumbersController@view');
 
 /* asset review */
 Route::get('asset-review', 'AssetReviewController@index');

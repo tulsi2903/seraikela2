@@ -85,6 +85,31 @@ class AssetNumbersController extends Controller
 
         return view('asset-numbers.add')->with(compact('hidden_input_purpose','hidden_input_id','data','assets','panchayats','years'));
     }
+
+    public function view(Request $request){
+       $request->asset_numbers_id;
+        
+        $assets = Asset::orderBy('asset_id')->first();
+        $panchayats = GeoStructure::where('level_id','4')->orderBy('geo_name')->first();
+        $years = Year::orderBy('year_id')->first();
+
+        $asset_numbers = AssetNumbers::leftJoin('asset','asset_numbers.asset_id','=','asset.asset_id')
+                                        ->leftJoin('year','asset_numbers.year','=','year.year_id')
+                                        ->leftJoin('geo_structure','asset_numbers.geo_id','=','geo_structure.geo_id')
+                                        
+                                        ->select('asset_numbers.*','asset.asset_name','year.year_value','geo_structure.geo_name')
+                                        ->where('asset_numbers.asset_numbers_id',$request->asset_numbers_id)->get();
+
+        $asset_locations = AssetNumbers::leftJoin('asset_geo_location','asset_numbers.geo_id','=','asset_geo_location.geo_id')
+                                        ->select('asset_numbers.*','asset_geo_location.location_name','asset_geo_location.latitude','asset_geo_location.longitude')
+                                        ->where('asset_numbers.asset_numbers_id',$request->asset_numbers_id)->get();
+
+        // return $asset_locations;
+
+        
+
+        return view('asset-numbers.view')->with(compact('assets','panchayats','years','asset_numbers','asset_locations'));
+    }
     
     public function current_value(Request $request)
     {

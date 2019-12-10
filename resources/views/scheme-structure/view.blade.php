@@ -25,9 +25,7 @@ hr.new2 {
 @endsection
 
 @section('page-content')
-<div class="main-panel">
-    <div class="content">
-        <div class="page-inner">
+
             <div class="row row-card-no-pd" style="border-top: 3px solid #5c76b7;">
                 <div class="col-md-12">
                     <div class="card-title" style="float:left; margin-top: 11px;">Scheme Details</div><br><br>
@@ -140,8 +138,6 @@ hr.new2 {
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-</div>
+       
 
 @endsection
