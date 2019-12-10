@@ -1813,7 +1813,6 @@ body {
        height: unset
    }
    .static-sidebar .sidebar {
-       position: static;
        float: left
    }
    .static-sidebar .sidebar .sidebar-wrapper {
