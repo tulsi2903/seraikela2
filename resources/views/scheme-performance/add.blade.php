@@ -168,7 +168,7 @@
         </div><br><br>
          <button type="submit" class="btn btn-secondary" id="save-button" style="margin-left: 2%;display: none;">Save&nbsp;&nbsp;</button>
 
-        <!-- <div class="col-md-11">
+        <div class="col-md-11">
             <button class="btn"  style="margin-left:1.5%;background: #000;color:#fff;"><i class="fas fa-sort-amount-up"></i> &nbsp;Gallery</button>
                 <div class="card-body" style="background: #f2f6ff; border: 1px solid #a5bbf6;margin-top: -18px;">
                     <div class="form-group">
@@ -197,7 +197,7 @@
                             </div>
                         </div>
                     </div> 
-                </div> -->
+                </div>
             </div>
         </div>
     </div>
