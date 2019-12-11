@@ -70,7 +70,7 @@ class SchemeStructureController extends Controller
 
         
 
-        return view('scheme-structure.view')->with(compact('hidden_input_purpose','hidden_input_id','data','indicator_datas','department_datas','scheme_types','departments','uoms','scheme_details'));
+        return view('scheme-structure.view')->with(compact('data','indicator_datas','department_datas','scheme_types','departments','uoms','scheme_details'));
     }
 
     public function store(Request $request){

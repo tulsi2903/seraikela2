@@ -120,9 +120,6 @@ hr.new2 {
                         @endforeach
                         <?php }?>
                     </table>
-                    <input type="text" name="hidden_input_purpose" id="hidden_input_purpose"
-                        value="{{$hidden_input_purpose}}" hidden>
-                    <input type="text" name="hidden_input_id" value="{{$hidden_input_id}}" hidden>
 
                 </div>
             </div>
