@@ -101,10 +101,10 @@
 <div class="row">
     <div class="col-md-4">
         <div class="card"   style="border-top: 3px solid #5167a0;">
-            <!-- <div class="card-header">
+            <div class="card-header">
                 <h4 class="card-title" style="text-transform: capitalize;">{{$review_type}} review</h4>
-            </div> -->
-            <div class="card-body" style="min-height: 750px;">
+            </div>
+            <div class="card-body">
                 <!-- <div class="form-group">    
                     <label>Review For<span style="color:red;margin-left:5px;">*</span></label><br/>
                     <label class="btn btn-outline-primary active rounded-pill review-for-buttons" for="review-for-block" style="cursor: pointer;">Block</label>
@@ -209,17 +209,18 @@
                     <input class="form-control" id="panchayat_id" hidden>
                     <div class="invalid-feedback">Please select panchayat(s)</div>
                 </div>
+                <hr class="new2">
                 <div class="col-md-12">
                     <button type="button" class="btn btn-primary float-right" onclick="search()"><i class="fas fa-search"></i>&nbsp;&nbsp;Search</button>
                 </div>
             </div>
         </div>
     </div> 
-    <div class="col-md-8" style="margin-left: -27px;">
-    <div class="card" style="width:103%;">
-            <div class="card-body"  style="border-top: 3px solid #5167a0; min-height: 753px;">
+    <div class="col-md-8">
+    <div class="card">
+            <div class="card-body"  style="border-top: 3px solid #5167a0; min-height: 500px;">
                  <div>   
-                    <div>
+                    <div style="display:inline-block; width: 500px;">
                         <ul class="nav nav-pills nav-secondary nav-pills-no-bd" id="pills-tab-without-border" role="tablist">
                             <li class="nav-item">
                                 <a class="nav-link active" id="tabular-tab" data-toggle="pill" href="#tabular-view-tab" role="tab" aria-selected="true">Tabular View</a>
@@ -230,15 +231,9 @@
                             <li class="nav-item">
                                 <a class="nav-link" id="map-tab" data-toggle="pill" href="#map-view-tab" role="tab" aria-selected="false">Map View</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link" id="gallery-tab" data-toggle="pill" href="#gallery-view-tab" role="tab" aria-selected="false">Gallery View</a>
-                            </li>
-                            <div class="col-md-12" style="margin-top:-33px;display: flow-root;">
-                                <button type="button" class="btn btn-secondary btn-sm print-button" onclick="printReview('tabular')" style="float: right;margin-top: -14px;"><i class="fa fa-print" aria-hidden="true"></i></button>&nbsp;&nbsp;&nbsp;
-                                <button type="button" class="btn btn-primary btn-sm print-button" style="float: right;margin-top: -14px;margin-right: 7px;"><i class="fa fa-envelope" aria-hidden="true"></i></button>
-                            </div>
                         </ul>
                     </div>
+                    <button style="display: inline-block; float:right;" type="button" class="btn btn-dark btn-rounded btn-sm print-button" onclick="printReview('tabular')"><i class="fa fa-print" aria-hidden="true"></i></button>
                 </div>
                 <hr>
                 <div id="all-view-details-filter" style="display: none; overflow:hidden; background: #efefef; padding: 10px 10px; border-radius: 5px;">
@@ -323,19 +318,8 @@
                             </div>
                             <div id="mapCanvas" style="width: 100%; height: 400px; border-radius: 3px;"></div>
                         </div>
-                        <div class="no-data">
+                        <div class="no-data" style="width: 100%; height: 400px; background: #f7f7f7; border-radius: 8px;">
                             <i class="fas fa-info-circle text-success"></i>&nbsp;&nbsp;No data found
-                        </div>
-                    </div>
-
-                    <!-- gallery-view -->
-                    <div class="tab-pane fade" id="gallery-view-tab" role="tabpanel">
-                        <!-- <h4>Gallery View&nbsp;<button type="button" class="btn btn-secondary btn-sm print-button" onclick="printReview('map')">Print&nbsp;<i class="fa fa-print" aria-hidden="true"></i></button></h4> -->
-                        <div id="gallery-view">
-                            
-                        </div>
-                        <div class="no-data" style="width: 100%; height: 400px; border-radius: 8px;">
-                            <i class="fas fa-info-circle text-success"></i>&nbsp;&nbsp;No assets data to show
                         </div>
                     </div>
 

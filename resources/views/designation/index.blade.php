@@ -4,10 +4,6 @@
 
 @section('page-style')
     <style>
-        .btn-toggle {
-        color: #fff!important;
-        margin-top: 1em;
-    }
         
     </style>
 @endsection
@@ -23,10 +19,8 @@
                     <div class="card-head-row card-tools-still-right" style="background:#fff;">
                         <h4 class="card-title">Define Designation</h4>
                         <div class="card-tools">
-                            <button type="button" class="btn btn-icon btn-round btn-success" data-target="#create-email" data-toggle="modal" ><i class="fa fa-envelope" aria-hidden="true"></i></button>
-                            <button type="button" class="btn btn-icon btn-round btn-default" id="print-button" onclick="printView();"><i class="fa fa-print" aria-hidden="true"></i></button>
-                            <a id="toggle1" class="btn btn-secondary designation-add-button" href="javascript:void();" role="button"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;Add</a>
-
+                            <button type="button" class="btn btn-icon btn-round btn-warning" data-target="#create-email" data-toggle="modal" ><i class="fa fa-envelope" aria-hidden="true"></i></button>
+                            <button type="button" class="btn btn-icon btn-round btn-info" id="print-button" onclick="printView();"><i class="fa fa-print" aria-hidden="true"></i></button>
                         </div>
                     </div>
                 </div>
@@ -35,9 +29,9 @@
          <div class="card-body">
             <div class="row">
                 <div class="col-12">
-                    <!-- <div style="display: -webkit-box; float:right;margin-top: -22px;">
+                    <div style="display: -webkit-box; float:right;margin-top: -22px;">
                         <a id="toggle1" class="btn btn-secondary designation-add-button" href="javascript:void();" role="button"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;Add</a>
-                    </div> -->
+                    </div>
                     <div id="show-toggle1">
                         <form action="{{url('designation/store')}}" method="POST" id="designation-form">
                         @csrf
@@ -77,7 +71,7 @@
                                             <td width="40px;">{{$count++}}</td>
                                             <td>{{$data->name}}</td>
                                             <td class="action-buttons">
-                                                <a href="{{url('designation/delete')}}/{{$data->desig_id}}" id="delete-button" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>
+                                                <a href="{{url('designation/delete')}}/{{$data->desig_id}}" id="delete-button" class="btn btn-secondary btn-sm"><i class="fas fa-trash-alt"></i></a>
                                                 &nbsp;&nbsp;<button type="button" class="btn btn-sm btn-secondary" onclick="openInlineForm('{{$data->desig_id}}')"><i class="fas fa-edit"></i></button>
                                             </td>
                                         </tr>

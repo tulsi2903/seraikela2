@@ -88,22 +88,22 @@
 @endsection
 
 @section('page-content')
-
-   <div class="row">
+<div class="row">
     <div class="col-md-4">
         <div class="card"   style="border-top: 3px solid #5167a0;">
-            <!-- <div class="card-header">
+            <div class="card-header">
                 <h4 class="card-title">Search</h4>
-            </div> -->
-            <div class="card-body" style="min-height:765px;">
+            </div>
+            <div class="card-body">
                 <div class="form-group">    
+                    <label>Review For<span style="color:red;margin-left:5px;">*</span></label><br/>
                     <label class="btn btn-outline-primary active rounded-pill review-for-buttons" for="review-for-block" style="cursor: pointer;">Block</label>
                     <label class="btn btn-outline-primary rounded-pill review-for-buttons" for="review-for-panchayat" style="cursor: pointer;">Panchayat</label>
                     <input type="radio" id="review-for-block" name="review_for" value="block" hidden checked>
                     <input type="radio" id="review-for-panchayat" name="review_for" value="panchayat" hidden>
                     <hr/>
                 </div>
-                <div class="row" style="margin-top: -24px;">
+                <div class="row">
                     <div class="col-6">
                         <div class="form-group">
                             <label for="year_id">Year<span style="color:red;margin-left:5px;">*</span></label>
@@ -132,7 +132,7 @@
                 <div class="form-group">
                     <hr/>
                     <label for="">Block<span style="color:red;margin-left:5px;">*</span></label>
-                    <div style="padding: 20px;text-align:center; max-width:550px;margin:auto;margin-top: -47px;">
+                    <div style="padding: 20px;text-align:center; max-width:550px;margin:auto;">
                         <svg  viewBox="0 0 739 752" stroke-linecap="round" stroke-linejoin="round">
                             <g>
                                 <path id="kukru" data-info="Kukru" data-geo-id="12" d="M385.25,12.875l2.5-3.5c10.143,0,16.727,10.909,27.5,14.5,14.572,4.857,21.2-8,33-8,0,4.333,10,22.281,10,26.5l7.5-.5c0-11.443,29.072-7,38-7l1.5,7c7.965,0,14.924-2.5,23-2.5,15.382,15.382,3.552,42.552,19.5,58.5,7.536,0,19,3.677,19,12.5,0,24.964-48.821,37.44-70,44.5l-28-1.5-30.5-20c-23.023-23.023-40.467-51.451-58.5-78.5,0-16.451,6-27.765,6-42.5Z"/>
@@ -183,15 +183,16 @@
                     <input class="form-control" id="panchayat_id" hidden>
                     <div class="invalid-feedback">Please select panchayat(s)</div>
                 </div>
+                <hr class="new2">
                 <div class="col-md-12">
-                    <center><button type="button" class="btn btn-primary float-right" onclick="search()"><i class="fas fa-search"></i>&nbsp;&nbsp;Search</button></center>
+                    <button type="button" class="btn btn-primary float-right" onclick="search()"><i class="fas fa-search"></i>&nbsp;&nbsp;Search</button>
                 </div>
             </div>
         </div>
     </div> 
-    <div class="col-md-8" style="margin-left: -26px;">
-        <div class="card" style="width: 102%;">
-            <div class="card-body" id="tab-height"  style="border-top: 3px solid #5167a0; min-height:769px;">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body"  style="border-top: 3px solid #5167a0; min-height: 500px;">
                 <ul class="nav nav-pills nav-secondary nav-pills-no-bd" id="pills-tab-without-border" role="tablist">
                     <li class="nav-item">
                         <a class="nav-link active" id="tabular-tab" data-toggle="pill" href="#tabular-view-tab" role="tab" aria-selected="true">Tabular View</a>
@@ -202,19 +203,12 @@
                     <li class="nav-item">
                         <a class="nav-link" id="map-tab" data-toggle="pill" href="#map-view-tab" role="tab" aria-selected="false">Map View</a>
                     </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link" id="gallery-tab" data-toggle="pill" href="#gallery-view-tab" role="tab" aria-selected="false">Gallery View</a>
-                    </li>
-                    <div class="col-md-12" style="margin-top: -27px;display: flow-root;">
-                        <button type="button" class="btn btn-secondary btn-sm print-button" onclick="printReview('tabular')" style="float: right;margin-top: -14px;"><i class="fa fa-print" aria-hidden="true"></i></button>&nbsp;&nbsp;&nbsp;
-                        <button type="button" class="btn btn-primary btn-sm print-button" style="float: right;margin-top: -14px;margin-right: 7px;"><i class="fa fa-envelope" aria-hidden="true"></i></button>
-                    </div>
                 </ul><hr>
                 <div class="tab-content mt-2 mb-3" id="myTabContent">
                     
                     <!-- tabular-view -->
                     <div class="tab-pane fade show active" id="tabular-view-tab" role="tabpanel">
+                        <h4>Tabular View &nbsp;<button type="button" class="btn btn-secondary btn-sm print-button" onclick="printReview('tabular')">Print&nbsp;<i class="fa fa-print" aria-hidden="true"></i></button></h4>
                         <div id="tabular-view">
                         </div>
                         <div class="no-data">
@@ -223,9 +217,9 @@
                     </div>
                     <!-- graphical-view -->
                     <div class="tab-pane fade" id="graphical-view-tab" role="tabpanel">
-                        <!-- <h4>Graphical View&nbsp;<button type="button" class="btn btn-secondary btn-sm print-button" onclick="printReview('graphical')">Print&nbsp;<i class="fa fa-print" aria-hidden="true"></i></button></h4> -->
+                        <h4>Graphical View&nbsp;<button type="button" class="btn btn-secondary btn-sm print-button" onclick="printReview('graphical')">Print&nbsp;<i class="fa fa-print" aria-hidden="true"></i></button></h4>
                         <div id="graphical-view">
-                            <div style="text-align:center; padding: 20px;border-radius: 8px;">
+                            <div style="text-align:center; padding: 20px; background: #f7f7f7; border-radius: 8px;">
                                 <canvas id="asset-chart"></canvas>
                             </div>
                         </div>
@@ -235,7 +229,7 @@
                     </div>
                     <!-- map-view -->
                     <div class="tab-pane fade" id="map-view-tab" role="tabpanel">
-                        <!-- <h4>Map View&nbsp;<button type="button" class="btn btn-secondary btn-sm print-button" onclick="printReview('map')">Print&nbsp;<i class="fa fa-print" aria-hidden="true"></i></button></h4> -->
+                        <h4>Map View&nbsp;<button type="button" class="btn btn-secondary btn-sm print-button" onclick="printReview('map')">Print&nbsp;<i class="fa fa-print" aria-hidden="true"></i></button></h4>
                         <div id="map-view">
                             <div class="map-view-form">
                                 <div class="row form-group">
@@ -261,18 +255,7 @@
                             </div>
                             <div id="mapCanvas" style="width: 100%; height: 400px; border-radius: 3px;"></div>
                         </div>
-                        <div class="no-data" style="width: 100%; height: 400px; border-radius: 8px;">
-                            <i class="fas fa-info-circle text-success"></i>&nbsp;&nbsp;No assets data to show
-                        </div>
-                    </div>
-
-                       <!-- gallery-view -->
-                       <div class="tab-pane fade" id="gallery-view-tab" role="tabpanel">
-                        <!-- <h4>Gallery View&nbsp;<button type="button" class="btn btn-secondary btn-sm print-button" onclick="printReview('map')">Print&nbsp;<i class="fa fa-print" aria-hidden="true"></i></button></h4> -->
-                        <div id="gallery-view">
-                          
-                        </div>
-                        <div class="no-data" style="width: 100%; height: 400px; border-radius: 8px;">
+                        <div class="no-data" style="width: 100%; height: 400px; background: #f7f7f7; border-radius: 8px;">
                             <i class="fas fa-info-circle text-success"></i>&nbsp;&nbsp;No assets data to show
                         </div>
                     </div>
@@ -282,7 +265,6 @@
         </div>
     </div>
 </div>
-
 
 <!-- for review-for (block, punchayat) radio buttons -->
 <script>

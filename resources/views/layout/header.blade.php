@@ -1,54 +1,21 @@
 <div class="main-header">
-
-<!-- End Logo Header -->
-<div class="logo-header" data-background-color="blue">
-				
-        <a href="../index.html" class="logo">
-            <img src="http://jiada.baba.software/public/form/images/toplogo.png" alt="navbar brand" class="navbar-brand"  style="height:50px;"> <p 
-            style="margin-top: -52px;
-            margin-left: 18px;
-            color: #ffffff;
-            font-weight: 500;
-            font-size: 20px;
-            line-height: 25px;
-            text-align: center;
-            font-family: serif;
-            letter-spacing: 1px;
-            text-shadow: 2px 4px 9px #8BC34A;
-        ">Seraikela Kharsawan</p>
-        </a>
-        <button class="navbar-toggler sidenav-toggler ml-auto" type="button" data-toggle="collapse" data-target="collapse" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon">
-                <i class="icon-menu"></i>
-            </span>
+    <div class="logo-header" data-background-color="blue">
+    <!--<a href="index.html" class="logo">
+    <img src="http://jiada.baba.software/public/form/images/toplogo.png" style="height:50px;">&nbsp;&nbsp;&nbsp;&nbsp;SERAIKELA
+    </a>-->
+    <button class="navbar-toggler sidenav-toggler ml-auto" type="button" data-toggle="collapse" data-target="collapse" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon">
+                    <i class="icon-menu"></i>
+                </span>
         </button>
-        <button class="topbar-toggler more"><i class="icon-options-vertical"></i></button>
-        <div class="nav-toggle">
-            <button class="btn btn-toggle toggle-sidebar">
-                <i class="icon-menu"></i>
-            </button>
-        </div>
+    <button class="topbar-toggler more"><i class="icon-options-vertical"></i></button>
+    <div class="nav-toggle">
+        <button class="btn btn-toggle toggle-sidebar" style="margin-top: 1em;">
+            <i class="icon-menu"></i>
+        </button>
     </div>
-<!--comment section-->
-
-<!-- <div class="logo-header" data-background-color="blue">
-        <a href="index.html" class="logo">
-        <img src="http://jiada.baba.software/public/form/images/toplogo.png" style="height:50px;">&nbsp;&nbsp;&nbsp;&nbsp;SERAIKELA
-        </a>
-        <button class="navbar-toggler sidenav-toggler ml-auto" type="button" data-toggle="collapse" data-target="collapse" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon">
-                        <i class="icon-menu"></i>
-                    </span>
-            </button>
-        <button class="topbar-toggler more"><i class="icon-options-vertical"></i></button>
-        <div class="nav-toggle">
-            <button class="btn btn-toggle toggle-sidebar" style="margin-top:4px;">
-                <i class="icon-menu"></i>
-            </button>
-        </div>
-    </div> -->
-
-    <!--end of comment-->
+</div>
+<!-- End Logo Header -->
 
 <!-- Navbar Header -->
 <nav class="navbar navbar-header navbar-expand-lg" data-background-color="blue2">
@@ -68,10 +35,10 @@
                 <img src="http://jiada.baba.software/public/form/images/toplogo.png" style="height:59px;">&nbsp;&nbsp;&nbsp; District Seraikela 
             </div>-->
             <div class="demo-icon" style="display: flex;">
-                    <!-- <div class="icon-preview">
+                    <div class="icon-preview">
                         <img src="http://jiada.baba.software/public/form/images/toplogo.png" style="height:59px;">
-                    </div>  -->
-                    <div style="margin-top: -7px;font-size: 25px; font-family: initial;text-shadow: 0px 2px 2px #000;">&nbsp;&nbsp;District Scheme & Resource Management</div>
+                    </div> 
+                    <div style="margin-top: 7px;font-size: 25px; font-family: initial;">&nbsp;&nbsp;Resource & Scheme Management</div>
                     </div>
 
         </div>

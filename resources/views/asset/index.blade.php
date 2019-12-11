@@ -4,7 +4,6 @@
 
 @section('page-style')
     <style>
-
         
     </style>
 @endsection
@@ -20,10 +19,8 @@
                             <!-- <button class="btn btn-icon btn-link btn-primary btn-xs"><span class="fa fa-angle-down"></span></button>
                             <button class="btn btn-icon btn-link btn-primary btn-xs btn-refresh-card"><span class="fa fa-sync-alt"></span></button>
                             <button class="btn btn-icon btn-link btn-primary btn-xs"><span class="fa fa-times"></span></button> -->
-                            <button type="button" class="btn btn-icon btn-round btn-success" data-target="#create-email" data-toggle="modal" ><i class="fa fa-envelope" aria-hidden="true"></i></button>
-                            <button type="button" class="btn btn-icon btn-round btn-default" id="print-button" onclick="printView();"><i class="fa fa-print" aria-hidden="true"></i></button>
-                            <a class="btn btn-secondary" href="{{url('asset/add')}}" role="button"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;Add</a>
-
+                            <button type="button" class="btn btn-icon btn-round btn-warning" data-target="#create-email" data-toggle="modal" ><i class="fa fa-envelope" aria-hidden="true"></i></button>
+                            <button type="button" class="btn btn-icon btn-round btn-info" id="print-button" onclick="printView();"><i class="fa fa-print" aria-hidden="true"></i></button>
                         </div>
                     </div>
                 </div>
@@ -31,10 +28,10 @@
         </div>
         <div class="card-body">
             <div class="row">
-                <!-- <div class="col-12">
+                <div class="col-12">
                     <div style="display: -webkit-box; float:right;margin-top: -22px;">
                         <a class="btn btn-secondary" href="{{url('asset/add')}}" role="button"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;Add</a>
-                    </div>-->
+                    </div><br><br>
                     <div class="table-responsive table-hover table-sales">
                         <table class="table table-datatable" id="printable-area">
                             <thead style="background: #d6dcff;color: #000;">
@@ -68,7 +65,7 @@
                                         <td>{{$data->dept_name}}</td>
                                         
                                         <td class="action-buttons">
-                                            <a href="{{url('asset/delete')}}/{{$data->asset_id}}" id="delete-button" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>
+                                            <a href="{{url('asset/delete')}}/{{$data->asset_id}}" id="delete-button" class="btn btn-secondary btn-sm"><i class="fas fa-trash-alt"></i></a>
                                             &nbsp;&nbsp;<a href="{{url('asset/add')}}?purpose=edit&id={{$data->asset_id}}" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></a>
                                         </td>
                                     </tr>
