@@ -128,13 +128,13 @@ var table = $('.table-geo-structure-datatable').DataTable();
                             <div class="form-group">
                                 <input type="hidden" name="geo_structure" value="geo_structure">
                                 <input type="hidden" name="data" value="{{$datas}}">
-                                <input type="text" name="from" class="form-control" placeholder="From" required="">
+                                <!-- <input type="text" name="from" class="form-control" placeholder="From" required=""> -->
                             </div> 
                             <div class="form-group">  
                                 <input type="text" name="to" class="form-control" placeholder="To" required="">
                             </div>
                             <div class="form-group">                           
-                                <input type="text" name="cc" class="form-control" placeholder="CC" required="">
+                                <input type="text" name="cc" class="form-control" placeholder="CC">
                             </div>
                            
                             <div class="form-group">
