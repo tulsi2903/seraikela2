@@ -96,11 +96,6 @@ Route::get('uom/add','UomController@add');
 Route::post('uom/store','UomController@store');
 Route::get('uom/delete/{uom_id}','UomController@delete');
 
-/*asset*/
-Route::get('asset','AssetController@index');
-Route::get('asset/add','AssetController@add');
-Route::post('asset/store','AssetController@store');
-Route::get('asset/delete/{asset_id}','AssetController@delete');
 
 /*Scheme Type*/
 Route::get('scheme-type','SchemeTypeController@index');
@@ -164,6 +159,25 @@ Route::get('module','ModuleController@index');
 Route::get('module/add','ModuleController@add');
 Route::post('module/store','ModuleController@store');
 Route::get('module/delete/{mod_id}','ModuleController@delete');
+
+/*asset*/
+Route::get('asset','AssetController@index');
+Route::get('asset/add','AssetController@add');
+Route::post('asset/store','AssetController@store');
+Route::get('asset/delete/{asset_id}','AssetController@delete');
+Route::get('asset/get-subcategory','AssetController@get_subcategory_name');
+
+/*Asset Category*/
+Route::get('assetcat','AssetController@index_cat');
+Route::get('assetcat/add','AssetController@add_cat');
+Route::post('assetcat/store','AssetController@store_cat');
+Route::get('assetcat/delete/{asset_cat_id}','AssetController@delete_cat');
+
+/*Asset Sub Category*/
+Route::get('asset_subcat','AssetController@index_subcat');
+Route::get('asset_subcat/add','AssetController@add_subcat');
+Route::post('asset_subcat/store','AssetController@store_subcat');
+Route::get('asset_subcat/delete/{asset_sub_id}','AssetController@delete_subcat');
 
 
 //send mail by rohit

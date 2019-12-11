@@ -269,11 +269,11 @@
                     contentType:'application/json',
                     dataType:"json",
                     beforeSend: function(data){
-                        $(".loader").fadeIn(300);
+                        $(".custom-loader").fadeIn(300);
                     },
                     error:function(xhr){
                         alert("error"+xhr.status+","+xhr.statusText);
-                        $(".loader").fadeOut(300);
+                        $(".custom-loader").fadeOut(300);
                     },
                     success:function(data){
                         console.log(data);

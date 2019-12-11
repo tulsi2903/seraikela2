@@ -104,8 +104,6 @@ class AssetNumbersController extends Controller
                                         ->select('asset_numbers.*','asset_geo_location.location_name','asset_geo_location.latitude','asset_geo_location.longitude')
                                         ->where('asset_numbers.asset_numbers_id',$request->asset_numbers_id)->get();
 
-        // return $asset_locations;
-
         
 
         return view('asset-numbers.view')->with(compact('assets','panchayats','years','asset_numbers','asset_locations'));
