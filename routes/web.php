@@ -72,8 +72,12 @@ Route::get('scheme-structure/view/{scheme_id}','SchemeStructureController@view')
 Route::get('scheme-geo-target','SchemeGeoTargetController@index');
 Route::get('scheme-geo-target/add','SchemeGeoTargetController@add');
 Route::post('scheme-geo-target/store','SchemeGeoTargetController@store');
+Route::get('scheme-geo-target/store','SchemeGeoTargetController@store');
 Route::get('scheme-geo-target/get-indicator-name','SchemeGeoTargetController@get_indicator_name');
 Route::get('scheme-geo-target/get-panchayat-name','SchemeGeoTargetController@get_panchayat_name');
+Route::get('scheme-geo-target/get-panchayat-datas','SchemeGeoTargetController@get_panchayat_datas');
+Route::get('scheme-geo-target/get-all-datas','SchemeGeoTargetController@get_all_datas');
+Route::get('scheme-geo-target/get-scheme-sanction-id','SchemeGeoTargetController@get_scheme_sanction_id');
 Route::get('scheme-geo-target/get-target','SchemeGeoTargetController@get_target');
 Route::get('scheme-geo-target/delete/{scheme_geo_target_id}','SchemeGeoTargetController@delete');
 
