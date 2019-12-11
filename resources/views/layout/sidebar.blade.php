@@ -51,8 +51,6 @@
 						<ul class="nav nav-collapse">
 							<li class="nav-item"><a href="{{url('asset')}}"><i class="fas fa-list"></i><p>Define Asset</p></a></li>
 							<li class="nav-item"><a href="{{url('asset-numbers')}}"><i class="fas fa-list-ol"></i><p>Asset Numbers</p></a></li>
-							<li class="nav-item"><a href="{{url('assetcat')}}"><i class="fas fa-receipt"></i><p> Asset Category</p></a></li>
-							<li class="nav-item"><a href="{{url('asset_subcat')}}"><i class="fas fa-receipt"></i><p> Asset Sub Category</p></a></li>
 						</ul>
 					</div>
 				</li>

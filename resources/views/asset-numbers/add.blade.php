@@ -17,10 +17,12 @@
             </div>
         </div>
         <div class="card-body">
-            <div class="row justify-content-center">
-                <div class="col-md-6">
+           
+              
                     <form action="{{url('asset-numbers/store')}}" method="POST">
                     @csrf
+                    <div class="row">
+                        <div class="col-md-3">
                            <div class="form-group">
                                 <label for="year">Year<span style="color:red;margin-left:5px;">*</span></label>
                                 <select name="year" id="year" class="form-control">
@@ -30,8 +32,9 @@
                                     @endforeach
                                 </select>
                                 <div class="invalid-feedback" id="year_error_msg"></div>
-
                             </div>
+                        </div>
+                        <div class="col-md-3">
                             <div class="form-group">
                                 <label for="asset_id">Asset<span style="color:red;margin-left:5px;">*</span></label>
                                 <select name="asset_id" id="asset_id" class="form-control">
@@ -41,8 +44,10 @@
                                     @endforeach
                                 </select>
                                 <div class="invalid-feedback" id="asset_id_error_msg"></div>
-
                             </div>
+                        </div>
+
+                        <div class="col-md-3">
                              <div class="form-group">
                                 <label for="geo_id">Panchayat<span style="color:red;margin-left:5px;">*</span></label>
                                 <select name="geo_id" id="geo_id" class="form-control">
@@ -54,19 +59,26 @@
                                 <div class="invalid-feedback" id="geo_id_error_msg"></div>
 
                             </div>
+                        </div>
+                    </div>
                             <!-- <div class="form-group next-button">
                                 <button type="button" class="btn btn-primary btn-secondary" onclick="next()" id="btn_hide">Next&nbsp;&nbsp;<i class="fas fa-arrow-right"></i></button>
                             </div> -->
-                           
+                        <div class="row">
+                            <div class="col-md-3">
                             <div class="form-group" id="previous_value_hide" style="display:none;">
                                 <label for="previous_value">Previous Value</label>
                                 <input type="text" name="previous_value" id="previous_value" class="form-control" readonly>
                             </div>
+                        </div>
+                        <div class="col-md-3">
                             <div class="form-group" id="current_value_hide" style="display:none;">
                                 <label for="current_value">Current Value</label>
                                 <input type="text" name="current_value" id="current_value"  value="{{$data->current_value}}" class="form-control" autocomplete="off">
                                 <div class="invalid-feedback" id="current_value_error_msg"></div>
                             </div>
+                        </div>
+                        </div>
                            
                             <div class="form-group" style="display:none;" id="append-location">
                                 <label>Asset Locations</label>

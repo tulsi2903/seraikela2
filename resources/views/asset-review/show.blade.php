@@ -91,7 +91,6 @@
                     <div class="card">
                         <div class="card-body">
                             <div class="form-group">    
-                                <label>Review For<span style="color:red;margin-left:5px;">*</span></label><br/>
                                 <label class="btn btn-outline-primary active rounded-pill review-for-buttons" for="review-for-block" style="cursor: pointer;">Block</label>
                                 <label class="btn btn-outline-primary rounded-pill review-for-buttons" for="review-for-panchayat" style="cursor: pointer;">Panchayat</label>
                                 <input type="radio" id="review-for-block" name="review_for" value="block" hidden checked>

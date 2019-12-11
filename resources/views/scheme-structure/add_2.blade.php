@@ -34,8 +34,8 @@
 <div class="row">
     <div class="col-md-12">
         <div class="card" style="border-top: 3px solid #5c76b7;">
-            <div class="card-header">
-                <div class="card-title" style="float:left;"><i class="fa fa-user" aria-hidden="true"></i> &nbsp;Define Scheme</div>
+            <div class="card-header" style="background: #fff;">
+                <div class="card-title" style="float:left;"> &nbsp;&nbsp;&nbsp;&nbsp;Define Scheme</div>
             </div><br><br>
             <!-----------------------------------------start of Scheme Detail Form------------------------------------------>
             <div class="card-body" style="margin-top: -57px;">
