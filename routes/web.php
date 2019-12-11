@@ -143,6 +143,8 @@ Route::get('scheme-performance/get-indicator-name','SchemePerformanceController@
 // Route::get('scheme-performance/get-indicator-table','SchemePerformanceController@get_indicator_table');
 Route::get('scheme-performance/get-target','SchemePerformanceController@get_target');
 
+Route::get("scheme-performance/get-scheme-performance-datas", "SchemePerformanceController@get_scheme_performance_datas");
+
 
 /* group*///rohit changes 
 Route::get('scheme-group','GroupController@index');

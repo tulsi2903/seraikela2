@@ -10,6 +10,8 @@ use App\Year;
 use App\SchemeStructure;
 use App\Group;
 use App\SchemePerformance;
+use App\SchemeGeoTarget2;
+use App\SchemePerformance2;
 
 class SchemePerformanceController extends Controller
 {
@@ -208,6 +210,82 @@ class SchemePerformanceController extends Controller
             session()->put('alert-content','Scheme performance have been successfully submitted !');
         }
         return redirect('scheme-performance/add');
+    }
+
+    // to send all datas from scheme_performance of scheme_sanction_id (scheme_geo_target)
+    public function get_scheme_performance_datas(Request $request){
+        // $to_return
+        $to_return = [];
+
+        // received datas
+        $scheme_sanction_id = $request->scheme_sanction_id;
+
+        $scheme_geo_target_datas = SchemeGeoTarget2::where('scheme_sanction_id', $scheme_sanction_id)->get();
+        if($scheme_geo_target_datas){
+            $unique_scheme_geo_target_ids = [];
+            foreach($scheme_geo_target_datas as $scheme_geo_target_data){
+                if(!in_array($scheme_geo_target_data->scheme_geo_target_id, $unique_scheme_geo_target_ids)){
+                    array_push($unique_scheme_geo_target_ids, $scheme_geo_target_data->scheme_geo_target_id);
+                }
+            }
+
+            $indicator_datas = SchemeIndicator::where('scheme_id', $scheme_geo_target_datas[0]->scheme_id)->get();
+
+            // getting all rows/columns
+            foreach($indicator_datas as $indicator_data)
+            {
+                $to_return_tmp = [];
+                $found = false; //data found in geo target i.e. already assigned targets
+                foreach($scheme_geo_target_datas as $scheme_geo_target_data){
+                    if($indicator_data->indicator_id==$scheme_geo_target_data->indicator_id)
+                    {
+                        $to_return_tmp["indicator_id"] = $indicator_data->indicator_id;
+                        $to_return_tmp["indicator_name"] = $indicator_data->indicator_name;
+                        $to_return_tmp["geo_related"] = $scheme_geo_target_data->geo_related;
+                        $to_return_tmp["target"] = $scheme_geo_target_data->target;
+                        $to_return_tmp["indicator_datas"] = [];
+
+                        // scheme_performance datas in ["indicator_datas] starts
+                        $to_return_indicator_datas_tmp = [];
+                        $scheme_performance_datas = SchemePerformance2::where('scheme_geo_target_id', $scheme_geo_target_data->scheme_geo_target_id)->get();
+                        foreach($scheme_performance_datas as $scheme_performance_data){
+                            $tmp_to_push["scheme_performance_id"] = $scheme_performance_data->scheme_performance_id;
+                            $tmp_to_push["indicator_sanction_id"] = $scheme_performance_data->indicator_sanction_id;
+                            $tmp_to_push["latitude"] = $scheme_performance_data->latitude;
+                            $tmp_to_push["longitude"] = $scheme_performance_data->longitude;
+                            $tmp_to_push["comments"] = $scheme_performance_data->comments;
+                            array_push($to_return_indicator_datas_tmp, $tmp_to_push);
+                        }
+                        if($to_return_indicator_datas_tmp){
+                            $to_return_tmp["indicator_datas"] = $to_return_indicator_datas_tmp;
+                        }
+                        // scheme_performance_datas ends
+
+                        $found = true; // if data found in geo target i.e. already assigned targets
+                        array_push($to_return, $to_return_tmp);
+                    }
+                }
+
+                // no data data found in geo target i.e. already assigned targets
+                if(!$found){
+                    $to_return_tmp["indicator_id"] = $indicator_data->indicator_id;
+                    $to_return_tmp["indicator_name"] = $indicator_data->indicator_name;
+                    $to_return_tmp["geo_related"] = '0';
+                    $to_return_tmp["target"] = '0';
+                    $to_return_tmp["indicator_datas"] = [];
+                    array_push($to_return, $to_return_tmp);
+                }
+            }
+        }
+
+        if(count($to_return)!=0){
+            $response = "success";
+        }
+        else{
+            $response = "no_data";
+        }
+
+        return ["response"=>$response, "data"=>$to_return];
     }
 
    
