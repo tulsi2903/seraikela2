@@ -14,7 +14,7 @@
             <div class="card">
                 <div class="card-header">
                     <div class="card-head-row card-tools-still-right" style="background:#fff;">
-                        <h4 class="card-title">Department</h4>
+                        <h4 class="card-title">Department1</h4>
                         <div class="card-tools">
                         <a href="{{url('department')}}" class="btn btn-sm btn-secondary" style="float:right;"><i class="fas fa-arrow-left"></i>&nbsp;&nbsp;Back</a>
                         </div>

@@ -419,7 +419,7 @@ body {
 }
 
 .main-header .navbar-header {
-   min-height: 62px
+   min-height: 66px
 }
 
 .main-header .navbar-header .btn-toggle {
@@ -1826,7 +1826,7 @@ body {
        margin-bottom: 60px
    }
    .static-sidebar .footer {
-       position: absolute;
+       position:fixed;
        bottom: 0
    }
 }
@@ -3881,8 +3881,9 @@ body {
 .card .card-header, .card-light .card-header {
    padding: 0rem 1.25rem;
    background-color: transparent;
-   border-bottom: 1px solid #ebecec!important;
+   border-bottom: 1px dotted #50669e!important;
    margin-top: 10px;
+   /* margin-bottom: 0px; */
 }
 
 .card .card-header:first-child,
@@ -3893,14 +3894,16 @@ body {
 .card .card-header .card-head-row,
 .card-light .card-header .card-head-row {
    display: flex;
-   align-items: center
+   align-items: center;
+   margin-bottom: 10px;
 }
 
 .card .card-header .card-head-row .card-tools,
 .card-light .card-header .card-head-row .card-tools {
    margin-left: auto;
    float: right;
-   padding-left: 15px
+   padding-left: 15px;
+   margin-right: 19px;
 }
 
 .card .separator-solid,
