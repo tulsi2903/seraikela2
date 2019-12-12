@@ -82,7 +82,7 @@ class SchemeStructureController extends Controller
             $scheme_structure = $scheme_structure->find($request->hidden_input_id);
 
         }
-        
+        $scheme_structure->org_id = 1;
         $scheme_structure->scheme_name =$request->scheme_name;
         $scheme_structure->scheme_short_name = $request->scheme_short_name;
         $scheme_structure->is_active = $request->is_active;

@@ -104,13 +104,13 @@
                             <div class="form-group">
                                 <input type="hidden" name="group" value="group"> 
                                 <input type="hidden" name="result" value="{{$results}}">
-                                <input type="text" name="from" class="form-control" placeholder="From" required="">
+                                <!-- <input type="text" name="from" class="form-control" placeholder="From" required=""> -->
                             </div> 
                             <div class="form-group">  
                                 <input type="text" name="to" class="form-control" placeholder="To" required="">
                             </div>
                             <div class="form-group">                           
-                                <input type="text" name="cc" class="form-control" placeholder="CC" required="">
+                                <input type="text" name="cc" class="form-control" placeholder="CC">
                             </div>
                            
                             <div class="form-group">
