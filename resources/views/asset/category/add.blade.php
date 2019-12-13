@@ -3,7 +3,7 @@
 @section('title', 'Asset Category')
 
 @section('page-content')
-   <div class="row row-card-no-pd" style="border-top: 3px solid #5c76b7;">
+   <div class="row row-card-no-pd" style="border-top: 3px solid #5c76b7;height: 873px;">
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
@@ -16,37 +16,45 @@
                 </div>
             </div>
         </div>
-        <div class="card-body">
-            <div class="row justify-content-center">
-                <div class="col-md-6">
+        <div class="card-body" style="margin-top: -27em;">
+           
                     <form action="{{url('assetcat/store')}}" method="POST">
                     @csrf
+            <div class="row">
+                <div class="col-md-3">
                     <div class="form-group">
                         <label for="asset_name">Asset Category Name<span style="color:red;margin-left:5px;">*</span></label>
                         <input type="text" name="asset_cat_name" id="asset_name" class="form-control" value="{{$data->asset_cat_name}}" autocomplete="off">
                          <div class="invalid-feedback" id="asset_name_error_msg"></div>
-                        </div>
-                        <div class="form-group">
-                            <label for="movable">Type<span style="color:red;margin-left:5px;">*</span></label>
-                            <select name="movable" id="movable" class="form-control">
-                                <option value="">---Select---</option>
-                                <option value="1" <?php if($data->movable=='1'){ echo "selected"; } ?>>Movable</option>
-                                <option value="0" <?php if($data->movable=='0'){ echo "selected"; } ?>>Immovable</option>
-                            </select>
-                             <div class="invalid-feedback" id="movable_error_msg"></div>
-                        </div>
-                        <div class="form-group">
-                            <label for="dept_id">Asset Category Description<span style="color:red;margin-left:5px;"></span></label>
-                            <input type="textarea" class="form-control" name="asset_cat_description" value="{{$data->asset_cat_description}}">
-                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="movable">Type<span style="color:red;margin-left:5px;">*</span></label>
+                        <select name="movable" id="movable" class="form-control">
+                            <option value="">---Select---</option>
+                            <option value="1" <?php if($data->movable=='1'){ echo "selected"; } ?>>Movable</option>
+                            <option value="0" <?php if($data->movable=='0'){ echo "selected"; } ?>>Immovable</option>
+                        </select>
+                            <div class="invalid-feedback" id="movable_error_msg"></div>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="dept_id">Asset Category Description<span style="color:red;margin-left:5px;"></span></label>
+                        <input type="textarea" class="form-control" name="asset_cat_description" value="{{$data->asset_cat_description}}">
+                    </div>
+                </div>
                        
-                        
-                        <div class="form-group">
-                            <input type="text" name="hidden_input_purpose" value="{{$hidden_input_purpose}}" hidden>
-                            <input type="text" name="hidden_input_id" value="{{$hidden_input_id}}" hidden>
-                            <button type="submit" class="btn btn-primary" onclick="return submitForm()">Save&nbsp;&nbsp;<i class="fas fa-check"></i></button>
-                            <button type="reset" class="btn btn-secondary">Reset&nbsp;&nbsp;<i class="fas fa-undo"></i></button>
-                        </div>
+                <div class="col-md-3" style="margin-top: 2em;">
+                    <div class="form-group">
+                        <input type="text" name="hidden_input_purpose" value="{{$hidden_input_purpose}}" hidden>
+                        <input type="text" name="hidden_input_id" value="{{$hidden_input_id}}" hidden>
+                        <button type="submit" class="btn btn-primary" onclick="return submitForm()">Save&nbsp;&nbsp;<i class="fas fa-check"></i></button>
+                        <button type="reset" class="btn btn-secondary">Reset&nbsp;&nbsp;<i class="fas fa-undo"></i></button>
+                    </div>
+                </div>
                     </form>
                 </div>
             </div>

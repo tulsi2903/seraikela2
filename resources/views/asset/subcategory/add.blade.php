@@ -17,10 +17,11 @@
             </div>
         </div>
         <div class="card-body">
-            <div class="row justify-content-center">
-                <div class="col-md-6">
+           
                     <form action="{{url('asset_subcat/store')}}" method="POST">
                     @csrf
+            <div class="row">
+                    <div class="col-md-3">
                     <div class="form-group">
                             <label for="dept_id">Asset Category Name<span style="color:red;margin-left:5px;">*</span></label>
                             <select name="asset_cat_id"  class="form-control">
@@ -31,14 +32,21 @@
                             </select>
                            <div class="invalid-feedback" id="department_error_msg"></div>
                         </div>
+                        </div>
+
+                        <div class="col-md-3">
                     <div class="form-group">
                         <label for="asset_name">Asset Sub Category Name<span style="color:red;margin-left:5px;">*</span></label>
                         <input type="text" name="asset_sub_cat_name" id="asset_name" class="form-control" value="{{$data->asset_sub_cat_name}}" autocomplete="off">
                          <div class="invalid-feedback" id="asset_name_error_msg"></div>
                         </div>
+                        </div>
+
+                        <div class="col-md-3">
                         <div class="form-group">
                                 <label for="asset_name">Asset Sub Category Description<span style="color:red;margin-left:5px;"></span></label>
                                 <input type="textarea" name="asset_sub_cat_description"  class="form-control" value="{{$data->asset_sub_cat_description}}" autocomplete="off">
+                                </div>
                                 </div>
                         <!-- <div class="form-group">
                             <label for="movable">Type<span style="color:red;margin-left:5px;">*</span></label>
@@ -51,13 +59,14 @@
                         </div> -->
                         
                        
-                        
+                        <div class="col-md-3" style="margin-top: 2em;">
                         <div class="form-group">
                             <input type="text" name="hidden_input_purpose" value="{{$hidden_input_purpose}}" hidden>
                             <input type="text" name="hidden_input_id" value="{{$hidden_input_id}}" hidden>
                             <button type="submit" class="btn btn-primary" onclick="return submitForm()">Save&nbsp;&nbsp;<i class="fas fa-check"></i></button>
                             <button type="reset" class="btn btn-secondary">Reset&nbsp;&nbsp;<i class="fas fa-undo"></i></button>
                         </div>
+                    </div>
                     </form>
                 </div>
             </div>

@@ -33,6 +33,9 @@
 <!-- datepicker -->
 <script src="{{url('public/assets/js/bootstrap-datepicker.js')}}"></script>
 
+<script src="{{url('public/assets/js/particles.js')}}"></script>
+<script src="{{url('public/assets/js/app.js')}}"></script>
+
 
 <script>
     $(document).ready(function() {

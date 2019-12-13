@@ -98,13 +98,12 @@
 @endsection
 
 @section('page-content')
-<div class="row">
+<div class="row row-card-no-pd" style="border-top: 3px solid #5c76b7;">
     <div class="col-md-4">
-        <div class="card"   style="border-top: 3px solid #5167a0;">
             <!-- <div class="card-header">
                 <h4 class="card-title" style="text-transform: capitalize;">{{$review_type}} review</h4>
             </div> -->
-            <div class="card-body" style="min-height: 750px;">
+            <div class="card-body">
                 <!-- <div class="form-group">    
                     <label>Review For<span style="color:red;margin-left:5px;">*</span></label><br/>
                     <label class="btn btn-outline-primary active rounded-pill review-for-buttons" for="review-for-block" style="cursor: pointer;">Block</label>
@@ -213,11 +212,11 @@
                     <button type="button" class="btn btn-primary float-right" onclick="search()"><i class="fas fa-search"></i>&nbsp;&nbsp;Search</button>
                 </div>
             </div>
-        </div>
+        
     </div> 
     <div class="col-md-8" style="margin-left: -27px;">
-    <div class="card" style="width:103%;">
-            <div class="card-body"  style="border-top: 3px solid #5167a0; min-height: 753px;">
+ 
+            <div class="card-body">
                  <div>   
                     <div>
                         <ul class="nav nav-pills nav-secondary nav-pills-no-bd" id="pills-tab-without-border" role="tablist">
@@ -341,7 +340,7 @@
 
                 </div>
             </div>
-        </div>
+      
     </div>
 </div>
 

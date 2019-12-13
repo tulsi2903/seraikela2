@@ -4,36 +4,14 @@
 
 @section('page-style')
 <style>
-    .card, .card-light {
-        border-radius: 5px;
-        /* background-color: #fff; */
-        margin-bottom: 30px;
-        -webkit-box-shadow: 2px 6px 15px 0 rgba(69, 65, 78, .1);
-        -moz-box-shadow: 2px 6px 15px 0 rgba(69, 65, 78, .1);
-        box-shadow: 2px 6px 6px #6f6e6e;
-        border: 0;
-        /* background-image: linear-gradient(to right, white , #9296a2); */
-        background: linear-gradient(to top, #cedcff, #ffffff 100%, #ffffff, #ffffff 73%);
-    }
-    hr.new2 {
-     border-top: 1px dashed #000;
-   
-    }    
-    .card .card-action, .card-light .card-action {
-        padding: 30px;
-        background-color: transparent;
-        line-height: 30px;
-        border-top: 1px solid #ebecec!important;
-        font-size: 14px;
-        margin-top: -18px;
-    }
+
 </style>
 @endsection
 
 @section('page-content')
-<div class="row">
+<div class="row row-card-no-pd" style="border-top: 3px solid #5c76b7;">
     <div class="col-md-12">
-        <div class="card" style="border-top: 3px solid #5c76b7;">
+        <div class="card">
             <div class="card-header">
                 <div class="card-title" style="float:left;"><i class="fa fa-user" aria-hidden="true"></i> &nbsp;Define Scheme</div>
             </div><br><br>

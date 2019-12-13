@@ -89,13 +89,13 @@
 
 @section('page-content')
 
-   <div class="row">
+<div class="row row-card-no-pd" style="border-top: 3px solid #5c76b7;">
     <div class="col-md-4">
-        <div class="card"   style="border-top: 3px solid #5167a0;">
+       
             <!-- <div class="card-header">
                 <h4 class="card-title">Search</h4>
             </div> -->
-            <div class="card-body" style="min-height:765px;">
+            <div class="card-body">
                 <div class="form-group">    
                     <label class="btn btn-outline-primary active rounded-pill review-for-buttons" for="review-for-block" style="cursor: pointer;">Block</label>
                     <label class="btn btn-outline-primary rounded-pill review-for-buttons" for="review-for-panchayat" style="cursor: pointer;">Panchayat</label>
@@ -187,11 +187,12 @@
                     <center><button type="button" class="btn btn-primary float-right" onclick="search()"><i class="fas fa-search"></i>&nbsp;&nbsp;Search</button></center>
                 </div>
             </div>
-        </div>
+        
     </div> 
+   
     <div class="col-md-8" style="margin-left: -26px;">
-        <div class="card" style="width: 102%;">
-            <div class="card-body" id="tab-height"  style="border-top: 3px solid #5167a0; min-height:769px;">
+
+            <div class="card-body" id="tab-height">
                 <ul class="nav nav-pills nav-secondary nav-pills-no-bd" id="pills-tab-without-border" role="tablist">
                     <li class="nav-item">
                         <a class="nav-link active" id="tabular-tab" data-toggle="pill" href="#tabular-view-tab" role="tab" aria-selected="true">Tabular View</a>
@@ -279,8 +280,9 @@
 
                 </div>
             </div>
-        </div>
+       
     </div>
+</div>
 </div>
 
 

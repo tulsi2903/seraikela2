@@ -4,12 +4,7 @@
 
 @section('page-style')
     <style>
-        @media screen and (min-width: 991px){
-            .static-sidebar .main-panel .content {
-                margin-bottom: 3%;
-            }
-        }
-        
+  
     </style>
 @endsection
 

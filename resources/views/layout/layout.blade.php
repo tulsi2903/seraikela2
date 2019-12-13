@@ -28,6 +28,7 @@
     <link rel="stylesheet" href="{{url('public/assets/css/atlantis.min.css')}}">
     <link rel="stylesheet" href="{{url('public/assets/css/bootstrap-datepicker.min.css')}}">
     <link rel="stylesheet" href="{{asset('public/assets/plugins/chart/Chart.min.css')}}">
+    
 
     <!-- core js file, jquery, bootstrap etc -->
     <script src="{{url('public/js/app.js')}}"></script>
@@ -115,7 +116,7 @@
             border-radius: 5px;
             margin-left: 0;
             margin-right: 0;
-            background: linear-gradient(to top, #cedcff, #ffffff 50%, #ffffff, #ffffff 75%);
+            background: linear-gradient(to top, #a5baef, #ffffff 55%, #ffffff, #ffffff 75%);
             margin-bottom: 1px;
             padding-top: 0px;
             padding-bottom: 15px;
