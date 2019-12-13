@@ -430,7 +430,7 @@ class EmailController extends Controller
 
             $user = array('email_from'=>$email_from,'email_to'=>$email_to, 'cc'=>$email_cc, 'subject'=>$request->subject, 'content'=>$request->message,'results'=>$details);
             
-            Mail::send('mail.year',['user'=> $user], function($message) use ($user)
+            Mail::send('mail.uom',['user'=> $user], function($message) use ($user)
              {
                  $email_to=explode(',',$user['email_to']);
                  foreach($email_to as $key=>$value)
