@@ -50,7 +50,7 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody>                                                                    
-                                                    @if($datas_dept!=0)
+                                                    @if(count($datas_dept)!=0)
                                                         @foreach($datas_dept as $key => $val)
                                                             <!-- @if($val->is_active=='1') -->
                                                                 <tr>
@@ -89,7 +89,7 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                         @if($datas_scheme!=0)
+                                                         @if(count($datas_scheme)!=0)
                                                             @foreach($datas_scheme as $key => $val)
                                                                     <tr>
                                                                         <td><input type="checkbox" name="scheme_id[]" value="{{$val->scheme_id}}" @if($val->checked==1) checked @endif></td>
@@ -126,7 +126,7 @@
                                                                 </tr>
                                                             </thead>
                                                            
-                                                            @if($datas_block!=0)
+                                                            @if(count($datas_block)!=0)
                                                                 @foreach($datas_block as $key => $val)
                                                                     <tr>
                                                                         <td><input type="checkbox" name="block_id[]" value={{$val->geo_id}} @if($val->checked==1) checked @endif></td>
@@ -159,7 +159,7 @@
                                                     </thead>
                                                 
                                                     <tbody>
-                                                        @if($datas_panchayat!=0)
+                                                        @if(count($datas_panchayat)!=0)
                                                 
                                                         <tr>
                                                             @foreach($datas_panchayat as $key => $val)
