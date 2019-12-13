@@ -55,14 +55,16 @@ class AssetController extends Controller
         $asset->asset_name = $request->asset_name;
         $asset->movable = $request->movable;
         $asset->dept_id = $request->dept_id;
-        $asset->org_id = 1;
+        $asset->org_id = '1';
         $asset->category_id = $request->category;
         $asset->subcategory_id = $request->subcategory;
         
         $asset->created_by = '1';
         $asset->updated_by = '1';
-       
-        if(Asset::where('asset_name',$request->asset_name)->first()&&$request->hidden_input_purpose!="edit"){
+
+   
+
+        if(Asset::where('asset_name',$request->asset_name)->where('dept_id',$request->dept_id)->first()&&$request->hidden_input_purpose!="edit"){
          session()->put('alert-class','alert-danger');
          session()->put('alert-content','This asset '.$request->asset_name.' already exist !');
         }

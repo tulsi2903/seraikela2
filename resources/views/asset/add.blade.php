@@ -195,7 +195,7 @@ function subcategory_validate() {
         $("#subcategory").addClass('is-invalid');
         $("#subcategory_error_msg").html("Subcategory should not be blank");
     } else {
-        category_error = false;
+        subcategory_error = false;
         $("#subcategory").removeClass('is-invalid');
     }
 }
@@ -241,7 +241,7 @@ function submitForm() {
     category_validate();
     subcategory_validate();
 
-    if (asset_name_error || movable_error || department_error || category_error ||subcategory_error) {
+    if(asset_name_error || movable_error || department_error || category_error || subcategory_error) {
         return false;
     } // error occured
     else {
