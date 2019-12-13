@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title>year</title>
+    <title>Module</title>
     <style type="text/css">
         table {
             border-color: black;
@@ -9,14 +9,14 @@
 </head>
 
 <body>
-    <h3><u>Year</h3></u>
+    <h3><u>Module</h3></u>
     <br> 
     <table border="1px" style="border-collapse: collapse; width: 80%;margin-left:10%;" class="table table-striped table-bordered table-datatable">
             <thead>
                 <tr>
                     <th scope="col">#</th>
-                    <th scope="col">Year</th>
-                    <th scope="col">Status</th>
+                    <th scope="col">Module Name</th>
+                   
                     
                 </tr>
             </thead>
@@ -26,14 +26,8 @@
                 <tbody style="text-align:center;">
                     <tr>
                         <td style="width:40px">{{++$key}}</td>
-                        <td>{{$val->year_value}}</td>
-                        <td><?php if($val->status=='1'){
-                                                echo '<i class="fas fa-check text-success"></i> Active';
-                                            }
-                                            else{
-                                                echo '<i class="fas fa-times text-danger"></i> Inactive';
-                                            } ?></td>
-                        
+                        <td>{{$val->mod_name}}</td>
+                       
                     </tr>
                 </tbody>
                 @endforeach

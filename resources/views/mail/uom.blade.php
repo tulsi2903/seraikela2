@@ -25,7 +25,7 @@
                 @foreach($user['results'] as $key => $val)
                 <tbody style="text-align:center;">
                     <tr>
-                        <td style="width:20px">{{++$key}}</td>
+                        <td style="width:40px">{{++$key}}</td>
                         <td>{{$val->uom_name}}</td>
                         
                         
