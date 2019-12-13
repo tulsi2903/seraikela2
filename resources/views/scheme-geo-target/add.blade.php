@@ -142,7 +142,7 @@
                         <div id="target-block-error-msg" style="padding: 10px 0; color: red;">
                         </div>
                         <div class="form-group">
-                            <input type="text" name="to_delete_scheme_performance_id" id="to_delete_scheme_performance_id" value="" hidden>
+                            <input type="text" name="to_delete_scheme_performance_id" id="to_delete_scheme_performance_id" value="">
                             <button type="button" class="btn btn-primary" onclick="submitForm()">Save&nbsp;&nbsp;<i class="fas fa-check"></i></button>
                         </div>
                     </div>
@@ -544,7 +544,7 @@
                                                             <thead style="background: #cedcff">
                                                                     <tr>
                                                                         <th>Sanction ID<span style="color:red;margin-left:5px;">*</span></th>
-                                                                        <th>Latitude<span style="color:red;margin-left:5px;">*</span></th>
+                                                                        <th>Latitude</th>
                                                                         <th>Longitude</th>                                        
                                                                         <th>Comments</th>                                       
                                                                         <th>Action</th>                                        
@@ -570,7 +570,7 @@
                                     tab_content_append +=    `>
                                                                 </td>
                                                                 <td>
-                                                                    <input type="text" class="form-control" value="`+data.data[i].indicator_datas[j].comments+`" name="comments[]" placeholder="comments">
+                                                                    <input type="text" class="form-control" value="`+(data.data[i].indicator_datas[j].comments || "")+`" name="comments[]" placeholder="comments">
                                                                 </td>
                                                                 <td>
                                                                     <button type="button" class="btn btn-icon btn-sm btn-round btn-danger" onclick="addRemoveNewTargetRow('remove', '`+data.data[i].indicator_id+`', this, '`+data.data[i].indicator_datas[j].scheme_performance_id+`')">
@@ -617,6 +617,7 @@
         $("#target-block .nav").html("");
         $("#target-block .tab-content").html("");
         $("#target-block-error-msg").html("");
+        $("#to_delete_scheme_performance_id").val("");
     }
 </script>
 
@@ -796,7 +797,10 @@
                         });
                         setTimeout(function() {
                                 document.location.reload()
-                        }, 5000);
+                        }, 3000);
+                    }
+                    else{
+                        // error occured
                     }
                     $(".custom-loader").fadeOut(300);
                 }

@@ -15,14 +15,13 @@
         </div>
     </div>
     <div class="card-body">
-        <form action="" method="POST" enctype="multipart/form-data" onsubmit="return false">
+        <form action="" method="POST" enctype="multipart/form-data" onsubmit="return false" id="scheme-performance">
             @csrf
             <div class="row">
                 <div class="col-md-2">
                     <div class="form-group">
                         <label for="scheme_sanction_id">Scheme Sanction ID<span style="color:red;margin-left:5px;">*</span></label>
                         <input type="text" name="scheme_sanction_id" class="form-control" id="scheme_sanction_id" placehonder="Enter sanction id">
-                        <div class="invalid-feedback" id="scheme_sanction_id_error_msg"></div>
                     </div>
                 </div>
                 <div class="col-md-2">
@@ -30,13 +29,19 @@
                     <button type="button" class="btn btn-primary" onclick="return search()" style="margin-top: 5%;"><i class="fas fa-search"></i>&nbsp;&nbsp;Search</button>
                 </div>
             </div>
+            <div class="invalid-feedback" id="scheme_sanction_id_error_msg"></div>
             <hr/>
-            <div id="target-block">
+            <div id="target-block" style="display:none;">
                 <ul class="nav nav-pills nav-secondary nav-pills-no-bd" id="pills-tab-without-border" role="tablist">
                     <!-- append indicator names as pills -->
                 </ul>
                 <div class="tab-content mt-2 mb-3" id="myTabContent" style="border: 1px solid #d6d6d6; padding: 10px; border-radius: 5px;">
                     <!-- append indicator contents -->
+                </div>
+                <div id="target-block-error-msg" style="padding: 10px 0; color: red;">
+                </div>
+                <div class="form-group">
+                    <button type="button" class="btn btn-primary" onclick="submitForm()">Save&nbsp;&nbsp;<i class="fas fa-check"></i></button>
                 </div>
             </div>
         </form>
@@ -49,52 +54,217 @@
 
     $(document).ready(function(){
         $("#scheme_sanction_id").change(function(){
-            
+            scheme_sanction_id_validate();
         });
     });
 
+    function scheme_sanction_id_validate(){
+        reset_target_block();
+        var scheme_sanction_id_val = $("#scheme_sanction_id").val();
+        if(scheme_sanction_id_val==""){
+            scheme_sanction_id_error = true;
+            $("#scheme_sanction_id").addClass("is-invalid");
+            $("#scheme_sanction_id_error_msg").html("Scheme Sanction ID should not be blank");
+            $("#scheme_sanction_id_error_msg").show();
+        }
+        else{
+            scheme_sanction_id_error = false;
+            $("#scheme_sanction_id").removeClass("is-invalid");
+            $("#scheme_sanction_id_error_msg").html("");
+            $("#scheme_sanction_id_error_msg").hide();
+        }
+    }
+
 
     function search(){
+        // validations
+        scheme_sanction_id_validate();
+
         var scheme_sanction_id_tmp = $("#scheme_sanction_id").val();
 
-        $.ajaxSetup({
-            headers:{
-                'X-CSRF-TOKEN' : $('meta[name="csrf-token"]').attr('content')
-            }
-        });
-        $.ajax({
-            url:"{{url('scheme-performance/get-scheme-performance-datas')}}",
-            data: {'scheme_sanction_id': scheme_sanction_id_tmp},
-            method:"GET",
-            contentType:'application/json',
-            dataType:"json",
-            beforeSend: function(data){
-                $(".custom-loader").fadeIn(300);
-            },
-            error:function(xhr){
-                alert("error"+xhr.status+","+xhr.statusText);
-                $(".custom-loader").fadeOut(300);
-            },
-            success:function(data){
-                console.log(data);
-                if(data.response=="success")
-                {
-                    for(var i=0;i<data.length;i++){
-                        // nav buttons/ tab buttons
-                        nav_append = `<li class="nav-item">
-                                        <a class="nav-link`;
-                        if(i==0){ nav_append+=` active`; }
-                        nav_append+=`" id="indicator-`+data.data[i].indicator_id+`-tab" data-toggle="pill" href="#indicator-`+data.data[i].indicator_id+`-view-tab" role="tab" aria-selected="true">`+data.data[i].indicator_name+`</a>
-                                    </li>`;
-                        $("#target-block .nav").append(nav_append);
-                    }
+        if(scheme_sanction_id_error==false)
+        {
+            $.ajaxSetup({
+                headers:{
+                    'X-CSRF-TOKEN' : $('meta[name="csrf-token"]').attr('content')
                 }
-                else{ // no data
+            });
+            $.ajax({
+                url:"{{url('scheme-performance/get-scheme-performance-datas')}}",
+                data: {'scheme_sanction_id': scheme_sanction_id_tmp},
+                method:"GET",
+                contentType:'application/json',
+                dataType:"json",
+                beforeSend: function(data){
+                    $(".custom-loader").fadeIn(300);
+                    reset_target_block();
+                },
+                error:function(xhr){
+                    alert("error"+xhr.status+","+xhr.statusText);
+                    $(".custom-loader").fadeOut(300);
+                },
+                success:function(data){
+                    console.log(data);
+                    if(data.response=="success")
+                    {
+                        for(var i=0;i<data.data.length;i++){
+                            // nav buttons/ tab buttons
+                            nav_append = `<li class="nav-item">
+                                            <a class="nav-link`;
+                            if(i==0){ nav_append+=` active`; }
+                            nav_append+=`" id="indicator-`+data.data[i].indicator_id+`-tab" data-toggle="pill" href="#indicator-`+data.data[i].indicator_id+`-view-tab" role="tab" aria-selected="true">`+data.data[i].indicator_name+`</a>
+                                        </li>`;
+                            $("#target-block .nav").append(nav_append);
 
+                            // nav contents/ tab contents
+                            tab_content_append = `<div class="tab-pane fade`;
+                            if(i==0){
+                                tab_content_append+=` show active`;
+                            }
+                            tab_content_append+=`" id="indicator-`+data.data[i].indicator_id+`-view-tab" role="tabpanel" data-indicator-id='`+data.data[i].indicator_id+`' data-geo-related='`+data.data[i].geo_related+`' data-pre-target='`+data.data[i].target+`'>`;
+                            tab_content_append+= `<div class="row">
+                                                        <div class="col-md-2">
+                                                            <div class="form-group">
+                                                                <b>Target:</b>&nbsp;`+data.data[i].target+`
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <table class="table table-bordered table-sm">
+                                                        <thead style="background: #cedcff">
+                                                                <tr>
+                                                                    <th>Indicator Sanction ID</th>
+                                                                    <th>Location</th>
+                                                                    <th>Completion<br/>Percentage</th>                                        
+                                                                    <th>Status</th>                                       
+                                                                    <th>Images</th>                                        
+                                                                </tr>
+                                                        </thead>
+                                                        <tbody>`;
+
+                            //  indicator_datas i.e. geo_performance loop starts
+                            for(j=0;j<data.data[i].indicator_datas.length;j++){
+                            tab_content_append+=     `<tr>
+                                                            <td>
+                                                                <input type="text" name="scheme_performance_id[]" value="`+data.data[i].indicator_datas[j].scheme_performance_id+`" hidden="">
+                                                                `+data.data[i].indicator_datas[j].indicator_sanction_id+`
+                                                            </td>
+                                                            <td>
+                                                                Latuitude: `+(data.data[i].indicator_datas[j].latitude || "")+`<br/>
+                                                                Longitude: `+(data.data[i].indicator_datas[j].longitude || "")+`
+                                                            </td>                             
+                                                            <td>
+                                                                <input type="text" class="form-control" value="`+data.data[i].indicator_datas[j].completion_percentage+`" name="completion_percentage[]" placeholder="in %">
+                                                            </td>
+                                                            <td>
+                                                                <select name="status[]" class="form-control">
+                                                                    <option value="0"`; if(data.data[i].status=="0"){ tab_content_append+=` selected`; } 
+                                                                    tab_content_append+=`>Not-Completed</option>
+                                                                    <option value="1"`; if(data.data[i].status=="1"){ tab_content_append+=` selected`; } 
+                                                                    tab_content_append+=`>Completed</option>
+                                                                </select>
+                                                            </td>
+                                                            <td>
+                                                                <div class="input-icon">
+                                                                    <input type="file" class="form-control" name="images_`+data.data[i].indicator_datas[j].scheme_performance_id+`">
+                                                                    <span class="input-icon-addon">
+                                                                        <i class="fas fa-file-image"></i>
+                                                                    </span>
+                                                                </div>
+                                                            </td>
+                                                        </tr>`;
+                            }
+                            // indicator_datas i.e. geo_performance loop ends
+
+                            tab_content_append+=       `</tbody> 
+                                                    </table>`;
+                            tab_content_append+= ` </div>`;
+                            $("#target-block .tab-content").append(tab_content_append);
+
+                            // opposite of reset_target_block, i.e. show target block and hide GO Button
+                            $("#target-block").show();
+                        }
+                    }
+                    else{ // no data
+                        $("#scheme_sanction_id").addClass("is-invalid");
+                        $("#scheme_sanction_id_error_msg").html("No data found! Please check/re-enter scheme sanction ID.");
+                        $("#scheme_sanction_id_error_msg").show();
+                    }
+                    $(".custom-loader").fadeOut(300);
                 }
-                $(".custom-loader").fadeOut(300);
-            }
-        });
+            });
+        }
+    }
+
+    function reset_target_block(){
+        $("#target-block").hide();
+        $("#target-block .nav").html("");
+        $("#target-block .tab-content").html("");
+        $("#target-block-error-msg").html("");
+    }
+</script>
+
+<script>
+    // performance validation starts
+    function performance_validate(){
+        return true;
+    }
+
+    function submitForm(){
+        // call all validation
+
+        // performance_validate combine all validations and return true or false
+        if(performance_validate()){
+            // var form_data = $('#scheme-performance').serialize();
+            // var formElement = document.querySelector("#scheme-performance");
+            // var form_data = new FormData(formElement);
+            var formElement = $('#scheme-performance')[0]; 
+            var form_data = new FormData(formElement);
+
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                url: "{{url('scheme-performance/store')}}",
+                data: form_data,
+                method: "POST",
+                dataType: 'json',
+                processData: false,
+                contentType: false,
+                beforeSend: function(data){
+                    $(".custom-loader").fadeIn(300);
+                },
+                error: function(xhr){
+                    alert("error"+xhr.status+", "+xhr.statusText);
+                    $(".custom-loader").fadeOut(300);
+                },
+                success: function (data){
+                    console.log(data);
+                    // if(data.response=="success"){
+                    //     reset_target_block();
+                    //     swal("Success!", "Scheme target datas has been saved", {
+                    //         icon : "success",
+                    //         buttons: {
+                    //             confirm: {
+                    //                 className : 'btn btn-success'
+                    //             }
+                    //         },
+                    //     });
+                    //     setTimeout(function() {
+                    //             document.location.reload()
+                    //     }, 3000);
+                    // }
+                    // else{
+                    //     // error occured
+                    // }
+                    $(".custom-loader").fadeOut(300);
+                }
+            });
+        }
+        else{
+            // error occured
+        }
     }
 </script>
 

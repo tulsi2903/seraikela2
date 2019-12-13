@@ -166,51 +166,86 @@ class SchemePerformanceController extends Controller
         return ["target_get_data"=>$target,"id"=>$scheme_geo_target_id,"pre_value"=>$pre_value]; 
     }
 
-    public function store(Request $request)
-    {
-        $scheme_performance = new SchemePerformance;
-        $scheme_performance->scheme_geo_target_id = $request->scheme_geo_target_id;
-        $scheme_performance->pre_value = $request->pre_value;
-        $scheme_performance->current_value = $request->current_value;
+    public function store(Request $request){
+        // received datas
+        $scheme_indicator_id = $request->scheme_sanction_id;
+        $scheme_performance_id=[];
+        $scheme_performance_id = $request->scheme_performance_id; // array type
+        $completion_percentage=[];
+        $completion_percentage=$request->completion_percentage;
+        $status=[];
+        $status=$request->status;
 
-         $scheme_performance->attachment = "";
+        $upload_path = "public/uploaded_documents/scheme_performance";
+
+        for($i=0;$i<count($scheme_performance_id);$i++)
+        {
+            $scheme_performance_save = SchemePerformance2::find($scheme_performance_id[$i]);
+            $scheme_performance_save->completion_percentage = $completion_percentage[$i];
+            $scheme_performance_save->status = $status[$i];
+
+            $scheme_performance_save->images = "";
+            if($request->hasFile('images_'.$scheme_performance_id[$i]))
+            {
+                $image = $request->file('images_'.$scheme_performance_id[$i]);
+                // $image_name = $scheme_performance_id[$i]."-".time().".".strtolower($images[$i]->getClientOriginalExtension());
+                // $images[$i]->move($upload_path, $image_name);
+                $image_name = $scheme_performance_id[$i]."-".time().".".strtolower($image->getClientOriginalExtension());
+                $image->move($upload_path, $image_name);
+                $scheme_performance_save->images = $upload_path."/".$image_name; 
+            }
+
+            $scheme_performance_save->save();
+        }
+
+        return ["response"=>"success","first_file"=>$request->hasFile('images_25')];
+    }
+
+    // public function store(Request $request)
+    // {
+    //     $scheme_performance = new SchemePerformance;
+    //     $scheme_performance->scheme_geo_target_id = $request->scheme_geo_target_id;
+    //     $scheme_performance->pre_value = $request->pre_value;
+    //     $scheme_performance->current_value = $request->current_value;
+
+    //      $scheme_performance->attachment = "";
 
       
 
-         $i = 0;
-         if($request->hasFile('attachment'))
-         {
+    //      $i = 0;
+    //      if($request->hasFile('attachment'))
+    //      {
            
 
-            foreach($request->file('attachment') as $file){
+    //         foreach($request->file('attachment') as $file){
 
-                $imageName = time() . $i . '.' . $file->getClientOriginalExtension();
+    //             $imageName = time() . $i . '.' . $file->getClientOriginalExtension();
 
-                // move the file to desired folder
-                $file->move('public/uploaded_documents/', $imageName);
+    //             // move the file to desired folder
+    //             $file->move('public/uploaded_documents/', $imageName);
 
-                // assign the location of folder to the model
-                $scheme_performance->attachment.=":".$imageName;
+    //             // assign the location of folder to the model
+    //             $scheme_performance->attachment.=":".$imageName;
 
 
-                $i++;
+    //             $i++;
 
-            } 
+    //         } 
             
-            $scheme_performance->attachment = ltrim($scheme_performance->attachment,":");
-        }
-        $scheme_performance->created_by =1;
-        $scheme_performance->updated_by =1;
+    //         $scheme_performance->attachment = ltrim($scheme_performance->attachment,":");
+    //     }
+    //     $scheme_performance->created_by =1;
+    //     $scheme_performance->updated_by =1;
 
      
-       return $scheme_performance;
+    //    return $scheme_performance;
 
-        if($scheme_performance->save()){
-            session()->put('alert-class','alert-success');
-            session()->put('alert-content','Scheme performance have been successfully submitted !');
-        }
-        return redirect('scheme-performance/add');
-    }
+    //     if($scheme_performance->save()){
+    //         session()->put('alert-class','alert-success');
+    //         session()->put('alert-content','Scheme performance have been successfully submitted !');
+    //     }
+    //     return redirect('scheme-performance/add');
+    // }
 
     // to send all datas from scheme_performance of scheme_sanction_id (scheme_geo_target)
     public function get_scheme_performance_datas(Request $request){
@@ -221,7 +256,7 @@ class SchemePerformanceController extends Controller
         $scheme_sanction_id = $request->scheme_sanction_id;
 
         $scheme_geo_target_datas = SchemeGeoTarget2::where('scheme_sanction_id', $scheme_sanction_id)->get();
-        if($scheme_geo_target_datas){
+        if(count($scheme_geo_target_datas)>0){
             $unique_scheme_geo_target_ids = [];
             foreach($scheme_geo_target_datas as $scheme_geo_target_data){
                 if(!in_array($scheme_geo_target_data->scheme_geo_target_id, $unique_scheme_geo_target_ids)){
@@ -253,6 +288,9 @@ class SchemePerformanceController extends Controller
                             $tmp_to_push["indicator_sanction_id"] = $scheme_performance_data->indicator_sanction_id;
                             $tmp_to_push["latitude"] = $scheme_performance_data->latitude;
                             $tmp_to_push["longitude"] = $scheme_performance_data->longitude;
+                            $tmp_to_push["completion_percentage"] = $scheme_performance_data->completion_percentage;
+                            $tmp_to_push["status"] = $scheme_performance_data->status;
+                            $tmp_to_push["images"] = $scheme_performance_data->images;
                             $tmp_to_push["comments"] = $scheme_performance_data->comments;
                             array_push($to_return_indicator_datas_tmp, $tmp_to_push);
                         }
