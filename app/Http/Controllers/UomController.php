@@ -7,10 +7,13 @@ use App\Uom;
 
 class UomController extends Controller
 {
-     public function index(){
+    public function index(){
         $datas = Uom::orderBy('uom_id','desc')->get();
         return view('uom.index')->with('datas', $datas);
     }
+
+
+    
     public function add(Request $request){
         $hidden_input_purpose = "add";
         $hidden_input_id= "NA";
@@ -63,7 +66,6 @@ class UomController extends Controller
             session()->put('alert-class','alert-success');
             session()->put('alert-content','Deleted successfully !');
         }
-
         return redirect('uom');
     }
 }

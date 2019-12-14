@@ -33,7 +33,8 @@
 							<li class="nav-item"><a href="{{url('uom')}}"><i class="fas fa-list-ol"></i><p>UoM</p></a></li>
                             <li class="nav-item"><a href="{{url('module')}}"><i class="fas fa-indent"></i><p>Module</p></a></li>
                             <li class="nav-item"><a href="{{url('designation')}}"><i class="fas fa-user-check"></i><p>Designation</p></a></li>
-				            <li class="nav-item"><a href="{{url('designation-permission')}}"><i class="fas fa-users-cog"></i><p>Designation Permission</p></a></li>
+							<li class="nav-item"><a href="{{url('designation-permission')}}"><i class="fas fa-users-cog"></i><p>Designation Permission</p></a></li>
+							<li class="nav-item"><a href="{{url('scheme-asset')}}"><i class="fas fa-users-cog"></i><p>Scheme Asset</p></a></li>
 						</ul>
 					</div>
 				</li>

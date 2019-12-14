@@ -204,3 +204,10 @@ Route::post('fav_department','FavController@add_fav_departs');
 Route::post('fav_scheme','FavController@add_fav_scheme');
 Route::post('fav_block','FavController@add_fav_block');
 Route::post('fav_panchayat','FavController@add_fav_panchayat');
+
+
+/*sch*/
+Route::get('scheme-asset','Scheme_Asset_Controller@index');
+// Route::get('scheme-asset/add','Scheme_Asset_Controller@add');
+Route::post('scheme-asset/store','Scheme_Asset_Controller@store');
+Route::get('scheme-asset/delete/{scheme_assets_id}','Scheme_Asset_Controller@delete');
