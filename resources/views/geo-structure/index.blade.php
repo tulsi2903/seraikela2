@@ -21,6 +21,7 @@
                             <button class="btn btn-icon btn-link btn-primary btn-xs"><span class="fa fa-times"></span></button> -->
                             <button type="button" class="btn btn-icon btn-round btn-success" data-target="#create-email" data-toggle="modal" ><i class="fa fa-envelope" aria-hidden="true"></i></button>
                             <button type="button" class="btn btn-icon btn-round btn-default" id="print-button" onclick="printView();"><i class="fa fa-print" aria-hidden="true"></i></button>
+                            <a class="btn btn-secondary department-add-button" href="{{url('geo-structure/add')}}" role="button"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;Add</a>
                         </div>
                     </div>
                 </div>
@@ -29,7 +30,7 @@
         <div class="card-body">
             <div class="row">
                 <div class="col-12" style="margin-top: -20px;">                  
-                    <div class="col-md-6 form-group">
+                    <!-- <div class="col-md-6 form-group">
                         <label for="block">Block</label>
                         <div style="display: flex;">
                             <select name="block" id="block" class="form-control">
@@ -40,7 +41,7 @@
                             </select> &nbsp;&nbsp;&nbsp;
                             <button type="button" class="btn btn-primary" onclick="block_search();">Search</button>
                         </div>
-                    </div>
+                    </div> -->
                     <hr>
                    
                     <!-- <div style="display: -webkit-box; float:right;margin-top: -22px;">

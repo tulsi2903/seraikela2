@@ -36,9 +36,10 @@ Route::get('user','LoginController@index');
 Route::post('user/store','LoginController@store');
 
 /* custom homepage */
-Route::get("homepage", function(){
-   return view("index"); 
-});
+// Route::get("homepage", function(){
+//    return view("index"); 
+// });
+Route::get('homepage','DashboardController@index');
 
 /*dashboard*/
 Route::get('dashboard/dc_dashboard','DashboardController@index');

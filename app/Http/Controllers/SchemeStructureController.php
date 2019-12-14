@@ -8,6 +8,8 @@ use App\Department;
 use App\SchemeType;
 use App\Uom;
 use App\SchemeIndicator;
+use App\SchemeAsset;
+use App\Group;
 
 class SchemeStructureController extends Controller
 {
@@ -27,8 +29,10 @@ class SchemeStructureController extends Controller
 
         
         $scheme_types = SchemeType::orderBy('sch_type_name','asc')->get();
-         $departments = Department::orderBy('dept_name')->get();
-          $uoms = Uom::orderBy('uom_name','asc')->get();
+        $departments = Department::orderBy('dept_name')->get();
+        $uoms = Uom::orderBy('uom_name','asc')->get();
+        $scheme_asset_datas = SchemeAsset::select("scheme_asset_id","scheme_asset_name")->get();
+        $scheme_group_datas = Group::select('scheme_group_id','scheme_group_name')->get();
           
 
         $data = new SchemeStructure;
@@ -43,7 +47,7 @@ class SchemeStructureController extends Controller
             }
         }
 
-        return view('scheme-structure.add_2')->with(compact('hidden_input_purpose','hidden_input_id','data','indicator_datas','department_datas','scheme_types','departments','uoms'));
+        return view('scheme-structure.add')->with(compact('hidden_input_purpose','hidden_input_id','data','indicator_datas','department_datas','scheme_types','departments','uoms','scheme_asset_datas','scheme_group_datas'));
     }
 
     public function view(Request $request){
@@ -74,111 +78,59 @@ class SchemeStructureController extends Controller
     }
 
     public function store(Request $request){
-        //$response = "failed";
+        $upload_directory = "public/uploaded_documents/schemes/";
+
         // return $request;
         $scheme_structure = new SchemeStructure;
 
         if($request->hidden_input_purpose=="edit"){
             $scheme_structure = $scheme_structure->find($request->hidden_input_id);
-
         }
-        $scheme_structure->org_id = 1;
-        $scheme_structure->scheme_name =$request->scheme_name;
+        $scheme_structure->org_id = "1";
+        $scheme_structure->scheme_related =$request->scheme_related;
+        $scheme_structure->scheme_group_id = $request->scheme_group_id;
+        $scheme_structure->scheme_name = $request->scheme_name;
         $scheme_structure->scheme_short_name = $request->scheme_short_name;
-        $scheme_structure->is_active = $request->is_active;
-        $scheme_structure->scheme_link_id = '1';
-        $scheme_structure->dept_id =  $request->dept_id;
+        $scheme_structure->scheme_asset_id = $request->scheme_asset_id;
+        $scheme_structure->status = $request->status;
+        $scheme_structure->dept_id = $request->dept_id;
         $scheme_structure->scheme_type_id = $request->scheme_type_id;
-       
-        // $scheme_structure->independent = $request->independent;
-     
-     //    $scheme_structure->planned_sd = date("Y-m-d",strtotime($request->planned_sd));
-     // if($request->planned_sd== null){ $scheme_structure->planned_sd = "";}
-     //    $scheme_structure->planned_ed = date("Y-m-d",strtotime($request->planned_ed));
-     // if($request->planned_ed== null){ $scheme_structure->planned_ed = "";}
-     //    $scheme_structure->actual_sd = date("Y-m-d",strtotime($request->actual_sd));
-     // if($request->actual_sd== null){ $scheme_structure->actual_sd = "";}
-     //    $scheme_structure->actual_ed = date("Y-m-d",strtotime($request->actual_ed));
-     // if($request->actual_ed== null){ $scheme_structure->actual_ed = "";}
         $scheme_structure->description = $request->description;
-        if($request->description==""){ $scheme_structure->description = ""; }
-      
-      
         $scheme_structure->attachment = "";
-         $i = 0;
-         if($request->hasFile('attachment'))
-         {
-
-            foreach($request->file('attachment') as $file){
-
-                $imageName =$file->getClientOriginalName(). $i . '.' . $file->getClientOriginalExtension();
-
-                // move the file to desired folder
-                $file->move('public/uploaded_documents/', $imageName);
-
-                // assign the location of folder to the model
-                $scheme_structure->attachment.=":".$imageName;
-
-
-                $i++;
-
-            } 
-            
-            $scheme_structure->attachment = ltrim($scheme_structure->attachment,":");
+        $scheme_structure->scheme_logo = "";
+        $scheme_structure->scheme_map_marker = "";
+        $scheme_structure->created_by = "1";
+        $scheme_structure->updated_by = "1";
+      
+        // scheme attachment
+        if($request->hasFile('attachment'))
+        {
+            $file = $request->file('attachment');
+            $attachment_tmp_name = "scheme-attachments-".time().rand(1000,5000).'.'.strtolower($file->getClientOriginalExtension());
+            $file->move($upload_directory, $attachment_tmp_name);   // move the file to desired folder
+            $scheme_structure->attachment = $upload_directory.$attachment_tmp_name;    // assign the location of folder to the model
         }
 
-        // for scheme_logo
-        $scheme_structure->scheme_logo = "";
+        // scheme logo
         if($request->hasFile('scheme_logo'))
         {
-            //
             $file = $request->file('scheme_logo');
-
-            $scheme_structure->scheme_logo = $file->getClientOriginalName();
-            $destinationPath = 'public/images';
-            $file->move($destinationPath, $file->getClientOriginalName()); 
-
-
-        }
-        else{
-            if($request->hidden_input_purpose=="edit")
-            {
-                $scheme_structure->scheme_logo = $request->hidden_input_scheme_logo;
-            }
-            else if($request->hidden_input_purpose=="add")
-            {
-                // error has to return
-            }
+            $scheme_logo_tmp_name = "scheme-logo-".time().rand(1000,5000).'.'.strtolower($file->getClientOriginalExtension());
+            $file->move($upload_directory, $scheme_logo_tmp_name); //  move file
+            $scheme_structure->scheme_logo = $upload_directory.$scheme_logo_tmp_name; // assign
         }
 
         // for scheme_map_maker
-        $scheme_structure->scheme_map_marker = "";
         if($request->hasFile('scheme_map_marker'))
         {
-            //
             $file = $request->file('scheme_map_marker');
-
-            $scheme_structure->scheme_map_marker = $file->getClientOriginalName();
-            $destinationPath = 'public/images';
-            $file->move($destinationPath, $file->getClientOriginalName()); 
+            $scheme_map_marker_tmp_name = "scheme-map-marker-".time().rand(1000,5000).'.'.strtolower($file->getClientOriginalExtension());
+            $file->move($upload_directory, $scheme_map_marker_tmp_name); //  move file
+            $scheme_structure->scheme_map_marker = $upload_directory.$scheme_map_marker_tmp_name; // assign
         }
-        else{
-            if($request->hidden_input_purpose=="edit")
-            {
-                $scheme_structure->scheme_map_marker = $request->hidden_input_map_marker;
-            }
-            else if($request->hidden_input_purpose=="add")
-            {
-                // error has to return
-            }
-        }
-        
-               
-        $scheme_structure->created_by = '1';
-        $scheme_structure->updated_by = '1';
 
         
-       
+        // saving/response
         if(SchemeStructure::where('scheme_name',$request->scheme_name)->first()&&$request->hidden_input_purpose!="edit"){
             session()->put('alert-class','alert-danger');
             session()->put('alert-content','This scheme '.$request->scheme_name.' already exist !');
@@ -187,38 +139,12 @@ class SchemeStructureController extends Controller
         else if($scheme_structure->save()){
             session()->put('alert-class','alert-success');
             session()->put('alert-content','Scheme details have been successfully submitted !');
-
-            
-            // for inserting data in the scheme_indicator table   
-            if(isset($request->indicator_name)){
-
-                // delete existing data if edit is called
-                if($request->hidden_input_purpose=="edit"){
-                    $delete_indicator_query = SchemeIndicator::where('scheme_id', $request->hidden_input_id)->delete(); 
-                }
-
-                $indicator_name=$request->indicator_name;
-                foreach($request->indicator_name as $key_indi=>$value){
-                    $scheme_indicator = new SchemeIndicator;
-                    $scheme_indicator->indicator_name = @$request->indicator_name[$key_indi];
-                    $scheme_indicator->uom = @$request->uom[$key_indi];
-                    $scheme_indicator->performance = @$request->performance[$key_indi] ?? 0;                
-                    $scheme_indicator->scheme_id= $scheme_structure->scheme_id;
-                    $scheme_indicator->created_by = '1';
-                    $scheme_indicator->updated_by = '1';
-                    $scheme_indicator->save();
-                }
-            }
-               
-               
         }
-
         else{
             session()->put('alert-class','alert-danger');
             session()->put('alert-content','Something went wrong while adding new details !');
         }
         
-
         return redirect('scheme-structure');
     }
    
