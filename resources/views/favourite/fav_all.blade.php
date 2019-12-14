@@ -12,12 +12,10 @@
 @section('page-content')
 
 <!-------------------------------------------------starting of body---------------------------------------------------->
-<div class="main-panel" style="    margin-top: -79px;">
-<div class="content">
-    <div class="page-inner">
-        <div class="row">
+
+<div class="row row-card-no-pd" style="border-top: 3px solid #5c76b7;">
             <div class="col-md-12">
-                <div class="card" style="border-top: 3px solid #5c76b7;">
+                <div class="card">
                     <div class="card-header">
                         <h4 class="card-title" style="float:left;">Add Favourites Details</h4>
                     </div>
@@ -38,7 +36,7 @@
                                     <div class="tab-pane fade show active" id="v-pills-home-nobd" role="tabpanel" aria-labelledby="v-pills-home-tab-nobd">
                                             <form action="{{url('fav_department')}}" method="post" >
                                                     @csrf
-                                        <div class="card-body" style="margin-top:-32px;">
+                                      
                                             <div class="table-responsive">
                                                 <table class="display  table table-striped table-hover" >
                                                     <thead style="background: #d6dcff;color: #000;">
@@ -65,7 +63,7 @@
                                                 </table> 
                                             </div>
                                            
-                                        </div><!--end of card body-->
+                                      
                                         <hr class="new2" style="width: 98%;"> 
                                         <div class="card-action" style="margin-top: -29px;">   
                                                 <button type="submit" class="btn btn-secondary">Submit</button>
@@ -189,10 +187,8 @@
                             </div>                       
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
+             
+          
 </div><!--end of content-->
 </div>
 @endsection

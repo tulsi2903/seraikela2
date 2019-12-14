@@ -1060,16 +1060,12 @@ body {
    border-radius: 5px
 }
 
-.sidebar.sidebar-style-2 .nav .nav-item a:focus,
-.sidebar.sidebar-style-2 .nav .nav-item a:hover,
+
 .sidebar.sidebar-style-2 .nav .nav-item a[data-toggle=collapse][aria-expanded=true] {
    background: rgba(199, 199, 199, .2)
 }
 
-.sidebar.sidebar-style-2 .nav .nav-item a:focus i,
-.sidebar.sidebar-style-2 .nav .nav-item a:focus p,
-.sidebar.sidebar-style-2 .nav .nav-item a:hover i,
-.sidebar.sidebar-style-2 .nav .nav-item a:hover p,
+
 .sidebar.sidebar-style-2 .nav .nav-item a[data-toggle=collapse][aria-expanded=true] i,
 .sidebar.sidebar-style-2 .nav .nav-item a[data-toggle=collapse][aria-expanded=true] p {
    color: #575962!important
@@ -1219,14 +1215,10 @@ body {
 
 .sidebar.sidebar-style-2[data-background-color=dark2] .nav .nav-item a:focus i,
 .sidebar.sidebar-style-2[data-background-color=dark2] .nav .nav-item a:focus p,
-.sidebar.sidebar-style-2[data-background-color=dark2] .nav .nav-item a:hover i,
-.sidebar.sidebar-style-2[data-background-color=dark2] .nav .nav-item a:hover p,
 .sidebar.sidebar-style-2[data-background-color=dark2] .nav .nav-item a[data-toggle=collapse][aria-expanded=true] i,
 .sidebar.sidebar-style-2[data-background-color=dark2] .nav .nav-item a[data-toggle=collapse][aria-expanded=true] p,
 .sidebar.sidebar-style-2[data-background-color=dark] .nav .nav-item a:focus i,
 .sidebar.sidebar-style-2[data-background-color=dark] .nav .nav-item a:focus p,
-.sidebar.sidebar-style-2[data-background-color=dark] .nav .nav-item a:hover i,
-.sidebar.sidebar-style-2[data-background-color=dark] .nav .nav-item a:hover p,
 .sidebar.sidebar-style-2[data-background-color=dark] .nav .nav-item a[data-toggle=collapse][aria-expanded=true] i,
 .sidebar.sidebar-style-2[data-background-color=dark] .nav .nav-item a[data-toggle=collapse][aria-expanded=true] p {
    color: #b9babf!important
