@@ -16,7 +16,7 @@
             
             <a href="../index.html" class="logo">
                 <img src="http://jiada.baba.software/public/form/images/toplogo.png" alt="navbar brand" class="navbar-brand" style="height:50px;">
-                <p style="margin-top: -60px;margin-left: 18px;color: #ffffff;font-weight: 500;font-size: 20px;line-height: 25px;text-align: center;font-family: serif;letter-spacing: 1px;text-shadow: 2px 4px 9px #8BC34A;">Seraikela Kharsawan</p>
+                <p style="margin-top:-52px;margin-left: 18px;color: #ffffff;font-weight: 500;font-size: 20px;line-height: 25px;text-align: center;font-family: serif;letter-spacing: 1px;text-shadow: 2px 4px 9px #8BC34A;">Seraikela Kharsawan</p>
             </a>
             <button class="navbar-toggler sidenav-toggler ml-auto" type="button" data-toggle="collapse" data-target="collapse" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon">
