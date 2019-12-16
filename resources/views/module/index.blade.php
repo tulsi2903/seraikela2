@@ -70,7 +70,7 @@
                                             <td width="40px;">{{$count++}}</td>
                                             <td>{{$data->mod_name}}</td>
                                             <td class="action-buttons">
-                                                <a href="{{url('module/delete')}}/{{$data->mod_id}}" id="delete-button" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>
+                                                <a href="{{url('module/delete')}}/{{$data->mod_id}}" class="btn btn-danger btn-sm delete-button"><i class="fas fa-trash-alt"></i></a>
                                                 &nbsp;&nbsp;<button type="button" class="btn btn-sm btn-secondary" onclick="openInlineForm('{{$data->mod_id}}')"><i class="fas fa-edit"></i></button>
                                             </td>
                                         </tr>

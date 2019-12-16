@@ -276,7 +276,7 @@
     <!-- for delete button, alert/confirm -->
     <script>
         $(document).ready(function(){
-            $('#delete-button').click(function(e) {
+            $('#delete-button, .delete-button').click(function(e) {
                 e.preventDefault();
                 var href = this.href;
 

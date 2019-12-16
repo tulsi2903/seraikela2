@@ -110,7 +110,7 @@
                                                 echo '<i class="fas fa-times text-danger"></i> Inactive';
                                             } ?></td>
                                             <td class="action-buttons">
-                                                <a href="{{url('department/delete')}}/{{$data->dept_id}}" id="delete-button" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>
+                                                <a href="{{url('department/delete')}}/{{$data->dept_id}}" class="btn btn-danger btn-sm delete-button"><i class="fas fa-trash-alt"></i></a>
                                                 &nbsp;&nbsp;<button type="button" class="btn btn-sm btn-secondary" onclick="openInlineForm('{{$data->dept_id}}')"><i class="fas fa-edit"></i></button>
                                                 
                                                

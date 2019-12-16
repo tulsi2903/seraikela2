@@ -61,7 +61,7 @@
                                         <td width="40px;">{{$count++}}</td>
                                         <td>{{$data->sch_type_name}}</td>
                                         <td class="action-buttons">
-                                            <a href="{{url('scheme-type/delete')}}/{{$data->sch_type_id}}" id="delete-button" class="btn btn-secondary btn-sm"><i class="fas fa-trash-alt"></i></a>
+                                            <a href="{{url('scheme-type/delete')}}/{{$data->sch_type_id}}" class="btn btn-danger btn-sm delete-button"><i class="fas fa-trash-alt"></i></a>
                                             &nbsp;&nbsp;<a href="{{url('scheme-type/add')}}?purpose=edit&id={{$data->sch_type_id}}" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></a>
                                         </td>
                                     </tr>

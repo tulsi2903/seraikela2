@@ -77,7 +77,7 @@
                                         <td>{{$data->dept_name}}</td>
                                         
                                         <td class="action-buttons">
-                                            <a href="{{url('asset/delete')}}/{{$data->asset_id}}" id="delete-button" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>
+                                            <a href="{{url('asset/delete')}}/{{$data->asset_id}}" class="btn btn-danger btn-sm delete-button"><i class="fas fa-trash-alt"></i></a>
                                             &nbsp;&nbsp;<a href="{{url('asset/add')}}?purpose=edit&id={{$data->asset_id}}" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></a>
                                         </td>
                                     </tr>

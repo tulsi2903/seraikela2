@@ -77,7 +77,7 @@
                                                 <td>{{$data->year_value}}</td>
                                             
                                             <td class="action-buttons" style="display: contents;">
-                                                <a href="{{url('scheme-geo-target/delete')}}/{{$data->scheme_geo_target_id}}" id="delete-button" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>
+                                                <a href="{{url('scheme-geo-target/delete')}}/{{$data->scheme_geo_target_id}}" class="btn btn-danger btn-sm delete-button"><i class="fas fa-trash-alt"></i></a>
                                                 &nbsp;&nbsp;<a href="{{url('scheme-geo-target/add')}}?purpose=edit&id={{$data->scheme_geo_target_id}}" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></a>
                                             </td>
                                         </tr>
