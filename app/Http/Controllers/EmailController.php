@@ -22,15 +22,15 @@ class EmailController extends Controller
             $email_to=$request->to;
             $email_cc=$request->cc;
             $send_subject=$request->subject;
-            $details= DB::table('department')->join('organisation','department.org_id','=','organisation.id')->select('department.*','organisation.org_name')->get();
+            $details= DB::table('department')->join('organisation','department.org_id','=','organisation.org_id')->select('department.*','organisation.org_name')->get();
                    
             $user = array('email_from'=>$email_from,'email_to'=>$email_to, 'cc'=>$email_cc, 'subject'=>$send_subject,'results'=>$details);
-            $pdf = PDF::loadView('mail.departs',['user'=>$user]);  
-            //$data =$pdf; 
-            // echo $data;
-            // die;
+            // $pdf = PDF::loadView('mail.departs',['user'=>$user]);  
+            // //$data =$pdf; 
+            // // echo $data;
+            // // die;
 
-            Mail::send('mail.all',['user'=> $user], function($message) use ($user,$pdf)
+            Mail::send('mail.departs',['user'=> $user], function($message) use ($user)
             {
                 $email_to=explode(',',$user['email_to']);
                 foreach($email_to as $key=>$value)
@@ -47,7 +47,7 @@ class EmailController extends Controller
                 }
                 } 
             
-                $message->attachData($pdf->output(), "department.pdf");
+                // $message->attachData($pdf->output(), "department.pdf");
                 $message->subject($user['subject']);
                 $message->from('dsrm.skla@gmail.com','seraikela'); 
                 session()->put('alert-class','alert-success');
@@ -65,11 +65,11 @@ class EmailController extends Controller
             $details=json_decode($request->data);
 
 
-            $user = array('email_from'=>$email_from,'email_to'=>$email_to, 'cc'=>$email_cc, 'subject'=>$send_subject,'results'=>$details);
-            $pdf = PDF::loadView('mail.designation',['user'=>$user]);
+            // $user = array('email_from'=>$email_from,'email_to'=>$email_to, 'cc'=>$email_cc, 'subject'=>$send_subject,'results'=>$details);
+            // $pdf = PDF::loadView('mail.designation',['user'=>$user]);
 
-            // $user = array('email_from'=>$email_from,'email_to'=>$email_to, 'cc'=>$email_cc, 'subject'=>$request->subject, 'content'=>$request->message,'results'=>$details);
-            Mail::send('mail.designation',['user'=> $user], function($message) use ($user,$pdf)
+            $user = array('email_from'=>$email_from,'email_to'=>$email_to, 'cc'=>$email_cc, 'subject'=>$request->subject, 'content'=>$request->message,'results'=>$details);
+            Mail::send('mail.designation',['user'=> $user], function($message) use ($user)
             {
                 $email_to=explode(',',$user['email_to']);
                 foreach($email_to as $key=>$value)
@@ -85,7 +85,7 @@ class EmailController extends Controller
                     $message->cc($email_cc[$key]);
                 }
                 }
-                $message->attachData($pdf->output(), "designation.pdf");
+                // $message->attachData($pdf->output(), "designation.pdf");
                 $message->subject($user['subject']);
                 $message->from('dsrm.skla@gmail.com','seraikela'); 
                 session()->put('alert-class','alert-success');
