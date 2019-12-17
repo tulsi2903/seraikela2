@@ -14,10 +14,10 @@
     <div class="main-header">
         <nav class="navbar navbar-header navbar-expand-lg" data-background-color="blue2">
             
-            <a href="../index.html" class="logo">
+            <span class="logo" style="padding-top: 10px;">
                 <img src="http://jiada.baba.software/public/form/images/toplogo.png" alt="navbar brand" class="navbar-brand" style="height:50px;">
                 <p style="margin-top:-52px;margin-left: 18px;color: #ffffff;font-weight: 500;font-size: 20px;line-height: 25px;text-align: center;font-family: serif;letter-spacing: 1px;text-shadow: 2px 4px 9px #8BC34A;">Seraikela Kharsawan</p>
-            </a>
+            </span>
             <button class="navbar-toggler sidenav-toggler ml-auto" type="button" data-toggle="collapse" data-target="collapse" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon">
                     <i class="icon-menu"></i>
@@ -74,8 +74,14 @@
                         <ul class="dropdown-menu dropdown-user animated fadeIn">
                             <div class="dropdown-user-scroll scrollbar-outer">
                                 <li>
-                                  
-                                    <a class="dropdown-item" href="#">Logout</a>
+                                    <a class="dropdown-item" href="{{ route('logout') }}"
+                                        onclick="event.preventDefault();
+                                                        document.getElementById('logout-form').submit();">
+                                        {{ __('Logout') }}
+                                    </a>
+                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                        @csrf
+                                    </form>
                                 </li>
                             </div>
                         </ul>
@@ -101,8 +107,7 @@
     </script>
 
 <script>
-        function myFunction() {
-          document.getElementById("demo").innerHTML = "Hello World";
-        }
-        </script>
-  
+function myFunction() {
+    document.getElementById("demo").innerHTML = "Hello World";
+}
+</script>

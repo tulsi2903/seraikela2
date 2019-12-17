@@ -29,7 +29,7 @@ class UserAdd_Controller extends Controller
     }
 
     //register new login
-    public function store(Request $request){      
+    public function store(Request $request){  
         $new_user= new User();
         $new_user->title=$request->title;
         $new_user->first_name=$request->first_name;    
@@ -43,21 +43,27 @@ class UserAdd_Controller extends Controller
         $new_user->org_id=$request->org_id;
         
         if($request->password == $request->confirm_pass){
-            // session()->put('alert-class','alert-danger');
-            // session()->put('alert-content','password not correct');
              $new_user->password = Hash::make($request->password);
         }
         else{
-            // session()->put('alert-class','alert-danger');
-            // session()->put('alert-content','password not correct');
+            session()->put('alert-class','alert-danger');
+            session()->put('alert-content','password not correct');
+            return redirect('user');
+        }
+
+        // duplicate entry
+        if(User::where('email',$request->email)->exists()){
+            session()->put('alert-class','alert-danger');
+            session()->put('alert-content','This email '.$request->email.' is already exist. Please enter another email ID');
+            return redirect('user');
         }
         $new_user->mobile_number =$request->mobile;   
         $new_user->email=$request->email;     
         $new_user->address=$request->address;
         $new_user->save();
-        $check_logout = new CheakLogout();
-        $check_logout->user_id = $new_user->id;
-        $check_logout->save();
-      return redirect('user');
+        // $check_logout = new CheakLogout();
+        // $check_logout->user_id = $new_user->id;
+        // $check_logout->save();
+        return redirect('user');
     }
 }

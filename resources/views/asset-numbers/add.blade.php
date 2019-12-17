@@ -16,105 +16,100 @@
                 </div>
             </div>
         </div>
-        <div class="card-body" style="    margin-top: -27em;">
-           
-              
-                    <form action="{{url('asset-numbers/store')}}" method="POST">
-                    @csrf
-                    <div class="row">
-                        <div class="col-md-3">
-                           <div class="form-group">
-                                <label for="year">Year<span style="color:red;margin-left:5px;">*</span></label>
-                                <select name="year" id="year" class="form-control">
-                                    <option value="">---Select---</option>
-                                    @foreach($years as $year)
-                                     <option value="{{ $year->year_id}}" <?php if($data->year==$year->year_id){ echo "selected"; } ?>>{{ $year->year_value}}</option>
-                                    @endforeach
-                                </select>
-                                <div class="invalid-feedback" id="year_error_msg"></div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label for="asset_id">Asset<span style="color:red;margin-left:5px;">*</span></label>
-                                <select name="asset_id" id="asset_id" class="form-control">
-                                    <option value="">---Select---</option>
-                                    @foreach( $assets as $asset )
-                                     <option value="{{ $asset->asset_id }}" <?php if($data->asset_id==$asset->asset_id){ echo "selected"; } ?>>{{ $asset->asset_name }}</option>
-                                    @endforeach
-                                </select>
-                                <div class="invalid-feedback" id="asset_id_error_msg"></div>
-                            </div>
-                        </div>
-
-                        <div class="col-md-3">
-                             <div class="form-group">
-                                <label for="geo_id">Panchayat<span style="color:red;margin-left:5px;">*</span></label>
-                                <select name="geo_id" id="geo_id" class="form-control">
-                                    <option value="">---Select---</option>
-                                    @foreach($panchayats as $panchayat)
-                                     <option value="{{ $panchayat->geo_id }}" <?php if($data->geo_id==$panchayat->geo_id){ echo "selected"; } ?>>{{ $panchayat->geo_name }}</option>
-                                    @endforeach
-                                </select>
-                                <div class="invalid-feedback" id="geo_id_error_msg"></div>
-
-                            </div>
-                        </div>
+        <div class="card-body">
+            <form action="{{url('asset-numbers/store')}}" method="POST">
+            @csrf
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="year">Year<span style="color:red;margin-left:5px;">*</span></label>
+                        <select name="year" id="year" class="form-control">
+                            <option value="">---Select---</option>
+                            @foreach($years as $year)
+                                <option value="{{ $year->year_id}}" <?php if($data->year==$year->year_id){ echo "selected"; } ?>>{{ $year->year_value}}</option>
+                            @endforeach
+                        </select>
+                        <div class="invalid-feedback" id="year_error_msg"></div>
                     </div>
-                            <!-- <div class="form-group next-button">
-                                <button type="button" class="btn btn-primary btn-secondary" onclick="next()" id="btn_hide">Next&nbsp;&nbsp;<i class="fas fa-arrow-right"></i></button>
-                            </div> -->
-                        <div class="row">
-                            <div class="col-md-3">
-                            <div class="form-group" id="previous_value_hide" style="display:none;">
-                                <label for="previous_value">Previous Value</label>
-                                <input type="text" name="previous_value" id="previous_value" class="form-control" readonly>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group" id="current_value_hide" style="display:none;">
-                                <label for="current_value">Current Value</label>
-                                <input type="text" name="current_value" id="current_value"  value="{{$data->current_value}}" class="form-control" autocomplete="off">
-                                <div class="invalid-feedback" id="current_value_error_msg"></div>
-                            </div>
-                        </div>
-                        </div>
-                           
-                            <div class="form-group" style="display:none;" id="append-location">
-                                <label>Asset Locations</label>
-                                 <div class="table-responsive table-hover table-sales">
-                                 <table class="table">
-                                <thead style="background: #d6dcff;color: #000;">
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Location/Landmark</th>
-                                            <th>Latitude</th>
-                                            <th>Longitude</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="append-location-delete">
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="asset_id">Asset<span style="color:red;margin-left:5px;">*</span></label>
+                        <select name="asset_id" id="asset_id" class="form-control">
+                            <option value="">---Select---</option>
+                            @foreach( $assets as $asset )
+                                <option value="{{ $asset->asset_id }}" <?php if($data->asset_id==$asset->asset_id){ echo "selected"; } ?>>{{ $asset->asset_name }}</option>
+                            @endforeach
+                        </select>
+                        <div class="invalid-feedback" id="asset_id_error_msg"></div>
+                    </div>
+                </div>
 
-                                    </tbody>
-                                    <tbody id="append-location-new">
+                <div class="col-md-3">
+                        <div class="form-group">
+                        <label for="geo_id">Panchayat<span style="color:red;margin-left:5px;">*</span></label>
+                        <select name="geo_id" id="geo_id" class="form-control">
+                            <option value="">---Select---</option>
+                            @foreach($panchayats as $panchayat)
+                                <option value="{{ $panchayat->geo_id }}" <?php if($data->geo_id==$panchayat->geo_id){ echo "selected"; } ?>>{{ $panchayat->geo_name }}</option>
+                            @endforeach
+                        </select>
+                        <div class="invalid-feedback" id="geo_id_error_msg"></div>
 
-                                    </tbody>
-                                </table>
-                            </div>
-                                <div class="invalid-feedback" id="asset_location_error_msg"></div>
-                                <!-- longitude / latitude form -->
-                            </div>
-                            
-                            <div class="form-group" id="submit-buttons">
-                                <input type="text" name="hidden_input_purpose" id="hidden_input_purpose" value="{{$hidden_input_purpose}}" hidden>
-                                <input type="text" name="hidden_input_id" value="{{$hidden_input_id}}" hidden>
-                                <button type="submit" class="btn btn-primary" onclick=" return submitSave()"><span id="save-button-text">Next</span>&nbsp;&nbsp;<i class="fas fa-arrow-right"></i></button>
-                            </div>
-                        </form>
                     </div>
                 </div>
             </div>
+                    <!-- <div class="form-group next-button">
+                        <button type="button" class="btn btn-primary btn-secondary" onclick="next()" id="btn_hide">Next&nbsp;&nbsp;<i class="fas fa-arrow-right"></i></button>
+                    </div> -->
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group" id="previous_value_hide" style="display:none;">
+                            <label for="previous_value">Previous Value</label>
+                            <input type="text" name="previous_value" id="previous_value" class="form-control" readonly>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group" id="current_value_hide" style="display:none;">
+                            <label for="current_value">Current Value</label>
+                            <input type="text" name="current_value" id="current_value"  value="{{$data->current_value}}" class="form-control" autocomplete="off">
+                            <div class="invalid-feedback" id="current_value_error_msg"></div>
+                        </div>
+                    </div>
+                </div>
+                    
+                    <div class="form-group" style="display:none;" id="append-location">
+                        <label>Asset Locations</label>
+                        <div class="table-responsive table-hover table-sales">
+                            <table class="table">
+                            <thead style="background: #d6dcff;color: #000;">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Location/Landmark</th>
+                                        <th>Latitude</th>
+                                        <th>Longitude</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="append-location-delete">
+
+                                </tbody>
+                                <tbody id="append-location-new">
+
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="invalid-feedback" id="asset_location_error_msg"></div>
+                        <!-- longitude / latitude form -->
+                    </div>
+                    
+                    <div class="form-group" id="submit-buttons">
+                        <input type="text" name="hidden_input_purpose" id="hidden_input_purpose" value="{{$hidden_input_purpose}}" hidden>
+                        <input type="text" name="hidden_input_id" value="{{$hidden_input_id}}" hidden>
+                        <button type="submit" class="btn btn-primary" onclick=" return submitSave()"><span id="save-button-text">Next</span>&nbsp;&nbsp;<i class="fas fa-arrow-right"></i></button>
+                    </div>
+                </form>
+            </div>
         </div>
-   </div>
 <script>
     /* validation starts */
     // error variables as true = error occured

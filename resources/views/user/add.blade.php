@@ -76,226 +76,216 @@ hr.new2 {
 </style>
 
 @section('page-content')
-<div class="main-panel">
-    <div class="content">
-        <div class="page-inner">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="card" style="border-top: 3px solid #5c76b7;">
-                        <div class="card-header">
-                            <div class="card-title" style="float:left;"><i class="fa fa-user" aria-hidden="true"></i> &nbsp;User Detail</div>
-                            <div id="toggle1">
-                                <div  style="float:right;"><button class="btn btn-secondary"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;Add Users</button></div>
-                            </div>
-                        </div>
-                        <hr>
-                    <!-----------------------------------------start of User Form------------------------------------------>
-                        <div id="show-toggle1">
-                            <div class="row">
-                                <div class="col-md-12"><br>
-                                    <div class="card" style="border-top: 1px solid #5c76b7;margin-top: -40px;">
-                                    <form action="{{url('user/store')}}" method="POST">
-                                         @csrf      
-                                        <div class="card-body" style="margin-top: -15px;">
-                                            <div class="row">
-                                                <div class="col-md-2">
-                                                    <div class="form-group">
-                                                        <label for="">Title</label>
-                                                        <select name="title" class="form-control form-control" id="defaultSelect">
-                                                            <!-- <option>--select--</option> -->
-                                                            <option>Mr.</option>
-                                                            <option>Mrs.</option>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card" style="border-top: 3px solid #5c76b7;">
+                <div class="card-header">
+                    <div class="card-title" style="float:left;"><i class="fa fa-user" aria-hidden="true"></i> &nbsp;User Detail</div>
+                    <div id="toggle1">
+                        <div  style="float:right;"><button class="btn btn-secondary"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;Add Users</button></div>
+                    </div>
+                </div>
+                <hr>
+            <!-----------------------------------------start of User Form------------------------------------------>
+                <div id="show-toggle1">
+                    <div class="row">
+                        <div class="col-md-12"><br>
+                            <div class="card" style="border-top: 1px solid #5c76b7;margin-top: -40px;">
+                            <form action="{{url('user/store')}}" method="POST">
+                                    @csrf      
+                                <div class="card-body" style="margin-top: -15px;">
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label for="">Title</label>
+                                                <select name="title" class="form-control form-control" id="defaultSelect">
+                                                    <!-- <option>--select--</option> -->
+                                                    <option>Mr.</option>
+                                                    <option>Mrs.</option>
 
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <div class="form-group">
-                                                        <label for="">First Name <font style="color:red;">*</font></label>
-                                                        <input type="" name="first_name" class="form-control" id="" required placeholder="First Name">
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <div class="form-group">
-                                                        <label for="">Last Name <font style="color:red;">*</font></label>
-                                                        <input type="" name="last_name" class="form-control" id="" required placeholder="Last Name">
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-2">
-                                                    <div class="form-group">
-                                                        <label for="">Suffix <font style="color:red;">*</font></label>
-                                                        <input type="" name="suffix" class="form-control" required  id="" placeholder="">
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-2">
-                                                </div>
-                                            </div>
-
-                                            <div class="row">
-                                                <div class="col-md-2">
-                                                    <div class="form-group">
-                                                        <label for="">Status<font style="color:red;">*</font></label>
-                                                        <select name="is_active" class="form-control form-control" required id="defaultSelect">
-                                                            <!-- <option>--select--</option> -->
-                                                            <option> Active </option>
-                                                            <option>Inactive</option>
-
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <div class="form-group">
-                                                        <label for="">Start Date<font style="color:red;">*</font></label>
-                                                        <div class="input-group">
-                                                            <input type="date" name="start_date" class="form-control"  required placeholder="mm/dd/yyyy" id="datepicker-start-date">
-
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <div class="form-group">
-                                                        <label for="">End date<font style="color:red;">*</font></label>
-                                                        <div class="input-group">
-                                                            <input type="date" name="end_date" class="form-control" required placeholder="mm/dd/yyyy" id="datepicker-end-date">
-
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-2">
-                                                        <div class="form-group">
-                                                            <label for="">Designation <font style="color:red;">*</font></label>
-                                                            <select name="desig_id" class="form-control form-control" required id="defaultSelect">
-                                                                @foreach($designation_data as $designation)
-                                                                    <option value="{{$designation->desig_id}}">{{$designation->name}}</option>
-                                                                @endforeach
-
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-2">
-                                                    <div class="form-group">
-                                                        <label for="">Username<font style="color:red;">*</font></label>
-                                                        <input type="" name="user" class="form-control" id="" required placeholder="Username">
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <div class="form-group">
-                                                        <label for="">Password<font style="color:red;">*</font></label>
-                                                        <input type="" name="password" class="form-control" required id="" placeholder="Password">
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <div class="form-group">
-                                                        <label for="">Confirm Password<font style="color:red;">*</font></label>
-                                                        <input type="" name="confirm_pass" class="form-control" required id="" placeholder="Re-type Password">
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-2">
-                                                        <div class="form-group">
-                                                            <label for="">Organisation <font style="color:red;">*</font></label>
-                                                            <select name="org_id" class="form-control form-control" required id="defaultSelect">
-                                                                @foreach($organization_data as $organization)
-                                                                    <option value="{{$organization->org_id}}">{{$organization->org_name}}</option>
-                                                                @endforeach
-
-                                                            </select>
-                                                        </div>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-2">
-                                                    <div class="form-group">
-                                                        <label for="">Mobile No.<font style="color:red;">*</font></label>
-                                                        <input type="" name="mobile" class="form-control" required id="" placeholder="(999) 999-9999">
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <div class="form-group">
-                                                        <label for="">Email Id.<font style="color:red;">*</font></label>
-                                                        <input type="" name="email" class="form-control" required id="" placeholder="example@gmail.com">
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <div class="form-group">
-                                                        <label for="">Address</label>
-                                                        <div class="input-group">
-                                                            <input type="text"  name="address" class="form-control" placeholder="Address" aria-label="" aria-describedby="basic-addon1">
-                                                            <div class="input-group-prepend" style="margin-left:10px;">
-                                                                <!-- <button class="btn btn-icon btn-primary btn-round btn-xs">
-                                                                    <i class="fa fa-plus"></i>
-                                                                </button> -->
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                            <div class="col-md-4">
-
-
-                                            </div>
-                                            </div>
-                                            <div class="card-action">
-                                                <hr class="new2">
-                                                <button class="btn btn-secondary">Submit</button>
-                                                <button class="btn btn-danger">Cancel</button>
+                                                </select>
                                             </div>
                                         </div>
-                                    </form>    
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="">First Name <font style="color:red;">*</font></label>
+                                                <input type="" name="first_name" class="form-control" id="" required placeholder="First Name">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="">Last Name <font style="color:red;">*</font></label>
+                                                <input type="" name="last_name" class="form-control" id="" required placeholder="Last Name">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label for="">Suffix <font style="color:red;">*</font></label>
+                                                <input type="" name="suffix" class="form-control" required  id="" placeholder="">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label for="">Status<font style="color:red;">*</font></label>
+                                                <select name="is_active" class="form-control form-control" required id="defaultSelect">
+                                                    <!-- <option>--select--</option> -->
+                                                    <option> Active </option>
+                                                    <option>Inactive</option>
+
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="">Start Date<font style="color:red;">*</font></label>
+                                                <div class="input-group">
+                                                    <input type="date" name="start_date" class="form-control"  required placeholder="mm/dd/yyyy" id="datepicker-start-date">
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="">End date<font style="color:red;">*</font></label>
+                                                <div class="input-group">
+                                                    <input type="date" name="end_date" class="form-control" required placeholder="mm/dd/yyyy" id="datepicker-end-date">
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                                <div class="form-group">
+                                                    <label for="">Designation <font style="color:red;">*</font></label>
+                                                    <select name="desig_id" class="form-control form-control" required id="defaultSelect">
+                                                        @foreach($designation_data as $designation)
+                                                            <option value="{{$designation->desig_id}}">{{$designation->name}}</option>
+                                                        @endforeach
+
+                                                    </select>
+                                                </div>
+                                            </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label for="">Username<font style="color:red;">*</font></label>
+                                                <input type="" name="user" class="form-control" id="" required placeholder="Username">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="">Password<font style="color:red;">*</font></label>
+                                                <input type="" name="password" class="form-control" required id="" placeholder="Password">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="">Confirm Password<font style="color:red;">*</font></label>
+                                                <input type="" name="confirm_pass" class="form-control" required id="" placeholder="Re-type Password">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                                <div class="form-group">
+                                                    <label for="">Organisation <font style="color:red;">*</font></label>
+                                                    <select name="org_id" class="form-control form-control" required id="defaultSelect">
+                                                        @foreach($organization_data as $organization)
+                                                            <option value="{{$organization->org_id}}">{{$organization->org_name}}</option>
+                                                        @endforeach
+
+                                                    </select>
+                                                </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label for="">Mobile No.<font style="color:red;">*</font></label>
+                                                <input type="" name="mobile" class="form-control" required id="" placeholder="(999) 999-9999">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="">Email Id.<font style="color:red;">*</font></label>
+                                                <input type="" name="email" class="form-control" required id="" placeholder="example@gmail.com">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="">Address</label>
+                                                <div class="input-group">
+                                                    <input type="text"  name="address" class="form-control" placeholder="Address" aria-label="" aria-describedby="basic-addon1">
+                                                    <div class="input-group-prepend" style="margin-left:10px;">
+                                                        <!-- <button class="btn btn-icon btn-primary btn-round btn-xs">
+                                                            <i class="fa fa-plus"></i>
+                                                        </button> -->
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    <div class="col-md-4">
+
+
+                                    </div>
+                                    </div>
+                                    <div class="card-action">
+                                        <hr class="new2">
+                                        <button class="btn btn-secondary">Submit</button>
+                                        <button class="btn btn-danger">Cancel</button>
                                     </div>
                                 </div>
+                            </form>    
                             </div>
                         </div>
-                    <!-----------------------------------------end of User Form------------------------------------------>
+                    </div>
+                </div>
+            <!-----------------------------------------end of User Form------------------------------------------>
 
-                    <!-----------------------------------------start of table------------------------------------------>
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table id="basic-datatables" class="display table table-striped table-hover" >
-                                    <thead>
-                                        <tr>
-                                            <th>Name</th>
-                                            <th>Designation</th>
-                                            <th>Email Id.</th>
-                                            <th>Mobile No.</th>
-                                            <th>Status</th>
-                                            <th>Username</th>
-                                            <th>Address</th>
-                                        </tr>
-                                    </thead>
-                                  
-                                    <tbody>
-                                        @foreach($results as $key => $val)
-                                        <tr>
-                                            <td>{{$val->first_name}} {{$val->last_name}}</td>
-                                            <td>{{$val->designame}}</td>
-                                            <td>{{$val->email_id}}</td>
-                                            <td>{{$val->mobile_number}}</td>
-                                            <td>{{$val->is_active}}</td>
-                                            <td>{{$val->username}}</td>
-                                            <td>{{$val->address}}</td>
-                                        </tr>
-                                        @endforeach
-                                    
-                                    
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        
-                    <!-----------------------------------------end of table------------------------------------------>
-					</div>
-				</div>
+            <!-----------------------------------------start of table------------------------------------------>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="basic-datatables" class="display table table-striped table-hover" >
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Designation</th>
+                                    <th>Email Id.</th>
+                                    <th>Username</th>
+                                    <th>Address</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            
+                            <tbody>
+                                @foreach($results as $key => $val)
+                                <tr>
+                                    <td>{{$val->first_name}}</td>
+                                    <td>{{$val->designame}}</td>
+                                    <td>{{$val->email_id}}</td>
+                                    <td>{{$val->username}}</td>
+                                    <td>{{$val->address}}</td>
+                                    <td>{{$val->is_active}}</td>
+                                </tr>
+                                @endforeach
+                            
+                            
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+            <!-----------------------------------------end of table------------------------------------------>
             </div>
         </div>
     </div>
-
-</div>
-@endsection
 
     <script>
         // Date Picker
@@ -307,7 +297,7 @@ hr.new2 {
             });
     </script>
 
-<script>
+    <script>
         // Date Picker
         jQuery('#datepicker-start-date').datepicker();
             jQuery('#datepicker-start-date-inline').datepicker();
@@ -317,3 +307,4 @@ hr.new2 {
             });
     </script>
 </div>
+@endsection

@@ -1,5 +1,7 @@
 <?php
-
+if(version_compare(PHP_VERSION, '7.2.0', '>=')) {
+    error_reporting(E_ALL ^ E_NOTICE ^ E_WARNING);
+}
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -18,37 +20,41 @@ Route::get('clear-cache', function () {
 	Session::flash('success', 'All Clear');
 	echo "DONE";
 });
-if(version_compare(PHP_VERSION, '7.2.0', '>=')) {
-    error_reporting(E_ALL ^ E_NOTICE ^ E_WARNING);
-}
 
-// Auth::routes();
-// Route::get('/home', 'HomeController@index')->name('home');
 
 Route::get('/', function () {
-	return view('admin.login');
+    return view('admin.login');
 });
-Route::post('login','LoginController@login');
+Route::get('logt',function(){
+    Auth::logout();
+    return redirect('/');
+});
 
-//uesr
-Route::get('user','LoginController@index');
-//Route::get('user_login','LoginController@add');
-Route::post('user/store','LoginController@store');
 
-/* custom homepage */
-// Route::get("homepage", function(){
-//    return view("index"); 
-// });
-Route::get('homepage','DashboardController@index');
+Auth::routes();
 
 /*dashboard*/
+Route::get('home', 'DashboardController@index')->name('home');
+Route::get('homepage','DashboardController@index');
 Route::get('dashboard/dc_dashboard','DashboardController@index');
+
+
+//user
+Route::get('user','UserAdd_Controller@adduser');
+Route::post('user/store','UserAdd_Controller@store');
+
+
 
 /* department */
 Route::get('department','DepartmentController@index');
 Route::get('department/add','DepartmentController@add');
 Route::post('department/store','DepartmentController@store');
 Route::get('department/delete/{dept_id}','DepartmentController@delete');
+Route::get('pdfview',array('as'=>'pdfview','uses'=>'DepartmentController@pdfview'));
+//Route::get('excelview',array('as'=>'excelview','uses'=>'DepartmentController@excelview'));
+// Route::get('/articles/exportExcel','PostsController@exportExcel');
+Route::get('export','DepartmentController@export');
+
 
 /* designation */
 Route::get('designation','DesignationController@index');
@@ -100,7 +106,25 @@ Route::get('uom','UomController@index');
 Route::get('uom/add','UomController@add');
 Route::post('uom/store','UomController@store');
 Route::get('uom/delete/{uom_id}','UomController@delete');
+	
+/*asset*/
+Route::get('asset','AssetController@index');
+Route::get('asset/add','AssetController@add');
+Route::post('asset/store','AssetController@store');
+Route::get('asset/delete/{asset_id}','AssetController@delete');
+Route::get('asset/get-subcategory','AssetController@get_subcategory_name');
 
+/*Asset Category*/
+Route::get('assetcat','AssetController@index_cat');
+Route::get('assetcat/add','AssetController@add_cat');
+Route::post('assetcat/store','AssetController@store_cat');
+Route::get('assetcat/delete/{asset_cat_id}','AssetController@delete_cat');
+
+/*Asset Sub Category*/
+Route::get('asset_subcat','AssetController@index_subcat');
+Route::get('asset_subcat/add','AssetController@add_subcat');
+Route::post('asset_subcat/store','AssetController@store_subcat');
+Route::get('asset_subcat/delete/{asset_sub_id}','AssetController@delete_subcat');
 
 /*Scheme Type*/
 Route::get('scheme-type','SchemeTypeController@index');
@@ -122,17 +146,17 @@ Route::get('asset-review/get-datas', 'AssetReviewController@get_datas');
 Route::get('asset-review/get-map-data', 'AssetReviewController@get_map_data');
 Route::get('asset-review/get-panchayat-data', 'AssetReviewController@get_panchayat_data');
 
-/* scheme review */
-Route::get('review/{review_type}', 'SchemeReviewController@index');
-Route::get('scheme-review/get-datas', 'SchemeReviewController@get_datas');
-Route::get('scheme-review/get-map-data', 'SchemeReviewController@get_map_data');
-Route::get('scheme-review/get-panchayat-data', 'SchemeReviewController@get_panchayat_data');
-
 /*Scheme Type*/
 Route::get('scheme-type','SchemeTypeController@index');
 Route::get('scheme-type/add','SchemeTypeController@add');
 Route::post('scheme-type/store','SchemeTypeController@store');
 Route::get('scheme-type/delete/{sch_type_id}','SchemeTypeController@delete');
+
+/*scheme-asset*/
+Route::get('scheme-asset','Scheme_Asset_Controller@index');
+// Route::get('scheme-asset/add','Scheme_Asset_Controller@add');
+Route::post('scheme-asset/store','Scheme_Asset_Controller@store');
+Route::get('scheme-asset/delete/{scheme_assets_id}','Scheme_Asset_Controller@delete');
 
 /*Scheme Performance*/
 Route::get('scheme-performance/add','SchemePerformanceController@add');
@@ -143,9 +167,13 @@ Route::get('scheme-performance/get-panchayat-name','SchemePerformanceController@
 Route::get('scheme-performance/get-indicator-name','SchemePerformanceController@get_indicator_name');
 // Route::get('scheme-performance/get-indicator-table','SchemePerformanceController@get_indicator_table');
 Route::get('scheme-performance/get-target','SchemePerformanceController@get_target');
-
 Route::get("scheme-performance/get-scheme-performance-datas", "SchemePerformanceController@get_scheme_performance_datas");
 
+/* scheme review */
+Route::get('review/{review_type}', 'SchemeReviewController@index');
+Route::get('scheme-review/get-datas', 'SchemeReviewController@get_datas');
+Route::get('scheme-review/get-map-data', 'SchemeReviewController@get_map_data');
+Route::get('scheme-review/get-panchayat-data', 'SchemeReviewController@get_panchayat_data');
 
 /* group*///rohit changes 
 Route::get('scheme-group','GroupController@index');
@@ -166,49 +194,19 @@ Route::get('module','ModuleController@index');
 Route::get('module/add','ModuleController@add');
 Route::post('module/store','ModuleController@store');
 Route::get('module/delete/{mod_id}','ModuleController@delete');
-
-/*asset*/
-Route::get('asset','AssetController@index');
-Route::get('asset/add','AssetController@add');
-Route::post('asset/store','AssetController@store');
-Route::get('asset/delete/{asset_id}','AssetController@delete');
-Route::get('asset/get-subcategory','AssetController@get_subcategory_name');
-
-/*Asset Category*/
-Route::get('assetcat','AssetController@index_cat');
-Route::get('assetcat/add','AssetController@add_cat');
-Route::post('assetcat/store','AssetController@store_cat');
-Route::get('assetcat/delete/{asset_cat_id}','AssetController@delete_cat');
-
-/*Asset Sub Category*/
-Route::get('asset_subcat','AssetController@index_subcat');
-Route::get('asset_subcat/add','AssetController@add_subcat');
-Route::post('asset_subcat/store','AssetController@store_subcat');
-Route::get('asset_subcat/delete/{asset_sub_id}','AssetController@delete_subcat');
-
-
+	
 //send mail by rohit
-Route::post('send_mail','EmailController@sendEmail');
-
+Route::post('send_mail','EmailController@sendEmail');	
 
 Route::get('mail', function () {
-    return view('index1');
+	return view('index1');
 });
 
 Route::post('sendmail','EmailController@sendmail');
 
-
-
 //fav rohit
-Route::get('favourites','FavController@index');
+Route::any('favourites','FavController@index');
 Route::post('fav_department','FavController@add_fav_departs');
 Route::post('fav_scheme','FavController@add_fav_scheme');
 Route::post('fav_block','FavController@add_fav_block');
 Route::post('fav_panchayat','FavController@add_fav_panchayat');
-
-
-/*sch*/
-Route::get('scheme-asset','Scheme_Asset_Controller@index');
-// Route::get('scheme-asset/add','Scheme_Asset_Controller@add');
-Route::post('scheme-asset/store','Scheme_Asset_Controller@store');
-Route::get('scheme-asset/delete/{scheme_assets_id}','Scheme_Asset_Controller@delete');

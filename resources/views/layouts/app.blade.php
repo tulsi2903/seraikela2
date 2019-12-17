@@ -1,4 +1,17 @@
-<!DOCTYPE html>
+@guest
+<script>
+    <?php Session::flash('warning', 'You are not a Authoriesd User..!'); ?>
+    window.location = "{{ url('/') }}";
+</script>
+@if (Route::has('register'))
+<script>
+    <?php Session::flash('warning', 'Your Session had been Expired..!'); ?>
+    window.location = "{{url('/')}}";
+</script>
+@endif
+@else
+
+<!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="utf-8">
@@ -78,3 +91,4 @@
     </div>
 </body>
 </html>
+@endguest

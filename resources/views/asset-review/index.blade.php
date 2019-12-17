@@ -203,17 +203,15 @@
                     <li class="nav-item">
                         <a class="nav-link" id="map-tab" data-toggle="pill" href="#map-view-tab" role="tab" aria-selected="false">Map View</a>
                     </li>
-
                     <li class="nav-item">
                         <a class="nav-link" id="gallery-tab" data-toggle="pill" href="#gallery-view-tab" role="tab" aria-selected="false">Gallery View</a>
                     </li>
-                    <div class="col-md-12" style="margin-top: -27px;display: flow-root;">
-                        <button type="button" class="btn btn-secondary btn-sm print-button" onclick="printReview('tabular')" style="float: right;margin-top: -14px;"><i class="fa fa-print" aria-hidden="true"></i></button>&nbsp;&nbsp;&nbsp;
-                        <button type="button" class="btn btn-primary btn-sm print-button" style="float: right;margin-top: -14px;margin-right: 7px;"><i class="fa fa-envelope" aria-hidden="true"></i></button>
+                    <div style="margin-top: 10px; margin-left: auto; order: 2; display:inline-block;">
+                        <button type="button" class="btn btn-secondary btn-sm print-button" onclick="printReview('tabular')" style=""><i class="fa fa-print" aria-hidden="true"></i></button>&nbsp;&nbsp;&nbsp;
+                        <button type="button" class="btn btn-primary btn-sm print-button" style="margin-right: 7px;"><i class="fa fa-envelope" aria-hidden="true"></i></button>
                     </div>
                 </ul><hr>
-                <div class="tab-content mt-2 mb-3" id="myTabContent">
-                    
+                <div class="tab-content mt-2 mb-3 printable-area" id="myTabContent">
                     <!-- tabular-view -->
                     <div class="tab-pane fade show active" id="tabular-view-tab" role="tabpanel">
                         <div id="tabular-view">

@@ -13,7 +13,15 @@
 							<li><a href="{{url('dashboard/dc_dashboard')}}"><span class="sub-item">DC Dashboard</span></a></li>
 							<!-- <li><a href="{{url('#')}}"><span class="sub-item">BDO Dashboard</span></a></li>
 							<li><a href="{{url('#')}}"><span class="sub-item">PO Dashboard</span></a></li> -->
-
+							<!-- @if(Session::get('userType')==1)
+							<li><a href="{{url('dc_dashboard')}}"><span class="sub-item">DC Dashboard</span></a></li>
+							<li><a href="{{url('#')}}"><span class="sub-item">BDO Dashboard</span></a></li>
+							<li><a href="{{url('#')}}"><span class="sub-item">PO Dashboard</span></a></li>
+							@elseif(Session::get('userType')==2)
+							<li><a href="{{url('#')}}"><span class="sub-item">BDO Dashboard</span></a></li>
+							@elseif(Session::get('userType')==3)
+							<li><a href="{{url('#')}}"><span class="sub-item">PO Dashboard</span></a></li>
+							@endif -->
 						</ul>
 					</div>
 				</li>
@@ -26,7 +34,7 @@
 					</a>
 					<div class="collapse" id="administator">
 						<ul class="nav nav-collapse">
-							<!-- <li class="nav-item"><a href="{{url('user')}}"><i class="fas fa-users"></i><p>User</p></a></li> -->
+							<li class="nav-item"><a href="{{url('user')}}"><i class="fas fa-users"></i><p>User</p></a></li>
 							<li class="nav-item"><a href="{{url('department')}}"><i class="fas fa-sitemap"></i><p>Department</p></a></li>
 							<li class="nav-item"><a href="{{url('year')}}"><i class="fas fa-calendar-alt"></i><p>Year</p></a></li>
 							<li class="nav-item"><a href="{{url('uom')}}"><i class="fas fa-list-ol"></i><p>UoM</p></a></li>

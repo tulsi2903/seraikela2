@@ -1,3 +1,15 @@
+<?php
+    if (!Auth::guest())
+    {
+        // logged in
+    }
+    else{
+        ?>
+        <script>window.location = "{{url('login')}}";</script>
+        <?php
+        exit();
+    }
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
