@@ -17,7 +17,14 @@
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="card-title" style="float:left;">Add Favourites Details</h4>
+                        <div class="card-head-row card-tools-still-right" style="background:#fff;">
+                            <h4 class="card-title">Add Favourites Details</h4>
+                            <div class="card-tools">
+                                <!-- <button type="button" class="btn btn-icon btn-round btn-success" data-target="#create-email" data-toggle="modal" ><i class="fa fa-envelope" aria-hidden="true"></i></button> -->
+                                <button type="button" class="btn btn-icon btn-round btn-default" id="print-button" onclick="printView();"><i class="fa fa-print" aria-hidden="true"></i></button>
+                                <!-- <a id="toggle1" class="btn btn-secondary department-add-button" href="javascript:void();" role="button"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;Add</a> -->
+                            </div>
+                        </div>
                     </div>
                     <div class="card-body">
                         <div class="row">
@@ -31,7 +38,7 @@
                                 </div>
                             </div>
                         
-                            <div class="col-md-10">
+                            <div class="col-md-10" id="printable-area">
                                 <div class="tab-content" id="v-pills-without-border-tabContent">
                                     <div class="tab-pane fade show active" id="v-pills-home-nobd" role="tabpanel" aria-labelledby="v-pills-home-tab-nobd">
                                             <form action="{{url('fav_department')}}" method="post" >
@@ -89,16 +96,14 @@
                                                     <tbody>
                                                          @if(count($datas_scheme)!=0)
                                                             @foreach($datas_scheme as $key => $val)
-                                                                    <tr>
-                                                                        <td><input type="checkbox" name="scheme_id[]" value="{{$val->scheme_id}}" @if($val->checked==1) checked @endif></td>
-                                                                        <td>{{$val->scheme_name}}</td>
-                                                                        <td>{{$val->scheme_short_name}}</td>
-                                                                        <!-- <td>{{$val->scheme_id}}</td> -->
-                                                                    </tr>
+                                                                <tr>
+                                                                    <td><input type="checkbox" name="scheme_id[]" value="{{$val->scheme_id}}" @if($val->checked==1) checked @endif></td>
+                                                                    <td>{{$val->scheme_name}}</td>
+                                                                    <td>{{$val->scheme_short_name}}</td>
+                                                                    <!-- <td>{{$val->scheme_id}}</td> -->
+                                                                </tr>
                                                             @endforeach
-                                                        @endif 
-
-                                                        
+                                                        @endif
                                                     </tbody>
                                                 </table>
                                             </div>

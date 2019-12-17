@@ -35,6 +35,7 @@ Auth::routes();
 
 /*dashboard*/
 Route::get('home', 'DashboardController@index')->name('home');
+Route::get('my-district','DashboardController@index');
 Route::get('homepage','DashboardController@index');
 Route::get('dashboard/dc_dashboard','DashboardController@index');
 

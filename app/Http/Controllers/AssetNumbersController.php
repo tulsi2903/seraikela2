@@ -164,10 +164,7 @@ class AssetNumbersController extends Controller
         $asset_number->created_by = '1';
         $asset_number->updated_by = '1';
          
-         
-         
 
-        
         if(isset($request->location_name)){
             $location_name = $request->location_name;
             $latitude = $request->latitude;
@@ -206,6 +203,26 @@ class AssetNumbersController extends Controller
                 }
             }
         }
+
+
+        // for geo_location_images
+        // if($request->hasFile('asset_icon')){
+        //     $upload_directory = "public/uploaded_documents/assets/";
+        //     $file = $request->file('asset_icon');
+        //     $asset_icon_tmp_name = "assets-".time().rand(1000,5000).'.'.strtolower($file->getClientOriginalExtension());
+        //     $file->move($upload_directory, $asset_icon_tmp_name);   // move the file to desired folder
+
+        //     // deleteprevious icon
+        //     if($request->hidden_input_purpose=="edit")
+        //     {
+        //         if(file_exists($asset->asset_icon)){
+        //             unlink($asset->asset_icon);
+        //         }
+        //     }
+        //     $asset->asset_icon = $upload_directory.$asset_icon_tmp_name;    // assign the location of folder to the model
+        // }
+
+
        
         if($asset_number->save()){
             session()->put('alert-class','alert-success');

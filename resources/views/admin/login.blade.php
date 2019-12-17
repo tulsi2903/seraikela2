@@ -42,12 +42,7 @@
 			<div class="col-md-6"><br><br>
 				<div class="content-detail" style="padding: 3em;margin-top:-4em;">
 					<h4>District Scheme & Resource Management</h4>
-					<p>A single dashboard where you can monitor and evaluate the Schemes & Programs with respect to
-						time, geography, department and asset progress that are implemented in the district. Also, you
-						can further review and generate reports. And can print, email and export the data in PDF or
-						Excel format. It provides you with 24x7 availability to all the department growing individually
-						for the growth of the district. Finally, this analysis will aid better decision support for the
-						growth and development of our people.</p><br>
+					<p>The website provides Information on a single dashboard where you can monitor and evaluate the various Projects, Schemes & programs with respect to time, geography, department and asset progress that are rendered by Jharkhand State and implemented in the district. Also, you can further review and generate reports. And can print, email and export the data in PDF or Excel format. It provides you with 24x7 availability to all the department growing individually for the growth of the district in an efficient, reliable, transparent and integrated manner. It is our endeavor to continue the enhancement and enrichment of our state on a regular basis. Finally, this technology will play a vital role in the State’s socio-economic arena.</p><br>
 					<center><img src="{{url('public/images/icons circle.png')}}" style="height: 500px; margin-top: 1em;"></center>
 				</div>
 			</div>
@@ -85,13 +80,13 @@
 					<div class="field-group">
 						<span class="fa fa-user" aria-hidden="true"></span>
 						<div class="wthree-field">
-							<input name="email" id="text1" type="text" value="{{ old('email') }}" placeholder="Username" autocomplete="off" required aria-required="true" placeholder="email" required autofocus>
+							<input name="username" id="text1" type="text" value="{{ old('username') }}" placeholder="Username" autocomplete="off" required aria-required="true" required autofocus>
 						</div>
 					</div>
 					<div class="field-group">
 						<span class="fa fa-lock" aria-hidden="true"></span>
 						<div class="wthree-field">
-							<input name="password" id="myInput" type="Password" required="" aria-required="true" placeholder="Password">
+							<input name="password" id="myInput" type="Password" aria-required="true" placeholder="Password" required>
                         </div>
 					</div>
 					<div class="wthree-field">

@@ -66,8 +66,8 @@
                                     <img src="https://cdn.s3waas.gov.in/s3b337e84de8752b27eda3a12363109e80/uploads/2019/07/2019070129.jpg" alt="..." class="avatar-img rounded-circle" style="margin-top: 12px;">
                                 </div>
                                 <div class="u-text">
-                                    <h4 style="color: #fff;font-weight: 500;font-family: 'Bree Serif', serif;">	Shri Anjaneyulu Dodde</h4>
-                                    <p class="text-muted" style="color: #fff;font-weight: 500;font-family: 'Bree Serif', serif; text-align: center;">(IAS)</p>
+                                    <h4 style="color: #fff;font-weight: 500;font-family: 'Bree Serif', serif; text-transform: capitalize;">{{session()->get('user_full_name')}}</h4>
+                                    <p class="text-muted" style="color: #fff;font-weight: 500;font-family: 'Bree Serif', serif; text-align: center;">({{session()->get('user_designation_name')}})</p>
                                 </div>
                             </div>
                         </a>

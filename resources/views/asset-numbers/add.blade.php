@@ -62,21 +62,21 @@
                     <!-- <div class="form-group next-button">
                         <button type="button" class="btn btn-primary btn-secondary" onclick="next()" id="btn_hide">Next&nbsp;&nbsp;<i class="fas fa-arrow-right"></i></button>
                     </div> -->
-                <div class="row">
-                    <div class="col-md-3">
-                        <div class="form-group" id="previous_value_hide" style="display:none;">
-                            <label for="previous_value">Previous Value</label>
-                            <input type="text" name="previous_value" id="previous_value" class="form-control" readonly>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group" id="previous_value_hide" style="display:none;">
+                                <label for="previous_value">Previous Value</label>
+                                <input type="text" name="previous_value" id="previous_value" class="form-control" readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group" id="current_value_hide" style="display:none;">
+                                <label for="current_value">Current Value</label>
+                                <input type="text" name="current_value" id="current_value"  value="{{$data->current_value}}" class="form-control" autocomplete="off">
+                                <div class="invalid-feedback" id="current_value_error_msg"></div>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-md-3">
-                        <div class="form-group" id="current_value_hide" style="display:none;">
-                            <label for="current_value">Current Value</label>
-                            <input type="text" name="current_value" id="current_value"  value="{{$data->current_value}}" class="form-control" autocomplete="off">
-                            <div class="invalid-feedback" id="current_value_error_msg"></div>
-                        </div>
-                    </div>
-                </div>
                     
                     <div class="form-group" style="display:none;" id="append-location">
                         <label>Asset Locations</label>
@@ -101,6 +101,18 @@
                         <div class="invalid-feedback" id="asset_location_error_msg"></div>
                         <!-- longitude / latitude form -->
                     </div>
+
+                    <!-- <div id="images-block">
+                        <div class="row">
+                        </div>
+                        <div class="row">
+                            <div class="col-2">
+                                <div class="form-group">
+                                    <input type="file" name="images[]" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                    </div> -->
                     
                     <div class="form-group" id="submit-buttons">
                         <input type="text" name="hidden_input_purpose" id="hidden_input_purpose" value="{{$hidden_input_purpose}}" hidden>

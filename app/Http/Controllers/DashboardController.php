@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\GeoStructure;
@@ -13,16 +14,41 @@ class DashboardController extends Controller
 {
     public function index()
     {
-         // TO DO:  Remove level_id  && org_id hardcoding
-         $subdivision_count = GeoStructure::where('level_id','2')->where('org_id','1')->count();
+        // session store user details
+        if(Auth::check()){
+            if(!session()->exists('user_id'))
+            {
+                session()->put('user_id', Auth::user()->id);
+                session()->put('user_full_name', Auth::user()->first_name." ".Auth::user()->last_name); 
+                session()->put('user_org_id', Auth::user()->org_id);
+                session()->put('user_designation', Auth::user()->userRole);
+                switch(Auth::user()->userRole)
+                {
+                    case "1":
+                        session()->put('user_designation_name', "Admin");
+                        break;
+                    case "2":
+                        session()->put('user_designation_name', "SDO");
+                        break;
+                    case "3":
+                        session()->put('user_designation_name', "BDO");
+                        break;
+                    case "4":
+                        session()->put('user_designation_name', "PO");
+                        break;
+                }
+            }
+        }
+        // TO DO:  Remove level_id  && org_id hardcoding
+        $subdivision_count = GeoStructure::where('level_id','2')->where('org_id','1')->count();
         
-          $block_count = GeoStructure::where('level_id','3')->where('org_id','1')->count();
+        $block_count = GeoStructure::where('level_id','3')->where('org_id','1')->count();
  
-         $panchayat_count =GeoStructure::where('level_id','4')->where('org_id','1')->count();
+        $panchayat_count =GeoStructure::where('level_id','4')->where('org_id','1')->count();
 
-         $asset_count = Asset::where('org_id','1')->count();
+        $asset_count = Asset::where('org_id','1')->count();
 
-         $villages_count = GeoStructure::where('level_id','4')->where('org_id','1')->sum('no_of_villages');
+        $villages_count = GeoStructure::where('level_id','4')->where('org_id','1')->sum('no_of_villages');
 
         $get_schemes = SchemeStructure::where('org_id','1')->get();
 

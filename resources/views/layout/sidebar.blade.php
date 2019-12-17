@@ -2,7 +2,7 @@
 	<div class="sidebar-wrapper scrollbar scrollbar-inner">
 		<div class="sidebar-content">
 			<ul class="nav nav-primary">
-				<li class="nav-item">
+				<!-- <li class="nav-item">
 					<a data-toggle="collapse" href="#dashboard" class="collapsed" aria-expanded="false">
 						<i class="fas fa-home"></i>
 						<p>Dashboard</p>
@@ -10,21 +10,16 @@
 					</a>
 					<div class="collapse" id="dashboard">
 						<ul class="nav nav-collapse">
-							<li><a href="{{url('dashboard/dc_dashboard')}}"><span class="sub-item">DC Dashboard</span></a></li>
-							<!-- <li><a href="{{url('#')}}"><span class="sub-item">BDO Dashboard</span></a></li>
-							<li><a href="{{url('#')}}"><span class="sub-item">PO Dashboard</span></a></li> -->
-							<!-- @if(Session::get('userType')==1)
-							<li><a href="{{url('dc_dashboard')}}"><span class="sub-item">DC Dashboard</span></a></li>
-							<li><a href="{{url('#')}}"><span class="sub-item">BDO Dashboard</span></a></li>
-							<li><a href="{{url('#')}}"><span class="sub-item">PO Dashboard</span></a></li>
-							@elseif(Session::get('userType')==2)
-							<li><a href="{{url('#')}}"><span class="sub-item">BDO Dashboard</span></a></li>
-							@elseif(Session::get('userType')==3)
-							<li><a href="{{url('#')}}"><span class="sub-item">PO Dashboard</span></a></li>
-							@endif -->
+							<li><a href="{{url('home')}}"><span class="sub-item">DC Dashboard</span></a></li>
 						</ul>
 					</div>
-				</li>
+				</li> -->
+				<?php
+				if(session()->get('user_designation')=="1"){
+					// add My District, My Block etc
+				}
+				?>
+				<li class="nav-item"><a href="{{url('my-district')}}"><i class="fas fa-home"></i><p>My District</p></a></li>
 
 				<li class="nav-item">
 					<a data-toggle="collapse" href="#administator" class="collapsed" aria-expanded="false">

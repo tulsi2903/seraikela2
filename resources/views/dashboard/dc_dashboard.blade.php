@@ -1,6 +1,6 @@
 @extends('layout.layout')
 
-@section('title', 'DC DASHBOARD')
+@section('title', 'My District')
 
 @section('page-style')
 <style>

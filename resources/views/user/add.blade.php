@@ -85,7 +85,6 @@ hr.new2 {
                         <div  style="float:right;"><button class="btn btn-secondary"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;Add Users</button></div>
                     </div>
                 </div>
-                <hr>
             <!-----------------------------------------start of User Form------------------------------------------>
                 <div id="show-toggle1">
                     <div class="row">
@@ -117,15 +116,6 @@ hr.new2 {
                                                 <label for="">Last Name <font style="color:red;">*</font></label>
                                                 <input type="" name="last_name" class="form-control" id="" required placeholder="Last Name">
                                             </div>
-                                        </div>
-                                        <div class="col-md-2">
-                                            <div class="form-group">
-                                                <label for="">Suffix <font style="color:red;">*</font></label>
-                                                <input type="" name="suffix" class="form-control" required  id="" placeholder="">
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-2">
                                         </div>
                                     </div>
 
@@ -176,7 +166,7 @@ hr.new2 {
                                         <div class="col-md-2">
                                             <div class="form-group">
                                                 <label for="">Username<font style="color:red;">*</font></label>
-                                                <input type="" name="user" class="form-control" id="" required placeholder="Username">
+                                                <input type="" name="username" class="form-control" id="" required placeholder="Username">
                                             </div>
                                         </div>
                                         <div class="col-md-3">
@@ -231,10 +221,10 @@ hr.new2 {
                                             </div>
                                         </div>
 
-                                    <div class="col-md-4">
+                                        <div class="col-md-4">
 
 
-                                    </div>
+                                        </div>
                                     </div>
                                     <div class="card-action">
                                         <hr class="new2">
@@ -256,9 +246,9 @@ hr.new2 {
                             <thead>
                                 <tr>
                                     <th>Name</th>
-                                    <th>Designation</th>
                                     <th>Email Id.</th>
                                     <th>Username</th>
+                                    <th>Designation</th>
                                     <th>Address</th>
                                     <th>Status</th>
                                 </tr>
@@ -268,10 +258,10 @@ hr.new2 {
                                 @foreach($results as $key => $val)
                                 <tr>
                                     <td>{{$val->first_name}}</td>
-                                    <td>{{$val->designame}}</td>
                                     <td>{{$val->email_id}}</td>
                                     <td>{{$val->username}}</td>
                                     <td>{{$val->address}}</td>
+                                    <td>{{$val->designame}}</td>
                                     <td>{{$val->is_active}}</td>
                                 </tr>
                                 @endforeach
