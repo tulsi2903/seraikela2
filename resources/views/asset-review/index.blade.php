@@ -677,6 +677,7 @@
 <!-- for map-view -->
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCuYbCxfGw_c6lasAlpExIOFj55MVY6xSo"></script>
 <script>
+    var marker_icon = "";
     function initializeMapView(map_view_blocks, map_view_assets){
         $("#map-view-block-title").html(review_for);
 
@@ -757,6 +758,12 @@
                         $("#map-view").show();
                         $("#mapCanvas").show();
                         $("#map-view + .no-data").hide();
+                        if(data.icon){
+                            marker_icon = data.icon;
+                        }
+                        else{
+                            marker_icon = null;
+                        }
                         showMap(data.map_data);
                     }
                     $(".custom-loader").fadeOut(300);
@@ -765,6 +772,12 @@
         }
     }
     function showMap(data) {
+        var icon = {
+            url: marker_icon, // url
+            scaledSize: new google.maps.Size(50, 50), // scaled size
+            origin: new google.maps.Point(0,0), // origin
+            anchor: new google.maps.Point(0, 0) // anchor
+        };
         var mapCanvas = document.getElementById('mapCanvas');
         var mapOptions = {
             zoom: 15,
@@ -785,6 +798,7 @@
                 position: theposition,
                 map: map,
                 title: 'Uluru (Ayers Rock)',
+                icon: icon,
                 animation: google.maps.Animation.DROP
             });
 

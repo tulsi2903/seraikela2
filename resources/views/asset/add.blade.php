@@ -36,7 +36,7 @@
                                 <div>Previous Icon</div>
                                 <div style="display: inline-block;position:relative;padding:3px;border:1px solid #c4c4c4;border-radious:3px;">
                                     <img src="{{url($data->asset_icon)}}" style="height:80px;">
-                                    <span style="position:absolute;top:0;right:0; background: rgba(0,0,0,0.1); font-size: 18px; cursor: pointer; padding: 5px 10px;" class="text-danger" onclick="to_delete('{{$data->asset_icon}}',this)"><i class="fas fa-trash"></i></span>
+                                    <span style="position:absolute;top:0;right:0; background: rgba(0,0,0,0.5); font-size: 18px; cursor: pointer; padding: 5px 10px;" class="text-white" onclick="to_delete('{{$data->asset_icon}}',this)"><i class="fas fa-trash"></i></span>
                                 </div>
                             </div>
                         @endif

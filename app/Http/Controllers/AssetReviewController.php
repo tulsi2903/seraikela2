@@ -219,6 +219,15 @@ class AssetReviewController extends Controller
                 ->where('asset_geo_location.year',$request->year_id)
                 ->get();
         }
+
+        // for icon
+        $asset_tmp = Asset::where("asset_id", $request->asset_id)->first();
+        if($asset_tmp){
+            $icon  = $asset_tmp->asset_icon;
+        }
+        else{
+            $icon = "";
+        }
         
         if(count($data)>0){
             $response = "success";
@@ -226,7 +235,7 @@ class AssetReviewController extends Controller
         else{
             $response = "no_data";
         }
-        return ['review_for'=>$request->review_for,'map_data'=>$data,'response'=>$response];
+        return ['review_for'=>$request->review_for,'map_data'=>$data,'response'=>$response,"icon"=>$icon];
     }
 }
 
