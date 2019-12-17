@@ -20,13 +20,28 @@
     <div class="card-body">
         <div class="row justify-content-center">
             <div class="col-md-6">
-                <form action="{{url('asset/store')}}" method="POST">
+                <form action="{{url('asset/store')}}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="form-group">
                         <label for="asset_name">Asset Name<span style="color:red;margin-left:5px;">*</span></label>
                         <input type="text" name="asset_name" id="asset_name" class="form-control"
                             value="{{$data->asset_name}}" autocomplete="off">
                         <div class="invalid-feedback" id="asset_name_error_msg"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="asset_icon">Asset Icon</label>
+                        <input type="file" name="asset_icon" id="asset_icon" class="form-control">
+                        @if($hidden_input_purpose=="edit"&&$data->asset_icon)
+                            <div id="asset_icon_delete_div" style="padding:5px 0;">
+                                <div>Previous Icon</div>
+                                <div style="display: inline-block;position:relative;padding:3px;border:1px solid #c4c4c4;border-radious:3px;">
+                                    <img src="{{url($data->asset_icon)}}" style="height:80px;">
+                                    <span style="position:absolute;top:0;right:0; background: rgba(0,0,0,0.1); font-size: 18px; cursor: pointer; padding: 5px 10px;" class="text-danger" onclick="to_delete('{{$data->asset_icon}}',this)"><i class="fas fa-trash"></i></span>
+                                </div>
+                            </div>
+                        @endif
+                        <input type="text" name="asset_icon_delete" id="asset_icon_delete" value="" hidden>
+                        <div class="invalid-feedback" id="asset_icon_error_msg"></div>
                     </div>
                     <div class="form-group">
                         <label for="movable">Type<span style="color:red;margin-left:5px;">*</span></label>
@@ -82,8 +97,6 @@
                         <input type="text" name="hidden_input_id" value="{{$hidden_input_id}}" hidden>
                         <button type="submit" class="btn btn-primary" onclick="return submitForm()">Save&nbsp;&nbsp;<i
                                 class="fas fa-check"></i></button>
-                        <button type="reset" class="btn btn-secondary">Reset&nbsp;&nbsp;<i
-                                class="fas fa-undo"></i></button>
                     </div>
                 </form>
             </div>
@@ -96,6 +109,7 @@
 /* validation starts */
 // error variables as true = error occured
 var asset_name_error = true;
+var asset_icon_error = true;
 var movable_error = true;
 var department_error = true;
 var category_error = true;
@@ -104,6 +118,9 @@ var subcategory_error = true;
 $(document).ready(function() {
     $("#asset_name").change(function() {
         asset_name_validate();
+    });
+    $("#asset_icon").change(function() {
+        asset_icon_validate();
     });
     $("#movable").change(function() {
         movable_validate();
@@ -136,6 +153,30 @@ function asset_name_validate() {
     } else {
         asset_name_error = false;
         $("#asset_name").removeClass('is-invalid');
+    }
+}
+
+// asset_icon
+function  asset_icon_validate(){
+    var asset_icon_val = $("#asset_icon").val();
+    var ext = asset_icon_val.substring(asset_icon_val.lastIndexOf('.') + 1);
+    if(ext) // if selected
+    {
+        if(ext !="jpg" && ext!="jpeg" && ext!="png")
+        {
+            asset_icon_error = true;
+            $("#asset_icon").addClass('is-invalid');
+            $("#asset_icon_error_msg").html("Please select jpg/png image only");
+        }
+        else
+        {
+            asset_icon_error = false;
+            $("#asset_icon").removeClass('is-invalid');
+        }
+    }
+    else{
+        asset_icon_error = false;
+        $("#asset_icon").removeClass('is-invalid');
     }
 }
 
@@ -202,46 +243,52 @@ function subcategory_validate() {
 
  //FETCHING SUBCATEGORY ACCORDING TO CATEGORIES
  function ajaxFunc_subcategory(){
-                var asset_cat_id_tmp = $("#category").val();
-                
-                $.ajaxSetup({
-                    headers:{
-                        'X-CSRF-TOKEN' : $('meta[name="csrf-token"]').attr('content')
-                    }
-                });
-                $.ajax({
-                    url:"{{url('asset/get-subcategory')}}",
-                    data: {'asset_cat_id':asset_cat_id_tmp},
-                    method:"GET",
-                    contentType:'application/json',
-                    dataType:"json",
-                    beforeSend: function(data){
-                        $(".custom-loader").fadeIn(300);
-                    },
-                    error:function(xhr){
-                        alert("error"+xhr.status+","+xhr.statusText);
-                        $(".custom-loader").fadeOut(300);
-                    },
-                    success:function(data){
-                        console.log(data);
-                        $("#subcategory").html('<option value="">-Select-</option>');
-                            for(var i=0;i<data.subcategory_data.length;i++){
-                            $("#subcategory").append('<option value="'+data.subcategory_data[i].asset_sub_id+'">'+data.subcategory_data[i].asset_sub_cat_name +'</option>');
-                            }
-                            $(".custom-loader").fadeOut(300);
-                    }
-                });
+    var asset_cat_id_tmp = $("#category").val();
+    
+    $.ajaxSetup({
+        headers:{
+            'X-CSRF-TOKEN' : $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+    $.ajax({
+        url:"{{url('asset/get-subcategory')}}",
+        data: {'asset_cat_id':asset_cat_id_tmp},
+        method:"GET",
+        contentType:'application/json',
+        dataType:"json",
+        beforeSend: function(data){
+            $(".custom-loader").fadeIn(300);
+        },
+        error:function(xhr){
+            alert("error"+xhr.status+","+xhr.statusText);
+            $(".custom-loader").fadeOut(300);
+        },
+        success:function(data){
+            console.log(data);
+            $("#subcategory").html('<option value="">-Select-</option>');
+                for(var i=0;i<data.subcategory_data.length;i++){
+                $("#subcategory").append('<option value="'+data.subcategory_data[i].asset_sub_id+'">'+data.subcategory_data[i].asset_sub_cat_name +'</option>');
                 }
+                $(".custom-loader").fadeOut(300);
+        }
+    });
+}
+
+function to_delete(image_path, e){
+    $("#asset_icon_delete").val(image_path);
+    $(e).closest("#asset_icon_delete_div").hide(200);
+}
 
 // final submission
 function submitForm() {
     asset_name_validate();
+    asset_icon_validate();
     movable_validate();
     department_validate();
     category_validate();
     subcategory_validate();
 
-    if(asset_name_error || movable_error || department_error || category_error || subcategory_error) {
+    if(asset_name_error || asset_icon_error || movable_error || department_error || category_error || subcategory_error) {
         return false;
     } // error occured
     else {

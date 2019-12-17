@@ -8,6 +8,7 @@ use App\Asset;
 use App\Department;
 use App\asset_cat;
 use App\asset_subcat;
+use Illuminate\Support\Facades\Storage;
 
 class AssetController extends Controller
 {
@@ -53,6 +54,38 @@ class AssetController extends Controller
         }
 
         $asset->asset_name = $request->asset_name;
+        
+        if($request->hasFile('asset_icon')){
+            $upload_directory = "public/uploaded_documents/assets/";
+            $file = $request->file('asset_icon');
+            $asset_icon_tmp_name = "assets-".time().rand(1000,5000).'.'.strtolower($file->getClientOriginalExtension());
+            $file->move($upload_directory, $asset_icon_tmp_name);   // move the file to desired folder
+
+            // deleteprevious icon
+            if($request->hidden_input_purpose=="edit")
+            {
+                if(file_exists($asset->asset_icon)){
+                    unlink($asset->asset_icon);
+                }
+            }
+            $asset->asset_icon = $upload_directory.$asset_icon_tmp_name;    // assign the location of folder to the model
+        }
+        else{
+            if($request->hidden_input_purpose=="add"){
+                $asset->asset_icon = "";
+            }
+            else if($request->hidden_input_purpose=="edit"&&$request->asset_icon_delete){ // edit
+                $asset->asset_icon = "";
+            }
+        }
+
+        // to previous icon if delete clicked
+        if($request->asset_icon_delete){
+            if(file_exists($request->asset_icon_delete)){
+                unlink($request->asset_icon_delete);
+            }
+        }
+
         $asset->movable = $request->movable;
         $asset->dept_id = $request->dept_id;
         $asset->org_id = '1';

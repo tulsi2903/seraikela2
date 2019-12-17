@@ -49,6 +49,7 @@
                             <thead style="background: #d6dcff;color: #000;">
                                 <tr>
                                     <th>#</th>
+                                    <th>Icon</th>
                                     <th>Name</th>
                                     <th>Type</th>
                                     <th>Department Name</th>
@@ -63,6 +64,7 @@
                                 @foreach($datas as $data)
                                     <tr>
                                         <td width="40px;">{{$count++}}</td>
+                                        <td>@if($data->asset_icon) <img src="{{$data->asset_icon}}" style="height: 50px;"> @endif</td>
                                         <td>{{$data->asset_name}}</td>
                                         <td>
                                             <?php
