@@ -115,7 +115,7 @@
         left: 0;
         width: 100%;
         border-radius: 3px;
-        background: rgba(0,0,0,0.6);
+        background: rgba(0,0,0,0.5);
         font-size: 18px;
         cursor: pointer;
         padding: 5px 10px;
@@ -263,9 +263,13 @@
                 </div>
             </ul>
             <hr>
-            <div class="tab-content mt-2 mb-3 printable-area" id="myTabContent">
+            <div id="all-view-details-filter" class="printable-area" style="display: none; overflow:hidden; background: #efefef; padding: 10px 10px; border-radius: 5px;">
+                <div id="all-view-details" style="display:inline-block; width: 50%;">
+                </div>
+            </div>
+            <div class="tab-content mt-2 mb-3" id="myTabContent">
                 <!-- tabular-view -->
-                <div class="tab-pane fade show active" id="tabular-view-tab" role="tabpanel">
+                <div class="tab-pane fade show active printable-area" id="tabular-view-tab" role="tabpanel">
                     <div id="tabular-view">
                     </div>
                     <div class="no-data">
@@ -273,7 +277,7 @@
                     </div>
                 </div>
                 <!-- graphical-view -->
-                <div class="tab-pane fade" id="graphical-view-tab" role="tabpanel">
+                <div class="tab-pane fade printable-area" id="graphical-view-tab" role="tabpanel">
                     <!-- <h4>Graphical View&nbsp;<button type="button" class="btn btn-secondary btn-sm print-button" onclick="printReview('graphical')">Print&nbsp;<i class="fa fa-print" aria-hidden="true"></i></button></h4> -->
                     <div id="graphical-view">
                         <div style="text-align:center; padding: 20px;border-radius: 8px;">
@@ -285,7 +289,7 @@
                     </div>
                 </div>
                 <!-- map-view -->
-                <div class="tab-pane fade" id="map-view-tab" role="tabpanel">
+                <div class="tab-pane fade printable-area" id="map-view-tab" role="tabpanel">
                     <!-- <h4>Map View&nbsp;<button type="button" class="btn btn-secondary btn-sm print-button" onclick="printReview('map')">Print&nbsp;<i class="fa fa-print" aria-hidden="true"></i></button></h4> -->
                     <div id="map-view">
                         <div class="map-view-form">
@@ -318,7 +322,7 @@
                 </div>
 
                 <!-- gallery-view -->
-                <div class="tab-pane fade" id="gallery-view-tab" role="tabpanel">
+                <div class="tab-pane fade printable-area" id="gallery-view-tab" role="tabpanel">
                     <!-- <h4>Gallery View&nbsp;<button type="button" class="btn btn-secondary btn-sm print-button" onclick="printReview('map')">Print&nbsp;<i class="fa fa-print" aria-hidden="true"></i></button></h4> -->
                     <div id="gallery-view">
                         <!--  -->
@@ -363,12 +367,19 @@
     });
 
     function review_for_toggle() {
+        // resetting every view
+        resetTabularView();
+        resetGraphicalView();
+        resetMapView();
+        resetGalleryView();
+        resetCommon(); // to reset common things among all views
         review_for = $("input[name=review_for]:checked").val();
         if (review_for == "block") {
             $("#review-for-panchayat-form").hide();
             panchayat_form_data_received = false;
         }
         else if (review_for == "panchayat") {
+            $("#review-for-panchayat-form").html("");
             $("#review-for-panchayat-form").show();
         }
     }
@@ -409,16 +420,31 @@
         $("#dept_id").change(function () {
             if ($("#dept_id").val()) {
                 $("#dept_id").removeClass('is-invalid');
+                resetTabularView();
+                resetGraphicalView();
+                resetMapView();
+                resetGalleryView();
+                resetCommon(); // to reset common things among all views
             }
         });
         $("#year_id").change(function () {
             if ($("#year_id").val()) {
                 $("#year_id").removeClass('is-invalid');
+                resetTabularView();
+                resetGraphicalView();
+                resetMapView();
+                resetGalleryView();
+                resetCommon(); // to reset common things among all views
             }
         });
         $("#geo_id").change(function () {
             if ($("#geo_id").val()) {
                 $("#geo_id").removeClass('is-invalid');
+                resetTabularView();
+                resetGraphicalView();
+                resetMapView();
+                resetGalleryView();
+                resetCommon(); // to reset common things among all views
             }
         });
     });
@@ -490,9 +516,18 @@
                     resetGraphicalView();
                     resetMapView();
                     resetGalleryView();
+                    resetCommon(); // to reset common things among all views
                     getPanchayatDatas(); // getting panchayat datas
                 }
             }
+        }
+        else{
+            // resetting all views because we are now getting panchayat datas
+            resetTabularView();
+            resetGraphicalView();
+            resetMapView();
+            resetGalleryView();
+            resetCommon(); // to reset common things among all views
         }
     }
 
@@ -530,6 +565,7 @@
                 resetGraphicalView();
                 resetMapView();
                 resetGalleryView();
+                resetCommon(); // to reset common things among all views
                 if (data.response == "no_data") { // no data found
 
                 }
@@ -539,6 +575,11 @@
                     intializeGraphicalView(data.chart_labels, data.chart_datasets);
                     initializeMapView(data.map_view_blocks, data.map_view_assets);
                     initializeGalleryView(data.gallery_images);
+
+                    // all-view-details
+                    initialiteCommon();
+                    $("#all-view-details").html("<b>Department: </b>"+$("#dept_id option:selected").text());
+                    $("#all-view-details").append("<br/><b>Year: </b>"+$("#year_id option:selected").text());
                 }
                 $(".custom-loader").fadeOut(300);
             }
@@ -887,17 +928,19 @@
 </script>
 
 <script>
+
     function initializeGalleryView(gallery_images){
         if(gallery_images.length!=0){
             var to_append_images = "";
             for(i=0;i<gallery_images.length;i++){
-                for(j=0;j<gallery_images[i][2].length;j++)
+                for(j=0;j<gallery_images[i].images.length;j++)
                 {
                     to_append_images += `<div class="gallery-view-image-thumb">
-                            <img src="`+gallery_images[i][2][j]+`">
+                            <img src="`+gallery_images[i].images[j]+`">
                             <div class="gallery-view-image-thumb-labels">
-                                <span class="gallery-view-image-thumb-asset-name"><b>Asset:</b> `+gallery_images[i][1]+`</span>
-                                <span class="gallery-view-image-thumb-geo-name"><b>`+review_for+`:</b> `+gallery_images[i][0]+`<span>
+                                <span class="gallery-view-image-thumb-asset-name"><b>Asset:</b> `+gallery_images[i].asset_name+`</span>
+                                <span class="gallery-view-image-thumb-geo-name"><b>Block:</b> `+gallery_images[i].block_name+`<span>
+                                <span class="gallery-view-image-thumb-geo-name"><b>Panchayat:</b> `+gallery_images[i].panchayat_name+`<span>
                             </div>
                         </div>`;
                 }
@@ -915,6 +958,17 @@
     function resetGalleryView() {
         $("#gallery-view").hide();
         $("#gallery-view + .no-data").show();
+    }
+</script>
+
+<script>
+    function resetCommon(){
+        $("#all-view-details-filter").hide();
+        $("#all-view-details").html("");
+    }
+    function initialiteCommon(){
+        $("#all-view-details-filter").show();
+        $("#all-view-details").html("Initiate");
     }
 </script>
 

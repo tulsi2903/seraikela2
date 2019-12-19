@@ -120,23 +120,22 @@ class AssetReviewController extends Controller
                             if($data->geo_id==$geo_id[$i]){
                                 array_push($tabular_view_tmp,$data->count);
                                 array_push($chart_datasets_tmp['data'], $data->count);
-                                // /****** for gallery images: starts *****/
-                                // // for panchayat name
-                                // $get_panchayat_ids = GeoStructure::where("bl_id", $data->geo_id)->pluck('geo_id');
-                                // $asset_gallery_row = AssetGallery::whereIn('geo_id', $get_panchayat_ids)
-                                //             ->where('asset_id', $data->asset_id)
-                                //             ->where('year_id', $data->year)
-                                //             ->get();
+                                /****** for gallery images: starts *****/
+                                // for panchayat name
+                                $get_panchayat_ids = GeoStructure::where("bl_id", $data->geo_id)->pluck('geo_id');
+                                $asset_gallery_rows = AssetGallery::whereIn('geo_id', $get_panchayat_ids)
+                                            ->where('asset_id', $data->asset_id)
+                                            ->where('year_id', $data->year)
+                                            ->get();
 
-                                // $asset_gallery_label_name = GeoStructure::where("geo_id", $data->geo_id)->pluck("geo_name");
-                                // $gallery_images_tmp = [$asset_gallery_label_name[0], $asset_name->asset_name, unserialize($asset_gallery_row[0]->images)];
-                                // // old query
-                                // // $gallery_images_tmp = unserialize(AssetGallery::where('geo_id', $data->geo_id)
-                                // //             ->where('asset_id', $data->asset_id)
-                                // //             ->where('year_id', $data->year)
-                                // //             ->first()->images);
-                                // array_push($gallery_images, $gallery_images_tmp); // merging previous stored gallery_images to current gallery images
-                                // /****** for gallery images: ends *****/
+                                $get_block_name = GeoStructure::where("geo_id", $data->geo_id)->pluck("geo_name");
+                                foreach($asset_gallery_rows as $asset_gallery_row)
+                                {
+                                    $get_panchayat_name = GeoStructure::where("geo_id", $asset_gallery_row->geo_id)->pluck('geo_name');
+                                    $gallery_images_tmp = ["block_name"=>$get_block_name, "panchayat_name"=>$get_panchayat_name, "asset_name"=>$asset_name->asset_name, "images"=>unserialize($asset_gallery_row->images)];
+                                    array_push($gallery_images, $gallery_images_tmp); // merging previous stored gallery_images to current gallery images
+                                }
+                                /****** for gallery images: ends *****/
                                 $found=1;
                             }
                         }
@@ -184,8 +183,9 @@ class AssetReviewController extends Controller
                                             ->where('year_id', $data->year)
                                             ->first();
                                 // for panchayat name
-                                $asset_gallery_label_name = GeoStructure::where("geo_id", $asset_gallery_row->geo_id)->pluck("geo_name");
-                                $gallery_images_tmp = [$asset_gallery_label_name[0], $asset_name->asset_name, unserialize($asset_gallery_row->images)];
+                                $get_panchayat_name = GeoStructure::where("geo_id", $asset_gallery_row->geo_id)->first();
+                                $get_block_name = GeoStructure::where("geo_id", $get_panchayat_name->bl_id)->pluck("geo_name");
+                                $gallery_images_tmp = ["block_name"=>$get_block_name, "panchayat_name"=>$get_panchayat_name->geo_name, "asset_name"=>$asset_name->asset_name, "images"=>unserialize($asset_gallery_row->images)];
                                 // old query
                                 // $gallery_images_tmp = unserialize(AssetGallery::where('geo_id', $data->geo_id)
                                 //             ->where('asset_id', $data->asset_id)

@@ -568,12 +568,12 @@
                 }
                 else{ // data.response  == success
                     // calling/initialiazing all views
-                    initialiteCommon();
                     initializeTabularView(data.tabular_view);
                     intializeGraphicalView(data.chart_labels, data.chart_datasets);
                     initializeMapView(data.geo_related, data.map_view_blocks, data.map_view_indicators);
 
                     // all-view-details
+                    initialiteCommon();
                     if(review_type=="scheme"){
                         $("#all-view-details").html("<b>Scheme: </b>"+$("#scheme_id option:selected").text());
                     }
