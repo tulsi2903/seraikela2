@@ -10,36 +10,19 @@ use App\Year;
 use DB;
 use App\AssetGeoLocation;
 use App\AssetBlockCount;
+use App\AssetGallery;
 
 
 class AssetNumbersController extends Controller
 {
    
     public function index(){
-        
-        // $datas = AssetNumbers::leftJoin('asset', 'asset.asset_id', '=', 'asset_numbers.asset_id')
-        //                         ->leftJoin('geo_structure', 'geo_structure.geo_id', '=', 'asset_numbers.geo_id')
-        //                         ->leftJoin('year', 'year.year_id', '=', 'asset_numbers.year')
-        //                         ->select("asset_numbers.*", "asset.asset_name","geo_structure.geo_name","year.year_value")
-        //                         ->get();
-  //$datas = Department::orderBy('dept_id','desc')->get();
-
-        $datas = AssetNumbers::select('geo_id', 'asset_id', 'year', DB::raw('MAX(updated_at) AS max_updated'))
+        // getting rows, last updated
+        $datas = AssetNumbers::select('geo_id', 'asset_id', 'year', DB::raw('MAX(updated_at) AS max_updated'), DB::raw('MAX(asset_numbers_id) as asset_numbers_id'))
                 ->groupBy('year','asset_id','geo_id')
                 ->get();
 
-
-
- // $datas = AssetNumbers::select('geo_id', 'asset_id', 'year','current_value','pre_value')
- //                 ->orderBy('updated_at','DESC')
- //                ->groupBy('year','asset_id','geo_id','current_value','pre_value')
- //                ->get();
-                // echo "<pre>";
-                // print_r($datas);
-                // exit;
-                // return $datas;
-
-
+        // assigning other values according to its id(asset_numbers_id (primary_key))
         foreach($datas as $data){
             if(Asset::find($data->asset_id)){
                 $data->asset_name = Asset::find($data->asset_id)->asset_name;
@@ -50,7 +33,7 @@ class AssetNumbersController extends Controller
             if(Year::find($data->year)){
                 $data->year_value = Year::find($data->year)->year_value;
             }
-            $tmp = AssetNumbers::select('asset_numbers_id','pre_value','current_value')->where('year',$data->year)->where('asset_id',$data->asset_id)->where('geo_id',$data->geo_id)->first();
+            $tmp = AssetNumbers::select('asset_numbers_id','pre_value','current_value')->where('asset_numbers_id',$data->asset_numbers_id)->first();
             if(count($tmp)>0){
                 $data->pre_value = $tmp->pre_value;
                 $data->current_value = $tmp->current_value;
@@ -58,10 +41,8 @@ class AssetNumbersController extends Controller
             }
         }
       
-        
-       return view('asset-numbers.index')->with('datas', $datas);
-       
-        
+        return view('asset-numbers.index')->with('datas', $datas);
+
     }
      public function add(Request $request){
         $hidden_input_purpose = "add";
@@ -87,7 +68,7 @@ class AssetNumbersController extends Controller
     }
 
     public function view(Request $request){
-       $request->asset_numbers_id;
+        $request->asset_numbers_id;
         
         $assets = Asset::orderBy('asset_id')->first();
         $panchayats = GeoStructure::where('level_id','4')->orderBy('geo_name')->first();
@@ -103,10 +84,15 @@ class AssetNumbersController extends Controller
         $asset_locations = AssetNumbers::leftJoin('asset_geo_location','asset_numbers.geo_id','=','asset_geo_location.geo_id')
                                         ->select('asset_numbers.*','asset_geo_location.location_name','asset_geo_location.latitude','asset_geo_location.longitude')
                                         ->where('asset_numbers.asset_numbers_id',$request->asset_numbers_id)->get();
+        // $asset_locations = AssetGeoLocation::where('asset_id', ) **Important: asset location query must be rewritten 
 
         
+        $images = unserialize(AssetGallery::where('geo_id', $asset_numbers[0]->geo_id)
+                            ->where('asset_id', $asset_numbers[0]->asset_id)
+                            ->where('year_id', $asset_numbers[0]->year)
+                            ->first()->images);
 
-        return view('asset-numbers.view')->with(compact('assets','panchayats','years','asset_numbers','asset_locations'));
+        return view('asset-numbers.view')->with(compact('assets','panchayats','years','asset_numbers','asset_locations','images'));
     }
     
     public function current_value(Request $request)
@@ -143,7 +129,13 @@ class AssetNumbersController extends Controller
             ->orderBy('asset_geo_loc_id', 'desc')
             ->get();
 
-        return ['current_value'=>$current_value,'movable'=>$movable, 'asset_location'=>$asset_location];
+        // for images/gallery
+        $images = unserialize(AssetGallery::where('geo_id', $request->geo_id)
+            ->where('asset_id', $request->asset_id)
+            ->where('year_id', $request->year)
+            ->first()->images);
+
+        return ['current_value'=>$current_value,'movable'=>$movable, 'asset_location'=>$asset_location, 'images'=>$images];
         
     }
     
@@ -205,22 +197,67 @@ class AssetNumbersController extends Controller
         }
 
 
-        // for geo_location_images
-        // if($request->hasFile('asset_icon')){
-        //     $upload_directory = "public/uploaded_documents/assets/";
-        //     $file = $request->file('asset_icon');
-        //     $asset_icon_tmp_name = "assets-".time().rand(1000,5000).'.'.strtolower($file->getClientOriginalExtension());
-        //     $file->move($upload_directory, $asset_icon_tmp_name);   // move the file to desired folder
+        // delete previous image
+        $asset_gallery_check = AssetGallery::select("asset_gallery_id","images")->where('asset_id',$request->asset_id)->where('geo_id',$request->geo_id)->where('year_id',$request->year)->first();     
+        if($request->hidden_input_purpose=="edit")
+        {
+            if($request->images_delete){
+                $to_delete_image_arr = explode(",",$request->images_delete);
+                for($i=0;$i<count($to_delete_image_arr);$i++){
+                    if(file_exists($to_delete_image_arr[$i])){
+                        unlink($to_delete_image_arr[$i]);
+                    }
+                }
 
-        //     // deleteprevious icon
-        //     if($request->hidden_input_purpose=="edit")
-        //     {
-        //         if(file_exists($asset->asset_icon)){
-        //             unlink($asset->asset_icon);
-        //         }
-        //     }
-        //     $asset->asset_icon = $upload_directory.$asset_icon_tmp_name;    // assign the location of folder to the model
-        // }
+                if($asset_gallery_check){
+                    $asset_gallery_update = AssetGallery::find($asset_gallery_check->asset_gallery_id);
+                    $asset_gallery_update->images = serialize(array_values(array_diff(unserialize($asset_gallery_update->images), $to_delete_image_arr))); //array_diff remove matching elements from 1, array_values changes index starting from 0
+                    $asset_gallery_update->save();
+                }
+            }
+        }
+        // for asset_gallery images
+        if($request->hasFile('images')){
+            $upload_directory = "public/uploaded_documents/assets-gallery/";
+            if($asset_gallery_check){
+                $asset_gallery_update = AssetGallery::find($asset_gallery_check->asset_gallery_id);
+                $previous_images_array = unserialize($asset_gallery_update->images);
+
+                foreach($request->file('images') as $file)
+                {
+                    // $file = $request->file('images');
+                    // $file => is each files $images
+                    $images_tmp_name = "assets-gallery-".time().rand(1000,5000).'.'.strtolower($file->getClientOriginalExtension());
+                    $file->move($upload_directory, $images_tmp_name);   // move the file to desired folder
+                    array_push($previous_images_array, $upload_directory.$images_tmp_name);    // appending location of image in previous image array for further insertion into database
+                }
+                
+                $asset_gallery_update->images = serialize($previous_images_array);    // assign the location of folder to the model
+                $asset_gallery_update->save();
+            }
+            else{ // save in new row
+                $asset_gallery_save = new AssetGallery;
+                $asset_gallery_save->asset_id = $request->asset_id;
+                $asset_gallery_save->geo_id = $request->geo_id;
+                $asset_gallery_save->year_id = $request->year;
+                $asset_gallery_save->org_id = "1";
+                $asset_gallery_save->created_by = "1";
+                $asset_gallery_save->updated_by = "1";
+
+                $previous_images_array = [];
+                foreach($request->file('images') as $file)
+                {
+                    // $file = $request->file('images');
+                    // $file => is each files $images
+                    $images_tmp_name = "assets-gallery-".time().rand(1000,5000).'.'.strtolower($file->getClientOriginalExtension());
+                    $file->move($upload_directory, $images_tmp_name);   // move the file to desired folder
+                    array_push($previous_images_array, $upload_directory.$images_tmp_name);    // appending location of image in previous image array for further insertion into database
+                }
+
+                $asset_gallery_save->images = serialize($previous_images_array);    // assign the location of folder to the model
+                $asset_gallery_save->save();
+            }
+        }
 
 
        

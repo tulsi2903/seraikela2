@@ -260,8 +260,8 @@ hr.new2 {
                                     <td>{{$val->first_name}}</td>
                                     <td>{{$val->email_id}}</td>
                                     <td>{{$val->username}}</td>
-                                    <td>{{$val->address}}</td>
                                     <td>{{$val->designame}}</td>
+                                    <td>{{$val->address}}</td>
                                     <td>{{$val->is_active}}</td>
                                 </tr>
                                 @endforeach

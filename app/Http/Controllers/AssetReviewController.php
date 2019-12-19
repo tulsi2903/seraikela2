@@ -10,6 +10,7 @@ use App\Asset;
 use App\Department;
 use App\GeoStructure;
 use App\Year;
+use App\AssetGallery;
 use DB;
 
 class AssetReviewController extends Controller
@@ -36,6 +37,7 @@ class AssetReviewController extends Controller
         $chart_datasets = []; // for datasets charts.js [{label:'',data:[]},{label:'',data:[]}]
         $map_view_blocks = [];
         $map_view_assets = [];
+        $gallery_images = [];
 
         // received datas
         $review_for = $request->review_for;
@@ -56,9 +58,18 @@ class AssetReviewController extends Controller
                 ->get();
         }
         else{ // panchayat review
-            $datas = AssetNumbers::whereIn('asset_id', Asset::select('asset_id')->where('dept_id',$dept_id)->get())
+            $get_asset_numbers_id_tmp = AssetNumbers::select('geo_id', 'asset_id', 'year', DB::raw('MAX(updated_at) AS max_updated'), DB::raw('MAX(asset_numbers_id) as asset_numbers_id'))
+                ->whereIn('asset_id', Asset::select('asset_id')->where('dept_id',$dept_id)->get())
                 ->whereIn('geo_id', $panchayat_id)
                 ->where('year', $year)
+                ->groupBy('year','asset_id','geo_id')
+                ->get();
+
+            // $datas = AssetNumbers::whereIn('asset_id', Asset::select('asset_id')->where('dept_id',$dept_id)->get())
+            //     ->whereIn('geo_id', $panchayat_id)
+            //     ->where('year', $year)
+            //     ->get();
+            $datas = AssetNumbers::whereIn('asset_numbers_id', $get_asset_numbers_id_tmp->pluck('asset_numbers_id'))
                 ->get();
             //** Important: have to count only last update of each combination
         }
@@ -109,6 +120,23 @@ class AssetReviewController extends Controller
                             if($data->geo_id==$geo_id[$i]){
                                 array_push($tabular_view_tmp,$data->count);
                                 array_push($chart_datasets_tmp['data'], $data->count);
+                                // /****** for gallery images: starts *****/
+                                // // for panchayat name
+                                // $get_panchayat_ids = GeoStructure::where("bl_id", $data->geo_id)->pluck('geo_id');
+                                // $asset_gallery_row = AssetGallery::whereIn('geo_id', $get_panchayat_ids)
+                                //             ->where('asset_id', $data->asset_id)
+                                //             ->where('year_id', $data->year)
+                                //             ->get();
+
+                                // $asset_gallery_label_name = GeoStructure::where("geo_id", $data->geo_id)->pluck("geo_name");
+                                // $gallery_images_tmp = [$asset_gallery_label_name[0], $asset_name->asset_name, unserialize($asset_gallery_row[0]->images)];
+                                // // old query
+                                // // $gallery_images_tmp = unserialize(AssetGallery::where('geo_id', $data->geo_id)
+                                // //             ->where('asset_id', $data->asset_id)
+                                // //             ->where('year_id', $data->year)
+                                // //             ->first()->images);
+                                // array_push($gallery_images, $gallery_images_tmp); // merging previous stored gallery_images to current gallery images
+                                // /****** for gallery images: ends *****/
                                 $found=1;
                             }
                         }
@@ -148,8 +176,23 @@ class AssetReviewController extends Controller
                         if($data->asset_id==$asset_unique_id)
                         {
                             if($data->geo_id==$panchayat_id[$i]){
-                                array_push($tabular_view_tmp,$data->current_value);
+                                array_push($tabular_view_tmp, $data->current_value);
                                 array_push($chart_datasets_tmp['data'], $data->current_value);
+                                /****** for gallery images: starts *****/
+                                $asset_gallery_row = AssetGallery::where('geo_id', $data->geo_id)
+                                            ->where('asset_id', $data->asset_id)
+                                            ->where('year_id', $data->year)
+                                            ->first();
+                                // for panchayat name
+                                $asset_gallery_label_name = GeoStructure::where("geo_id", $asset_gallery_row->geo_id)->pluck("geo_name");
+                                $gallery_images_tmp = [$asset_gallery_label_name[0], $asset_name->asset_name, unserialize($asset_gallery_row->images)];
+                                // old query
+                                // $gallery_images_tmp = unserialize(AssetGallery::where('geo_id', $data->geo_id)
+                                //             ->where('asset_id', $data->asset_id)
+                                //             ->where('year_id', $data->year)
+                                //             ->first()->images);
+                                array_push($gallery_images, $gallery_images_tmp); // merging previous stored gallery_images to current gallery images
+                                /****** for gallery images: ends *****/
                                 $found=1;
                             }
                         }
@@ -172,8 +215,10 @@ class AssetReviewController extends Controller
         else{
             $response = "no_data";
         }
-
-        return ['review_for'=>$review_for, 'datas'=>$datas, 'response'=>$response, 'tabular_view'=>$tabular_view, 'chart_labels'=>$chart_labels, 'chart_datasets'=>$chart_datasets, 'map_view_blocks'=>$map_view_blocks, 'map_view_assets'=>$map_view_assets];
+        // echo "<pre>";
+        // print_r($gallery_images);
+        // exit;
+        return ['review_for'=>$review_for, 'datas'=>$datas, 'response'=>$response, 'tabular_view'=>$tabular_view, 'chart_labels'=>$chart_labels, 'chart_datasets'=>$chart_datasets, 'map_view_blocks'=>$map_view_blocks, 'map_view_assets'=>$map_view_assets, 'gallery_images'=>$gallery_images];
     }
 
     public function get_panchayat_data(Request $request){

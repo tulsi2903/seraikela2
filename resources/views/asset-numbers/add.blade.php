@@ -17,7 +17,7 @@
             </div>
         </div>
         <div class="card-body">
-            <form action="{{url('asset-numbers/store')}}" method="POST">
+            <form action="{{url('asset-numbers/store')}}" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="row">
                 <div class="col-md-3">
@@ -102,17 +102,24 @@
                         <!-- longitude / latitude form -->
                     </div>
 
-                    <!-- <div id="images-block">
-                        <div class="row">
-                        </div>
-                        <div class="row">
-                            <div class="col-2">
-                                <div class="form-group">
-                                    <input type="file" name="images[]" class="form-control">
+                      
+                    <div id="images-block" style="display:none;padding:15px 10px;">
+                        <span class="btn"  style="margin-left:1.5%;background: #0f85e2!important;color:#fff;"><i class="fas fa-images"></i>&nbsp;&nbsp;Gallery</span>
+                        <div class="card-body" style="background: #f2f6ff; border: 1px solid #a5bbf6;margin-top: -18px;">
+                            <div class="row">
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label>Select Image(s)</label>
+                                        <input type="file" name="images[]" id="images" class="form-control" placholder="Select image(s)" multiple>
+                                        <div class="invalid-feedback" id="images_error_msg"></div>
+                                    </div>
                                 </div>
                             </div>
+                            <div id="images-block-gallery">
+                                <!-- append images -->
+                            </div>
                         </div>
-                    </div> -->
+                    </div>
                     
                     <div class="form-group" id="submit-buttons">
                         <input type="text" name="hidden_input_purpose" id="hidden_input_purpose" value="{{$hidden_input_purpose}}" hidden>
@@ -128,6 +135,7 @@
     var year_error = true;
     var asset_id_error = true;
     var geo_id_error = true;
+    var images_error = true;
 
     $(document).ready(function(){
         $("#year").change(function(){
@@ -138,14 +146,19 @@
             asset_id_validate();
             resetAll();
         });
-         $("#geo_id").change(function(){
+        $("#geo_id").change(function(){
             geo_id_validate();
             resetAll();
+        });
+
+        // for images
+        $("#images").change(function(){
+            images_validate();
         });
          
     });
 
- //year validation
+    //year validation
     function year_validate(){
         var year_val = $("#year").val();
        
@@ -193,14 +206,60 @@
            
         }
     }
+
+    // for gallery section
+    function images_validate(){
+        var images_ext_error_tmp = false;
+        var images_val = document.getElementById("images");
+        for (var i = 0; i < images_val.files.length; ++i) {
+            var ext = images_val.files[i].name.substring(images_val.files[i].name.lastIndexOf('.') + 1);
+            if(ext) // if selected
+            {
+                if(ext !="jpg" && ext!="jpeg" && ext!="png")
+                {
+                    images_ext_error_tmp = true;
+                }
+            }
+        }
+
+        if(images_ext_error_tmp){
+            images_error = true;
+            $("#images").addClass('is-invalid');
+            $("#images_error_msg").html("Please select jpg/png image only");
+        }
+        else{
+            images_error = false;
+            $("#images").removeClass('is-invalid');
+        }
+        // var ext = asset_icon_val.substring(asset_icon_val.lastIndexOf('.') + 1);
+        // if(ext) // if selected
+        // {
+        //     if(ext !="jpg" && ext!="jpeg" && ext!="png")
+        //     {
+        //         asset_icon_error = true;
+        //         $("#asset_icon").addClass('is-invalid');
+        //         $("#asset_icon_error_msg").html("Please select jpg/png image only");
+        //     }
+        //     else
+        //     {
+        //         asset_icon_error = false;
+        //         $("#asset_icon").removeClass('is-invalid');
+        //     }
+        // }
+        // else{
+        //     asset_icon_error = false;
+        //     $("#asset_icon").removeClass('is-invalid');
+        // }
+    }
 </script>
 
 <script>
     var movable = "no";
     var asset_location = [];
+    var images = [];
     var step = 1; // 1 = initial inputs, 2 = after ajax call (pre current assigned), 3 = after location form load
 
-    function ajaxFunc(){
+    function ajaxFunc(){ // getting current value with geo locations & movable=yes/no
         var year_tmp = $("#year").val();
         var asset_id_tmp = $("#asset_id").val();
         var geo_id_tmp = $("#geo_id").val();
@@ -227,7 +286,8 @@
                 $("#previous_value").val('0');
                 $("#current_value").val('0');
                 movable = "no";
-                asset_location = []
+                asset_location = [];
+                images = [];
                 step = 2;
 
                 // assign movable = yes/no
@@ -241,15 +301,23 @@
                 // assign previous value
                 if(data.current_value){
                     $("#previous_value").val(data.current_value);
+                    $("#current_value").val(data.current_value);
                 }
                 // asset_location (previous entries to delete by user when current is less than pre)
                 if(data.asset_location){
                     asset_location = data.asset_location;
                     appendLocation();
                 }
+                // images, if previous images/galleryhas been found
+                if(data.images){
+                    images = data.images;
+                    appendImages();
+                }
+
                 // show previous/current value inputs
                 $("#previous_value_hide").show(300);
                 $("#current_value_hide").show(300);
+                $("#images-block").show(300);
             }
         });    
     }
@@ -312,7 +380,7 @@
         }
 
         $("#submit-buttons").show(300);
-    }        
+    } 
 </script>
 
 <script>
@@ -335,9 +403,7 @@
             return false;
         }
         else{ // step == 3
-            error = true ;
-            // validate location_name (if diff>)
-
+            error = true ; // validate location_name (if diff>)
             // validate no of location selected for delete (else diff<)
             var diff  = parseFloat(parseFloat($("#current_value").val()) - parseFloat($("#previous_value").val()));
             if(diff>0)
@@ -386,9 +452,15 @@
                     $("#asset_location_error_msg").hide();
                 }
             }
+            if(diff==0){ // no change in numbers but may be change in images, so no error occurred
+                error = false;
+            }
+
+            // validating images
+            images_validate();
 
             // final return
-            if(error){
+            if(error||images_error){
                 return false;
             }
             else{
@@ -412,6 +484,8 @@
             $("#append-location").hide(300);
             $("#save-button-text").html("Next");
             $("#current_value").val("");
+            $("#images-block").hide(300);
+            $("#images-block-gallery").html();
             step = 1;
         }
     }
@@ -427,6 +501,56 @@
             submitSave();
         }
     });
+
+    function appendImages(){
+        if(images.length > 0){
+            var to_append = `<div class="row">
+                                <div class="col-12">
+                                    <div class="form-group">
+                                    <div><label>Previous Images</label></div>
+                                    `;
+
+            for(var i=0;i<images.length;i++){
+                to_append+=`<div class="images-delete-block" style="margin-right:5px; display:inline-block; position:relative; padding:3px;border:1px solid #c4c4c4;border-radious:3px;">
+                                <img src="{{url('`+images[i]+`')}}" style="height:150px; min-height:150px; min-width:80px;">
+                                <span style="position:absolute; top:3px; left:3px; border-radius: 3px; background: rgba(0,0,0,0.5); font-size: 18px; cursor: pointer; padding: 5px 10px;" class="text-white" onclick="to_delete('`+images[i]+`',this)"><i class="fas fa-trash" style="text-shadow: 0px 0px 2px black;"></i></span>
+                            </div>`;
+            }
+
+            to_append+=`</div>
+                            </div>
+                        <input type="text" class="form-control" name="images_delete" id="images_delete" value="" hidden> 
+                    </div>`;
+
+            $("#images-block-gallery").html(to_append); // append=html
+        }
+    }
+
+    var images_delete_val = new Array(); // array_stored fto append in hidden input for delete purpose
+    function to_delete(image_path, e){
+        swal({
+            title: 'Are you sure?',
+            // text: "You won't be able to revert this!",
+            type: 'warning',
+            buttons:{
+                cancel: {
+                    visible: true,
+                    text : 'No, cancel!',
+                    className: 'btn btn-danger'
+                },
+                confirm: {
+                    text : 'Yes, delete it!',
+                    className : 'btn btn-success'
+                }
+            }
+        }).then((willDelete) => {
+            if (willDelete) {
+                images_delete_val.push(image_path);
+                $("#images_delete").val(images_delete_val);
+                $(e).closest(".images-delete-block").fadeOut(500);
+            }
+        });
+    }
 </script>
 
 @endsection

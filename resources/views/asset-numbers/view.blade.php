@@ -51,10 +51,11 @@
                                 </tr>
                                 @endforeach
                             </tbody>
-                        </table>  
-                        <div class="col-md-12">
-                            <button class="btn"  style="margin-left:1.5%;background: #0f85e2!important;color:#fff;"><i class="fas fa-location-arrow"></i>&nbsp;&nbsp;Asset Locations</button>
-                                <div class="card-body" style="background: #f2f6ff; border: 1px solid #a5bbf6;margin-top: -18px;">
+                        </table>
+                        @if(count($asset_locations)!=0)
+                            <div class="col-md-12">
+                                <button class="btn"  style="margin-left:1.5%;background: #0f85e2!important;color:#fff;"><i class="fas fa-location-arrow"></i>&nbsp;&nbsp;Asset Locations</button>
+                                    <div class="card-body" style="background: #f2f6ff; border: 1px solid #a5bbf6;margin-top: -18px;">
                                     <table id="basic-datatables" class=" table order-list" style="margin-top: 10px;">
                                         <thead style="background: #cedcff">                                              
                                             <tr>
@@ -63,18 +64,38 @@
                                                 <th>Longitude</th>                                                
                                             </tr>
                                         </thead> 
-                                            @foreach($asset_locations as $asset_location)                                  
+                                        @foreach($asset_locations as $asset_location)                                  
                                         <tbody> 
                                             <td>{{$asset_location->location_name}}</td>
                                             <td>{{$asset_location->latitude}}</td>
                                             <td>{{$asset_location->longitude}}</td>
                                         </tbody>
-                                            @endforeach
+                                        @endforeach
                                     </table>
                                 </div>
-                            </div>                         
-                        </div>   
-                    </div>
+                            </div>
+                        @endif
+                        @if($images)
+                            <div class="col-ms-12">
+                                <div id="images-block" style="padding: 15px 10px;">
+                                    <span class="btn" style="margin-left:1.5%;background: #0f85e2!important;color:#fff;"><i class="fas fa-images"></i>&nbsp;&nbsp;Gallery</span>
+                                    <div class="card-body" style="background: #f2f6ff; border: 1px solid #a5bbf6;margin-top: -18px;">
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <div class="form-group">
+                                                    @foreach($images as $image)
+                                                        <div class="images-delete-block" style="margin-right:5px; display:inline-block; position:relative; padding:3px;border:1px solid #c4c4c4;border-radious:3px;">
+                                                            <img src="{{url($image)}}" style="height:150px; min-height:150px; min-width:100px;">
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> 
+                        @endif                
+                    </div>   
                 </div>
             </div>
        
