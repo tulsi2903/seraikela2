@@ -3,9 +3,8 @@
 @section('title', 'Geo Structure')
 
 @section('page-content')
-  <div class="row row-card-no-pd" style="border-top: 3px solid #5c76b7;">
+<div class="card">
         <div class="col-md-12">
-            <div class="card">
                 <div class="card-header">
                     <div class="card-head-row card-tools-still-right" style="background:#fff;">
                         <h4 class="card-title">Geo Structure</h4>
@@ -15,17 +14,21 @@
                     </div>
                 </div>
             </div>
-        </div>
+      
         <div class="card-body">
-            <div class="row justify-content-center">
-                <div class="col-md-6">
+           
                     <form action="{{url('geo-structure/store')}}" method="POST" id="geo-structure-form">
                     @csrf
+                    <div class="row">
+                        <div class="col-md-6">
                             <div class="form-group">
                                 <label for="name">Geo Name<span style="color:red;margin-left:5px;">*</span></label>
                                 <input type="text" name="geo_name" id="geo_name" class="form-control" value="{{$data->geo_name}}">
                                 <div class="invalid-feedback" id="geo_name_error_msg"></div>
                             </div>
+                        </div>
+
+                        <div class="col-md-6">
                             <div class="form-group">
                                 <label for="org_id">Organisation<span style="color:red;margin-left:5px;">*</span></label>
                                 <select name="org_id" id="org_id" class="form-control">
@@ -36,6 +39,9 @@
                                 </select>
                                 <div class="invalid-feedback" id="org_id_error_msg"></div>
                             </div>
+                        </div>
+
+                        <div class="col-md-6">
                             <div class="form-group">
                                 <label for="level_id">Level<span style="color:red;margin-left:5px;">*</span></label>
                                 <select name="level_id" id="level_id" class="form-control">
@@ -47,6 +53,7 @@
                                 </select>
                                 <div class="invalid-feedback" id="level_id_error_msg"></div>
                             </div>
+                        </div>
 
 <!--                                /* For Villages*/
  -->                            <div class="form-group" id="number_of_villages">
@@ -90,28 +97,34 @@
                                 </select>
                                 <div class="invalid-feedback" id="bl_id_error_msg"></div>
                             </div>
-                            <div class="form-group">
-                                <label for="officer_id">Officer<span style="color:red;margin-left:5px;">*</span></label>
-                                <select name="officer_id" id="officer_id" class="form-control">
-                                    <option value="">-Select-</option>
-                                    @foreach($user_datas as $user_data)
-                                        <option value="{{$user_data->user_id}}" <?php if($data->officer_id==$user_data->user_id){ echo "selected"; } ?>>{{$user_data->name}}</option>
-                                    @endforeach
-                                </select>
-                                <div class="invalid-feedback" id="officer_id_error_msg"></div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="officer_id">Officer<span style="color:red;margin-left:5px;">*</span></label>
+                                    <select name="officer_id" id="officer_id" class="form-control">
+                                        <option value="">-Select-</option>
+                                        @foreach($user_datas as $user_data)
+                                            <option value="{{$user_data->user_id}}" <?php if($data->officer_id==$user_data->user_id){ echo "selected"; } ?>>{{$user_data->name}}</option>
+                                        @endforeach
+                                    </select>
+                                    <div class="invalid-feedback" id="officer_id_error_msg"></div>
+                                </div>
                             </div>
+
+                            <div class="col-md-12">
                             <div class="form-group">
                                 <input type="text" name="hidden_input_purpose" value="{{$hidden_input_purpose}}" hidden>
                                 <input type="text" name="hidden_input_id" value="{{$hidden_input_id}}" hidden>
                                 <button type="submit" class="btn btn-primary" onclick="return submitForm()">Save&nbsp;&nbsp;<i class="fas fa-check"></i></button>
                                 <button type="button" class="btn btn-secondary" onclick="initialize()">Reset&nbsp;&nbsp;<i class="fas fa-undo"></i></button>
                             </div>
+                        </div>
                         </form>
                     </div>
-                </div>
+                </div><!--end of row-->
             </div>
-        </div>
-   </div>
+     
+
 
 
 <script>

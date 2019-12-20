@@ -9,9 +9,8 @@
 @endsection
 
 @section('page-content')
- <div class="row row-card-no-pd" style="border-top: 3px solid #5c76b7;">
+    <div class="card">
         <div class="col-md-12">
-            <div class="card">
                 <div class="card-header">
                     <div class="card-head-row card-tools-still-right" style="background:#fff;">
                         <h4 class="card-title">Year</h4>
@@ -24,8 +23,8 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="card-body" style="margin-top: -22em;">
+       
+        <div class="card-body">
             <div class="row">
                 <div class="col-12"><br>
                     <!-- <div style="display: -webkit-box; float:right;margin-top: -6px;">
@@ -125,7 +124,7 @@
                 </div>
             </div>
         </div>
-   </div>
+ 
 
    <!-- email -->
 <div id="create-email" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none">

@@ -17,14 +17,15 @@
 @endsection
 
 @section('page-content')
-<div class="row row-card-no-pd" style="border-top: 3px solid #5c76b7;">
+<div class="card">
     <div class="col-md-12">
-        <div class="card">
+     
             <div class="card-header">
                 <div class="card-title" style="float:left;"><i class="fa fa-user" aria-hidden="true"></i> &nbsp;Define Scheme</div>
-            </div><br><br>
+            </div>
+    </div>
             <!-----------------------------------------start of Scheme Detail Form------------------------------------------>
-            <div class="card-body" style="margin-top: -57px;">
+            <div class="card-body">
                 <form action="{{url('scheme-structure/store')}}" enctype="multipart/form-data" method="POST" id="define-scheme-form">
                     @csrf()
                     <div class="row">
@@ -208,7 +209,7 @@
             </div>
         </div>
     </div>
-</div>
+
 
 
 <script>

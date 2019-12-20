@@ -3,9 +3,9 @@
 @section('title', 'Asset Sub Category')
 
 @section('page-content')
-   <div class="row row-card-no-pd" style="border-top: 3px solid #5c76b7;">
+<div class="card">
         <div class="col-md-12">
-            <div class="card">
+            
                 <div class="card-header">
                     <div class="card-head-row card-tools-still-right" style="background:#fff;">
                         <h4 class="card-title">Asset Sub Category</h4>
@@ -15,7 +15,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        
         <div class="card-body">
            
                     <form action="{{url('asset_subcat/store')}}" method="POST">
@@ -70,7 +70,7 @@
                     </form>
                 </div>
             </div>
-        </div>
+       
     </div>
 </div>
 

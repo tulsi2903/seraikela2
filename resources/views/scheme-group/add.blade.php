@@ -3,9 +3,8 @@
 @section('title', 'Add Group')
 
 @section('page-content')
-                <div class="row row-card-no-pd" style="border-top: 3px solid #5c76b7;">
+                    <div class="card">
                         <div class="col-md-12">
-                            <div class="card">
                                 <div class="card-header">
                                     <div class="card-head-row card-tools-still-right" style="background:#fff;">
                                         <h4 class="card-title">Scheme Group</h4>
@@ -15,7 +14,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        
                         <div class="card-body">
                             <form action="{{url('scheme-group/store')}}" method="POST">
                             @csrf
@@ -51,7 +50,7 @@
                             </div>
                         </form>
                     </div>
-                </div>
+             
             </div>
         </div>
    </div>

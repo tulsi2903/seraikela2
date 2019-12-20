@@ -3,9 +3,8 @@
 @section('title', 'Asset')
 
 @section('page-content')
-<div class="row row-card-no-pd" style="border-top: 3px solid #5c76b7;">
+<div class="card">
     <div class="col-md-12">
-        <div class="card">
             <div class="card-header">
                 <div class="card-head-row card-tools-still-right" style="background:#fff;">
                     <h4 class="card-title">Asset</h4>
@@ -16,18 +15,20 @@
                 </div>
             </div>
         </div>
-    </div>
     <div class="card-body">
-        <div class="row justify-content-center">
-            <div class="col-md-6">
                 <form action="{{url('asset/store')}}" method="POST" enctype="multipart/form-data">
                     @csrf
+            <div class="row">
+                <div class="col-md-4">
                     <div class="form-group">
                         <label for="asset_name">Asset Name<span style="color:red;margin-left:5px;">*</span></label>
                         <input type="text" name="asset_name" id="asset_name" class="form-control"
                             value="{{$data->asset_name}}" autocomplete="off">
                         <div class="invalid-feedback" id="asset_name_error_msg"></div>
                     </div>
+                </div>
+
+                <div class="col-md-4">
                     <div class="form-group">
                         <label for="asset_icon">Asset Icon</label>
                         <input type="file" name="asset_icon" id="asset_icon" class="form-control">
@@ -43,6 +44,9 @@
                         <input type="text" name="asset_icon_delete" id="asset_icon_delete" value="" hidden>
                         <div class="invalid-feedback" id="asset_icon_error_msg"></div>
                     </div>
+                </div>
+
+                <div class="col-md-4">
                     <div class="form-group">
                         <label for="movable">Type<span style="color:red;margin-left:5px;">*</span></label>
                         <select name="movable" id="movable" class="form-control">
@@ -52,6 +56,8 @@
                         </select>
                         <div class="invalid-feedback" id="movable_error_msg"></div>
                     </div>
+                </div>
+                <div class="col-md-4">
                     <div class="form-group">
                         <label for="dept_id">Department Name<span style="color:red;margin-left:5px;">*</span></label>
                         <select name="dept_id" id="dept_id" class="form-control">
@@ -64,7 +70,9 @@
                         </select>
                         <div class="invalid-feedback" id="department_error_msg"></div>
                     </div>
+                </div>
 
+                <div class="col-md-4">
                     <div class="form-group">
                         <label for="category">Category<span style="color:red;margin-left:5px;">*</span></label>
                         <select name="category" id="category" class="form-control">
@@ -77,7 +85,9 @@
                         </select>
                         <div class="invalid-feedback" id="category_error_msg"></div>
                     </div>
+                </div>
 
+                <div class="col-md-4">
                     <div class="form-group">
                         <label for="subcategory">Subcategory<span style="color:red;margin-left:5px;">*</span></label>
                         <select name="subcategory" id="subcategory" class="form-control">
@@ -90,19 +100,21 @@
                         </select>
                         <div class="invalid-feedback" id="subcategory_error_msg"></div>
                     </div>
+                </div>
 
-
+                <div class="col-md-4">
                     <div class="form-group">
                         <input type="text" name="hidden_input_purpose" value="{{$hidden_input_purpose}}" hidden>
                         <input type="text" name="hidden_input_id" value="{{$hidden_input_id}}" hidden>
                         <button type="submit" class="btn btn-primary" onclick="return submitForm()">Save&nbsp;&nbsp;<i
                                 class="fas fa-check"></i></button>
                     </div>
+                </div>
                 </form>
             </div>
         </div>
     </div>
-</div>
+
 </div>
 
 <script>

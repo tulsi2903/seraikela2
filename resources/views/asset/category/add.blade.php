@@ -3,9 +3,8 @@
 @section('title', 'Asset Category')
 
 @section('page-content')
-   <div class="row row-card-no-pd" style="border-top: 3px solid #5c76b7;height: 873px;">
+<div class="card">
         <div class="col-md-12">
-            <div class="card">
                 <div class="card-header">
                     <div class="card-head-row card-tools-still-right" style="background:#fff;">
                         <h4 class="card-title">Asset Category</h4>
@@ -15,8 +14,8 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="card-body" style="margin-top: -27em;">
+        
+        <div class="card-body">
            
                     <form action="{{url('assetcat/store')}}" method="POST">
                     @csrf
@@ -58,7 +57,7 @@
                     </form>
                 </div>
             </div>
-        </div>
+       
     </div>
 </div>
 

@@ -9,9 +9,8 @@
 @endsection
 
 @section('page-content')
-    <div class="row row-card-no-pd" style="border-top: 3px solid #5c76b7;">
-        <div class="col-md-12">
-            <div class="card">
+    <div class="card">
+        <div class="col-md-12"> 
                 <div class="card-header">
                     <div class="card-head-row card-tools-still-right" style="background:#fff;">
                         <h4 class="card-title">Designation Permission</h4>
@@ -22,8 +21,7 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="card-body" style="margin-top: -11em;">
+        <div class="card-body">
             <div class="row">
                 <div class="col-12">
                     <ul class="nav nav-pills nav-secondary nav-pills-no-bd" id="pills-tab-without-border" role="tablist">
@@ -90,5 +88,5 @@
                 </div>
             </div>
         </div>
-   </div>
+
 @endsection

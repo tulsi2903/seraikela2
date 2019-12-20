@@ -89,7 +89,7 @@ hr.new2 {
                 <div id="show-toggle1">
                     <div class="row">
                         <div class="col-md-12"><br>
-                            <div class="card" style="border-top: 1px solid #5c76b7;margin-top: -40px;">
+                            <div class="card" style="border-top: 1px solid #5c76b7;">
                             <form action="{{url('user/store')}}" method="POST">
                                     @csrf      
                                 <div class="card-body" style="margin-top: -15px;">

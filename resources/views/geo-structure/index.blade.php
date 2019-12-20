@@ -9,9 +9,9 @@
 @endsection
 
 @section('page-content')
-    <div class="row row-card-no-pd" style="border-top: 3px solid #5c76b7;">
+<div class="card">
         <div class="col-md-12">
-            <div class="card">
+          
                 <div class="card-header">
                     <div class="card-head-row card-tools-still-right" style="background:#fff;">
                         <h4 class="card-title">Geo Structure</h4>
@@ -26,7 +26,6 @@
                     </div>
                 </div>
             </div>
-        </div>
         <div class="card-body">
             <div class="row">
                 <div class="col-12" style="margin-top: -20px;">                  
@@ -87,7 +86,7 @@
                 </div>
             </div>
         </div>
-   </div>
+ 
 
    <script>
 $(document).ready(function(){
