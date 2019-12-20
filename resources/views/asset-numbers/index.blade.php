@@ -52,8 +52,9 @@
                                     <th>#</th>
                                     <th>Year</th>
                                     <th>Asset</th>
+                                    <th>Block</th>
                                     <th>Panchyat</th>
-                                    <th>Pre Value</th>
+                                    <!-- <th>Pre Value</th> -->
                                     <th>Current Value</th>
                                     <th class="action-buttons">Action</th>
                                 </tr>
@@ -66,8 +67,9 @@
                                             <td width="40px;">{{$count++}}</td>
                                             <td>{{$data->year_value}}</td>
                                             <td>{{$data->asset_name}}</td>
-                                            <td>{{$data->geo_name}}</td>
-                                            <td>{{$data->pre_value}}</td>
+                                            <td>{{$data->block_name}}</td>
+                                            <td>{{$data->panchayat_name}}</td>
+                                            <!-- <td>{{$data->pre_value}}</td> -->
                                             <td>{{$data->current_value}}</td>
                                             <td class="action-buttons">
     <!--                                             <a href="{{url('asset_numbers/delete')}}/{{$data->asset_numbers_id}}/{$data->asset_geo_location_id}/{$data->asset_block_count_id}" id="delete-button" class="btn btn-secondary btn-sm"><i class="fas fa-trash-alt"></i></a>

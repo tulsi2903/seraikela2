@@ -28,7 +28,10 @@ class AssetNumbersController extends Controller
                 $data->asset_name = Asset::find($data->asset_id)->asset_name;
             }
             if(GeoStructure::find($data->geo_id)){
-                $data->geo_name = GeoStructure::find($data->geo_id)->geo_name;
+                $panchayat_data_tmp = GeoStructure::find($data->geo_id);
+                $data->panchayat_name = $panchayat_data_tmp->geo_name;
+                $block_data_tmp = GeoStructure::find($panchayat_data_tmp->bl_id);
+                $data->block_name = $block_data_tmp->geo_name;
             }
             if(Year::find($data->year)){
                 $data->year_value = Year::find($data->year)->year_value;
@@ -68,31 +71,34 @@ class AssetNumbersController extends Controller
     }
 
     public function view(Request $request){
-        $request->asset_numbers_id;
-        
-        $assets = Asset::orderBy('asset_id')->first();
-        $panchayats = GeoStructure::where('level_id','4')->orderBy('geo_name')->first();
-        $years = Year::orderBy('year_id')->first();
+        // receiving datas
+        $asset_numbers_id = $request->asset_numbers_id;
 
         $asset_numbers = AssetNumbers::leftJoin('asset','asset_numbers.asset_id','=','asset.asset_id')
                                         ->leftJoin('year','asset_numbers.year','=','year.year_id')
                                         ->leftJoin('geo_structure','asset_numbers.geo_id','=','geo_structure.geo_id')
                                         
                                         ->select('asset_numbers.*','asset.asset_name','year.year_value','geo_structure.geo_name')
-                                        ->where('asset_numbers.asset_numbers_id',$request->asset_numbers_id)->get();
+                                        ->where('asset_numbers.asset_numbers_id',$asset_numbers_id)->first();
+        // getting block  name
+        $asset_numbers->block_name = GeoStructure::find(GeoStructure::find($asset_numbers->geo_id)->bl_id)->geo_name;
 
-        $asset_locations = AssetNumbers::leftJoin('asset_geo_location','asset_numbers.geo_id','=','asset_geo_location.geo_id')
-                                        ->select('asset_numbers.*','asset_geo_location.location_name','asset_geo_location.latitude','asset_geo_location.longitude')
-                                        ->where('asset_numbers.asset_numbers_id',$request->asset_numbers_id)->get();
-        // $asset_locations = AssetGeoLocation::where('asset_id', ) **Important: asset location query must be rewritten 
+        // $asset_locations = AssetNumbers::leftJoin('asset_geo_location','asset_numbers.geo_id','=','asset_geo_location.geo_id')
+        //                                 ->select('asset_numbers.*','asset_geo_location.location_name','asset_geo_location.latitude','asset_geo_location.longitude')
+        //                                 ->where('asset_numbers.asset_numbers_id',$asset_numbers_id)->get();
+        //**Important: asset location query must be rewritten
+        $asset_locations = AssetGeoLocation::where('asset_id', $asset_numbers->asset_id)
+                            ->where('geo_id', $asset_numbers->geo_id)
+                            ->where('year', $asset_numbers->year)
+                            ->get();
 
         
-        $images = unserialize(AssetGallery::where('geo_id', $asset_numbers[0]->geo_id)
-                            ->where('asset_id', $asset_numbers[0]->asset_id)
-                            ->where('year_id', $asset_numbers[0]->year)
+        $images = unserialize(AssetGallery::where('geo_id', $asset_numbers->geo_id)
+                            ->where('asset_id', $asset_numbers->asset_id)
+                            ->where('year_id', $asset_numbers->year)
                             ->first()->images);
 
-        return view('asset-numbers.view')->with(compact('assets','panchayats','years','asset_numbers','asset_locations','images'));
+        return view('asset-numbers.view')->with(compact('asset_numbers','asset_locations','images'));
     }
     
     public function current_value(Request $request)

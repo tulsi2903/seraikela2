@@ -35,21 +35,19 @@
                         <table class="table table-striped mt-3">
                             <tbody>
                                 <tr>
-                                    <th>Year<span style="color:red;margin-left:5px;">*</span></th>
-                                    <th>Asset<span style="color:red;margin-left:5px;">*</span></th>
-                                    <th>Panchayat<span style="color:red;margin-left:5px;">*</span></th>
-                                    <th>Previous Value<span style="color:red;margin-left:5px;">*</span></th>
-                                    <th>Current Value<span style="color:red;margin-left:5px;">*</span></th>
+                                    <th>Year</th>
+                                    <th>Asset</th>
+                                    <th>Block</th>
+                                    <th>Panchayat</th>
+                                    <th>Current Value</th>
                                 </tr>
-                                @foreach($asset_numbers as $asset_number)
                                 <tr>
-                                    <td>{{$asset_number->year_value}}</td>
-                                    <td>{{$asset_number->asset_name}}</td>
-                                    <td>{{$asset_number->geo_name}}</td>
-                                    <td>{{$asset_number->pre_value}}</td>
-                                    <td>{{$asset_number->current_value}}</td>
+                                    <td>{{$asset_numbers->year_value}}</td>
+                                    <td>{{$asset_numbers->asset_name}}</td>
+                                    <td>{{$asset_numbers->block_name}}</td>
+                                    <td>{{$asset_numbers->geo_name}}</td>
+                                    <td>{{$asset_numbers->current_value}}</td>
                                 </tr>
-                                @endforeach
                             </tbody>
                         </table>
                         @if(count($asset_locations)!=0)
