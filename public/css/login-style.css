@@ -482,7 +482,7 @@ li:nth-child(2) a,li:nth-child(1) a {
 }
 
 input:checked+.slider {
-    background-color: #fc636b;
+    background-color: #00a049;
 }
 
 input:focus+.slider {

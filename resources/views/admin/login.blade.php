@@ -5,7 +5,10 @@
     <title>Login - District Scheme &amp; Resource Management</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <link href="{{asset('public/css/login-style.css')}}" rel='stylesheet' type='text/css' />
+	<!-- CSRF Token -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+	
+	<link href="{{asset('public/css/login-style.css')}}" rel='stylesheet' type='text/css' />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 	<link href="https://fonts.googleapis.com/css?family=Bree+Serif&display=swap" rel="stylesheet">
 
@@ -33,6 +36,11 @@
 		margin-top: 2em;
 		line-height: 2em;
 		letter-spacing: 1px;
+	}
+	.list-login{
+		list-style: none;
+		padding: 0;
+		padding-left: 8px;
 	}
 </style>
 <body>
@@ -76,7 +84,12 @@
 			<div class="content-bottom">
 				<center><img src="https://cdn.s3waas.gov.in/s3b337e84de8752b27eda3a12363109e80/uploads/2018/03/2018030571.png"></center><br>
 				<form method="POST" action="{{ route('login') }}">
-                @csrf
+				@csrf
+					@error('username')
+						<span class="invalid-feedback" role="alert" style="color: white; padding: 15px; display: block;">
+							<i class="fa fa-info-circle" style="color: #e74424;"></i>&nbsp;&nbsp;{{ $message }}
+						</span>
+					@enderror
 					<div class="field-group">
 						<span class="fa fa-user" aria-hidden="true"></span>
 						<div class="wthree-field">
@@ -87,7 +100,7 @@
 						<span class="fa fa-lock" aria-hidden="true"></span>
 						<div class="wthree-field">
 							<input name="password" id="myInput" type="Password" aria-required="true" placeholder="Password" required>
-                        </div>
+						</div>
 					</div>
 					<div class="wthree-field">
 						<button type="submit" class="btn">Login</button>
@@ -95,11 +108,15 @@
 					<ul class="list-login">
 						<li class="switch-agileits">
 							<label class="switch">
-								<input type="checkbox">
+								<input type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
 								<span class="slider round"></span>
-								keep Logged in
+								{{ __('Remember Me') }}
 							</label>
 						</li>
+						<!-- <input class="form-check-input" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
+						<label class="form-check-label" for="remember">
+							{{ __('Remember Me') }}
+						</label> -->
 						<li>
 							<a href="javascript:void();" class="text-right">forgot password?</a>
 						</li>
