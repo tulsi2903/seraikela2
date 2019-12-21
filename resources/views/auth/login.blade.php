@@ -18,7 +18,7 @@
 </head>
 <style>
 	.content-detail h4 {
-		font-size: 2.8em;
+		font-size: 2em;
 		font-family: 'Bree Serif', serif;
 		color: #fff;
 		line-height: 1.5em;
@@ -42,6 +42,11 @@
 		padding: 0;
 		padding-left: 8px;
 	}
+	.content-bottom {
+    margin: 9em;
+    position: fixed;
+	width: 35%;
+}
 </style>
 <body>
 	<!-- main -->
@@ -55,7 +60,7 @@
 				</div>
 			</div>
 
-			<div class="col-md-6" style="background: #0000004a;min-height: 1011px;margin-top: -3em;width: 50%;">
+			<div class="col-md-6" style="background: #0000004a;min-height: 1040px;margin-top: -3em;width: 50%;">
 				<!-- <div class="main-agileinfo" style="    width: 67%;">
 					<div class="agileits-top">
 						<center><img src="http://jiada.baba.software/public/form/images/toplogo.png" style="height: 100%;"></center>

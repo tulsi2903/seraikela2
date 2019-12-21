@@ -1051,7 +1051,7 @@ body {
 }
 
 .sidebar.sidebar-style-2 .nav .nav-item {
-   padding: 0 15px
+   padding: 0 10px
 }
 
 .sidebar.sidebar-style-2 .nav .nav-item a {
@@ -5750,7 +5750,7 @@ label {
 .form-check,
 .form-group {
    margin-bottom: 0;
-   padding: 10px
+   padding: 0px
 }
 
 .form-check label,

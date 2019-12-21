@@ -150,16 +150,15 @@
         }
         .card, .card-light {
             border-radius: 5px;
-            margin-bottom: 30px;
+            margin-bottom: 0px;
             -webkit-box-shadow: 2px 6px 15px 0 rgba(69, 65, 78, .1);
             -moz-box-shadow: 2px 6px 15px 0 rgba(69, 65, 78, .1);
             box-shadow: 2px 6px 10px 0 #4f4f4f;
             border: 0;
-            min-height: 800px;
+            min-height: 813px;
             border-top: 3px solid #5c76b7;
             background: linear-gradient(to top, #a5baef, #ffffff 70%, #ffffff, #ffffff 100%);
         }
-
         
         hr.new2 {
         border-top: 1px dashed #000;

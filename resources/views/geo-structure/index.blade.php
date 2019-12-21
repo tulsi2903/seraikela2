@@ -25,7 +25,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div><br>
         <div class="card-body">
             <div class="row">
                 <div class="col-12" style="margin-top: -20px;">                  
@@ -41,7 +41,6 @@
                             <button type="button" class="btn btn-primary" onclick="block_search();">Search</button>
                         </div>
                     </div> -->
-                    <hr>
                    
                     <!-- <div style="display: -webkit-box; float:right;margin-top: -22px;">
                         <a class="btn btn-secondary" href="{{url('geo-structure/add')}}" role="button"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;Add</a>
@@ -69,7 +68,7 @@
                                         <td>{{$data->no_of_villages}}</td>
                                         <td>{{$data->parent_name}} <small>{{$data->parent_level_name}}</small></td>
                                         <td>{{$data->org_name}}</td>
-                                        <td class="action-buttons">
+                                        <td class="action-buttons" style="    display: contents;">
                                             <a href="{{url('geo-structure/delete')}}/{{$data->geo_id}}" class="btn btn-danger btn-sm delete-button"><i class="fas fa-trash-alt"></i></a>
                                             &nbsp;&nbsp;<a href="{{url('geo-structure/add')}}?purpose=edit&id={{$data->geo_id}}" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></a>
                                         </td>

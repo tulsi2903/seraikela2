@@ -500,7 +500,7 @@
 					</div>
                 </div><br>
                 
-                <div class="row">
+                <div class="row" style="margin-bottom: -8em;">
                     <div class="col-md-6">
                         <div class="card-body" style="background: #fff;">
                             <div id="chartContainer" style="height: 300px; width: 100%;"></div>

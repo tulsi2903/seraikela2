@@ -140,7 +140,7 @@
 
 @section('page-content')
 
-<div class="row row-card-no-pd" style="border-top: 3px solid #5c76b7;">
+<div class="row row-card-no-pd" style="border-top: 3px solid #5c76b7; min-height:812px;">
     <div class="col-md-4">
 
         <!-- <div class="card-header">
