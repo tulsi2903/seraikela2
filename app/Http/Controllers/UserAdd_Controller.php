@@ -18,9 +18,8 @@ class UserAdd_Controller extends Controller
 {
     
     public function adduser(){     
-        $results=DB::table('users')->leftjoin('designation','users.userRole','designation.desig_id')
-                    	->select('designation.name as designame','users.first_name as first_name','users.last_name as last_name',
-                            	'users.email as email_id','users.mobile_number as mobile_number','users.is_active as is_active','users.username as username','users.address as address')->get();
+        $results=DB::table('users')->leftjoin('designation','users.desig_id','designation.desig_id')
+                    	->select('designation.name as desig_name','users.*')->get();
         $designation_data=Designation::select('desig_id','name','org_id')->get();
         $organization_data=Organisation::select('org_id','org_name')->get();
 
@@ -31,42 +30,44 @@ class UserAdd_Controller extends Controller
     //register new login
     public function store(Request $request){  
         $new_user= new User();
+
         $new_user->title=$request->title;
         $new_user->first_name=$request->first_name;    
-        $new_user->last_name=$request->last_name;
-        $new_user->suffix="";      
-        $new_user->is_active=$request->is_active;
-        $new_user->start_date=$request->start_date;    
-        $new_user->end_date=$request->end_date;   
-        $new_user->username=$request->username;
+        $new_user->middle_name=$request->middle_name;    
+        $new_user->last_name=$request->last_name; 
+
+        $new_user->org_id = $request->org_id;
         $new_user->userRole=$request->desig_id;
-        $new_user->org_id=$request->org_id;
+        $new_user->desig_id=$request->desig_id;
+        $new_user->start_date=$request->start_date;    
+        $new_user->end_date=$request->end_date;
+
+        $new_user->email=$request->email;
+        $new_user->username=$request->username;
+
+        $new_user->mobile =$request->mobile;
+        $new_user->address=$request->address; 
+        $new_user->status=$request->status;
         
-        if($request->password == $request->confirm_pass){
+        if($request->password == $request->confirm_password){
              $new_user->password = Hash::make($request->password);
         }
         else{
             session()->put('alert-class','alert-danger');
-            session()->put('alert-content','password not correct');
+            session()->put('alert-content','Password did not matched');
             return redirect('user');
         }
 
         // duplicate entry
-        if(User::where('email',$request->email)->exists()){
+        if(User::where('email',$request->email)->exists()||User::where('username',$request->username)->exists()){
             session()->put('alert-class','alert-danger');
-            session()->put('alert-content','This email '.$request->email.' is already exist. Please enter another email ID');
+            session()->put('alert-content','This email '.$request->email.' OR username '.$request->username.'is already exists!');
             return redirect('user');
         }
-        $new_user->mobile_number =$request->mobile;   
-        $new_user->email=$request->email;     
-        $new_user->address=$request->address;
         if($new_user->save()){
             session()->put('alert-class','alert-success');
-            session()->put('alert-content','New user data has been stored');
+            session()->put('alert-content','New user data has been saved');
         }
-        // $check_logout = new CheakLogout();
-        // $check_logout->user_id = $new_user->id;
-        // $check_logout->save();
         return redirect('user');
     }
 }

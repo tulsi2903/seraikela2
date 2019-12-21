@@ -1,78 +1,6 @@
 @extends('layout.layout')
-@section('title', 'Add user')
+@section('title', 'Users')
 <style>
-    hr.new2 {
-        border-top: 1px dashed #000;
-    }
-    
-    .card .card-header,
-    .card-light .card-header {
-        padding: 0rem 1.25rem;
-        background-color: transparent;
-        border-bottom: 0px solid #ebecec!important;
-        margin-top: 9px;
-    }
-    
-    .form-floating-label .placeholder {
-        position: absolute;
-        padding: .375rem .75rem;
-        transition: all .2s;
-        opacity: .8;
-        margin-bottom: 0!important;
-        font-size: 18px!important;
-        font-weight: 400;
-        top: 12px;
-    }
-    .card .card-action, .card-light .card-action {
-    padding: 11px;
-    background-color: transparent;
-    line-height: 30px;
-    border-top: 1px solid #ebecec!important;
-    font-size: 14px;
-    }
-    .card, .card-light {
-    border-radius: 5px;
-    /* background-color: #fff; */
-    margin-bottom: 30px;
-    -webkit-box-shadow: 2px 6px 15px 0 rgba(69, 65, 78, .1);
-    -moz-box-shadow: 2px 6px 15px 0 rgba(69, 65, 78, .1);
-    box-shadow: 2px 6px 6px #6f6e6e;
-    border: 0;
-    /* background-image: linear-gradient(to right, white , #9296a2); */
-    background: linear-gradient(to top, #cedcff, #ffffff 50%, #ffffff, #ffffff 75%);
-}
-hr.new2 {
-        border-top: 1px dashed #000;
-        margin-top: -13px;
-    }
-    #show-toggle1 {
-    padding: 5px;
-    text-align: center;
-    background-color: #ffffff;
-    margin-bottom: 7px;
-    }
-    
-    #show-toggle1{
-        padding: 6px;
-        display: none;
-    }
-    .form-check label, .form-group label {
-    margin-bottom: .5rem;
-    color: #495057;
-    font-weight: 600;
-    font-size: 1rem;
-    white-space: nowrap;
-    float: left;
-    }
-    .card-title {
-    margin: 0;
-    color: #575962;
-    font-size: 20px;
-    font-weight: 400;
-    line-height: 1.6;
-    margin-top: 6px;
-    }
-   
 </style>
 
 @section('page-content')
@@ -85,151 +13,149 @@ hr.new2 {
                         <div  style="float:right;"><button class="btn btn-secondary"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;Add Users</button></div>
                     </div>
                 </div>
-            <!-----------------------------------------start of User Form------------------------------------------>
+                <!-----------------------------------------start of User Form------------------------------------------>
                 <div id="show-toggle1">
                     <div class="row">
                         <div class="col-md-12"><br>
-                            <div class="card" style="border-top: 1px solid #5c76b7;">
+                            <div class="card" style="min-height: unset !important;border-top: 1px solid #5c76b7;">
                             <form action="{{url('user/store')}}" method="POST">
-                                    @csrf      
-                                <div class="card-body" style="margin-top: -15px;">
+                            @csrf      
+                                <div class="card-body">
                                     <div class="row">
-                                        <div class="col-md-2">
+                                        <div class="col-md-3">
                                             <div class="form-group">
-                                                <label for="">Title</label>
-                                                <select name="title" class="form-control form-control" id="defaultSelect">
-                                                    <!-- <option>--select--</option> -->
-                                                    <option>Mr.</option>
-                                                    <option>Mrs.</option>
-
+                                                <label for="title">Title<span style="color:red;">*</span></label>
+                                                <select name="title" id="title" class="form-control">
+                                                    <option value="">--Select--</option>
+                                                    <option value="Mr">Mr.</option>
+                                                    <option value="Mrs">Mrs.</option>
+                                                    <!-- <option value="Shri">Shri.</option>
+                                                    <option value="Smt">Smt.</option> -->
                                                 </select>
+                                                <div class="invalid-feedback" id="title_error_msg"></div class="invalid-feedback">
                                             </div>
                                         </div>
                                         <div class="col-md-3">
                                             <div class="form-group">
-                                                <label for="">First Name <font style="color:red;">*</font></label>
-                                                <input type="" name="first_name" class="form-control" id="" required placeholder="First Name">
+                                                <label for="first_name">First Name<span style="color:red;">*</span></label>
+                                                <input type="text" name="first_name" id="first_name" class="form-control" placeholder="First Name" maxlength="20">
+                                                <div class="invalid-feedback" id="first_name_error_msg"></div class="invalid-feedback">
                                             </div>
                                         </div>
                                         <div class="col-md-3">
                                             <div class="form-group">
-                                                <label for="">Last Name <font style="color:red;">*</font></label>
-                                                <input type="" name="last_name" class="form-control" id="" required placeholder="Last Name">
+                                                <label for="middle_name">Middle Name</label>
+                                                <input type="text" name="middle_name" id="middle_name" class="form-control" placeholder="Middle Name" maxlength="20">
+                                                <div class="invalid-feedback" id="middle_name_error_msg"></div class="invalid-feedback">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="last_name">Last Name</label>
+                                                <input type="text" name="last_name" id="last_name" class="form-control" placeholder="Last Name" maxlength="20">
+                                                <div class="invalid-feedback" id="last_name_error_msg"></div class="invalid-feedback">
                                             </div>
                                         </div>
                                     </div>
-
                                     <div class="row">
-                                        <div class="col-md-2">
+                                        <div class="col-md-3">
                                             <div class="form-group">
-                                                <label for="">Status<font style="color:red;">*</font></label>
-                                                <select name="is_active" class="form-control form-control" required id="defaultSelect">
-                                                    <!-- <option>--select--</option> -->
-                                                    <option> Active </option>
-                                                    <option>Inactive</option>
-
+                                                <label for="org_id">Organisation<span style="color:red;">*</span></label>
+                                                <select name="org_id" id="org_id" class="form-control form-control">
+                                                    <option value="">--Select--</option>
+                                                    @foreach($organization_data as $organization)
+                                                        <option value="{{$organization->org_id}}">{{$organization->org_name}}</option>
+                                                    @endforeach
                                                 </select>
+                                                <div class="invalid-feedback" id="org_id_error_msg"></div class="invalid-feedback">
                                             </div>
                                         </div>
                                         <div class="col-md-3">
                                             <div class="form-group">
-                                                <label for="">Start Date<font style="color:red;">*</font></label>
-                                                <div class="input-group">
-                                                    <input type="date" name="start_date" class="form-control"  required placeholder="mm/dd/yyyy" id="datepicker-start-date">
-
-                                                </div>
+                                                <label for="desig_id">Designation<span style="color:red;">*</span></label>
+                                                <select name="desig_id" id="desig_id" class="form-control form-control">
+                                                    <option value="">--Select--</option>
+                                                    @foreach($designation_data as $designation)
+                                                        <option value="{{$designation->desig_id}}">{{$designation->name}}</option>
+                                                    @endforeach
+                                                </select>
+                                                <div class="invalid-feedback" id="desig_id_error_msg"></div class="invalid-feedback">
                                             </div>
                                         </div>
                                         <div class="col-md-3">
                                             <div class="form-group">
-                                                <label for="">End date<font style="color:red;">*</font></label>
-                                                <div class="input-group">
-                                                    <input type="date" name="end_date" class="form-control" required placeholder="mm/dd/yyyy" id="datepicker-end-date">
-
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-2">
-                                                <div class="form-group">
-                                                    <label for="">Designation <font style="color:red;">*</font></label>
-                                                    <select name="desig_id" class="form-control form-control" required id="defaultSelect">
-                                                        @foreach($designation_data as $designation)
-                                                            <option value="{{$designation->desig_id}}">{{$designation->name}}</option>
-                                                        @endforeach
-
-                                                    </select>
-                                                </div>
-                                            </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-2">
-                                            <div class="form-group">
-                                                <label for="">Username<font style="color:red;">*</font></label>
-                                                <input type="" name="username" class="form-control" id="" required placeholder="Username">
+                                                <label for="start_date">Start Date</label>
+                                                <input type="text" name="start_date" id="start_date" class="form-control start_date_end_date_datepicker" placeholder="dd/mm/yyyy" autocomplete="off">
+                                                <div class="invalid-feedback" id="start_date_error_msg"></div class="invalid-feedback">
                                             </div>
                                         </div>
                                         <div class="col-md-3">
                                             <div class="form-group">
-                                                <label for="">Password<font style="color:red;">*</font></label>
-                                                <input type="" name="password" class="form-control" required id="" placeholder="Password">
+                                                <label for="end_date">End date</label>
+                                                <input type="text" name="end_date" id="end_date" class="form-control start_date_end_date_datepicker" placeholder="dd/mm/yyyy" autocomplete="off">
+                                                <div class="invalid-feedback" id="end_date_error_msg"></div class="invalid-feedback">
                                             </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="form-group">
-                                                <label for="">Confirm Password<font style="color:red;">*</font></label>
-                                                <input type="" name="confirm_pass" class="form-control" required id="" placeholder="Re-type Password">
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-2">
-                                                <div class="form-group">
-                                                    <label for="">Organisation <font style="color:red;">*</font></label>
-                                                    <select name="org_id" class="form-control form-control" required id="defaultSelect">
-                                                        @foreach($organization_data as $organization)
-                                                            <option value="{{$organization->org_id}}">{{$organization->org_name}}</option>
-                                                        @endforeach
-
-                                                    </select>
-                                                </div>
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-md-2">
+                                        <div class="col-md-3">
                                             <div class="form-group">
-                                                <label for="">Mobile No.<font style="color:red;">*</font></label>
-                                                <input type="" name="mobile" class="form-control" required id="" placeholder="(999) 999-9999">
+                                                <label for="email">Email Id.<font style="color:red;">*</font></label>
+                                                <input type="text" name="email" id="email" class="form-control" placeholder="example@example.com" maxlength="50">
+                                                <div class="invalid-feedback" id="email_error_msg"></div class="invalid-feedback">
                                             </div>
                                         </div>
                                         <div class="col-md-3">
                                             <div class="form-group">
-                                                <label for="">Email Id.<font style="color:red;">*</font></label>
-                                                <input type="" name="email" class="form-control" required id="" placeholder="example@gmail.com">
+                                                <label for="username">Username<span style="color:red;">*</span></label>
+                                                <input type="text" name="username" id="username" class="form-control" placeholder="Username" maxlength="20">
+                                                <div class="invalid-feedback" id="username_error_msg"></div>
                                             </div>
                                         </div>
                                         <div class="col-md-3">
                                             <div class="form-group">
-                                                <label for="">Address</label>
-                                                <div class="input-group">
-                                                    <input type="text"  name="address" class="form-control" placeholder="Address" aria-label="" aria-describedby="basic-addon1">
-                                                    <div class="input-group-prepend" style="margin-left:10px;">
-                                                        <!-- <button class="btn btn-icon btn-primary btn-round btn-xs">
-                                                            <i class="fa fa-plus"></i>
-                                                        </button> -->
-                                                    </div>
-                                                </div>
+                                                <label for="password">Password<span style="color:red;">*</span></label>
+                                                <input type="password" name="password" id="password" class="form-control" placeholder="Password" maxlength="15">
+                                                <div class="invalid-feedback" id="password_error_msg"></div class="invalid-feedback">
                                             </div>
                                         </div>
-
-                                        <div class="col-md-4">
-
-
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="confirm_password">Confirm Password<span style="color:red;">*</span></label>
+                                                <input type="text" name="confirm_password" id="confirm_password" class="form-control" placeholder="Re-type Password" maxlength="15">
+                                                <div class="invalid-feedback" id="confirm_password_error_msg"></div class="invalid-feedback">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="mobile">Mobile No.</label>
+                                                <input type="text" name="mobile" id="mobile" class="form-control" placeholder="10 digit number only" maxlength="10">
+                                                <div class="invalid-feedback" id="mobile_error_msg"></div class="invalid-feedback">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="address">Address</label>
+                                                <input type="text" name="address" id="address" class="form-control" placeholder="Address" maxlength="100">
+                                                <div class="invalid-feedback" id="address_error_msg"></div class="invalid-feedback">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="status">Status<font style="color:red;">*</font></label>
+                                                <select name="status" id="status" class="form-control form-control">
+                                                    <option value="">--Select--</option>
+                                                    <option value="1">Active</option>
+                                                    <option value="0">Inactive</option>
+                                                </select>
+                                                <div class="invalid-feedback" id="status_error_msg"></div class="invalid-feedback">
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="card-action">
-                                        <hr class="new2">
-                                        <button class="btn btn-secondary">Submit</button>
-                                        <button class="btn btn-danger">Cancel</button>
+                                        <button type="submit" onclick="return submitForm()" class="btn btn-secondary">Submit</button>
                                     </div>
                                 </div>
                             </form>    
@@ -237,64 +163,413 @@ hr.new2 {
                         </div>
                     </div>
                 </div>
-            <!-----------------------------------------end of User Form------------------------------------------>
+                <!-----------------------------------------end of User Form------------------------------------------>
 
-            <!-----------------------------------------start of table------------------------------------------>
+                <!-----------------------------------------start of table------------------------------------------>
                 <div class="card-body">
-                    <div class="table-responsive">
-                        <table id="basic-datatables" class="display table table-striped table-hover" >
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Email Id.</th>
-                                    <th>Username</th>
-                                    <th>Designation</th>
-                                    <th>Address</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            
-                            <tbody>
-                                @foreach($results as $key => $val)
-                                <tr>
-                                    <td>{{$val->first_name}}</td>
-                                    <td>{{$val->email_id}}</td>
-                                    <td>{{$val->username}}</td>
-                                    <td>{{$val->designame}}</td>
-                                    <td>{{$val->address}}</td>
-                                    <td>{{$val->is_active}}</td>
-                                </tr>
-                                @endforeach
-                            
-                            
-                            </tbody>
-                        </table>
-                    </div>
+                    <table class="table-datatable display table table-striped table-hover" >
+                        <thead style="background: #d6dcff;color: #000;">
+                            <tr>
+                                <th>Name</th>
+                                <th>Email Id</th>
+                                <th>Username</th>
+                                <th>Designation</th>
+                                <th>Address</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        
+                        <tbody>
+                            @foreach($results as $key => $val)
+                            <tr>
+                                <td>{{$val->first_name}}</td>
+                                <td>{{$val->email}}</td>
+                                <td>{{$val->username}}</td>
+                                <td>{{$val->desig_name}}</td>
+                                <td>{{$val->address}}</td>
+                                <td>
+                                    @if($val->status==1)
+                                    <span style="padding:5px 10px; border: 2px solid #00b100;">Active</span>
+                                    @else
+                                    <span style="padding:5px 10px; border: 2px solid #ff1c1c;">Inactive</span>
+                                    @endif
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
-                
-            <!-----------------------------------------end of table------------------------------------------>
+                <!-----------------------------------------end of table------------------------------------------>
             </div>
         </div>
     </div>
 
     <script>
         // Date Picker
-        jQuery('#datepicker-end-date').datepicker();
-            jQuery('#datepicker-end-date-inline').datepicker();
-            jQuery('#datepicker-end-date-multiple').datepicker({
-                numberOfMonths: 3,
-                showButtonPanel: true
+        $(document).ready(function(){
+            $('.start_date_end_date_datepicker').datepicker({
+                format: 'dd/mm/yyyy'
             });
+        });
     </script>
 
     <script>
-        // Date Picker
-        jQuery('#datepicker-start-date').datepicker();
-            jQuery('#datepicker-start-date-inline').datepicker();
-            jQuery('#datepicker-start-date-multiple').datepicker({
-                numberOfMonths: 3,
-                showButtonPanel: true
+        // validations starts
+        var title_error = true;
+        var first_name_error = true;
+        var middle_name_error = true;
+        var last_name_error = true;
+
+        var org_id_error = true;
+        var desig_id_error = true;
+        var start_date_error = true;
+        var end_date_error = true;
+
+        var email_error = true;
+        var username_error = true;
+        var password_error = true;
+        var confirm_password_error = true;
+
+        var mobile_error = true;
+        var address_error = true;
+        var status_error = true;
+
+        $(document).ready(function(){
+            $("#title").change(function(){
+                title_validate();
             });
+            $("#first_name").change(function(){
+                first_name_validate();
+            });
+            $("#middle_name").change(function(){
+                middle_name_validate();
+            });
+            $("#last_name").change(function(){
+                last_name_validate();
+            });
+
+            $("#org_id").change(function(){
+                org_id_validate();
+            });
+            $("#desig_id").change(function(){
+                desig_id_validate();
+            });
+            $("#start_date").change(function(){
+                start_date_validate();
+            });
+            $("#end_date").change(function(){
+                start_date_validate();
+            });
+
+            $("#email").change(function(){
+                email_validate();
+            });
+            $("#username").change(function(){
+                username_validate();
+            });
+            $("#password").change(function(){
+                password_validate();
+            });
+            $("#confirm_password").change(function(){
+                confirm_password_validate();
+            });
+
+            $("#mobile").change(function(){
+                mobile_validate();
+            });
+            $("#mobile").keyup(function(){ // replacing no numbers
+                $("#mobile").val($("#mobile").val().replace(/[^0-9]+/g, ""));
+            });
+
+            $("#address").change(function(){
+                address_validate();
+            });
+            $("#status").change(function(){
+                status_validate();
+            });
+        });
+
+        function title_validate(){
+            var title_val = $("#title").val();
+            if(title_val){
+                title_error = false;
+                $("#title").removeClass("is-invalid");
+            }
+            else{
+                title_error = true;
+                $("#title").addClass("is-invalid");
+                $("#title_error_msg").html("Please select title");
+            }
+        }
+
+        function first_name_validate(){
+            var first_name_val = $("#first_name").val();
+            var regEx = new RegExp('^[a-zA-Z]+$');
+            if(first_name_val==""){
+                first_name_error = true;
+                $("#first_name").addClass("is-invalid");
+                $("#first_name_error_msg").html("Please enter first name");
+            }
+            else if(!regEx.test(first_name_val)){
+                first_name_error = true;
+                $("#first_name").addClass("is-invalid");
+                $("#first_name_error_msg").html("Please enter valid name");
+            }
+            else{
+                first_name_error = false;
+                $("#first_name").removeClass("is-invalid");
+            }
+        }
+
+        function middle_name_validate(){
+            var middle_name_val = $("#middle_name").val();
+            var regEx = new RegExp('^[a-zA-Z]+$');
+            if(middle_name_val!=""){
+                if(!regEx.test(middle_name_val)){
+                    middle_name_error = true;
+                    $("#middle_name").addClass("is-invalid");
+                    $("#middle_name_error_msg").html("Please enter valid name");
+                }
+                else{
+                    middle_name_error = false;
+                    $("#middle_name").removeClass("is-invalid");
+                }
+            }
+            else{
+                middle_name_error = false;
+                $("#middle_name").removeClass("is-invalid");
+            }
+        }
+
+        function last_name_validate(){
+            var last_name_val = $("#last_name").val();
+            var regEx = new RegExp('^[a-zA-Z]+$');
+            if(last_name_val!=""){
+                if(!regEx.test(last_name_val)){
+                    last_name_error = true;
+                    $("#last_name").addClass("is-invalid");
+                    $("#last_name_error_msg").html("Please enter valid name");
+                }
+                else{
+                    last_name_error = false;
+                    $("#middle_name").removeClass("is-invalid");
+                }
+            }
+            else{
+                last_name_error = false;
+                $("#last_name").removeClass("is-invalid");
+            }
+        }
+
+        function org_id_validate(){
+            var org_id_val = $("#org_id").val();
+            if(org_id_val){
+                org_id_error = false;
+                $("#org_id").removeClass("is-invalid");
+            }
+            else{
+                org_id_error = true;
+                $("#org_id").addClass("is-invalid");
+                $("#org_id_error_msg").html("Please select organisation");
+            }
+        }
+
+        function desig_id_validate(){
+            var desig_id_val = $("#desig_id").val();
+            if(desig_id_val){
+                desig_id_error = false;
+                $("#desig_id").removeClass("is-invalid");
+            }
+            else{
+                desig_id_error = true;
+                $("#desig_id").addClass("is-invalid");
+                $("#desig_id_error_msg").html("Please select organisation");
+            }
+        }
+
+        function start_date_validate(){
+            start_date_error = false;
+        }  
+        
+        function end_date_validate(){
+            end_date_error = false;
+        }
+
+        function email_validate(){
+            var email_val = $("#email").val();
+            var regEx = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+            if(email_val==""){
+                email_error = true;
+                $("#email").addClass("is-invalid");
+                $("#email_error_msg").html("Please enter your email ID");
+            }
+            else if(!regEx.test(email_val)){
+                email_error = true;
+                $("#email").addClass("is-invalid");
+                $("#email_error_msg").html("Please enter valid email ID");
+            }
+            else{
+                email_error = false;
+                $("#email").removeClass("is-invalid");
+            }
+        }
+
+        function username_validate(){
+            var username_val = $("#username").val();
+            var regEx = new RegExp('^[a-zA-Z0-9_-]+$');
+            if(username_val==""){
+                username_error = true;
+                $("#username").addClass("is-invalid");
+                $("#username_error_msg").html("Please enter username");
+            }
+            else if(!regEx.test(username_val)){
+                username_error = true;
+                $("#username").addClass("is-invalid");
+                $("#username_error_msg").html("Only alphabets, numbers and characters (_-) allowed");
+            }
+            else{
+                username_error = false;
+                $("#username").removeClass("is-invalid");
+            }
+        }
+
+        function password_validate(){
+            var password_val = $("#password").val();
+            var regEx = new RegExp('^[a-zA-Z0-9_-]+$');
+            if(password_val==""){
+                password_error = true;
+                $("#password").addClass("is-invalid");
+                $("#password_error_msg").html("Please enter password");
+            }
+            else if(!regEx.test(password_val)){
+                password_error = true;
+                $("#password").addClass("is-invalid");
+                $("#password_error_msg").html("Only alphabets, numbers and characters (_-) allowed");
+            }
+            else if(password_val.length<4){
+                password_error = true;
+                $("#password").addClass("is-invalid");
+                $("#password_error_msg").html("Password should be greater than 4 digit");
+            }
+            else{
+                password_error = false;
+                $("#password").removeClass("is-invalid");
+            }
+        }
+        
+        
+        function confirm_password_validate(){
+            var confirm_password_val = $("#confirm_password").val();
+            var regEx = new RegExp('^[a-zA-Z0-9_-]+$');
+            if(confirm_password_val==""){
+                confirm_password_error = true;
+                $("#confirm_password").addClass("is-invalid");
+                $("#confirm_password_error_msg").html("Please re-type password");
+            }
+            else if(!regEx.test(confirm_password_val)){
+                confirm_password_error = true;
+                $("#confirm_password").addClass("is-invalid");
+                $("#confirm_password_error_msg").html("Only alphabets, numbers and characters (_-) allowed");
+            }
+            else if(confirm_password_val.length<4){
+                confirm_password_error = true;
+                $("#confirm_password").addClass("is-invalid");
+                $("#confirm_password_error_msg").html("Password should be greater than 4 digit");
+            }
+            else{
+                if($("#password").val())
+                {
+                    if($("#confirm_password").val()==$("#password").val()){
+                        confirm_password_error = false;
+                        $("#confirm_password").removeClass("is-invalid");
+                    }
+                    else{
+                        confirm_password_error = true;
+                        $("#confirm_password").addClass("is-invalid");
+                        $("#confirm_password_error_msg").html("Password did not matched");
+                    }
+                }
+                else{
+                    confirm_password_error = false;
+                    $("#confirm_password").removeClass("is-invalid");
+                }
+            }
+        }
+
+        function mobile_validate(){
+            var mobile_val = $("#mobile").val();
+            var regEx = new RegExp('^[0-9]+$');
+            if(mobile_val){
+                if(!regEx.test(mobile_val)){
+                    mobile_error = true;
+                    $("#mobile").addClass("is-invalid");
+                    $("#mobile_error_msg").html("Please enter valid mobile no");
+                }
+                else if(mobile_val.length!=10){
+                    mobile_error = true;
+                    $("#mobile").addClass("is-invalid");
+                    $("#mobile_error_msg").html("Please enter 10 digit no only");
+                }
+                else{
+                    mobile_error = false;
+                    $("#mobile").removeClass("is-invalid");
+                }
+            }
+            else{
+                mobile_error = false;
+                $("#mobile").removeClass("is-invalid");
+            }
+        }
+
+        function address_validate(){
+            address_error = false;
+        }
+
+        function status_validate(){
+            var status_val = $("#status").val();
+            if(status_val){
+                status_error = false;
+                $("#status").removeClass("is-invalid");
+            }
+            else{
+                status_error = true;
+                $("#status").addClass("is-invalid");
+                $("#status_error_msg").html("Please select status");
+            }
+        }
+
+        // final submit
+        function submitForm(){
+            title_validate();
+            first_name_validate();
+            middle_name_validate();
+            last_name_validate();
+
+            org_id_validate();
+            desig_id_validate();
+            start_date_validate()
+            end_date_validate();
+
+            email_validate();
+            username_validate();
+            password_validate();
+            confirm_password_validate();
+
+            mobile_validate();
+            address_validate();
+            status_validate();
+
+            if(title_error||first_name_error||middle_name_error||last_name_error||org_id_error||desig_id_error||start_date_error||end_date_error||email_error||username_error||password_error||confirm_password_error||mobile_error||confirm_password_error||mobile_error||address_error||status_error){
+                console.log(title_error+" "+first_name_error+" "+middle_name_error+" "+last_name_error+" "+org_id_error+" "+desig_id_error+" "+start_date_error+" "+end_date_error+" "+email_error+" "+username_error+" "+password_error+" "+confirm_password_error+" "+mobile_error+" "+address_error+" "+status_error);
+                console.log(password_error);
+                return false;
+            }
+            else{
+                return true;
+            }
+        }
     </script>
+
+
 </div>
 @endsection
