@@ -22,18 +22,17 @@ Route::get('clear-cache', function () {
 });
 
 
-Route::get('/', function () {
-    return view('admin.login');
-});
-Route::get('logt',function(){
-    Auth::logout();
-    return redirect('/');
-});
-
-
-Auth::routes();
+// Route::get('/', function () {
+//     return view('admin.login');
+// });
+// Route::get('logt',function(){
+//     Auth::logout();
+//     return redirect('/');
+// });
+Auth::routes(['register' => false]);
 
 /*dashboard*/
+Route::get('/', 'DashboardController@index');
 Route::get('home', 'DashboardController@index')->name('home');
 Route::get('my-district','DashboardController@index');
 Route::get('homepage','DashboardController@index');

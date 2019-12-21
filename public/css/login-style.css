@@ -399,10 +399,10 @@ ul.links-unordered-list li a {
     padding: 10px 0 10px 15px;
     font-size: 17px;
     font-weight: 300;
-	color:#ddd;
+	color:#ddd !important;
     letter-spacing: 1px;
     border: none;
-    background: transparent;
+    background: transparent !important;
     box-sizing: border-box;
 	font-family: 'Mukta', sans-serif;
     width: 100%;

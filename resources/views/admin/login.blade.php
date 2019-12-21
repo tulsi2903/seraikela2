@@ -93,13 +93,13 @@
 					<div class="field-group">
 						<span class="fa fa-user" aria-hidden="true"></span>
 						<div class="wthree-field">
-							<input name="username" id="text1" type="text" value="{{ old('username') }}" placeholder="Username" autocomplete="off" required aria-required="true" required autofocus>
+							<input name="username" id="username" type="text" value="{{ old('username') }}" placeholder="Username" autocomplete="username" required aria-required="true" autofocus>
 						</div>
 					</div>
 					<div class="field-group">
 						<span class="fa fa-lock" aria-hidden="true"></span>
 						<div class="wthree-field">
-							<input name="password" id="myInput" type="Password" aria-required="true" placeholder="Password" required>
+							<input name="password" id="password" type="password" aria-required="true" placeholder="Password" required>
 						</div>
 					</div>
 					<div class="wthree-field">
@@ -113,13 +113,12 @@
 								{{ __('Remember Me') }}
 							</label>
 						</li>
-						<!-- <input class="form-check-input" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
-						<label class="form-check-label" for="remember">
-							{{ __('Remember Me') }}
-						</label> -->
-						<li>
-							<a href="javascript:void();" class="text-right">forgot password?</a>
-						</li>
+						@if (Route::has('password.request'))
+							<li>
+								<a href="{{ route('password.request') }}" class="text-right">{{ __('Forgot Your Password?') }}</a>
+							</li>
+						@endif
+						
 						<li class="clearfix"></li>
 					</ul>
 				</form>
