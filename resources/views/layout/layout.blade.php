@@ -1,4 +1,5 @@
 <?php
+    // login 
     if (!Auth::guest())
     {
         // logged in

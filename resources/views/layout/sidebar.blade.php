@@ -19,7 +19,7 @@
 					// add My District, My Block etc
 				}
 				?>
-				<li class="nav-item"><a href="{{url('my-district')}}"><i class="fas fa-home"></i><p>My District</p></a></li>
+				<li class="nav-item"><a href="{{url(session()->get('dashboard_url'))}}"><i class="fas fa-home"></i><p>{{session()->get('dashboard_title')}}</p></a></li>
 
 				<li class="nav-item">
 					<a data-toggle="collapse" href="#administator" class="collapsed" aria-expanded="false">

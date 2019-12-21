@@ -29,13 +29,14 @@ Route::get('clear-cache', function () {
 //     Auth::logout();
 //     return redirect('/');
 // });
-Auth::routes(['register' => false]);
+Auth::routes(['register' => false]); // register fetaure if disabled from laravel auth
 
 /*dashboard*/
-Route::get('/', 'DashboardController@index');
-Route::get('home', 'DashboardController@index')->name('home');
-Route::get('my-district','DashboardController@index');
-Route::get('homepage','DashboardController@index');
+Route::get('/', 'DashboardController@index')->name('home');;
+Route::get('my-district','DashboardController@dashboard'); // for DC/admin
+Route::get('my-subdivision','DashboardController@dashboard'); // for SDO
+Route::get('my-block','DashboardController@dashboard'); // for Block
+Route::get('my-panchayat','DashboardController@dashboard'); //for panchayat
 Route::get('dashboard/dc_dashboard','DashboardController@index');
 
 

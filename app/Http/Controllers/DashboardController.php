@@ -12,33 +12,47 @@ use App\Department;
 
 class DashboardController extends Controller
 {
+    // function to assign everything related to user logged in (after logged in user id redirected to this method, this method further redirected usaer to its dashboadr page)
     public function index()
     {
         // session store user details
         if(Auth::check()){
-            if(!session()->exists('user_id'))
+            session()->put('user_id', Auth::user()->id);
+            session()->put('user_full_name', Auth::user()->first_name." ".Auth::user()->last_name); 
+            session()->put('user_org_id', Auth::user()->org_id);
+            session()->put('user_designation', Auth::user()->userRole);
+            switch(Auth::user()->userRole)
             {
-                session()->put('user_id', Auth::user()->id);
-                session()->put('user_full_name', Auth::user()->first_name." ".Auth::user()->last_name); 
-                session()->put('user_org_id', Auth::user()->org_id);
-                session()->put('user_designation', Auth::user()->userRole);
-                switch(Auth::user()->userRole)
-                {
-                    case "1":
-                        session()->put('user_designation_name', "Admin");
-                        break;
-                    case "2":
-                        session()->put('user_designation_name', "SDO");
-                        break;
-                    case "3":
-                        session()->put('user_designation_name', "BDO");
-                        break;
-                    case "4":
-                        session()->put('user_designation_name', "PO");
-                        break;
-                }
+                case "1":
+                    session()->put('user_designation_name', "Admin");
+                    session()->put('dashboard_title', "My District");
+                    session()->put('dashboard_url', "my-district");
+                    break;
+                case "2":
+                    session()->put('user_designation_name', "SDO");
+                    session()->put('dashboard_title', "My SubDivision");
+                    session()->put('dashboard_url', "my-subdivision");
+                    break;
+                case "3":
+                    session()->put('user_designation_name', "BDO");
+                    session()->put('dashboard_title', "My Block");
+                    session()->put('dashboard_url', "my-block");
+                    break;
+                case "4":
+                    session()->put('user_designation_name', "PO");
+                    session()->put('dashboard_title', "My Panchayat");
+                    session()->put('dashboard_url', "my-panchayat");
+                    break;
             }
+            return redirect(session()->get('dashboard_url'));
         }
+        else{ // redirect if not logged in
+            return redirect()->route("login");
+        }
+    }
+
+    // show dashboard contents
+    public function dashboard(){
         // TO DO:  Remove level_id  && org_id hardcoding
         $subdivision_count = GeoStructure::where('level_id','2')->where('org_id','1')->count();
         
@@ -74,8 +88,6 @@ class DashboardController extends Controller
 
         $social_security_scheme_count = SchemeStructure::where('dept_id','10')->count();
 
-
- 
         return view('dashboard.dc_dashboard')->with(compact('subdivision_count','block_count','panchayat_count','asset_count','villages_count','get_schemes','departments','health_scheme_count','land_revenue_count','welfare_count','education_count','land_acquisition_count','election_count','agriculture_count','social_welfare_count','drinking_water_and_sanitation_count','social_security_scheme_count'));
     }
 
