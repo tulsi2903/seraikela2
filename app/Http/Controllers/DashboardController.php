@@ -47,6 +47,7 @@ class DashboardController extends Controller
             return redirect(session()->get('dashboard_url'));
         }
         else{ // redirect if not logged in
+            session()->flush();
             return redirect()->route("login");
         }
     }
