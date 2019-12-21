@@ -257,9 +257,9 @@
                 <li class="nav-item">
                     <a class="nav-link" id="gallery-tab" data-toggle="pill" href="#gallery-view-tab" role="tab" aria-selected="false">Gallery View</a>
                 </li>
-                <div style="margin-top: 10px; margin-left: auto; order: 2; display:inline-block;">
-                    <button type="button" class="btn btn-secondary btn-sm print-button" onclick="printReview('tabular')" style=""><i class="fa fa-print" aria-hidden="true"></i></button>&nbsp;&nbsp;&nbsp;
-                    <button type="button" class="btn btn-primary btn-sm print-button" style="margin-right: 7px;"><i class="fa fa-envelope" aria-hidden="true"></i></button>
+                <div style="margin-top: 4px; margin-left: auto; order: 2; display:inline-block;">
+                    <a href="#" data-toggle="tooltip" title="Send Mail"><button type="button" class="btn btn-icon btn-round btn-success"><i class="fa fa-envelope" aria-hidden="true"></i></button></a>
+                    <a href="#" data-toggle="tooltip" title="Print"><button type="button" class="btn btn-icon btn-round btn-default" id="print-button" onclick="printView();"><i class="fa fa-print" aria-hidden="true"></i></button></a>
                 </div>
             </ul>
             <hr>

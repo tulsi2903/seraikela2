@@ -220,7 +220,7 @@
             <div class="card card-stats card card-round" style="width: 93%;height: 89px; min-height:0px; border-top: 0px solid;">
                 <div class="card-body ">
                     <div class="row">
-                        <ul class="pricing-content" style="color: #fff;margin-top: -4px;list-style-type: none;">
+                        <ul class="pricing-content" style="color: #fff;margin-top: -2px;list-style-type: none;margin-left: -25px;font-size: 14px;">
                             <li><button class="btn btn-icon btn-success btn-round btn-xs"></button> &nbsp;&nbsp;Upto 70 to 100%</li>
                             <li><button class="btn btn-icon btn-warning btn-round btn-xs"></button> &nbsp;&nbsp;Upto 50 to 70%</li>
                             <li> <button class="btn btn-icon btn-danger btn-round btn-xs"></button> &nbsp;&nbsp;Upto 30 to 50%</li>
