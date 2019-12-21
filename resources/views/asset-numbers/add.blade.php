@@ -121,7 +121,7 @@
                         </div>
                     </div>
                     
-                    <div class="form-group" id="submit-buttons">
+                    <div class="form-group" id="submit-buttons"style="margin-top:1em;">
                         <input type="text" name="hidden_input_purpose" id="hidden_input_purpose" value="{{$hidden_input_purpose}}" hidden>
                         <input type="text" name="hidden_input_id" value="{{$hidden_input_id}}" hidden>
                         <button type="submit" class="btn btn-primary" onclick=" return submitSave()"><span id="save-button-text">Next</span>&nbsp;&nbsp;<i class="fas fa-arrow-right"></i></button>

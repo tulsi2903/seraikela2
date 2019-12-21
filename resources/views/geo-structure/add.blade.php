@@ -111,7 +111,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-12">
+                            <div class="col-md-12" style="margin-top:1em;">
                             <div class="form-group">
                                 <input type="text" name="hidden_input_purpose" value="{{$hidden_input_purpose}}" hidden>
                                 <input type="text" name="hidden_input_id" value="{{$hidden_input_id}}" hidden>

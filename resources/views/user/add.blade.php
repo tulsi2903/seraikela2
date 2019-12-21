@@ -10,7 +10,7 @@
                 <div class="card-header">
                     <div class="card-title" style="float:left;"><i class="fa fa-user" aria-hidden="true"></i> &nbsp;User Detail</div>
                     <div id="toggle1">
-                        <div  style="float:right;"><button class="btn btn-secondary"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;Add Users</button></div>
+                        <div  style="float:right;margin-bottom: 1em;"><button class="btn btn-secondary"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;Add Users</button></div>
                     </div>
                 </div>
                 <!-----------------------------------------start of User Form------------------------------------------>

@@ -108,6 +108,12 @@
     padding-left: -7px;
     padding-right: 10px;
 }
+.col-sm-2{
+    position: relative;
+    width: 100%;
+    padding-right: 5px;
+    padding-left: 5px;
+}
 
 </style>
 
@@ -119,7 +125,7 @@
 
 
 
-<div class="row">
+<div class="row" style="margin-left: 0px;">
     <div class="col-sm-2">
         <div class="card-stats card card-round" style="min-height:0px; border-top: 0px solid">
             <div class="card-body">

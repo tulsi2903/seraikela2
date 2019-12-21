@@ -5747,11 +5747,11 @@ label {
    text-align: center
 }
 
-.form-check,
+/* .form-check,
 .form-group {
    margin-bottom: 0;
    padding: 0px
-}
+} */
 
 .form-check label,
 .form-group label {
@@ -7424,8 +7424,8 @@ label.error {
 }
 
 .btn-warning {
-   background: #b50c00!important;
-   border-color: #b50c00!important;
+   background: #FFC107!important;
+   border-color: #FFC107!important;
    color: #fff!important;
 }
 .btn-warning:disabled,
