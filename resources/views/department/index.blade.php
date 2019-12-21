@@ -15,26 +15,31 @@
         color: #fff!important;
         margin-top: 1em;
     }   
+    .btn-warning {
+    background: #673AB7!important;
+    border-color: #673AB7!important;
+    color: #fff!important;
+}
 </style>
 @endsection
 
 @section('page-content')
-    <div class="row row-card-no-pd" style="border-top: 3px solid #5c76b7;">
+    <div class="card">
         <div class="col-md-12">
-            <div class="card">
                 <div class="card-header">
                     <div class="card-head-row card-tools-still-right" style="background:#fff;">
                         <h4 class="card-title">Department</h4>
                         <div class="card-tools">
                             <button type="button" class="btn btn-icon btn-round btn-success" data-target="#create-email" data-toggle="modal" ><i class="fa fa-envelope" aria-hidden="true"></i></button>
                             <button type="button" class="btn btn-icon btn-round btn-default" id="print-button" onclick="printView();"><i class="fa fa-print" aria-hidden="true"></i></button>
+                            <button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button>
+
                             <a id="toggle1" class="btn btn-secondary department-add-button" href="javascript:void();" role="button"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;Add</a>
 
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
         <div class="card-body" style="margin-top: -1em;">
             <div class="row">
                 <div class="col-12">
@@ -131,7 +136,6 @@
                 </div>
             </div>
         </div>
-    </div>
 
 <script>
     /*
