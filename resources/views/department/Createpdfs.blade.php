@@ -1,43 +1,248 @@
 <html>
    <style>
    .table_css {
-    display: table;
-    border-collapse: collapse;
-}
+         display: table;
+         border-collapse: collapse;
+      }
    </style>
-   <table border="1" class="table_css" style="width:100%">
-    <thead>
-       <tr>
-          <th style="text-align: center;" colspan="5">
-             Department
-          </th>
-       </tr>
-       <tr>
-          <th style="text-align: center;width: 30px;">Sl.No.</th>
-          <th style="text-align: center;">Name</th>
-          <th style="text-align: center;">Org Name</th>
-          <th style="text-align: center;">Status</th>
-          <th style="text-align: center;">Date</th>
-           
-       </tr>
-    </thead>
-    <tbody>
-       @foreach($data as $index => $data)
-       <tr>
-          <td>{{ $index+1 }}</td>
-          <td>{{ $data->dept_name }}</td>
-          <td>{{ $data->org_name }}</td>
-          
-          @if($data->is_active == 1)
-            <td>Active</td>
-          @endif
-          @if($data->is_active == 0)
-            <td>InActive</td>
-          @endif
-          <td>{{ date('d/m/Y',strtotime($data->created_at))}}</td>
-       </tr>
-       @endforeach
-    </tbody>
-   </table>
+   @if($department)
+      <table border="1" class="table_css" style="width:100%">
+      <thead>
+         <tr>
+            <th style="text-align: center;" colspan="5">
+               Department
+            </th>
+         </tr>
+         <tr>
+            <th style="text-align: center;width: 30px;">Sl.No.</th>
+            <th style="text-align: center;">Name</th>
+            <th style="text-align: center;">Org Name</th>
+            <th style="text-align: center;">Status</th>
+            <th style="text-align: center;">Date</th>
+            
+         </tr>
+      </thead>
+      <tbody>
+         @foreach($department as $index => $department)
+         <tr>
+            <td>{{ $index+1 }}</td>
+            <td>{{ $department->dept_name }}</td>
+            <td>{{ $department->org_name }}</td>
+            
+            @if($department->is_active == 1)
+               <td>Active</td>
+            @endif
+            @if($department->is_active == 0)
+               <td>InActive</td>
+            @endif
+            <td>{{ date('d/m/Y',strtotime($department->created_at))}}</td>
+         </tr>
+         @endforeach
+      </tbody>
+      </table>
+   @elseif($year)
+   <div style="position: relative;"> <!-- position:realtive css is used for full page printing of pdf -->
+      <table border="1" class="table_css" style="width:100%">
+         <thead>
+            <tr>
+               <th style="text-align: center;" colspan="4">
+                  Year
+               </th>
+            </tr>
+            <tr>
+               <th style="text-align: center;width: 30px;">Sl.No.</th>
+               <th style="text-align: center;">Year</th>
+               <th style="text-align: center;">Status</th>
+               <th style="text-align: center;">Date</th>
+      
+            </tr>
+         </thead>
+         <tbody>
+            @foreach($year as $index => $year)
+            <tr>
+               <td>{{ $index+1 }}</td>
+               <td>{{ $year->year_value }}</td>
+      
+               @if($year->status == 1)
+               <td>Active</td>
+               @endif
+               @if($year->status == 0)
+               <td>InActive</td>
+               @endif
+               <td>{{ date('d/m/Y',strtotime($year->created_at))}}</td>
+            </tr>
+            @endforeach
+         </tbody>
+      </table>
+      <p style="position: absolute; bottom: 0;"> {{ $yeardateTime }}</p><!-- position:absolute and bottom:0 css is used to pull this pragraph at the end of the page -->
+   </div>
+   @elseif($uomdata)
+   <div style="position: relative;"> <!-- position:realtive css is used for full page printing of pdf -->
+      <table border="1" class="table_css" style="width:100%">
+         <thead>
+            <tr>
+               <th style="text-align: center;" colspan="3">
+                  UoM
+               </th>
+            </tr>
+            <tr>
+               <th style="text-align: center;width: 30px;">Sl.No.</th>
+               <th style="text-align: center;">Name</th>
+               <th style="text-align: center;">Date</th>
+      
+            </tr>
+         </thead>
+         <tbody>
+            @foreach($uomdata as $index => $uomdata)
+            <tr>
+               <td>{{ $index+1 }}</td>
+               <td>{{ $uomdata->uom_name }}</td>
+               <td>{{ date('d/m/Y',strtotime($uomdata->created_at))}}</td>
+            </tr>
+            @endforeach
+         </tbody>
+      </table>
+      <p style="position: absolute; bottom: 0;"> {{ $UoMdateTime }}</p><!-- position:absolute and bottom:0 css is used to pull this pragraph at the end of the page -->
+   </div>
+   @elseif($Moduledata)
+   <div style="position: relative;"> <!-- position:realtive css is used for full page printing of pdf -->
+      <table border="1" class="table_css" style="width:100%">
+         <thead>
+            <tr>
+               <th style="text-align: center;" colspan="3">
+                  Module
+               </th>
+            </tr>
+            <tr>
+               <th style="text-align: center;width: 30px;">Sl.No.</th>
+               <th style="text-align: center;">Module Name</th>
+               <th style="text-align: center;">Date</th>
+      
+            </tr>
+         </thead>
+         <tbody>
+            @foreach($Moduledata as $index => $Moduledata)
+            <tr>
+               <td>{{ $index+1 }}</td>
+               <td>{{ $Moduledata->mod_name }}</td>
+               <td>{{ date('d/m/Y',strtotime($Moduledata->created_at))}}</td>
+            </tr>
+            @endforeach
+         </tbody>
+      </table>
+      <p style="position: absolute; bottom: 0;"> {{ $ModuledateTime }}</p><!-- position:absolute and bottom:0 css is used to pull this pragraph at the end of the page -->
+   </div>
+   @elseif($Designationdata)
+   <div style="position: relative;"> <!-- position:realtive css is used for full page printing of pdf -->
+      <table border="1" class="table_css" style="width:100%">
+         <thead>
+            <tr>
+               <th style="text-align: center;" colspan="4">
+                  Designation
+               </th>
+            </tr>
+            <tr>
+               <th style="text-align: center;width: 30px;">Sl.No.</th>
+               <th style="text-align: center;">Name</th>
+               <th style="text-align: center;">Organisation Name</th>
+               <th style="text-align: center;">Date</th>
+      
+            </tr>
+         </thead>
+         <tbody>
+            @foreach($Designationdata as $index => $Designationdata)
+            <tr>
+               <td>{{ $index+1 }}</td>
+               <td>{{ $Designationdata->name }}</td>
+               <td>{{ $Designationdata->org_name }}</td>
+               <td>{{ date('d/m/Y',strtotime($Designationdata->created_at))}}</td>
+            </tr>
+            @endforeach
+         </tbody>
+      </table>
+      <p style="position: absolute; bottom: 0;"> {{ $DesignationdateTime }}</p><!-- position:absolute and bottom:0 css is used to pull this pragraph at the end of the page -->
+   </div>
+   @elseif($Usersdata)
+   <div style="position: relative;"> <!-- position:realtive css is used for full page printing of pdf -->
+      <table border="1" class="table_css" style="width:100%">
+         <thead>
+            <tr>
+               <th style="text-align: center;" colspan="8">
+                  User Detail
+               </th>
+            </tr>
+            <tr>
+               <th style="text-align: center;width: 30px;">Sl.No.</th>
+               <th style="text-align: center;">Name</th>
+               <th style="text-align: center;">Email Id</th>
+               <th style="text-align: center;">User Name</th>
+               <th style="text-align: center;">Designation</th>
+               <th style="text-align: center;">Address</th>
+               <th style="text-align: center;">Mobile Number</th>
+               <th style="text-align: center;">Status</th>
+      
+            </tr>
+         </thead>
+         <tbody>
+            @foreach($Usersdata as $index => $Usersdata)
+            <tr>
+               <td>{{ $index+1 }}</td>
+               <td>{{ $Usersdata->title }} {{ $Usersdata->first_name }} {{ $Usersdata->middle_name }} {{ $Usersdata->last_name }}</td>
+               <td>{{ $Usersdata->email }}</td>
+               <td>{{ $Usersdata->username }}</td>
+               <td>{{ $Usersdata->desig_name }}</td>
+               <td>{{ $Usersdata->address }}</td>
+               <td>{{ $Usersdata->mobile }}</td>
+               @if($Usersdata->status == 1)
+               <td>Active</td>
+               @endif
+               @if($Usersdata->status == 0)
+                  <td>InActive</td>
+               @endif
+               </tr>
+            @endforeach
+         </tbody>
+      </table>
+      <p style="position: absolute; bottom: 0;"> {{ $UsersdateTime }}</p><!-- position:absolute and bottom:0 css is used to pull this pragraph at the end of the page -->
+   </div>
+   @elseif($Assetdata)
+   <div style="position: relative;"> <!-- position:realtive css is used for full page printing of pdf -->
+      <table border="1" class="table_css" style="width:100%">
+         <thead>
+            <tr>
+               <th style="text-align: center;" colspan="5">
+                  Asset
+               </th>
+            </tr>
+            <tr>
+               <th style="text-align: center;width: 30px;">Sl.No.</th>
+               <th style="text-align: center;">Name</th>
+               <th style="text-align: center;">Type</th>
+               <th style="text-align: center;">Department Name</th>
+               <th style="text-align: center;">Date</th>
+      
+            </tr>
+         </thead>
+         <tbody>
+            @foreach($Assetdata as $index => $Assetdata)
+            <tr>
+               <td>{{ $index+1 }}</td>
+               <td>{{ $Assetdata->asset_name }}</td>
+               @if($Assetdata->movable == 1)
+                  <td>Movable</td>
+               @endif
+               @if($Assetdata->movable == 0)
+                  <td>Immovable</td>
+               @endif
+               <td>{{ $Assetdata->dept_name }}</td>
+               <td>{{ date('d/m/Y',strtotime($Assetdata->created_at))}}</td>
+            </tr>
+            @endforeach
+         </tbody>
+      </table>
+      <p style="position: absolute; bottom: 0;"> {{ $AssetdateTime }}</p><!-- position:absolute and bottom:0 css is used to pull this pragraph at the end of the page -->
+   </div>
+   @endif
 
+   
 </html>

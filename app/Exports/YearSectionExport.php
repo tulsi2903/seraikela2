@@ -2,50 +2,42 @@
 
 namespace App\Exports;
 
-use App\Disneypluslist;
+// use App\User;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\AfterSheet;
 use Maatwebsite\Excel\Events\BeforeExport;
-use App\Department;
-use App\Organisation;
 use PDF;
-use DB;
+use App\Year;
 
-
-
-
-class DisneyplusExport implements FromCollection, WithHeadings, ShouldAutoSize, WithEvents
+class YearSectionExport implements FromCollection, WithHeadings, ShouldAutoSize, WithEvents
 {
     /**
     * @return \Illuminate\Support\Collection
     */
     public function collection()
     {
-        $items =  DB::table('department')
-                ->join('organisation','department.org_id','=','organisation.org_id')
-                ->select('department.dept_id as slId', 'department.dept_name', 'organisation.org_name', 'department.is_active', 'department.created_at')->get();
+        $yearValue = Year::orderBy('year_id','desc')->select('year_id as slId', 'year_value', 'status', 'created_at as createdDate')->get();
 
-        foreach ($items as $key => $value) {
+        foreach ($yearValue as $key => $value) {
             $value->slId = $key+1;
-            if($value->is_active == 1) {
-                $value->is_active = "Active";
+            if($value->status == 1) {
+                $value->status = "Active";
             }
             else {
-                $value->is_active = "Inactive";
+                $value->status = "Inactive";
             }
-            $value->created_at = date('d/m/Y',strtotime($value->created_at));
+            $value->createdDate = date('d/m/Y',strtotime($value->createdDate));
         }
-        return $items;
+        return $yearValue;
     }
     public function headings(): array
     {
         return [
             'Sl. No.',
-            'Department Name',
-            'Organization Name',
+            'Year',
             'Status',
             'Date'
         ];
@@ -78,11 +70,10 @@ class DisneyplusExport implements FromCollection, WithHeadings, ShouldAutoSize, 
             },
             // Handle by a closure.
             BeforeExport::class => function(BeforeExport $event) {
-                $event->writer->getProperties()->setTitle('Departments Sheet');
+                $event->writer->getProperties()->setTitle('Year Sheet');
                 $event->writer->getProperties()->setCreator('IT-Scient');
 
             },
         ];
     }
-    
 }

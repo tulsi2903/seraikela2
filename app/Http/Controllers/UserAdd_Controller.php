@@ -12,6 +12,9 @@ use App\Organisation;
 use DB;
 use Session;
 use App\CheakLogout;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\UsersSectionExport;
+use PDF;
 
 
 class UserAdd_Controller extends Controller
@@ -69,5 +72,20 @@ class UserAdd_Controller extends Controller
             session()->put('alert-content','New user data has been saved');
         }
         return redirect('user');
+    }
+
+    public function exportExcelFunctiuonforusers()
+    {
+        return Excel::download(new UsersSectionExport, 'Usersdata-Sheet.xls');
+    }
+
+    public function exportpdfFunctiuonforusers()
+    {
+        $Usersdata = DB::table('users')->leftjoin('designation','users.desig_id','designation.desig_id')
+                            ->select('designation.name as desig_name','users.*')->get();
+        date_default_timezone_set('Asia/Kolkata');
+        $UsersdateTime = date('d-m-Y H:i A');
+        $pdf = PDF::loadView('department/Createpdfs',compact('Usersdata','UsersdateTime'));
+        return $pdf->download('Users.pdf');
     }
 }

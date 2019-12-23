@@ -8,7 +8,6 @@ use App\Organisation;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\DisneyplusExport;
 use DB;
-// use Maatwebsite\Excel\Concerns\FromCollection;
 use PDF;
 
 class DepartmentController extends Controller
@@ -90,12 +89,13 @@ class DepartmentController extends Controller
     {
         return Excel::download(new DisneyplusExport, 'Departments-Sheet.xls');
     }
+    
     public function exportpdfFunctiuon()
     {
-        $data =  DB::table('department')
+        $department =  DB::table('department')
             ->join('organisation','department.org_id','=','organisation.org_id')
             ->select('department.dept_id','department.dept_name','organisation.org_name','department.is_active','department.created_at')->get();
-        $pdf = PDF::loadView('department/Createpdfs',compact('data'));
+        $pdf = PDF::loadView('department/Createpdfs',compact('department'));
         return $pdf->download('Department.pdf');
     }
 }

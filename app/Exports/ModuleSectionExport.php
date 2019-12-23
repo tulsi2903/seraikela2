@@ -2,51 +2,35 @@
 
 namespace App\Exports;
 
-use App\Disneypluslist;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\AfterSheet;
 use Maatwebsite\Excel\Events\BeforeExport;
-use App\Department;
-use App\Organisation;
 use PDF;
-use DB;
+use App\Module;
 
-
-
-
-class DisneyplusExport implements FromCollection, WithHeadings, ShouldAutoSize, WithEvents
+class ModuleSectionExport implements FromCollection, WithHeadings, ShouldAutoSize, WithEvents
 {
     /**
     * @return \Illuminate\Support\Collection
     */
     public function collection()
     {
-        $items =  DB::table('department')
-                ->join('organisation','department.org_id','=','organisation.org_id')
-                ->select('department.dept_id as slId', 'department.dept_name', 'organisation.org_name', 'department.is_active', 'department.created_at')->get();
+        $moduleValue = Module::orderBy('mod_id','desc')->select('mod_id as slId', 'mod_name', 'created_at as createdDate')->get();
 
-        foreach ($items as $key => $value) {
+        foreach ($moduleValue as $key => $value) {
             $value->slId = $key+1;
-            if($value->is_active == 1) {
-                $value->is_active = "Active";
-            }
-            else {
-                $value->is_active = "Inactive";
-            }
-            $value->created_at = date('d/m/Y',strtotime($value->created_at));
+            $value->createdDate = date('d/m/Y',strtotime($value->createdDate));
         }
-        return $items;
+        return $moduleValue;
     }
     public function headings(): array
     {
         return [
             'Sl. No.',
-            'Department Name',
-            'Organization Name',
-            'Status',
+            'Module Name',
             'Date'
         ];
     }
@@ -78,11 +62,10 @@ class DisneyplusExport implements FromCollection, WithHeadings, ShouldAutoSize, 
             },
             // Handle by a closure.
             BeforeExport::class => function(BeforeExport $event) {
-                $event->writer->getProperties()->setTitle('Departments Sheet');
+                $event->writer->getProperties()->setTitle('Module Sheet');
                 $event->writer->getProperties()->setCreator('IT-Scient');
 
             },
         ];
     }
-    
 }

@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Uom;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\UoMSectionExport;
+use PDF;
 
 class UomController extends Controller
 {
@@ -67,5 +70,18 @@ class UomController extends Controller
             session()->put('alert-content','Deleted successfully !');
         }
         return redirect('uom');
+    }
+    public function exportExcelFunctiuonforuom()
+    {
+        return Excel::download(new UoMSectionExport, 'UoM-Sheet.xls');
+    }
+
+    public function exportpdfFunctiuonforuom()
+    {
+        $uomdata =  Uom::orderBy('uom_id','desc')->get();
+        date_default_timezone_set('Asia/Kolkata');
+        $UoMdateTime = date('d-m-Y H:i A');
+        $pdf = PDF::loadView('department/Createpdfs',compact('uomdata','UoMdateTime'));
+        return $pdf->download('UoM.pdf');
     }
 }

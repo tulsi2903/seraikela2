@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Year;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\YearSectionExport;
+use PDF;
 
 class YearController extends Controller
 {
@@ -69,5 +72,19 @@ class YearController extends Controller
         }
 
         return redirect('year');
+    }
+
+    public function exportExcelFunctiuonforyear()
+    {
+        return Excel::download(new YearSectionExport, 'Year-Sheet.xls');
+    }
+
+    public function exportpdfFunctiuonforyear()
+    {
+        $year =  Year::orderBy('year_id','desc')->get();
+        date_default_timezone_set('Asia/Kolkata');
+        $yeardateTime = date('d-m-Y H:i A');
+        $pdf = PDF::loadView('department/Createpdfs',compact('year','yeardateTime'));
+        return $pdf->download('Year.pdf');
     }
 }

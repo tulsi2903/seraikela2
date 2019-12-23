@@ -44,7 +44,8 @@ Route::get('dashboard/asset_department_wise','DashboardController@get_department
 //user
 Route::get('user','UserAdd_Controller@adduser');
 Route::post('user/store','UserAdd_Controller@store');
-
+Route::get('user/export/excelURL','UserAdd_Controller@exportExcelFunctiuonforusers');
+Route::get('user/pdf/pdfURL','UserAdd_Controller@exportpdfFunctiuonforusers');
 
 
 /* department */
@@ -64,6 +65,8 @@ Route::get('designation','DesignationController@index');
 Route::get('designation/add','DesignationController@add');
 Route::post('designation/store','DesignationController@store');
 Route::get('designation/delete/{desig_id}','DesignationController@delete');
+Route::get('designation/export/excelURL','DesignationController@exportExcelFunctiuonforDesignation');
+Route::get('designation/pdf/pdfURL','DesignationController@exportpdfFunctiuonforDesignation');
 
 /* Geo Structure */
 Route::get('geo-structure','GeoStructureController@index');
@@ -102,13 +105,16 @@ Route::get('year','YearController@index');
 Route::get('year/add','YearController@add');
 Route::post('year/store','YearController@store');
 Route::get('year/delete/{year_id}','YearController@delete');
-
+Route::get('year/export/excelURL','YearController@exportExcelFunctiuonforyear');
+Route::get('year/pdf/pdfURL','YearController@exportpdfFunctiuonforyear');
 
 /*uom*/
 Route::get('uom','UomController@index');
 Route::get('uom/add','UomController@add');
 Route::post('uom/store','UomController@store');
 Route::get('uom/delete/{uom_id}','UomController@delete');
+Route::get('uom/export/excelURL','UomController@exportExcelFunctiuonforuom');
+Route::get('uom/pdf/pdfURL','UomController@exportpdfFunctiuonforuom');
 	
 /*asset*/
 Route::get('asset','AssetController@index');
@@ -118,6 +124,8 @@ Route::get('asset/get-subcategory','AssetController@get_subcategory');
 Route::get('asset/get-asset-details','AssetController@get_asset_details');
 Route::post('asset/store','AssetController@store');
 Route::get('asset/delete/{asset_id}','AssetController@delete');
+Route::get('asset/export/excelURL','AssetController@exportExcelFunctiuonforasset');
+Route::get('asset/pdf/pdfURL','AssetController@exportpdfFunctiuonforasset');
 
 /*Asset Category*/
 Route::get('assetcat','AssetController@index_cat');
@@ -199,6 +207,8 @@ Route::get('module','ModuleController@index');
 Route::get('module/add','ModuleController@add');
 Route::post('module/store','ModuleController@store');
 Route::get('module/delete/{mod_id}','ModuleController@delete');
+Route::get('module/export/excelURL','ModuleController@exportExcelFunctiuonformodule');
+Route::get('module/pdf/pdfURL','ModuleController@exportpdfFunctiuonformodule');
 	
 //send mail by rohit
 Route::post('send_mail','EmailController@sendEmail');	

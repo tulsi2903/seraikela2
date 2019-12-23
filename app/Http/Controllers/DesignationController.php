@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Designation;
 use App\Organisation;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\DesignationSectionExport;
+use PDF;
 
 class DesignationController extends Controller
 {
@@ -76,5 +79,22 @@ class DesignationController extends Controller
         }
 
         return redirect('designation');
+    }
+
+    public function exportExcelFunctiuonforDesignation()
+    {
+        return Excel::download(new DesignationSectionExport, 'Designation-Sheet.xls');
+    }
+
+    public function exportpdfFunctiuonforDesignation()
+    {
+        $Designationdata = Designation::leftJoin('organisation', 'designation.org_id', '=', 'organisation.org_id')
+                                ->select('designation.*','organisation.org_name')
+                                ->orderBy('designation.desig_id','desc')
+                                ->get();
+        date_default_timezone_set('Asia/Kolkata');
+        $DesignationdateTime = date('d-m-Y H:i A');
+        $pdf = PDF::loadView('department/Createpdfs',compact('Designationdata','DesignationdateTime'));
+        return $pdf->download('Designation.pdf');
     }
 }

@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Module;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\ModuleSectionExport;
+use PDF;
 
 class ModuleController extends Controller
 {
@@ -69,6 +72,20 @@ class ModuleController extends Controller
         }
 
         return redirect('module');
+    }
+
+    public function exportExcelFunctiuonformodule()
+    {
+        return Excel::download(new ModuleSectionExport, 'Module-Sheet.xls');
+    }
+
+    public function exportpdfFunctiuonformodule()
+    {
+        $Moduledata =  Module::orderBy('mod_id','desc')->get();
+        date_default_timezone_set('Asia/Kolkata');
+        $ModuledateTime = date('d-m-Y H:i A');
+        $pdf = PDF::loadView('department/Createpdfs',compact('Moduledata','ModuledateTime'));
+        return $pdf->download('Module.pdf');
     }
 
 }

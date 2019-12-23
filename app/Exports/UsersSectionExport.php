@@ -2,52 +2,63 @@
 
 namespace App\Exports;
 
-use App\Disneypluslist;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\AfterSheet;
 use Maatwebsite\Excel\Events\BeforeExport;
-use App\Department;
-use App\Organisation;
 use PDF;
+use App\Designation;
+use App\Organisation;
 use DB;
+use App\User;
 
-
-
-
-class DisneyplusExport implements FromCollection, WithHeadings, ShouldAutoSize, WithEvents
+class UsersSectionExport implements FromCollection, WithHeadings, ShouldAutoSize, WithEvents
 {
     /**
     * @return \Illuminate\Support\Collection
     */
     public function collection()
     {
-        $items =  DB::table('department')
-                ->join('organisation','department.org_id','=','organisation.org_id')
-                ->select('department.dept_id as slId', 'department.dept_name', 'organisation.org_name', 'department.is_active', 'department.created_at')->get();
+        $UsersValue = DB::table('users')->leftjoin('designation','users.desig_id','designation.desig_id')
+                                ->select('users.id as slId',
+                                'users.title as titlename',
+                                // 'users.first_name as first_name',
+                                // 'users.middle_name as middle_name',
+                                // 'users.last_name as last_name',
+                                'users.email as email',
+                                'users.username as username',
+                                'designation.name as desig_name',
+                                'users.address as address',
+                                'users.mobile as mobile',
+                                'users.status as status')
+                                ->get();
 
-        foreach ($items as $key => $value) {
+        foreach ($UsersValue as $key => $value) {
+            $value->titlename = $value->titlename.' '.DB::table('users')->where('id',$value->slId)->value('first_name').' '.DB::table('users')->where('id',$value->slId)->value('middle_name').' '.DB::table('users')->where('id',$value->slId)->value('last_name');
             $value->slId = $key+1;
-            if($value->is_active == 1) {
-                $value->is_active = "Active";
+           
+            if($value->status == 1) {
+                $value->status = "Active";
             }
             else {
-                $value->is_active = "Inactive";
+                $value->status = "Inactive";
             }
-            $value->created_at = date('d/m/Y',strtotime($value->created_at));
         }
-        return $items;
+        return $UsersValue;
     }
     public function headings(): array
     {
         return [
             'Sl. No.',
-            'Department Name',
-            'Organization Name',
-            'Status',
-            'Date'
+            'Name',
+            'Email',
+            'User Name',
+            'Designation',
+            'Address',
+            'Mobile Number',
+            'Status'
         ];
     }
     public function registerEvents(): array
@@ -78,11 +89,10 @@ class DisneyplusExport implements FromCollection, WithHeadings, ShouldAutoSize, 
             },
             // Handle by a closure.
             BeforeExport::class => function(BeforeExport $event) {
-                $event->writer->getProperties()->setTitle('Departments Sheet');
+                $event->writer->getProperties()->setTitle('Users Sheet');
                 $event->writer->getProperties()->setCreator('IT-Scient');
 
             },
         ];
     }
-    
 }

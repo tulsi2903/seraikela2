@@ -2,51 +2,53 @@
 
 namespace App\Exports;
 
-use App\Disneypluslist;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\AfterSheet;
 use Maatwebsite\Excel\Events\BeforeExport;
-use App\Department;
-use App\Organisation;
 use PDF;
 use DB;
+use App\Asset;
+use App\Department;
+use App\asset_cat;
+use App\asset_subcat;
 
-
-
-
-class DisneyplusExport implements FromCollection, WithHeadings, ShouldAutoSize, WithEvents
+class AssetSectionExport implements FromCollection, WithHeadings, ShouldAutoSize, WithEvents
 {
     /**
     * @return \Illuminate\Support\Collection
     */
     public function collection()
     {
-        $items =  DB::table('department')
-                ->join('organisation','department.org_id','=','organisation.org_id')
-                ->select('department.dept_id as slId', 'department.dept_name', 'organisation.org_name', 'department.is_active', 'department.created_at')->get();
+        $AssetValue = Asset::leftJoin('department', 'asset.dept_id', '=', 'department.dept_id')
+                        ->leftJoin('asset_cat', 'asset.category_id', '=', 'asset_cat.asset_cat_id')
+                        ->leftJoin('asset_subcat', 'asset.subcategory_id', '=', 'asset_subcat.asset_sub_id')
+                        ->select('asset.asset_id as slId','asset.asset_name','asset.movable','department.dept_name','asset.created_at as createdDate')
+                        ->orderBy('asset.asset_id', 'desc')
+                        ->get();
 
-        foreach ($items as $key => $value) {
+        foreach ($AssetValue as $key => $value) {
             $value->slId = $key+1;
-            if($value->is_active == 1) {
-                $value->is_active = "Active";
+           
+            if($value->movable == 1) {
+                $value->movable = "Movable";
             }
             else {
-                $value->is_active = "Inactive";
+                $value->movable = "Immovable";
             }
-            $value->created_at = date('d/m/Y',strtotime($value->created_at));
+            $value->createdDate = date('d/m/Y',strtotime($value->createdDate));
         }
-        return $items;
+        return $AssetValue;
     }
     public function headings(): array
     {
         return [
             'Sl. No.',
+            'Name',
+            'Type',
             'Department Name',
-            'Organization Name',
-            'Status',
             'Date'
         ];
     }
@@ -78,11 +80,10 @@ class DisneyplusExport implements FromCollection, WithHeadings, ShouldAutoSize, 
             },
             // Handle by a closure.
             BeforeExport::class => function(BeforeExport $event) {
-                $event->writer->getProperties()->setTitle('Departments Sheet');
+                $event->writer->getProperties()->setTitle('Asset Sheet');
                 $event->writer->getProperties()->setCreator('IT-Scient');
 
             },
         ];
     }
-    
 }

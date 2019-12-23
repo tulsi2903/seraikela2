@@ -9,6 +9,9 @@ use App\Department;
 use App\asset_cat;
 use App\asset_subcat;
 use Illuminate\Support\Facades\Storage;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\AssetSectionExport;
+use PDF;
 
 class AssetController extends Controller
 {
@@ -308,5 +311,24 @@ public function delete_subcat(Request $request){
         session()->put('alert-content','Deleted successfully !');
     }
     return redirect('asset_subcat');
+}
+
+public function exportExcelFunctiuonforasset()
+{
+    return Excel::download(new AssetSectionExport, 'Assetdata-Sheet.xls');
+}
+
+public function exportpdfFunctiuonforasset()
+{
+    $Assetdata = Asset::leftJoin('department', 'asset.dept_id', '=', 'department.dept_id')
+                    ->leftJoin('asset_cat', 'asset.category_id', '=', 'asset_cat.asset_cat_id')
+                    ->leftJoin('asset_subcat', 'asset.subcategory_id', '=', 'asset_subcat.asset_sub_id')
+                    ->select('asset.*', 'department.dept_name', 'asset_cat.asset_cat_name', 'asset_subcat.asset_sub_cat_name')
+                    ->orderBy('asset.asset_id', 'desc')
+                    ->get();
+    date_default_timezone_set('Asia/Kolkata');
+    $AssetdateTime = date('d-m-Y H:i A');
+    $pdf = PDF::loadView('department/Createpdfs',compact('Assetdata','AssetdateTime'));
+    return $pdf->download('Assetdata.pdf');
 }
 }
