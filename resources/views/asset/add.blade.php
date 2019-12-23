@@ -16,8 +16,8 @@
             </div>
         </div>
     <div class="card-body">
-                <form action="{{url('asset/store')}}" method="POST" enctype="multipart/form-data">
-                    @csrf
+            <form action="{{url('asset/store')}}" method="POST" enctype="multipart/form-data">
+            @csrf
             <div class="row">
                 <div class="col-md-4">
                     <div class="form-group">
@@ -35,7 +35,7 @@
                         @if($hidden_input_purpose=="edit"&&$data->asset_icon)
                             <div id="asset_icon_delete_div" style="padding:5px 0;">
                                 <div>Previous Icon</div>
-                                <div style="display: inline-block;position:relative;padding:3px;border:1px solid #c4c4c4;border-radious:3px;">
+                                <div style="display: inline-block;position:relative;padding:3px;border:1px solid #c4c4c4; border-radius:3px;">
                                     <img src="{{url($data->asset_icon)}}" style="height:80px;">
                                     <span style="position:absolute;top:0;right:0; background: rgba(0,0,0,0.5); font-size: 18px; cursor: pointer; padding: 5px 10px;" class="text-white" onclick="to_delete('{{$data->asset_icon}}',this)"><i class="fas fa-trash"></i></span>
                                 </div>
@@ -106,8 +106,7 @@
                     <div class="form-group">
                         <input type="text" name="hidden_input_purpose" value="{{$hidden_input_purpose}}" hidden>
                         <input type="text" name="hidden_input_id" value="{{$hidden_input_id}}" hidden>
-                        <button type="submit" class="btn btn-primary" onclick="return submitForm()">Save&nbsp;&nbsp;<i
-                                class="fas fa-check"></i></button>
+                        <button type="submit" class="btn btn-primary" onclick="return submitForm()">Save&nbsp;&nbsp;<i class="fas fa-check"></i></button>
                     </div>
                 </div>
                 </form>

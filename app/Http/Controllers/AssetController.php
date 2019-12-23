@@ -21,8 +21,14 @@ class AssetController extends Controller
                         ->select('asset.*','department.dept_name','asset_cat.asset_cat_name','asset_subcat.asset_sub_cat_name')
                         ->orderBy('asset.asset_id','desc')
                         ->get();
+
+        $departments = Department::orderBy('dept_name')->get();
+
+        $categories = asset_cat::orderBy('asset_cat_name')->get();
+
+        $sub_categories = asset_subcat::orderBy('asset_sub_cat_name')->get();
         
-        return view('asset.index')->with('datas', $datas);
+        return view('asset.index')->with(compact('datas','departments','categories','sub_categories'));
     }
     public function add(Request $request){
         $hidden_input_purpose = "add";
@@ -46,7 +52,7 @@ class AssetController extends Controller
     }
 
     public function store(Request $request){
-        //$response = "failed";
+        $toReturn["response"] = "Something went wrong! Please try again"; // response pre defined as error
         $asset = new Asset;
 
         if($request->hidden_input_purpose=="edit"){
@@ -98,32 +104,81 @@ class AssetController extends Controller
    
 
         if(Asset::where('asset_name',$request->asset_name)->where('dept_id',$request->dept_id)->first()&&$request->hidden_input_purpose!="edit"){
-         session()->put('alert-class','alert-danger');
-         session()->put('alert-content','This asset '.$request->asset_name.' already exist !');
+            // session()->put('alert-class','alert-danger');
+            // session()->put('alert-content','This asset '.$request->asset_name.' already exist !');
+            $toReturn["response"] = "This asset ".$request->asset_name." already exists!";
+            $toReturn["asset_name_error"] = "This asset name is already exist in selected department"; 
         }
- 
         else if($asset->save()){
-            session()->put('alert-class','alert-success');
-            session()->put('alert-content','Asset details have been successfully submitted !');
+            // session()->put('alert-class','alert-success');
+            // session()->put('alert-content','Asset details have been successfully submitted !');
+            $toReturn["response"] = "success";
         }
         else{
-            session()->put('alert-class','alert-danger');
-            session()->put('alert-content','Something went wrong while adding new details !');
+            // session()->put('alert-class','alert-danger');
+            // session()->put('alert-content','Something went wrong while adding new details !');
+            $toReturn["response"] = "Something went wrong while adding new asset!";
         }
         
 
-        return redirect('asset');
+        // return redirect('asset');
+        return $toReturn;
     }
+
+    public function get_asset_details(Request $request){
+        $response = "no_data";
+
+        if(isset($request->asset_id)){
+            if(Asset::find($request->asset_id)){
+                $data = Asset::find($request->asset_id);
+
+                // to get category all rows (datas) by movable/inmovable stored in DB
+                if(isset($data->movable)){
+                    $category_datas = asset_cat::select("asset_cat_id","asset_cat_name")->where('movable', $data->movable)->get();
+                }
+                
+                // to get sub category all rows (datas) by category selected/stored in DB
+                if(isset($data->category_id)){
+                    $subcategory_datas = asset_subcat::select("asset_sub_id","asset_sub_cat_name")->where('asset_cat_id', $data->category_id)->get();
+                }
+
+                $response = "success";
+            }
+        }
+
+        return ["response"=>$response, "asset_data"=>$data, "category_datas"=>$category_datas, "subcategory_datas"=>$subcategory_datas];
+    }
+
+    public function get_category(Request $request)
+    {
+        $data = asset_cat::where('movable',$request->movable)->get();
+        return["category_data"=>$data];
+
+    }
+    
+    public function get_subcategory(Request $request)
+    {
+        $data = asset_subcat::where('asset_cat_id',$request->asset_cat_id)->get();
+        return["subcategory_data"=>$data];
+
+    }
+
 
     public function delete(Request $request){
         if(Asset::find($request->asset_id)){
             Asset::where('asset_id',$request->asset_id)->delete();
+            // Todo*: also delete its original icon/ already existed icon
             session()->put('alert-class','alert-success');
             session()->put('alert-content','Deleted successfully !');
         }
 
         return redirect('asset');
     }
+
+
+
+
+
 
     public function index_cat(){
         $datas = asset_cat::orderBy('asset_cat.asset_cat_id','desc')
@@ -245,12 +300,6 @@ public function store_subcat(Request $request){
     return redirect('asset_subcat');
 }
 
-public function get_subcategory_name(Request $request)
-    {
-    	$data = asset_subcat::where('asset_cat_id',$request->asset_cat_id)->get();
-    	return["subcategory_data"=>$data];
-
-    }
 public function delete_subcat(Request $request){
     // return $request->asset_sub_id;
     if(asset_subcat::find($request->asset_sub_id)){

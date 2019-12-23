@@ -112,9 +112,11 @@ Route::get('uom/delete/{uom_id}','UomController@delete');
 /*asset*/
 Route::get('asset','AssetController@index');
 Route::get('asset/add','AssetController@add');
+Route::get('asset/get-category','AssetController@get_category');
+Route::get('asset/get-subcategory','AssetController@get_subcategory');
+Route::get('asset/get-asset-details','AssetController@get_asset_details');
 Route::post('asset/store','AssetController@store');
 Route::get('asset/delete/{asset_id}','AssetController@delete');
-Route::get('asset/get-subcategory','AssetController@get_subcategory_name');
 
 /*Asset Category*/
 Route::get('assetcat','AssetController@index_cat');
