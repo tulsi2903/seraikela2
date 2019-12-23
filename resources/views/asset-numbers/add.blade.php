@@ -274,9 +274,10 @@
             contentType: 'application/json',
             dataType: "json",
             beforeSend: function(data){
-                
+                $(".custom-loader").fadeIn(300);
             },
             error: function(xhr){
+                $(".custom-loader").fadeOut(300);
                 alert("error"+xhr.status+", "+xhr.statusText);
             },
             success: function (data) {
@@ -317,6 +318,8 @@
                 $("#previous_value_hide").show(300);
                 $("#current_value_hide").show(300);
                 $("#images-block").show(300);
+
+                $(".custom-loader").fadeOut(300);
             }
         });    
     }

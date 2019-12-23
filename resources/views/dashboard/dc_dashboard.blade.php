@@ -4,58 +4,71 @@
 
 @section('page-style')
 <style>
-	.text-muted {
-    color: #ffffff!important;
-    font-weight: 700;
+    .text-muted {
+        color: #ffffff !important;
+        font-weight: 700;
     }
+
     #card-detail1 {
-    
-    background: #2196F3;
-    
-}
-    #card-detail2{
-        background:#b93a31;
+
+        background: #2196F3;
+
     }
-    #card-detail3{
+
+    #card-detail2 {
+        background: #b93a31;
+    }
+
+    #card-detail3 {
         background: #8BC34A;
     }
-    #card-detail4{
-       background: #c37605;
+
+    #card-detail4 {
+        background: #c37605;
     }
-    #card-detail5{
-         background: #2196F3;
+
+    #card-detail5 {
+        background: #2196F3;
     }
-    #card-detail6{
-       background: #78038c;
+
+    #card-detail6 {
+        background: #78038c;
     }
-    #card-detail7{
+
+    #card-detail7 {
         background: #508c0a;
     }
-    #card-detail8{
-       background: #795548;
+
+    #card-detail8 {
+        background: #795548;
     }
-    #card-detail9{
+
+    #card-detail9 {
         background: #00BCD4;
     }
-    #card-detail10{
+
+    #card-detail10 {
         background: #c91854;
     }
+
     .progress {
-    -webkit-box-shadow: none !important;
-    background-color: #f5f5f5;
-    box-shadow: none !important;
-    height: 10px;
-    margin-bottom: 18px;
-    overflow: hidden;
+        -webkit-box-shadow: none !important;
+        background-color: #f5f5f5;
+        box-shadow: none !important;
+        height: 10px;
+        margin-bottom: 18px;
+        overflow: hidden;
     }
+
     .card-title {
-    margin: 0;
-    color: #FFEB3B;
-    font-size: 22px;
-    font-weight: 400;
-    line-height: 1.6;
-    text-align: center;
+        margin: 0;
+        color: #FFEB3B;
+        font-size: 22px;
+        font-weight: 400;
+        line-height: 1.6;
+        text-align: center;
     }
+
     .card-category {
         margin-top: 8px;
         font-size: 16px;
@@ -65,25 +78,28 @@
     }
 
     .btn-border.btn-white {
-    color: #fff!important;
-    border: 1px solid #fff!important;
-    font-weight: 600;
+        color: #fff !important;
+        border: 1px solid #fff !important;
+        font-weight: 600;
     }
 
     .card-stats .icon-big {
-    width: 140%;
-    height: 100%;
-    font-size: 2.2em;
-    min-height: 0px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0px 0px 0px 0px #909090;
-}
+        width: 140%;
+        height: 100%;
+        font-size: 2.2em;
+        min-height: 0px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0px 0px 0px 0px #909090;
+    }
+
     .card-round {
         background: #6480c7;
     }
-    .card, .card-light {
+
+    .card,
+    .card-light {
         border-radius: 0px;
         background-color: #3F51B5;
         margin-bottom: 0px;
@@ -91,30 +107,31 @@
         -moz-box-shadow: 2px 6px 15px 0 rgba(69, 65, 78, .1);
         box-shadow: 4px 4px 10px -6px #000000cf;
         width: 100%;
-        min-height:0px;
-        
-    }
-    .text-right {
-    text-align: center;
-    color: #000;
-    font-weight: 600;
-    background: #f0f0f0;
-    height: 30px;
-    width: 30px;
-    border-radius: 30px;
-    margin-top: 0px;
-    /* padding-top: 2px; */
-    padding: 5px;
-    padding-left: -7px;
-    padding-right: 10px;
-}
-.col-sm-2{
-    position: relative;
-    width: 100%;
-    padding-right: 5px;
-    padding-left: 5px;
-}
+        min-height: 0px;
 
+    }
+
+    .text-right {
+        text-align: center;
+        color: #000;
+        font-weight: 600;
+        background: #f0f0f0;
+        height: 30px;
+        width: 30px;
+        border-radius: 30px;
+        margin-top: 0px;
+        /* padding-top: 2px; */
+        padding: 5px;
+        padding-left: -7px;
+        padding-right: 10px;
+    }
+
+    .col-sm-2 {
+        position: relative;
+        width: 100%;
+        padding-right: 5px;
+        padding-left: 5px;
+    }
 </style>
 
 
@@ -132,10 +149,10 @@
                 <div class="row">
                     <div class="col-5">
                         <div class="icon-big text-center">
-                            <i class="fas fa-hotel"style="color: aliceblue;font-size: 25px;"></i>
+                            <i class="fas fa-hotel" style="color: aliceblue;font-size: 25px;"></i>
                         </div>
                     </div>
-                   
+
                     <div class="col-7 col-stats">
                         <div class="numbers">
                             <p class="card-category">Subdivision</p>
@@ -152,7 +169,7 @@
                 <div class="row">
                     <div class="col-5">
                         <div class="icon-big text-center">
-                        <i class="fas fa-th"style="color: aliceblue;font-size: 25px;"></i>
+                            <i class="fas fa-th" style="color: aliceblue;font-size: 25px;"></i>
                         </div>
                     </div>
                     <div class="col-7 col-stats">
@@ -171,7 +188,7 @@
                 <div class="row">
                     <div class="col-5">
                         <div class="icon-big text-center">
-                            <i class="fas fa-university"style="color: aliceblue;font-size: 25px;"></i>
+                            <i class="fas fa-university" style="color: aliceblue;font-size: 25px;"></i>
                         </div>
                     </div>
                     <div class="col-7 col-stats">
@@ -190,7 +207,7 @@
                 <div class="row">
                     <div class="col-5">
                         <div class="icon-big text-center">
-                            <i class="fas fa-store-alt"style="color: aliceblue;font-size: 25px;"></i>
+                            <i class="fas fa-store-alt" style="color: aliceblue;font-size: 25px;"></i>
                         </div>
                     </div>
                     <div class="col-7 col-stats">
@@ -209,7 +226,7 @@
                 <div class="row">
                     <div class="col-5">
                         <div class="icon-big text-center">
-                            <i class="fas fa-layer-group"style="color: aliceblue;font-size: 25px;"></i>
+                            <i class="fas fa-layer-group" style="color: aliceblue;font-size: 25px;"></i>
                         </div>
                     </div>
                     <div class="col-7 col-stats">
@@ -223,21 +240,22 @@
         </div>
     </div>
     <div class="col-sm-2">
-            <div class="card card-stats card card-round" style="width: 93%;height: 89px; min-height:0px; border-top: 0px solid;">
-                <div class="card-body ">
-                    <div class="row">
-                        <ul class="pricing-content" style="color: #fff;margin-top: -2px;list-style-type: none;margin-left: -25px;font-size: 14px;">
-                            <li><button class="btn btn-icon btn-success btn-round btn-xs"></button> &nbsp;&nbsp;Upto 70 to 100%</li>
-                            <li><button class="btn btn-icon btn-warning btn-round btn-xs"></button> &nbsp;&nbsp;Upto 50 to 70%</li>
-                            <li> <button class="btn btn-icon btn-danger btn-round btn-xs"></button> &nbsp;&nbsp;Upto 30 to 50%</li>
-                            
-                        </ul>
-                    </div>
+        <div class="card card-stats card card-round" style="width: 93%;height: 89px; min-height:0px; border-top: 0px solid;">
+            <div class="card-body ">
+                <div class="row">
+                    <ul class="pricing-content" style="color: #fff;margin-top: -2px;list-style-type: none;margin-left: -25px;font-size: 14px;">
+                        <li><button class="btn btn-icon btn-success btn-round btn-xs"></button> &nbsp;&nbsp;Upto 70 to 100%</li>
+                        <li><button class="btn btn-icon btn-warning btn-round btn-xs"></button> &nbsp;&nbsp;Upto 50 to 70%</li>
+                        <li> <button class="btn btn-icon btn-danger btn-round btn-xs"></button> &nbsp;&nbsp;Upto 30 to 50%</li>
+
+                    </ul>
                 </div>
             </div>
         </div>
-    </div><!--end of first row-->
-    <div class="row">
+    </div>
+</div>
+<!--end of first row-->
+<div class="row">
 
     <!--<div class="col-md-12" style="margin-top:1em;">
         <div class="card" style="border-top: 2px solid #617cbf;">
@@ -276,42 +294,45 @@
         <div class="card">
             <div class="card-head-row card-tools-still-right" style="background:#fff;">
                 <h4 style="color: #000;font-size: 1.2em;float: left;padding: 1em;">Scheme Performance (monthly)</h4>
-                
-            </div><hr style="margin-top: -12px;">
-        <div class="card-body">
-            <div class="m-b-15">
-                @foreach($get_schemes as $get_scheme)
+
+            </div>
+            <hr style="margin-top: -12px;">
+            <div class="card-body">
+                <div class="m-b-15">
+                    @foreach($get_schemes as $get_scheme)
                     <h5>{{$get_scheme->scheme_name}}({{$get_scheme->scheme_short_name}})<span class="pull-right">60%</span></h5>
                     <div class="progress progress-sm">
                         <div class="progress-bar bg-info w-75" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
                     </div>
-                @endforeach
-                </div>
-            </div>
-        </div>
-    </div>
-
-        <div class="col-md-6" style="margin-top:1em;">
-            <div class="card"> 
-                <div class="card-head-row card-tools-still-right" style="background:#fff;">
-                    <h4 style="color: #000;font-size: 1.2em;float: left;padding: 1em;">Department Performance (monthly)</h4>
-                </div><hr style="margin-top: -12px;">
-            <div class="card-body" style="height:146px;overflow-y: scroll;">
-                <div class="m-b-15">
-                    @foreach($departments as $department)
-                        <h5>{{$department->dept_name}}<span class="pull-right">60%</span></h5>
-                        <div class="progress progress-sm">
-                            <div class="progress-bar bg-info w-75" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
-                        </div>
                     @endforeach
                 </div>
             </div>
         </div>
     </div>
-</div><!--enf of row-->
+
+    <div class="col-md-6" style="margin-top:1em;">
+        <div class="card">
+            <div class="card-head-row card-tools-still-right" style="background:#fff;">
+                <h4 style="color: #000;font-size: 1.2em;float: left;padding: 1em;">Department Performance (monthly)</h4>
+            </div>
+            <hr style="margin-top: -12px;">
+            <div class="card-body" style="height:146px;overflow-y: scroll;">
+                <div class="m-b-15">
+                    @foreach($departments as $department)
+                    <h5>{{$department->dept_name}}<span class="pull-right">60%</span></h5>
+                    <div class="progress progress-sm">
+                        <div class="progress-bar bg-info w-75" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--enf of row-->
 
 
- 
+
 
 <!--           
                 <div class="row" style="margin-top: 1em; width:122%;"> 
@@ -417,149 +438,198 @@
                     </div>
                 </div> -->
 
-              
-                    <!-- content-starts-here -->
-	
-			
-				
-                <div class="row" style="width: 122%; ">
-					<div class="col-md-1 focus-grid" style="padding-right: 5px;padding-left: 5px;">
-							<div class="focus-border">
-								<div class="focus-layout" id="card-detail1">
-									<i class="fa fa-heartbeat" style="font-size:35px; color: #fff;margin-top: 0.5em;"></i>
-									<h4 class="clrchg">Health</h4>
-								</div>
-							</div>
-					</div>
-                    <div class="col-md-1 focus-grid" style="padding-right: 5px;padding-left: 5px;">
-							<div class="focus-border">
-								<div class="focus-layout" id="card-detail2">
-                                    <i class="fas fa-graduation-cap" style="font-size:35px; color: #fff;margin-top: 0.5em;"></i>
-									<h4 class="clrchg"> Education</h4>
-								</div>
-							</div>
-					
-					</div>
-                    <div class="col-md-1 focus-grid" style="padding-right: 5px;padding-left: 5px;">
-							<div class="focus-border">
-								<div class="focus-layout"  id="card-detail3">
-                                    <i class="fas fa-graduation-cap" style="font-size:35px; color: #fff;margin-top: 0.5em;"></i>
-									<h4 class="clrchg">Land & revenue</h4>
-								</div>
-							</div>
-					</div>	
-                    <div class="col-md-1 focus-grid" style="padding-right: 5px;padding-left: 5px;">
-							<div class="focus-border">
-								<div class="focus-layout"  id="card-detail4">
-                                    <i class="fas fa-hands" style="font-size:35px; color: #fff;margin-top: 0.5em;"></i>
-									<h4 class="clrchg">Welfare</h4>
-								</div>
-							</div>
-					</div>	
-                    <div class="col-md-1 focus-grid" style="padding-right: 5px;padding-left: 5px;">
-							<div class="focus-border">
-								<div class="focus-layout"  id="card-detail5">
-									<i class="fas fa-oil-can"style="font-size:35px; color: #fff;margin-top: 0.5em;"></i>
-									<h4 class="clrchg">Land Acquisition</h4>
-								</div>
-							</div>
-					</div>
-                    <div class="col-md-1 focus-grid" style="padding-right: 5px;padding-left: 5px;">
-							<div class="focus-border">
-								<div class="focus-layout"  id="card-detail6">
-									<i class="fas fa-box" style="font-size:35px; color: #fff;margin-top: 0.5em;"></i>
-									<h4 class="clrchg">Election</h4>
-								</div>
-							</div>
-					</div>	
-                    <div class="col-md-1 focus-grid" style="padding-right: 5px;padding-left: 5px;">
-							<div class="focus-border">
-								<div class="focus-layout"  id="card-detail7">
-									<i class="fas fa-leaf" style="font-size:35px; color: #fff;margin-top: 0.5em;"></i>
-									<h4 class="clrchg">Agriculture</h4>
-								</div>
-							</div>
-					</div>	
-					<div class="col-md-1 focus-grid" style="padding-right: 5px;padding-left: 5px;">
-							<div class="focus-border">
-								<div class="focus-layout"  id="card-detail8">
-                                    <i class="fas fa-hands" style="font-size:35px; color: #fff;margin-top: 0.5em;"></i>
-									<h4 class="clrchg">Social Welfare</h4>
-								</div>
-							</div>
-					</div>	
-					<div class="col-md-1 focus-grid" style="padding-right: 5px;padding-left: 5px;">
-							<div class="focus-border">
-								<div class="focus-layout"  id="card-detail9">
-									<i class="fas fa-oil-can" style="font-size:35px; color: #fff;margin-top: 0.5em;"></i>
-									<h4 class="clrchg">Drinking Water and Sanitation</h4>
-								</div>
-							</div>
-					</div>	
-					<div class="col-md-1 focus-grid" style="padding-right: 5px;padding-left: 5px;">
-							<div class="focus-border">
-								<div class="focus-layout"  id="card-detail10">
-									<i class="fas fa-user-lock" style="font-size:35px; color: #fff;margin-top: 0.5em;"></i>
-									<h4 class="clrchg">Social Security Scheme</h4>
-								</div>
-							</div>
-					</div>
-                </div><br>
+
+<!-- content-starts-here -->
+
+
+
+<div class="row" style="width: 122%; ">
+    <div class="col-md-1 focus-grid" style="padding-right: 5px;padding-left: 5px;">
+        <div class="focus-border">
+            <div class="focus-layout" id="card-detail1">
+                <i class="fa fa-heartbeat" style="font-size:35px; color: #fff;margin-top: 0.5em;"></i>
+                <h4 class="clrchg">Health {{$health_scheme_count}}</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-1 focus-grid" style="padding-right: 5px;padding-left: 5px;">
+        <div class="focus-border">
+            <div class="focus-layout" id="card-detail2">
+                <i class="fas fa-graduation-cap" style="font-size:35px; color: #fff;margin-top: 0.5em;"></i>
+                <h4 class="clrchg">Education {{$education_count}}</h4>
+            </div>
+        </div>
+
+    </div>
+    <div class="col-md-1 focus-grid" style="padding-right: 5px;padding-left: 5px;">
+        <div class="focus-border">
+            <div class="focus-layout" id="card-detail3">
+                <i class="fas fa-graduation-cap" style="font-size:35px; color: #fff;margin-top: 0.5em;"></i>
+                <h4 class="clrchg">Land & revenue {{$land_revenue_count}}</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-1 focus-grid" style="padding-right: 5px;padding-left: 5px;">
+        <div class="focus-border">
+            <div class="focus-layout" id="card-detail4">
+                <i class="fas fa-hands" style="font-size:35px; color: #fff;margin-top: 0.5em;"></i>
+                <h4 class="clrchg">Welfare {{$welfare_count}}</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-1 focus-grid" style="padding-right: 5px;padding-left: 5px;">
+        <div class="focus-border">
+            <div class="focus-layout" id="card-detail5">
+                <i class="fas fa-oil-can" style="font-size:35px; color: #fff;margin-top: 0.5em;"></i>
+                <h4 class="clrchg">Land Acquisition {{$land_acquisition_count}}</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-1 focus-grid" style="padding-right: 5px;padding-left: 5px;">
+        <div class="focus-border">
+            <div class="focus-layout" id="card-detail6">
+                <i class="fas fa-box" style="font-size:35px; color: #fff;margin-top: 0.5em;"></i>
+                <h4 class="clrchg">Election {{$election_count}}</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-1 focus-grid" style="padding-right: 5px;padding-left: 5px;">
+        <div class="focus-border">
+            <div class="focus-layout" id="card-detail7">
+                <i class="fas fa-leaf" style="font-size:35px; color: #fff;margin-top: 0.5em;"></i>
+                <h4 class="clrchg">Agriculture {{$agriculture_count}}</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-1 focus-grid" style="padding-right: 5px;padding-left: 5px;">
+        <div class="focus-border">
+            <div class="focus-layout" id="card-detail8">
+                <i class="fas fa-hands" style="font-size:35px; color: #fff;margin-top: 0.5em;"></i>
+                <h4 class="clrchg">Social Welfare {{$social_welfare_count}}</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-1 focus-grid" style="padding-right: 5px;padding-left: 5px;">
+        <div class="focus-border">
+            <div class="focus-layout" id="card-detail9">
+                <i class="fas fa-oil-can" style="font-size:35px; color: #fff;margin-top: 0.5em;"></i>
+                <h4 class="clrchg">Drinking Water and Sanitation {{$drinking_water_and_sanitation_count}}</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-1 focus-grid" style="padding-right: 5px;padding-left: 5px;">
+        <div class="focus-border">
+            <div class="focus-layout" id="card-detail10">
+                <i class="fas fa-user-lock" style="font-size:35px; color: #fff;margin-top: 0.5em;"></i>
+                <h4 class="clrchg">Social Security Scheme {{$social_security_scheme_count}}</h4>
+            </div>
+        </div>
+    </div>
+</div><br>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card-body" style="background: #fff;">
+            <canvas id="dashbaord-asset-pie-chart" width="800" height="450"></canvas>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card-body" id="map">
+            <div class="col-md-10 ml-auto mr-auto">
+                <div class="mapcontainer">
+                    <div id="map-example" class="vmap" style="height: 400px"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    
+    var dashboardAssetPieChart_labels = [];
+    var dashboardAssetPieChart_data = [];
+    
+    $(document).ready(function(){
+        $.ajax({
+            url: "{{url('dashboard/asset_department_wise')}}",
+            data: { 'ok': "ok" },
+            method: "GET",
+            contentType: 'application/json',
+            dataType: "json",
+            beforeSend: function (data) {
                 
-                <div class="row" style="margin-bottom: -8em;">
-                    <div class="col-md-6">
-                        <div class="card-body" style="background: #fff;">
-                            <div id="chartContainer" style="height: 300px; width: 100%;"></div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                            <div class="card-body" id="map">
-                                <div class="col-md-10 ml-auto mr-auto">
-                                    <div class="mapcontainer">
-                                        <div id="map-example" class="vmap" style="height: 400px"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-			
-       
- 
-         
-          
+            },
+            error: function (xhr){
+                alert("error" + xhr.status + "," + xhr.statusText);
+            },
+            success: function (data){
+                console.log(data);
+                for(var i=0; i<data.length; i++){
+                    dashboardAssetPieChart_labels.push(data[i].dept_name);
+                    dashboardAssetPieChart_data.push(data[i].total);
+                }
+                intialize_pie_chart();
+            }
+        });
+    });
+
+    // for dashbaord-asset-pie-chart
+    function intialize_pie_chart(){
+        var dashboardAssetPieChartId = document.getElementById('dashbaord-asset-pie-chart');
+        var dashboardAssetPieChart = new Chart(dashboardAssetPieChartId, {
+            type: 'pie',
+            data: {
+                labels: dashboardAssetPieChart_labels,
+                datasets: [{
+                    label: "Population (millions)",
+                    backgroundColor: ["#A93226", "#AF7AC5","#2980B9","#1ABC9C","#F5B041","#5D6D7E","#F1948A","#21618C", "#F7DC6F", "##6C3483"],
+                    data: dashboardAssetPieChart_data
+                }]
+            },
+            options: {
+                title: {
+                    display: true,
+                    text: 'No of Assets Assigned'
+                }
+            }
+        });
+    }
+</script>
+
+
 <script>
     window.onload = function () {
 
-    var chart = new CanvasJS.Chart("chartContainer", {
-        animationEnabled: true,
-        exportEnabled: true,
-        theme: "light1", // "light1", "light2", "dark1", "dark2"
-        title:{
-            text: ""
-        },
-        data: [{
-            type: "column", //change type to bar, line, area, pie, etc
-            //indexLabel: "{y}", //Shows y value on all Data Points
-            indexLabelFontColor: "#5A5757",
-            indexLabelPlacement: "outside",
-            dataPoints: [
-                { x: 10, y: 71 },
-                { x: 20, y: 55 },
-                { x: 30, y: 50 },
-                { x: 40, y: 65 },
-                { x: 50, y: 92, indexLabel: "Highest" },
-                { x: 60, y: 68 },
-                { x: 70, y: 38 },
-                { x: 80, y: 71 },
-                { x: 90, y: 54 },
-                { x: 100, y: 60 },
-                { x: 110, y: 36 },
-                { x: 120, y: 49 },
-                { x: 130, y: 21, indexLabel: "Lowest" }
-            ]
-        }]
-    });
-    chart.render();
+        var chart = new CanvasJS.Chart("chartContainer", {
+            animationEnabled: true,
+            exportEnabled: true,
+            theme: "light1", // "light1", "light2", "dark1", "dark2"
+            title: {
+                text: ""
+            },
+            data: [{
+                type: "column", //change type to bar, line, area, pie, etc
+                //indexLabel: "{y}", //Shows y value on all Data Points
+                indexLabelFontColor: "#5A5757",
+                indexLabelPlacement: "outside",
+                dataPoints: [
+                    { x: 10, y: 71 },
+                    { x: 20, y: 55 },
+                    { x: 30, y: 50 },
+                    { x: 40, y: 65 },
+                    { x: 50, y: 92, indexLabel: "Highest" },
+                    { x: 60, y: 68 },
+                    { x: 70, y: 38 },
+                    { x: 80, y: 71 },
+                    { x: 90, y: 54 },
+                    { x: 100, y: 60 },
+                    { x: 110, y: 36 },
+                    { x: 120, y: 49 },
+                    { x: 130, y: 21, indexLabel: "Lowest" }
+                ]
+            }]
+        });
+        chart.render();
 
     }
 </script>
@@ -567,8 +637,3 @@
 
 
 @endsection
-
-
-
-
-

@@ -32,12 +32,13 @@ Route::get('clear-cache', function () {
 Auth::routes(['register' => false]); // register fetaure if disabled from laravel auth
 
 /*dashboard*/
-Route::get('/', 'DashboardController@index')->name('home');;
+Route::get('/', 'DashboardController@index')->name('home');
 Route::get('my-district','DashboardController@dashboard'); // for DC/admin
 Route::get('my-subdivision','DashboardController@dashboard'); // for SDO
 Route::get('my-block','DashboardController@dashboard'); // for Block
 Route::get('my-panchayat','DashboardController@dashboard'); //for panchayat
 Route::get('dashboard/dc_dashboard','DashboardController@index');
+Route::get('dashboard/asset_department_wise','DashboardController@get_department_wise_asset_data');
 
 
 //user

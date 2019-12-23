@@ -36,7 +36,7 @@
         </div>
     </div>
     <div class="card-body">
-        <div id="show-toggle1" style="background: #f1f1f1; border: 1px solid #ababab; padding: 15px; margin-bottom: 25px; border-radius: 3px;">
+        <div id="show-toggle1" style="border: 1px solid #ababab; padding: 15px; margin-bottom: 25px; border-radius: 3px;">
             <form action="{{url('asset/store')}}" onsubmit="return false" method="POST" enctype="multipart/form-data" id="asset-form">
                 @csrf
                 <div class="row">
