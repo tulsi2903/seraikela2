@@ -151,6 +151,8 @@ Route::get('asset-numbers/add','AssetNumbersController@add');
 Route::get('asset-numbers/current_value','AssetNumbersController@current_value');
 Route::post('asset-numbers/store','AssetNumbersController@store'); 
 Route::get('asset-numbers/view/{asset_numbers_id}','AssetNumbersController@view');
+Route::get('asset_Numbers/export/excelURL','AssetNumbersController@exportExcelFunctiuonforasset_Numbers');
+Route::get('asset_Numbers/pdf/pdfURL','AssetNumbersController@exportpdfFunctiuonforasset_Numbers');
 
 /* asset review */
 Route::get('asset-review', 'AssetReviewController@index');

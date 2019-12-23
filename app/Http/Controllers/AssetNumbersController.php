@@ -12,7 +12,7 @@ use App\AssetGeoLocation;
 use App\AssetBlockCount;
 use App\AssetGallery;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Exports\AssetSectionExport;
+use App\Exports\AssetNumberSectionExport;
 use PDF;
 
 class AssetNumbersController extends Controller
@@ -46,7 +46,6 @@ class AssetNumbersController extends Controller
                 $data->asset_numbers_id = $tmp->asset_numbers_id;
             }
         }
-
         return view('asset-numbers.index')->with('datas', $datas);
     }
     public function add(Request $request)
@@ -331,22 +330,40 @@ class AssetNumbersController extends Controller
         // return redirect('asset-numbers');
     }
 
-    public function exportExcelFunctiuonforasset()
+    public function exportExcelFunctiuonforasset_Numbers()
     {
-        return Excel::download(new AssetSectionExport, 'Assetdata-Sheet.xls');
+        return Excel::download(new AssetNumberSectionExport, 'Asset Number-Sheet.xls');
     }
 
-    public function exportpdfFunctiuonforasset()
+    public function exportpdfFunctiuonforasset_Numbers()
     {
-        $Assetdata = Asset::leftJoin('department', 'asset.dept_id', '=', 'department.dept_id')
-            ->leftJoin('asset_cat', 'asset.category_id', '=', 'asset_cat.asset_cat_id')
-            ->leftJoin('asset_subcat', 'asset.subcategory_id', '=', 'asset_subcat.asset_sub_id')
-            ->select('asset.*', 'department.dept_name', 'asset_cat.asset_cat_name', 'asset_subcat.asset_sub_cat_name')
-            ->orderBy('asset.asset_id', 'desc')
-            ->get();
+        $AssetNumberdata = AssetNumbers::select('geo_id', 'asset_id', 'year', DB::raw('MAX(updated_at) AS max_updated'), DB::raw('MAX(asset_numbers_id) as asset_numbers_id'))
+                                ->groupBy('year', 'asset_id', 'geo_id')
+                                ->get() ;
+                                
+        foreach ($AssetNumberdata as $data) {
+            if (Asset::find($data->asset_id)) {
+                $data->asset_name = Asset::find($data->asset_id)->asset_name;
+            }
+            if (GeoStructure::find($data->geo_id)) {
+                $panchayat_data_tmp = GeoStructure::find($data->geo_id);
+                $data->panchayat_name = $panchayat_data_tmp->geo_name;
+                $block_data_tmp = GeoStructure::find($panchayat_data_tmp->bl_id);
+                $data->block_name = $block_data_tmp->geo_name;
+            }
+            if (Year::find($data->year)) {
+                $data->year_value = Year::find($data->year)->year_value;
+            }
+            $tmp = AssetNumbers::select('asset_numbers_id', 'pre_value', 'current_value')->where('asset_numbers_id', $data->asset_numbers_id)->first();
+            if (count($tmp) > 0) {
+                $data->pre_value = $tmp->pre_value;
+                $data->current_value = $tmp->current_value;
+                $data->asset_numbers_id = $tmp->asset_numbers_id;
+            }
+        }
         date_default_timezone_set('Asia/Kolkata');
-        $AssetdateTime = date('d-m-Y H:i A');
-        $pdf = PDF::loadView('department/Createpdfs', compact('Assetdata', 'AssetdateTime'));
-        return $pdf->download('Assetdata.pdf');
+        $AssetNumberdateTime = date('d-m-Y H:i A');
+        $pdf = PDF::loadView('department/Createpdfs', compact('AssetNumberdata', 'AssetNumberdateTime'));
+        return $pdf->download('Asset Number.pdf');
     }
 }

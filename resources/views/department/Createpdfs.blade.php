@@ -242,6 +242,41 @@
       </table>
       <p style="position: absolute; bottom: 0;"> {{ $AssetdateTime }}</p><!-- position:absolute and bottom:0 css is used to pull this pragraph at the end of the page -->
    </div>
+   @elseif($AssetNumberdata)
+   <div style="position: relative;"> <!-- position:realtive css is used for full page printing of pdf -->
+      <table border="1" class="table_css" style="width:100%">
+         <thead>
+            <tr>
+               <th style="text-align: center;" colspan="6">
+                  Asset Numbers
+
+               </th>
+            </tr>
+            <tr>
+               <th style="text-align: center;width: 30px;">Sl.No.</th>
+               <th style="text-align: center;">Year</th>
+               <th style="text-align: center;">Asset</th>
+               <th style="text-align: center;">Block</th>
+               <th style="text-align: center;">Panchyat</th>
+               <th style="text-align: center;">Current Value</th>
+      
+            </tr>
+         </thead>
+         <tbody>
+            @foreach($AssetNumberdata as $index => $AssetNumberdata)
+            <tr>
+               <td>{{ $index+1 }}</td>
+               <td>{{ $AssetNumberdata->year_value }}</td>
+               <td>{{ $AssetNumberdata->asset_name }}</td>
+               <td>{{ $AssetNumberdata->block_name }}</td>
+               <td>{{ $AssetNumberdata->panchayat_name }}</td>
+               <td>{{ $AssetNumberdata->current_value }}</td>
+            </tr>
+            @endforeach
+         </tbody>
+      </table>
+      <p style="position: absolute; bottom: 0;"> {{ $AssetNumberdateTime }}</p><!-- position:absolute and bottom:0 css is used to pull this pragraph at the end of the page -->
+   </div>
    @endif
 
    
