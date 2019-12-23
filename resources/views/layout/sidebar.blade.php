@@ -1,24 +1,8 @@
+<?php  $desig_permissions = session()->get('desig_permission'); // assigning desig_permission so we can use ?>
 <div class="sidebar sidebar-style-2" data-background-color="dark2">
 	<div class="sidebar-wrapper scrollbar scrollbar-inner">
 		<div class="sidebar-content">
 			<ul class="nav nav-primary">
-				<!-- <li class="nav-item">
-					<a data-toggle="collapse" href="#dashboard" class="collapsed" aria-expanded="false">
-						<i class="fas fa-home"></i>
-						<p>Dashboard</p>
-						<span class="caret"></span>
-					</a>
-					<div class="collapse" id="dashboard">
-						<ul class="nav nav-collapse">
-							<li><a href="{{url('home')}}"><span class="sub-item">DC Dashboard</span></a></li>
-						</ul>
-					</div>
-				</li> -->
-				<?php
-				if(session()->get('user_designation')=="1"){
-					// add My District, My Block etc
-				}
-				?>
 				<li class="nav-item"><a href="{{url(session()->get('dashboard_url'))}}"><i class="fas fa-home"></i><p>{{session()->get('dashboard_title')}}</p></a></li>
 
 				<li class="nav-item">
@@ -29,24 +13,47 @@
 					</a>
 					<div class="collapse" id="administator">
 						<ul class="nav nav-collapse">
-							<li class="nav-item"><a href="{{url('user')}}"><i class="fas fa-users"></i><p>User</p></a></li>
-							<li class="nav-item"><a href="{{url('department')}}"><i class="fas fa-sitemap"></i><p>Department</p></a></li>
-							<li class="nav-item"><a href="{{url('year')}}"><i class="fas fa-calendar-alt"></i><p>Year</p></a></li>
-							<li class="nav-item"><a href="{{url('uom')}}"><i class="fas fa-list-ol"></i><p>UoM</p></a></li>
-                            <li class="nav-item"><a href="{{url('module')}}"><i class="fas fa-indent"></i><p>Module</p></a></li>
-                            <li class="nav-item"><a href="{{url('designation')}}"><i class="fas fa-user-check"></i><p>Designation</p></a></li>
-							<li class="nav-item"><a href="{{url('designation-permission')}}"><i class="fas fa-users-cog"></i><p>Designation Permission</p></a></li>
+							@if(array_key_exists("user", $desig_permissions))
+								<li class="nav-item"><a href="{{url('user')}}"><i class="fas fa-users"></i><p>User</p></a></li>
+							@endif
+							@if(array_key_exists("department", $desig_permissions))
+								<li class="nav-item"><a href="{{url('department')}}"><i class="fas fa-sitemap"></i><p>Department</p></a></li>
+							@endif
+							@if(array_key_exists("year", $desig_permissions))
+								<li class="nav-item"><a href="{{url('year')}}"><i class="fas fa-calendar-alt"></i><p>Year</p></a></li>
+							@endif
+							@if(array_key_exists("uom", $desig_permissions))
+								<li class="nav-item"><a href="{{url('uom')}}"><i class="fas fa-list-ol"></i><p>UoM</p></a></li>
+							@endif
+							@if(array_key_exists("designation", $desig_permissions))
+								<li class="nav-item"><a href="{{url('designation')}}"><i class="fas fa-user-check"></i><p>Designation</p></a></li>
+							@endif
+							@if(array_key_exists("scheme type", $desig_permissions))
+								<li class="nav-item"><a href="{{url('scheme-type')}}"><i class="fas fa-receipt"></i><p>Scheme Type</p></a></li>
+							@endif
+							@if(array_key_exists("scheme group", $desig_permissions))
+								<li class="nav-item"><a href="{{url('scheme-group')}}"><i class="fas fa-receipt"></i><p>Scheme Group</p></a></li>
+							@endif
+							@if(array_key_exists("asset category", $desig_permissions))
+								<li class="nav-item"><a href="{{url('assetcat')}}"><i class="fas fa-receipt"></i><p> Asset Category</p></a></li>
+							@endif
+							@if(array_key_exists("asset subcategory", $desig_permissions))
+								<li class="nav-item"><a href="{{url('asset_subcat')}}"><i class="fas fa-receipt"></i><p> Asset Sub Category</p></a></li>
+							@endif
+							@if(session()->get('user_designation')=="1")
+								<li class="nav-item"><a href="{{url('module')}}"><i class="fas fa-indent"></i><p>Module</p></a></li>
+								<li class="nav-item"><a href="{{url('designation-permission')}}"><i class="fas fa-users-cog"></i><p>Designation Permission</p></a></li>
+							@endif
 							<!-- <li class="nav-item"><a href="{{url('scheme-asset')}}"><i class="fas fa-users-cog"></i><p>Scheme Asset</p></a></li> -->
 						</ul>
 					</div>
 				</li>
 
-				 <li class="nav-item"><a href="{{url('geo-structure')}}"><i class="fas fa-map-marker-alt"></i><p>Geo Structure</p></a></li>     
-
+				<li class="nav-item"><a href="{{url('geo-structure')}}"><i class="fas fa-map-marker-alt"></i><p>Geo Structure</p></a></li>
 
 				<li class="nav-item">
 					<a data-toggle="collapse" href="#asset" class="collapsed" aria-expanded="false">
-							<i class="fas fa-layer-group"></i>
+						<i class="fas fa-layer-group"></i>
 						<p>Asset</p>
 						<span class="caret"></span>
 					</a>
@@ -54,8 +61,6 @@
 						<ul class="nav nav-collapse">
 							<li class="nav-item"><a href="{{url('asset')}}"><i class="fas fa-list"></i><p>Define Asset</p></a></li>
 							<li class="nav-item"><a href="{{url('asset-numbers')}}"><i class="fas fa-list-ol"></i><p>Asset Numbers</p></a></li>
-							<li class="nav-item"><a href="{{url('assetcat')}}"><i class="fas fa-receipt"></i><p> Asset Category</p></a></li>
-							<li class="nav-item"><a href="{{url('asset_subcat')}}"><i class="fas fa-receipt"></i><p> Asset Sub Category</p></a></li>
 						</ul>
 					</div>
 				</li>
@@ -68,13 +73,12 @@
 					</a>
 					<div class="collapse" id="scheme">
 						<ul class="nav nav-collapse">
-							 <li class="nav-item"><a href="{{url('scheme-structure')}}"><i class="fas fa-receipt"></i><p>Define Scheme</p></a></li>
-							<li class="nav-item"><a href="{{url('scheme-group')}}"><i class="fas fa-receipt"></i><p>Scheme Group</p></a></li>
-			                <li class="nav-item"><a href="{{url('scheme-type')}}"><i class="fas fa-receipt"></i><p>Scheme Type</p></a></li>
+							@if(array_key_exists("scheme", $desig_permissions))
+								<li class="nav-item"><a href="{{url('scheme-structure')}}"><i class="fas fa-receipt"></i><p>Define Scheme</p></a></li>
+							@endif
 			                <!-- <li class="nav-item"><a href="{{url('scheme-indicator')}}"><i class="fas fa-receipt"></i><p>Scheme Indicator</p></a></li> -->
 			                <li class="nav-item"><a href="{{url('scheme-geo-target')}}"><i class="fas fa-receipt"></i><p>Scheme Geo Target</p></a></li>
-			                 <li class="nav-item"><a href="{{url('scheme-performance/add')}}"><i class="fas fa-receipt"></i><p>Scheme Performance</p></a></li>
-			                  
+			                <li class="nav-item"><a href="{{url('scheme-performance/add')}}"><i class="fas fa-receipt"></i><p>Scheme Performance</p></a></li>
 						</ul>
 					</div>
 				</li>
@@ -94,7 +98,6 @@
 					</div>
 				</li>
 				<li class="nav-item"><a href="{{url('favourites')}}"><i class="fa fa-bookmark" aria-hidden="true"></i><p>Favourite</p></a></li>
-               
 			</ul>
 		</div>
 	</div>

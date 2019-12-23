@@ -9,7 +9,7 @@ use App\GeoStructure;
 use App\Asset;
 use App\SchemeStructure;
 use App\Department;
-use App\AssetNumbers;
+use App\DesignationPermission;
 use DB;
 
 class DashboardController extends Controller
@@ -46,7 +46,23 @@ class DashboardController extends Controller
                     session()->put('dashboard_url', "my-panchayat");
                     break;
             }
-            return redirect(session()->get('dashboard_url'));
+
+            // assigning designation permission
+            $desig_permission_datas = DesignationPermission::leftjoin("module","desig_permission.mod_id","=","module.mod_id")->select("module.mod_name","desig_permission.add","desig_permission.edit","desig_permission.view","desig_permission.del")->where("desig_id", session()->get('user_designation'))->get();
+            $desig_permission = Array(); // ['module_id'=>[add, edit, view, delete], "module_id"=>[add, edit, view, delete]]
+            foreach($desig_permission_datas as $data){
+                $tmp = ["".$data->mod_name."" => ["add"=>$data->add, "edit"=>$data->edit, "view"=>$data->view, "del"=>$data->del]];
+                $desig_permission = array_merge($desig_permission, $tmp);
+            }
+            // return $desig_permission["mod_1"];
+            session()->put('desig_permission', $desig_permission);
+
+            if(session()->exists('designation_permission_changes')){
+                session()->forget('designation_permission_changes');
+                return redirect('designation-permission');
+            }
+
+            return redirect(session()->get('dashboard_url')); // redirecting back after sucessfully 
         }
         else{ // redirect if not logged in
             session()->flush();
@@ -56,6 +72,8 @@ class DashboardController extends Controller
 
     // show dashboard contents
     public function dashboard(){
+        // return session()->get('desig_permission');
+
         // TO DO:  Remove level_id  && org_id hardcoding
         $subdivision_count = GeoStructure::where('level_id','2')->where('org_id','1')->count();
         $block_count = GeoStructure::where('level_id','3')->where('org_id','1')->count();

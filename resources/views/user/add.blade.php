@@ -1,17 +1,26 @@
 @extends('layout.layout')
+
 @section('title', 'Users')
+
+@section('page-style')
 <style>
 </style>
+@endsection
 
 @section('page-content')
+
+<?php  $desig_permissions = session()->get('desig_permission'); // assigning desig_permission so we can use ?>
+
     <div class="row">
         <div class="col-md-12">
             <div class="card" style="border-top: 3px solid #5c76b7;">
                 <div class="card-header">
                     <div class="card-title" style="float:left;"><i class="fa fa-user" aria-hidden="true"></i> &nbsp;User Detail</div>
-                    <div id="toggle1">
-                        <div  style="float:right;margin-bottom: 1em;"><button class="btn btn-secondary"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;Add Users</button></div>
-                    </div>
+                    @if($desig_permissions["user"]["add"])
+                        <div id="toggle1">
+                            <div  style="float:right;margin-bottom: 1em;"><button class="btn btn-secondary"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;Add Users</button></div>
+                        </div>
+                    @endif
                 </div>
                 <!-----------------------------------------start of User Form------------------------------------------>
                 <div id="show-toggle1">

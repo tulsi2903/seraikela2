@@ -19,6 +19,9 @@
 @endsection
 
 @section('page-content')
+
+<?php  $desig_permissions = session()->get('desig_permission'); // assigning desig_permission so we can use ?>
+
 <div class="card">
         <div class="col-md-12">
            
@@ -26,13 +29,13 @@
                     <div class="card-head-row card-tools-still-right" style="background:#fff;">
                         <h4 class="card-title">Asset Category</h4>
                         <div class="card-tools">
-                          
                             <a href="#" data-toggle="tooltip" title="Send Mail"><button type="button" class="btn btn-icon btn-round btn-success" data-target="#create-email" data-toggle="modal" ><i class="fa fa-envelope" aria-hidden="true"></i></button></a>
                             <a href="#" data-toggle="tooltip" title="Print"><button type="button" class="btn btn-icon btn-round btn-default" id="print-button" onclick="printView();"><i class="fa fa-print" aria-hidden="true"></i></button></a>
                             <a href="#" data-toggle="tooltip" title="Export to PDF"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button></a>
                             <a href="#" data-toggle="tooltip" title="Export to Excel"><button type="button" class="btn btn-icon btn-round btn-primary" ><i class="fas fa-file-excel"></i></button></a>
-                            <a class="btn btn-secondary" href="{{url('assetcat/add')}}" role="button"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;Add</a>
-
+                            @if($desig_permissions["asset category"]["add"])
+                                <a class="btn btn-secondary" href="{{url('assetcat/add')}}" role="button"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;Add</a>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -77,8 +80,8 @@
                                             ?>
                                         </td>
                                         <td class="action-buttons">
-                                        <a href="{{url('assetcat/delete')}}/{{$data->asset_cat_id}}" class="btn btn-danger btn-sm delete-button"><i class="fas fa-trash-alt"></i></a>
-                                            &nbsp;&nbsp;<a href="{{url('assetcat/add')}}?purpose=edit&id={{$data->asset_cat_id}}" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></a>
+                                            @if($desig_permissions["asset category"]["del"])<a href="{{url('assetcat/delete')}}/{{$data->asset_cat_id}}" class="btn btn-danger btn-sm delete-button"><i class="fas fa-trash-alt"></i></a>@endif
+                                            @if($desig_permissions["asset category"]["edit"])&nbsp;&nbsp;<a href="{{url('assetcat/add')}}?purpose=edit&id={{$data->asset_cat_id}}" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></a>@endif
                                         </td>
                                     </tr>
                                 @endforeach

@@ -154,7 +154,7 @@
                 <input type="radio" id="review-for-panchayat" name="review_for" value="panchayat" hidden>
                 <hr />
             </div>
-            <div class="row" style="margin-top: -24px;">
+            <div class="row">
                 <div class="col-6">
                     <div class="form-group">
                         <label for="year_id">Year<span style="color:red;margin-left:5px;">*</span></label>

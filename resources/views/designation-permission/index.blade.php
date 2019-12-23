@@ -58,7 +58,7 @@
                                                     <th>Delete</th>
                                                 </tr>
                                             </thead>
-                                            <tbody>
+                                            <tbody style="text-transform: capitalize;">
                                                 <?php
                                                 for($j=0;$j<count($to_return[$i]);$j++)
                                                 {

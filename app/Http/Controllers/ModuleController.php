@@ -13,8 +13,8 @@ class ModuleController extends Controller
 
    public function index()
    {
-    $datas = Module::orderBy('mod_id','desc')->get();
-    return view('module.index')->with('datas', $datas);
+        $datas = Module::orderBy('mod_name','ASC')->get();
+        return view('module.index')->with('datas', $datas);
    }
 
    public function add(Request $request)
@@ -44,7 +44,7 @@ class ModuleController extends Controller
             }
         }
 
-        $module->mod_name= $request->module_name;
+        $module->mod_name= strtolower($request->module_name);
         $module->created_by = '1';
         $module->updated_by = '1';
 

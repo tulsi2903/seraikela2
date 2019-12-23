@@ -63,24 +63,26 @@
                                         <th class="action-buttons">Actions</th>
                                     </tr>
                                 </thead>
-                                <?php $count=1; ?>
-                                @if(isset($datas))
-                                    @foreach($datas as $data)
-                                        <tr data-row-id="{{$data->mod_id}}" data-row-values="{{$data->mod_name}}">
-                                            <td width="40px;">{{$count++}}</td>
-                                            <td>{{$data->mod_name}}</td>
-                                            <td class="action-buttons">
-                                                <a href="{{url('module/delete')}}/{{$data->mod_id}}" class="btn btn-danger btn-sm delete-button"><i class="fas fa-trash-alt"></i></a>
-                                                &nbsp;&nbsp;<button type="button" class="btn btn-sm btn-secondary" onclick="openInlineForm('{{$data->mod_id}}')"><i class="fas fa-edit"></i></button>
-                                            </td>
+                                <tbody style="text-transform: capitalize;">
+                                    <?php $count=1; ?>
+                                    @if(isset($datas))
+                                        @foreach($datas as $data)
+                                            <tr data-row-id="{{$data->mod_id}}" data-row-values="{{$data->mod_name}}">
+                                                <td width="40px;">{{$count++}}</td>
+                                                <td>{{$data->mod_name}}</td>
+                                                <td class="action-buttons">
+                                                    <a href="{{url('module/delete')}}/{{$data->mod_id}}" class="btn btn-danger btn-sm delete-button"><i class="fas fa-trash-alt"></i></a>
+                                                    &nbsp;&nbsp;<button type="button" class="btn btn-sm btn-secondary" onclick="openInlineForm('{{$data->mod_id}}')"><i class="fas fa-edit"></i></button>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    @endif
+                                    @if($count==1)
+                                        <tr>
+                                            <td colspan="4"><center>No data to shown</center></td>
                                         </tr>
-                                    @endforeach
-                                @endif
-                                @if($count==1)
-                                    <tr>
-                                        <td colspan="4"><center>No data to shown</center></td>
-                                    </tr>
-                                @endif
+                                    @endif
+                                </tbody>
                             </table>
                         </form>
                     </div>

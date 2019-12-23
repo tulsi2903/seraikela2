@@ -24,6 +24,9 @@
 @endsection
 
 @section('page-content')
+
+<?php  $desig_permissions = session()->get('desig_permission'); // assigning desig_permission so we can use ?>
+
     <div class="card">
         <div class="col-md-12">
                 <div class="card-header">
@@ -34,9 +37,9 @@
                             <button type="button" class="btn btn-icon btn-round btn-default" id="print-button" onclick="printView();"><i class="fa fa-print" aria-hidden="true"></i></button>
                             <a href="{{url('department/pdf/pdfURL')}}"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button></a>
                             <a href="{{url('department/export/excelURL')}}"><button type="button" class="btn btn-icon btn-round btn-success" ><i class="fas fa-file-excel"></i></button></a>
-
-                            <a id="toggle1" class="btn btn-secondary department-add-button" href="javascript:void();" role="button"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;Add</a>
-
+                            @if($desig_permissions["department"]["add"])
+                                <a id="toggle1" class="btn btn-secondary department-add-button" href="javascript:void();" role="button"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;Add</a>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -116,10 +119,8 @@
                                                 echo '<i class="fas fa-times text-danger"></i> Inactive';
                                             } ?></td>
                                             <td class="action-buttons">
-                                                <a href="{{url('department/delete')}}/{{$data->dept_id}}" class="btn btn-danger btn-sm delete-button"><i class="fas fa-trash-alt"></i></a>
-                                                &nbsp;&nbsp;<button type="button" class="btn btn-sm btn-secondary" onclick="openInlineForm('{{$data->dept_id}}')"><i class="fas fa-edit"></i></button>
-                                                
-                                               
+                                                @if($desig_permissions["department"]["del"])<a href="{{url('department/delete')}}/{{$data->dept_id}}" class="btn btn-danger btn-sm delete-button"><i class="fas fa-trash-alt"></i></a>@endif
+                                                @if($desig_permissions["department"]["edit"])&nbsp;&nbsp;<button type="button" class="btn btn-sm btn-secondary" onclick="openInlineForm('{{$data->dept_id}}')"><i class="fas fa-edit"></i></button>@endif
                                             </td>
                                         </tr>
                                         <?php $count++; ?>
