@@ -10,49 +10,39 @@ use Maatwebsite\Excel\Events\AfterSheet;
 use Maatwebsite\Excel\Events\BeforeExport;
 use PDF;
 use DB;
-use App\Asset;
-use App\Department;
 use App\asset_cat;
 use App\asset_subcat;
 
-class AssetSectionExport implements FromCollection, WithHeadings, ShouldAutoSize, WithEvents
+
+
+class AssetSubCatagorySectionExport implements FromCollection, WithHeadings, ShouldAutoSize, WithEvents
 {
     /**
     * @return \Illuminate\Support\Collection
     */
     public function collection()
     {
-        $AssetValue = Asset::leftJoin('department', 'asset.dept_id', '=', 'department.dept_id')
-                        ->leftJoin('asset_cat', 'asset.category_id', '=', 'asset_cat.asset_cat_id')
-                        ->leftJoin('asset_subcat', 'asset.subcategory_id', '=', 'asset_subcat.asset_sub_id')
-                        ->select('asset.asset_id as slId','asset.asset_name','asset.movable','department.dept_name','asset.created_at as createdDate')
-                        ->orderBy('asset.asset_id', 'desc')
-                        ->get();
+        $export_assest_subcatagory = asset_subcat::leftjoin('asset_cat','asset_subcat.asset_cat_id','=','asset_cat.asset_cat_id')
+                                    ->select('asset_subcat.asset_sub_id as slId','asset_subcat.asset_sub_cat_name','asset_subcat.asset_sub_cat_description','asset_cat.asset_cat_name','asset_subcat.created_at as createdDate')->orderBy('asset_subcat.asset_sub_id','desc')->get();
+ 
 
-        foreach ($AssetValue as $key => $value) {
+        foreach ($export_assest_subcatagory as $key => $value) {
             $value->slId = $key+1;
-           
-            if($value->movable == 1) {
-                $value->movable = "Movable";
-            }
-            else {
-                $value->movable = "Immovable";
-            }
             $value->createdDate = date('d/m/Y',strtotime($value->createdDate));
         }
-        return $AssetValue;
+        return $export_assest_subcatagory;                      
     }
     public function headings(): array
     {
         return [
-            'Sl. No.',
-            'Name',
-            'Type',
-            'Department Name',
+            'Sl.No.',
+            'Sub Category Name',
+            'Sub Category Description',
+            'Category Name',
             'Date'
         ];
     }
-   public function registerEvents(): array
+    public function registerEvents(): array
     {
         return [
             AfterSheet::class    => function (AfterSheet $event) {

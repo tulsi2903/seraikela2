@@ -277,6 +277,101 @@
       </table>
       <p style="position: absolute; bottom: 0;"> {{ $AssetNumberdateTime }}</p><!-- position:absolute and bottom:0 css is used to pull this pragraph at the end of the page -->
    </div>
+   @elseif($export_assest_catagory)
+   <div style="position: relative;"> <!-- position:realtive css is used for full page printing of pdf -->
+      <table border="1" class="table_css" style="width:100%">
+         <thead>
+            <tr>
+               <th style="text-align: center;" colspan="4">
+                  Asset Category
+
+               </th>
+            </tr>
+            <tr>
+               <th style="text-align: center;width: 30px;">Sl.No.</th>
+               <th style="text-align: center;">Name</th>
+               <th style="text-align: center;">Category Description</th>
+               <th style="text-align: center;">Type</th>
+      
+            </tr>
+         </thead>
+         <tbody>
+            @foreach($export_assest_catagory as $index => $export_assest_catagory_data)
+            <tr>
+               <td>{{ $index+1 }}</td>
+               <td>{{ $export_assest_catagory_data->asset_cat_name }}</td>
+               <td>{{ $export_assest_catagory_data->asset_cat_description }}</td>
+               <td>
+                  <?php
+                  if($export_assest_catagory_data->movable == '1'){
+                      echo "Movable";
+                  }
+                  else{
+                      echo "Immovable";
+                  }
+                  ?>
+              </td>
+            @endforeach
+         </tbody>
+      </table>
+      <p style="position: absolute; bottom: 0;"> {{ $AssetCatagoryTime }}</p><!-- position:absolute and bottom:0 css is used to pull this pragraph at the end of the page -->
+   </div>
+   @elseif($export_assest_subcatagory)
+   <div style="position: relative;"> <!-- position:realtive css is used for full page printing of pdf -->
+      <table border="1" class="table_css" style="width:100%">
+         <thead>
+            <tr>
+               <th style="text-align: center;" colspan="4">
+                  Asset Sub Category
+               </th>
+            </tr>
+            <tr>
+               <th style="text-align: center;width: 30px;">Sl.No.</th>
+               <th style="text-align: center;">Sub Category Name</th>
+               <th style="text-align: center;">Sub Category Description</th>
+               <th style="text-align: center;">Category Name</th>
+      
+            </tr>
+         </thead>
+         <tbody>
+            @foreach($export_assest_subcatagory as $index => $export_assest_subcatagory_data)
+            <tr>
+               <td>{{ $index+1 }}</td>
+               <td>{{ $export_assest_subcatagory_data->asset_sub_cat_name }}</td>
+               <td>{{ $export_assest_subcatagory_data->asset_sub_cat_description }}</td>
+               <td>{{ $export_assest_subcatagory_data->asset_cat_name}}</td>
+            @endforeach
+         </tbody>
+      </table>
+      <p style="position: absolute; bottom: 0;"> {{ $AssetSubCatagoryTime }}</p><!-- position:absolute and bottom:0 css is used to pull this pragraph at the end of the page -->
+   </div>
+   @elseif($departmentpdf)
+   <div style="position: relative;"> <!-- position:realtive css is used for full page printing of pdf -->
+      <table border="1" class="table_css" style="width:100%">
+         <thead>
+            <tr>
+               <th style="text-align: center;" colspan="3">
+                  Department
+               </th>
+            </tr>
+            <tr>
+               <th style="text-align: center;width: 30px;">Sl.No.</th>
+               <th style="text-align: center;">Check Favourite</th>
+               <th style="text-align: center;">Department Name</th>
+      
+            </tr>
+         </thead>
+         <tbody>
+            @foreach($departmentpdf as $index => $departmentpdf_data)
+            <tr>
+               <td>{{ $index+1 }}</td>
+               <td>@if($departmentpdf_data->checked==1) YES  @else  NO @endif </td>
+               <td>{{ $departmentpdf_data->dept_name }}</td>
+            @endforeach
+         </tbody>
+      </table>
+      <p style="position: absolute; bottom: 0;"> {{ $DeprtmentTime }}</p><!-- position:absolute and bottom:0 css is used to pull this pragraph at the end of the page -->
+   </div>
    @endif
 
    
