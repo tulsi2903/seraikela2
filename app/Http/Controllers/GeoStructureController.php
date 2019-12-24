@@ -7,6 +7,7 @@ use App\GeoStructure;
 use App\Level;
 use App\Organisation;
 use App\UserData;
+use App\User;
 use DB;
 
 class GeoStructureController extends Controller
@@ -18,6 +19,7 @@ class GeoStructureController extends Controller
                                 ->select('geo_structure.*','level.level_name','organisation.org_name')
                                 ->orderBy('geo_structure.geo_id','desc')
                                 ->get();
+                                
 
         $get_blocks = GeoStructure::where('level_id','3')->get();
 
@@ -50,7 +52,7 @@ class GeoStructureController extends Controller
 
         $organisation_datas = Organisation::orderBy('org_name','asc')->get();
         $geo_structure_datas = GeoStructure::select('geo_id','geo_name','level_id','parent_id')->get();
-        $user_datas = UserData::get();
+        $user_datas = User::leftJoin("designation","users.desig_id","=","designation.desig_id")->select('users.*','designation.name as desig_name')->get();
 
         if(isset($request->purpose)&&isset($request->id)){
             $hidden_input_purpose=$request->purpose;
@@ -62,6 +64,7 @@ class GeoStructureController extends Controller
     }
 
     public function store(Request $request){
+        // return $request;
         $geo_structure = new GeoStructure;
 
         if($request->hidden_input_purpose=="edit"){
@@ -73,10 +76,12 @@ class GeoStructureController extends Controller
         $geo_structure->level_id = $request->level_id;
         $geo_structure->officer_id = $request->officer_id;
 
+        // initializing initially
         $geo_structure->parent_id = '-1';
         $geo_structure->dist_id = '-1';
         $geo_structure->sd_id = '-1';
         $geo_structure->bl_id = '-1';
+
         if($request->level_id=="2"){
             $geo_structure->dist_id = $request->dist_id;
             $geo_structure->parent_id = $request->dist_id;
@@ -91,14 +96,15 @@ class GeoStructureController extends Controller
             $geo_structure->sd_id = $request->sd_id;
             $geo_structure->bl_id = $request->bl_id;
             $geo_structure->parent_id = $request->bl_id;
-            if($request->no_of_villages=="")
-            {
-                $geo_structure->no_of_villages = '0'; 
-            }
-            else
-            {
+        }
+
+        if($request->no_of_villages&&$request->level_id=="4")
+        {
             $geo_structure->no_of_villages = $request->no_of_villages;
-            }
+        }
+        else
+        {
+            $geo_structure->no_of_villages = 0; 
         }
 
         $geo_structure->created_by = '1';
@@ -118,6 +124,11 @@ class GeoStructureController extends Controller
         }
 
         return redirect('geo-structure');
+    }
+
+    public function get_block_data(Request $request){
+        $datas = GeoStructure::where('level_id','3')->where('sd_id', $request->sd_id)->get();
+        return $datas;
     }
 
     public function delete(Request $request){

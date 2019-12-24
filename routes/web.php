@@ -73,6 +73,7 @@ Route::get('geo-structure','GeoStructureController@index');
 Route::get('geo-structure/add','GeoStructureController@add');
 Route::post('geo-structure/store','GeoStructureController@store');
 Route::get('geo-structure/delete/{geo_id}','GeoStructureController@delete');
+Route::get('geo-structure/get-block-data','GeoStructureController@get_block_data');
 
 /* Scheme Structure */
 Route::get('scheme-structure','SchemeStructureController@index');
