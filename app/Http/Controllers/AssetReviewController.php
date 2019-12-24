@@ -282,6 +282,11 @@ class AssetReviewController extends Controller
         }
         return ['review_for'=>$request->review_for,'map_data'=>$data,'response'=>$response,"icon"=>$icon];
     }
+
+    public function export_pdf(Request $request){
+        $datas = json_decode($request->datas);
+        return $datas[0][1]; // first data
+    }
 }
 
 

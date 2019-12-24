@@ -260,6 +260,8 @@
                 <div style="margin-top: 4px; margin-left: auto; order: 2; display:inline-block;">
                     <a href="#" data-toggle="tooltip" title="Send Mail"><button type="button" class="btn btn-icon btn-round btn-success"><i class="fa fa-envelope" aria-hidden="true"></i></button></a>
                     <a href="#" data-toggle="tooltip" title="Print"><button type="button" class="btn btn-icon btn-round btn-default" id="print-button" onclick="printView();"><i class="fa fa-print" aria-hidden="true"></i></button></a>
+                    <a href="{{url('asset-review/pdf/pdfURL')}}" class="asset-review-export-as" data-toggle="tooltip" title="Export as PDF"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button></a>
+                    <a href="{{url('asset-review/export/excelURL')}}" class="asset-review-export-as" data-toggle="tooltip" title="Export as Excel"><button type="button" class="btn btn-icon btn-round btn-success" ><i class="fas fa-file-excel"></i></button></a>
                 </div>
             </ul>
             <hr>
@@ -342,6 +344,7 @@
 
 <!-- for review-for (block, punchayat) radio buttons -->
 <script>
+    var to_export_datas = "";
     var review_for = 'block';
     var selected_panchayat = new Array;
     var panchayat_form_data_received = false;
@@ -567,10 +570,11 @@
                 resetGalleryView();
                 resetCommon(); // to reset common things among all views
                 if (data.response == "no_data") { // no data found
-
+                    to_export_datas = "";
                 }
                 else { // data.response  == success
                     // calling/initialiazing all views
+                    to_export_datas = data.tabular_view;
                     initializeTabularView(data.tabular_view);
                     intializeGraphicalView(data.chart_labels, data.chart_datasets);
                     initializeMapView(data.map_view_blocks, data.map_view_assets);
@@ -993,6 +997,21 @@
 
         window.print();
     }
+</script>
+
+<script>
+    // export to pdf / excel
+    $(document).ready(function(){
+        $('.asset-review-export-as').click(function(e) {
+            e.preventDefault();
+            var href = this.href;
+            if(to_export_datas.length!=0)
+            {
+                console.log(JSON.stringify(to_export_datas));
+                window.location.href = ""+href+"?datas=" + JSON.stringify(to_export_datas);
+            }
+        });
+    });
 </script>
 
 <!-- 

@@ -161,6 +161,7 @@ Route::POST('asset-review/show', 'AssetReviewController@show');
 Route::get('asset-review/get-datas', 'AssetReviewController@get_datas');
 Route::get('asset-review/get-map-data', 'AssetReviewController@get_map_data');
 Route::get('asset-review/get-panchayat-data', 'AssetReviewController@get_panchayat_data');
+Route::get('asset-review/pdf/pdfURL','AssetReviewController@export_pdf');
 
 /*Scheme Type*/
 Route::get('scheme-type','SchemeTypeController@index');
