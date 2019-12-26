@@ -47,6 +47,7 @@
                             <thead style="background: #d6dcff;color: #000;">
                                 <tr>
                                     <th>#</th>
+                                    <th>Scheme Logo</th>
                                     <th>Scheme Name</th>
                                     <th>Short Name</th>
                                     <th>Department</th>
@@ -58,6 +59,7 @@
                                 @foreach($datas as $data)
                                     <tr>
                                         <td width="40px;">{{$count++}}</td>
+                                        <td>@if($data->scheme_logo) <img src="{{$data->scheme_logo}}" style="height: 50px;"> @endif</td>
                                         <td>{{$data->scheme_name}}</td>
                                         <td>{{$data->scheme_short_name}}</td>
                                         <td>{{$data->dept_name}}</td>

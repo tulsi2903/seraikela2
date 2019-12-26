@@ -111,7 +111,7 @@
                     <div class="row">
                         <div class="card-body p-t-30" style="padding: 11px;">
                             <div class="form-group">
-                                <input type="hidden" name="asset" value="asset">
+                                <input type="hidden" name="category" value="category">
                                 <input type="hidden" name="data" value="{{$datas}}">
                                 <!-- <input type="text" name="from" class="form-control" placeholder="From" required=""> -->
                             </div> 

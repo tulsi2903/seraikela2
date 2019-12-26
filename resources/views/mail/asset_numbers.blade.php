@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title>asset_numbers</title>
+    <title>Asset numbers</title>
     <style type="text/css">
         table {
             border-color: black;
@@ -9,7 +9,7 @@
     </style>
 </head>
 <body>
-    <h3><u>All Asset Type</h3></u>
+    <h3><u>Asset Numbers</h3></u>
     <br> 
     <table border="1px" style="border-collapse: collapse;" class="table table-striped table-bordered table-datatable table-sm">
         <thead>

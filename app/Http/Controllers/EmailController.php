@@ -453,6 +453,74 @@ class EmailController extends Controller
              });
               return redirect('uom');
         }
+
+        elseif($request->sub_category=="sub_category"){
+            
+            $email_from=$request->from;
+            $email_to=$request->to;
+            $email_cc=$request->cc;
+            $send_subject=$request->subject;
+            $details=json_decode($request->data);
+
+            $user = array('email_from'=>$email_from,'email_to'=>$email_to, 'cc'=>$email_cc, 'subject'=>$request->subject, 'content'=>$request->message,'results'=>$details);
+            
+            Mail::send('mail.sub_category',['user'=> $user], function($message) use ($user)
+             {
+                 $email_to=explode(',',$user['email_to']);
+                 foreach($email_to as $key=>$value)
+                {
+                    $message->to($email_to[$key]);
+                }
+
+                if(@$user['cc'])
+                {
+                 $email_cc=explode(',',$user['cc']);
+                    foreach($email_cc as $key=>$value)
+                    {
+                        $message->cc($email_cc[$key]);
+                    }
+                }
+                $message->subject($user['subject']);
+                $message->from('dsrm.skla@gmail.com','seraikela'); 
+                 session()->put('alert-class','alert-success');
+                 session()->put('alert-content','Email send');
+             });
+              return redirect('asset_subcat');
+        }
+
+        elseif($request->category=="category"){
+            
+            $email_from=$request->from;
+            $email_to=$request->to;
+            $email_cc=$request->cc;
+            $send_subject=$request->subject;
+            $details=json_decode($request->data);
+
+            $user = array('email_from'=>$email_from,'email_to'=>$email_to, 'cc'=>$email_cc, 'subject'=>$request->subject, 'content'=>$request->message,'results'=>$details);
+            
+            Mail::send('mail.category',['user'=> $user], function($message) use ($user)
+             {
+                 $email_to=explode(',',$user['email_to']);
+                 foreach($email_to as $key=>$value)
+                {
+                    $message->to($email_to[$key]);
+                }
+
+                if(@$user['cc'])
+                {
+                 $email_cc=explode(',',$user['cc']);
+                    foreach($email_cc as $key=>$value)
+                    {
+                        $message->cc($email_cc[$key]);
+                    }
+                }
+                $message->subject($user['subject']);
+                $message->from('dsrm.skla@gmail.com','seraikela'); 
+                 session()->put('alert-class','alert-success');
+                 session()->put('alert-content','Email send');
+             });
+              return redirect('assetcat');
+        }
     }
     // public function mail(){
     //     return view('index1');

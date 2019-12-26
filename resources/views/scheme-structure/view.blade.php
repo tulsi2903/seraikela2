@@ -38,6 +38,7 @@ hr.new2 {
                         <th>Scheme Name</th>
                         <th>Short Name</th>
                         <th>Scheme Type</th>
+                        <th>Scheme Asset</th>
                         <th>Department</th>
                         <th>Status(is_active)</th>
                     </tr>
@@ -46,21 +47,22 @@ hr.new2 {
                         <td>{{$scheme_details->scheme_name}}</td>
                         <td>{{$scheme_details->scheme_short_name}}</td>
                         <td>{{$scheme_types->sch_type_name}}</td>
+                        <td>{{$asset_scheme->scheme_asset_name}}</td>
                         <td>{{$departments->dept_name}}</td>
 
                         <td>{{$scheme_details->is_active}}</td>
                     </tr>
                     <tr>
-                        <th colspan="5">Description</th>
+                        <th colspan="6">Description</th>
                     </tr>
                     <tr style="height: 85px;">
-                        <td colspan="5">{{$scheme_details->description}}</td>
+                        <td colspan="6">{{$scheme_details->description}}</td>
                     </tr>
 
                     <tr>
                         <th colspan="2">Attachment</th>
                         <th colspan="2">Scheme Logo</th>
-                        <th colspan="1">Map Marker Icon</th>
+                        <th colspan="2">Map Marker Icon</th>
                     </tr>
                     <tr>
                         <td colspan='2'>
@@ -71,7 +73,7 @@ hr.new2 {
                                     {
                                         ?>
                             <a
-                                href="{{url('public/uploaded_documents/')}}/{{$attachment_array[$i]}}">{{$attachment_array[$i]}}</a>
+                                href="{{url('public/uploaded_documents/schemes')}}/{{$attachment_array[$i]}}">{{$attachment_array[$i]}}</a>
                             <br>
 
                             <?php
@@ -82,11 +84,9 @@ hr.new2 {
                                     ?>
                         </td>
 
-
-
-                        <td colspan='2'><img src="{{url('public/images')}}/{{$scheme_details->scheme_logo}}"
+                        <td colspan='2'><img src="{{url('public/uploaded_documents/schemes')}}/{{$scheme_details->scheme_logo}}"
                                 style="max-height:200px;"></td>
-                        <td colspan='1'><img src="{{url('public/images')}}/{{$scheme_details->scheme_map_marker}}"
+                        <td colspan='1'><img src="{{url('public/uploaded_documents/schemes')}}/{{$scheme_details->scheme_map_marker}}"
                                 style="max-height:200px;"></td>
 
 
