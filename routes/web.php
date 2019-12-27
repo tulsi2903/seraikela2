@@ -228,13 +228,20 @@ Route::get('mail', function () {
 
 Route::post('sendmail','EmailController@sendmail');
 
-//fav rohit
-Route::any('favourites','FavController@index');
-Route::post('fav_department','FavController@add_fav_departs');
-Route::get('fav_department/export/excelURL','FavController@export_Excel_Department');
-Route::get('fav_department/pdf/pdfURL','FavController@export_PDF_Department');
-
-
-Route::post('fav_scheme','FavController@add_fav_scheme');
-Route::post('fav_block','FavController@add_fav_block');
-Route::post('fav_panchayat','FavController@add_fav_panchayat');
+ //fav rohit
+ Route::any('favourites','FavController@index');
+ Route::post('fav_department','FavController@add_fav_departs');
+ Route::get('fav_department/export/excelURL','FavController@export_Excel_Department');
+ Route::get('fav_department/pdf/pdfURL','FavController@export_PDF_Department');
+ 
+ Route::post('fav_scheme','FavController@add_fav_scheme');
+ Route::get('fav_scheme/export/excelURL','FavController@export_Scheme_Excel_Department');
+ Route::get('fav_scheme/pdf/pdfURL','FavController@export_Scheme_PDF_Department');
+ 
+ Route::post('fav_block','FavController@add_fav_block');
+ Route::get('fav_block/export/excelURL','FavController@export_Block_Excel_Department');
+ Route::get('fav_block/pdf/pdfURL','FavController@export_Block_PDF_Department');
+ 
+ Route::post('fav_panchayat','FavController@add_fav_panchayat');
+ Route::get('fav_panchayat/export/excelURL','FavController@export_Panchayat_Excel_Department');
+ Route::get('fav_panchayat/pdf/pdfURL','FavController@export_Panchayat_PDF_Department');

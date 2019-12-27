@@ -9,47 +9,50 @@ use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\AfterSheet;
 use Maatwebsite\Excel\Events\BeforeExport;
 use DB;
-use App\Department;
-use App\Organisation;
 use App\Fav_Dept;
+use App\SchemeStructure;
+use App\Fav_Scheme;
+use App\GeoStructure;
+use App\Fav_Block;
+use App\Fav_Panchayat;
 
 
 
-
-class FavouriteExport implements FromCollection, WithHeadings, ShouldAutoSize, WithEvents
+class FavouritePanchayat implements FromCollection, WithHeadings, ShouldAutoSize, WithEvents
 {
     /**
     * @return \Illuminate\Support\Collection
     */
     public function collection()
     {
-    $departmentexcel = Department::leftJoin('organisation', 'department.org_id', '=', 'organisation.org_id')
-        ->select('department.dept_id as slId','department.dept_name','department.created_at as createdDate')->where('department.is_active',1)
-        ->orderBy('department.dept_id','asc')
-        ->get();
+        $panchayat_excel = GeoStructure::select('geo_id as slId','geo_name','created_at as createdDate' )->where('level_id','4')
+                        ->orderBy('geo_structure.geo_id','asc')->get();
 
-        for($i=0;$i<count($departmentexcel);$i++){
-            $fav_dept_tmp = Fav_Dept::where('user_id',1)->where('dept_id',$departmentexcel[$i]->slId)->first();
-            if($fav_dept_tmp!=""){
-                $departmentexcel[$i]->checked="Yes";
-            }
-            else{
-                $departmentexcel[$i]->checked="No";
-            }
-        }
-        // // return $departmentexcel;
-        foreach ($departmentexcel as $key => $value) {
+                for($i=0;$i<count($panchayat_excel);$i++)
+                {
+                    $fav_panchayat_tmp = Fav_Panchayat::where('user_id',1)->where('panchayat_id',$panchayat_excel[$i]->slId)->first();
+                    if($fav_panchayat_tmp){
+                        $panchayat_excel[$i]->checked="Yes";
+                    }
+                    else{
+                        $panchayat_excel[$i]->checked="No";
+                    }
+
+                }
+        foreach ($panchayat_excel as $key => $value) {
             $value->slId = $key+1;
             $value->createdDate = date('d/m/Y',strtotime($value->createdDate));
         }
-     
-        return $departmentexcel;                      
+    
+        return $panchayat_excel;
+
+        
     }
     public function headings(): array
     {
         return [
             'Sl.No.',
-            'Department Name',
+            'Panchayat Name',
             'Date',
             'Check Favourite'
             

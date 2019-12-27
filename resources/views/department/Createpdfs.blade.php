@@ -365,7 +365,7 @@
             @foreach($departmentpdf as $index => $departmentpdf_data)
             <tr>
                <td>{{ $index+1 }}</td>
-               <td>@if($departmentpdf_data->checked==1) YES  @else  NO @endif </td>
+               <td>@if($departmentpdf_data->checked==1) Yes  @else  No @endif </td>
                <td>{{ $departmentpdf_data->dept_name }}</td>
             @endforeach
          </tbody>
@@ -407,6 +407,89 @@
          </tbody>
       </table>
       <p style="position: absolute; bottom: 0;"> {{ $AssetReviewdateTime }}</p><!-- position:absolute and bottom:0 css is used to pull this pragraph at the end of the page -->
+   </div>
+   @elseif($Scheme_pdf)
+   <div style="position: relative;"> <!-- position:realtive css is used for full page printing of pdf -->
+      <table border="1" class="table_css" style="width:100%">
+         <thead>
+            <tr>
+               <th style="text-align: center;" colspan="4">
+                  Schemes
+               </th>
+            </tr>
+            <tr>
+               <th style="text-align: center;width: 30px;">Sl.No.</th>
+               <th style="text-align: center;">Scheme Name</th>
+               <th style="text-align: center;">Short Name</th>
+               <th style="text-align: center;">Check Favourite</th>
+      
+            </tr>
+         </thead>
+         <tbody>
+            @foreach($Scheme_pdf as $index => $Scheme_pdf_data)
+            <tr>
+               <td>{{ $index+1 }}</td>               
+               <td>{{ $Scheme_pdf_data->scheme_name }}</td>
+               <td>{{ $Scheme_pdf_data->scheme_short_name }}</td>
+               <td>@if($Scheme_pdf_data->checked==1) Yes  @else  No @endif </td>
+            @endforeach
+         </tbody>
+      </table>
+      <p style="position: absolute; bottom: 0;"> {{ $SchemeTime }}</p><!-- position:absolute and bottom:0 css is used to pull this pragraph at the end of the page -->
+   </div>
+   @elseif($block_pdf)
+   <div style="position: relative;"> <!-- position:realtive css is used for full page printing of pdf -->
+      <table border="1" class="table_css" style="width:100%">
+         <thead>
+            <tr>
+               <th style="text-align: center;" colspan="3">
+                  Block
+               </th>
+            </tr>
+            <tr>
+               <th style="text-align: center;width: 30px;">Sl.No.</th>
+               <th style="text-align: center;">Block Name</th>
+               <th style="text-align: center;">Check Favourite</th>
+      
+            </tr>
+         </thead>
+         <tbody>
+            @foreach($block_pdf as $index => $block_pdf_data)
+            <tr>
+               <td>{{ $index+1 }}</td>               
+               <td>{{ $block_pdf_data->geo_name}}</td>
+               <td>@if($block_pdf_data->checked==1) Yes  @else  No @endif </td>
+            @endforeach
+         </tbody>
+      </table>
+      <p style="position: absolute; bottom: 0;"> {{ $BlockTime }}</p><!-- position:absolute and bottom:0 css is used to pull this pragraph at the end of the page -->
+   </div>
+   @elseif($panchayat_pdf)
+   <div style="position: relative;"> <!-- position:realtive css is used for full page printing of pdf -->
+      <table border="1" class="table_css" style="width:100%">
+         <thead>
+            <tr>
+               <th style="text-align: center;" colspan="3">
+                  Panchayat
+               </th>
+            </tr>
+            <tr>
+               <th style="text-align: center;width: 30px;">Sl.No.</th>
+               <th style="text-align: center;">Panchayat Name</th>
+               <th style="text-align: center;">Check Favourite</th>
+      
+            </tr>
+         </thead>
+         <tbody>
+            @foreach($panchayat_pdf as $index => $panchayat_pdf_data)
+            <tr>
+               <td>{{ $index+1 }}</td>               
+               <td>{{ $panchayat_pdf_data->geo_name}}</td>
+               <td>@if($panchayat_pdf_data->checked==1) Yes  @else  No @endif </td>
+            @endforeach
+         </tbody>
+      </table>
+      <p style="position: absolute; bottom: 0;"> {{ $PanchayatTime }}</p><!-- position:absolute and bottom:0 css is used to pull this pragraph at the end of the page -->
    </div>
    @endif
 

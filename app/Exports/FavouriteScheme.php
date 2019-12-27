@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Exports;
 
 use Maatwebsite\Excel\Concerns\FromCollection;
@@ -12,44 +11,44 @@ use DB;
 use App\Department;
 use App\Organisation;
 use App\Fav_Dept;
+use App\SchemeStructure;
+use App\Fav_Scheme;
 
 
 
-
-class FavouriteExport implements FromCollection, WithHeadings, ShouldAutoSize, WithEvents
+class FavouriteScheme implements FromCollection, WithHeadings, ShouldAutoSize, WithEvents
 {
     /**
     * @return \Illuminate\Support\Collection
     */
     public function collection()
     {
-    $departmentexcel = Department::leftJoin('organisation', 'department.org_id', '=', 'organisation.org_id')
-        ->select('department.dept_id as slId','department.dept_name','department.created_at as createdDate')->where('department.is_active',1)
-        ->orderBy('department.dept_id','asc')
-        ->get();
+        $Scheme_excel = SchemeStructure::select('scheme_id as slId','scheme_name','scheme_short_name','created_at as createdDate')->get();
 
-        for($i=0;$i<count($departmentexcel);$i++){
-            $fav_dept_tmp = Fav_Dept::where('user_id',1)->where('dept_id',$departmentexcel[$i]->slId)->first();
-            if($fav_dept_tmp!=""){
-                $departmentexcel[$i]->checked="Yes";
+        for($i=0;$i<count($Scheme_excel);$i++)
+        {
+            $fav_scheme_tmp = Fav_Scheme::where('user_id',1)->where('scheme_id',$Scheme_excel[$i]->slId)->first();
+            if($fav_scheme_tmp){
+                $Scheme_excel[$i]->checked="Yes";
             }
             else{
-                $departmentexcel[$i]->checked="No";
+                $Scheme_excel[$i]->checked="No";
             }
         }
-        // // return $departmentexcel;
-        foreach ($departmentexcel as $key => $value) {
+
+        foreach ($Scheme_excel as $key => $value) {
             $value->slId = $key+1;
             $value->createdDate = date('d/m/Y',strtotime($value->createdDate));
         }
      
-        return $departmentexcel;                      
+        return $Scheme_excel;                      
     }
     public function headings(): array
     {
         return [
             'Sl.No.',
-            'Department Name',
+            'Scheme Name',
+            'Short Name',
             'Date',
             'Check Favourite'
             

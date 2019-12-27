@@ -14,6 +14,9 @@ use App\Fav_Block;
 use App\Fav_Panchayat;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\FavouriteExport;
+use App\Exports\FavouriteScheme;
+use App\Exports\FavouriteBlock;
+use App\Exports\FavouritePanchayat;
 use PDF;
 use DB;
 
@@ -40,7 +43,8 @@ class FavController extends Controller
 
             //Scheme fav code or not fav
             $datas_scheme = SchemeStructure::select('scheme_id','scheme_name','scheme_short_name')->get();
-            for($i=0;$i<count($datas_scheme);$i++){
+            for($i=0;$i<count($datas_scheme);$i++)
+            {
                 $fav_scheme_tmp = Fav_Scheme::select('favourite_scheme_id')->where('user_id',1)->where('scheme_id',$datas_scheme[$i]->scheme_id)->first();
                 if($fav_scheme_tmp){
                     $datas_scheme[$i]->checked=1;
@@ -67,7 +71,7 @@ class FavController extends Controller
 
             //fav panchayat fav  or not
             $datas_panchayat = GeoStructure::select('geo_id','geo_name')->where('level_id','4')
-                        ->orderBy('geo_structure.geo_id','asc')->get();
+                                ->orderBy('geo_structure.geo_id','asc')->get();
             for($i=0;$i<count($datas_panchayat);$i++){
                 $fav_panchayat_tmp = Fav_Panchayat::select('favourite_panchayat_id')->where('user_id',1)->where('panchayat_id',$datas_panchayat[$i]->geo_id)->first();
                 if($fav_panchayat_tmp){
@@ -83,15 +87,18 @@ class FavController extends Controller
     }
 
 
-    public function add_fav_departs(Request $request){
-        if(($request->dept_id)!=0){           
+    public function add_fav_departs(Request $request)
+    {
+        if(($request->dept_id)!=0)
+        {           
             // delete previous entries
             $delete_query = Fav_Dept::where('user_id',1)->delete();
             
-            $count_id = $request->dept_id;           
-            foreach ($count_id as $department_id) {        
+            $count_id = $request->dept_id;
+            foreach ($count_id as $department_id) 
+            {                       
                 $fav_department= new Fav_Dept();
-                $fav_department->dept_id = $department_id; 
+                $fav_department->dept_id = $department_id;              
                 $fav_department->user_id =1;
                 $fav_department->org_id = 1;
                 $fav_department->created_by =1;
@@ -102,7 +109,8 @@ class FavController extends Controller
             session()->put('alert-content','Your Favourite Department is Inserted');
             return redirect('favourites');
         }
-        else{
+        else
+        {
             session()->put('alert-class','alert-danger');
             session()->put('alert-content','Select Atleast one Favourite Department!');
             return redirect('favourites');
@@ -193,13 +201,18 @@ class FavController extends Controller
             return redirect('favourites');
         }     
     }
-    
-    //asset department excel sectionrohit singh
+
+
+
+
+/** Here the export section started  */
+//Asset Department excel section by rohit singh
+
     public function export_Excel_Department()
     {
         return Excel::download(new FavouriteExport, 'FavouriteDepartment-Sheet.xls');
     }
-    //asset department pdf sectionrohit singh
+    //Asset Department pdf sectionrohit singh
     public function export_PDF_Department()
     {
         $departmentpdf = Department::leftJoin('organisation', 'department.org_id', '=', 'organisation.org_id')
@@ -222,6 +235,95 @@ class FavController extends Controller
         $pdf = PDF::loadView('department/Createpdfs',compact('departmentpdf','DeprtmentTime'));
         return $pdf->download('favouriteDeprtment.pdf');
     }
+
+    //Scheme_Excel  section rohit singh
+    public function export_Scheme_Excel_Department()
+    {
+        return Excel::download(new FavouriteScheme, 'FavouriteScheme-Sheet.xls');
+    }
+    //Scheme pdf section rohit singh
+    public function export_Scheme_PDF_Department()
+    {
+        $Scheme_pdf = SchemeStructure::select('scheme_id','scheme_name','scheme_short_name')->get();
+        for($i=0;$i<count($Scheme_pdf);$i++)
+        {
+            $fav_scheme_tmp = Fav_Scheme::select('favourite_scheme_id')->where('user_id',1)->where('scheme_id',$Scheme_pdf[$i]->scheme_id)->first();
+            if($fav_scheme_tmp){
+                $Scheme_pdf[$i]->checked=1;
+            }
+            else{
+                $Scheme_pdf[$i]->checked=0;
+            }
+        }
+
+        date_default_timezone_set('Asia/Kolkata');
+        $SchemeTime = date('d-m-Y H:i A');
+        $pdf = PDF::loadView('department/Createpdfs',compact('Scheme_pdf','SchemeTime'));
+        return $pdf->download('favouriteScheme.pdf');
+    }
+
+
+    //Block_Excel  section by  rohit singh
+    public function export_Block_Excel_Department()
+    {
+        return Excel::download(new FavouriteBlock, 'FavouriteBlock-Sheet.xls');
+    }
+    //Block_pdf section  by rohit singh
+    public function export_Block_PDF_Department()
+    {
+        $block_pdf = GeoStructure::select('geo_id','geo_name')->where('level_id','3')
+                        ->orderBy('geo_structure.geo_id','asc')->get();
+
+        for($i=0;$i<count($block_pdf);$i++)
+        {
+            $fav_block_tmp = Fav_Block::select('favourite_block_id')->where('user_id',1)->where('block_id',$block_pdf[$i]->geo_id)->first();
+            if($fav_block_tmp){
+                $block_pdf[$i]->checked=1;
+            }
+            else{
+                $block_pdf[$i]->checked=0;
+            }
+        }
+
+        date_default_timezone_set('Asia/Kolkata');
+        $BlockTime = date('d-m-Y H:i A');
+        $pdf = PDF::loadView('department/Createpdfs',compact('block_pdf','BlockTime'));
+        return $pdf->download('favouriteBlock.pdf');
+    }
+
+        //Panchayat_Excel   section by  rohit singh
+        public function export_Panchayat_Excel_Department()
+        {
+            return Excel::download(new FavouritePanchayat, 'FavouritePanchayat-Sheet.xls');
+        }
+        //Panchayat_ pdf section  by rohit singh
+        public function export_Panchayat_PDF_Department()
+        {
+            $panchayat_pdf = GeoStructure::select('geo_id','geo_name')->where('level_id','4')
+                        ->orderBy('geo_structure.geo_id','asc')->get();
+
+                for($i=0;$i<count($panchayat_pdf);$i++)
+                {
+                    $fav_panchayat_tmp = Fav_Panchayat::select('favourite_panchayat_id')->where('user_id',1)->where('panchayat_id',$panchayat_pdf[$i]->geo_id)->first();
+                    if($fav_panchayat_tmp){
+                        $panchayat_pdf[$i]->checked=1;
+                    }
+                    else{
+                        $panchayat_pdf[$i]->checked=0;
+                    }
+
+                }
+    
+            date_default_timezone_set('Asia/Kolkata');
+            $PanchayatTime = date('d-m-Y H:i A');
+            $pdf = PDF::loadView('department/Createpdfs',compact('panchayat_pdf','PanchayatTime'));
+            return $pdf->download('favouritePanchayat.pdf');
+        }
+    
+
+
+    
+
 
 
 

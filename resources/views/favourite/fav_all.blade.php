@@ -33,7 +33,7 @@
                                     <a class="nav-link" id="v-pills-profile-tab-nobd" data-toggle="pill" href="#v-pills-profile-nobd" role="tab" aria-controls="v-pills-profile-nobd" aria-selected="false">Scheme</a>
                                     <a class="nav-link" id="v-pills-messages-tab-nobd" data-toggle="pill" href="#v-pills-messages-nobd" role="tab" aria-controls="v-pills-messages-nobd" aria-selected="false">Block</a>
                                     <a class="nav-link" id="v-pills-report-tab-nobd" data-toggle="pill" href="#v-pills-report-nobd" role="tab" aria-controls="v-pills-report-nobd" aria-selected="false">Panchayat</a>
-
+                                    <a class="nav-link" id="v-pills-asset-tab-nobd" data-toggle="pill" href="#v-pills-asset-nobd" role="tab" aria-controls="v-pills-asset-nobd" aria-selected="false">Define Asset</a>
                                 </div>
                             </div>
                         
@@ -53,8 +53,7 @@
                                                         <tr>
                                                             <th>#</th>
                                                             <th>Department Name</th>
-                                                            <th>Fav</th>
-                                                                       
+                                                            <th>Fav</th>                                         
                                                         </tr>
                                                     </thead>
                                                     <tbody>                                                                    
@@ -80,12 +79,12 @@
                                             </div>
                                         </form>
                                     </div><!--END OF TAB-->
-                                
-                                    
+
+
                                     <div class="tab-pane fade" id="v-pills-profile-nobd" role="tabpanel" aria-labelledby="v-pills-profile-tab-nobd">
                                         <div style="float: right;margin-right: 2em;margin-bottom: 1em;">
-                                            <a href="{{url('#')}}" data-toggle="tooltip" title="Export to PDF"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button></a>
-                                            <a href="{{url('#')}}" data-toggle="tooltip" title="Export to Excel"><button type="button" class="btn btn-icon btn-round btn-primary" ><i class="fas fa-file-excel"></i></button></a>
+                                            <a href="{{url('fav_scheme/pdf/pdfURL')}}" data-toggle="tooltip" title="Export to PDF"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button></a>
+                                            <a href="{{url('fav_scheme/export/excelURL')}}" data-toggle="tooltip" title="Export to Excel"><button type="button" class="btn btn-icon btn-round btn-primary" ><i class="fas fa-file-excel"></i></button></a>
                                         </div><br><br>
                                             <form action="{{url('fav_scheme')}}" method="post">
                                                     @csrf
@@ -121,11 +120,11 @@
                                             </div>
                                             </form>
                                     </div>  <!-- end of tab -->
-
+                                    
                                     <div class="tab-pane fade" id="v-pills-messages-nobd" role="tabpanel" aria-labelledby="v-pills-messages-tab-nobd">
                                         <div style="float: right;margin-right: 2em;margin-bottom: 1em;">
-                                            <a href="{{url('#')}}" data-toggle="tooltip" title="Export to PDF"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button></a>
-                                            <a href="{{url('#')}}" data-toggle="tooltip" title="Export to Excel"><button type="button" class="btn btn-icon btn-round btn-primary" ><i class="fas fa-file-excel"></i></button></a>
+                                            <a href="{{url('fav_block/pdf/pdfURL')}}" data-toggle="tooltip" title="Export to PDF"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button></a>
+                                            <a href="{{url('fav_block/export/excelURL')}}" data-toggle="tooltip" title="Export to Excel"><button type="button" class="btn btn-icon btn-round btn-primary" ><i class="fas fa-file-excel"></i></button></a>
                                         </div><br><br>
                                             <form action="{{url('fav_block')}}" method="post">
                                                     @csrf
@@ -159,11 +158,11 @@
                                             </form>
                                     </div>
                                     
-
+                                                                       
                                     <div class="tab-pane fade" id="v-pills-report-nobd" role="tabpanel" aria-labelledby="v-pills-report-tab-nobd" style="overflow-y: scroll; height:600px;">
                                         <div style="float: right;margin-right: 2em;margin-bottom: 1em;">
-                                            <a href="{{url('#')}}" data-toggle="tooltip" title="Export to PDF"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button></a>
-                                            <a href="{{url('#')}}" data-toggle="tooltip" title="Export to Excel"><button type="button" class="btn btn-icon btn-round btn-primary" ><i class="fas fa-file-excel"></i></button></a>
+                                            <a href="{{url('fav_panchayat/pdf/pdfURL')}}" data-toggle="tooltip" title="Export to PDF"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button></a>
+                                            <a href="{{url('fav_panchayat/export/excelURL')}}" data-toggle="tooltip" title="Export to Excel"><button type="button" class="btn btn-icon btn-round btn-primary" ><i class="fas fa-file-excel"></i></button></a>
                                         </div><br><br>
                                             <form action="{{url('fav_panchayat')}}" method="post">
                                                     @csrf
@@ -178,10 +177,9 @@
                                                 
                                                     <tbody>
                                                         @if(count($datas_panchayat)!=0)
-                                                
                                                         <tr>
                                                             @foreach($datas_panchayat as $key => $val)
-                                                            <td><input type="checkbox" name="panchayat_id[]"  value={{$val->geo_id}}@if($val->checked==1) checked @endif> {{$datas_panchayat[$key]['geo_name']}}</td>
+                                                            <td><input type="checkbox" name="panchayat_id[]"  value={{$val->geo_id}} @if($val->checked==1) checked @endif> {{$datas_panchayat[$key]['geo_name']}}</td>
                                                             <?php 
                                                                 if((($key+1) % 5) == 0){
                                                                     echo "</tr><tr>";
@@ -200,6 +198,45 @@
                                             </div>
                                         </form>
                                     </div>
+
+
+
+
+
+                                    <div class="tab-pane fade" id="v-pills-asset-nobd" role="tabpanel" aria-labelledby="v-pills-asset-tab-nobd" style="overflow-y: scroll; height:600px;">
+                                        <div style="float: right;margin-right: 2em;margin-bottom: 1em;">
+                                            <a href="{{url('fav_panchayat/pdf/pdfURL')}}" data-toggle="tooltip" title="Export to PDF"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button></a>
+                                            <a href="{{url('fav_panchayat/export/excelURL')}}" data-toggle="tooltip" title="Export to Excel"><button type="button" class="btn btn-icon btn-round btn-primary" ><i class="fas fa-file-excel"></i></button></a>
+                                        </div><br><br>
+                                            <form action="{{url('')}}" method="post">
+                                                    @csrf
+                                        <div class="card-body" style="margin-top:-32px;">																								
+                                            <div class="table-responsive">
+                                                <table class="display table-datatable table table-striped table-hover">
+                                                    <thead style="background: #d6dcff;color: #000;">
+                                                        <tr>
+                                                            <th>Name</th>
+                                                            <th>Type</th>
+                                                            <th>Department Name</th>
+                                                        </tr>
+                                                    </thead>
+                                                
+                                                    <tbody>
+                                                      <tr>
+                                                          <td>bfsdgfzhb</td>
+                                                      </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div><!--end of card body-->
+                                        <hr class="new2" style="width: 98%;"> 
+                                        <div class="card-action" style="margin-top: -29px;">   
+                                                <button class="btn btn-secondary">Submit</button>
+                                            </div>
+                                        </form>
+                                    </div>
+
+
                                 </div>
                             
                                 
