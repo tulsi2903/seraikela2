@@ -12,6 +12,9 @@ use App\GeoStructure;
 use App\Year;
 use App\AssetGallery;
 use DB;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\AssetReviewSectionExport;
+use PDF;
 
 class AssetReviewController extends Controller
 {
@@ -283,9 +286,18 @@ class AssetReviewController extends Controller
         return ['review_for'=>$request->review_for,'map_data'=>$data,'response'=>$response,"icon"=>$icon];
     }
 
+    public function export_to_Excel(Request $request)
+    {
+        $AssetReview = json_decode($request->datas);
+        return Excel::download(new AssetReviewSectionExport($AssetReview), 'Asset Review-Sheet.xls');
+    }
+
     public function export_pdf(Request $request){
-        $datas = json_decode($request->datas);
-        return $datas[0][1]; // first data
+        $AssetReviewdata = json_decode($request->datas);
+        date_default_timezone_set('Asia/Kolkata');
+        $AssetReviewdateTime = date('d-m-Y H:i A');
+        $pdf = PDF::loadView('department/Createpdfs', compact('AssetReviewdata', 'AssetReviewdateTime'));
+        return $pdf->download('Asset Review.pdf');
     }
 }
 

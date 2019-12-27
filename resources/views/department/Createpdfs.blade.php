@@ -372,6 +372,42 @@
       </table>
       <p style="position: absolute; bottom: 0;"> {{ $DeprtmentTime }}</p><!-- position:absolute and bottom:0 css is used to pull this pragraph at the end of the page -->
    </div>
+   @elseif($AssetReviewdata)
+   <div style="position: relative;"> <!-- position:realtive css is used for full page printing of pdf -->
+      <table border="1" class="table_css" style="width:100%">
+         <thead>
+            <tr>
+               <th style="text-align: center;" colspan="<?php echo count($AssetReviewdata[0]); ?>">
+                  Asset Review
+               </th>
+            </tr>
+         </thead>
+         <tbody>
+            @for($i = 0; $i < count($AssetReviewdata); $i++)
+               @if ($i == 0)
+                  <tr>
+               @else
+                  <tr>
+               @endif
+
+               @for($j = 0; $j < count($AssetReviewdata[0]); $j++)
+                  @if ($i == 0)
+                     @if ($AssetReviewdata[$i][$j] == null)
+                        <th>Name</th>
+                        @else
+                        <th>{{$AssetReviewdata[$i][$j]}}</th>
+                     @endif
+                  @else
+                        <td>{{$AssetReviewdata[$i][$j]}}</td>
+                  @endif
+
+               @endfor
+            @endfor 
+            </tr>
+         </tbody>
+      </table>
+      <p style="position: absolute; bottom: 0;"> {{ $AssetReviewdateTime }}</p><!-- position:absolute and bottom:0 css is used to pull this pragraph at the end of the page -->
+   </div>
    @endif
 
    

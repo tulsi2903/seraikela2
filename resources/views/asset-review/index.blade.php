@@ -536,6 +536,7 @@
 
     function getDatas() {
         // getting datas before send to controller
+       
         dept_id = $("#dept_id").val();
         year_id = $("#year_id").val();
         geo_id = $("#geo_id").val(); // string, have convert to array in controller// block ids
@@ -579,7 +580,7 @@
                     intializeGraphicalView(data.chart_labels, data.chart_datasets);
                     initializeMapView(data.map_view_blocks, data.map_view_assets);
                     initializeGalleryView(data.gallery_images);
-
+                    
                     // all-view-details
                     initialiteCommon();
                     $("#all-view-details").html("<b>Department: </b>"+$("#dept_id option:selected").text());
@@ -664,7 +665,11 @@
 
             for (var j = 0; j < data[0].length; j++) {
                 if (i == 0) {  // for first row i.e th
+                    if (data[i][j] == "") { // for first row of first index name by raj
+                    toShowTabularForm = toShowTabularForm + "<th> Name </th>";
+                    } else {
                     toShowTabularForm = toShowTabularForm + "<th>" + data[i][j] + "</th>";
+                    }
                 }
                 else { // for others
                     toShowTabularForm = toShowTabularForm + "<td>" + data[i][j] + "</td>";
