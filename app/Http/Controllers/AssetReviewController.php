@@ -14,6 +14,7 @@ use App\AssetGallery;
 use DB;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\AssetReviewSectionExport;
+use PdfBuilder;
 use PDF;
 
 class AssetReviewController extends Controller

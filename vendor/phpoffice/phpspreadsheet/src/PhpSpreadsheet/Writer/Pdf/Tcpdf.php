@@ -71,7 +71,7 @@ class Tcpdf extends Pdf
         $pdf->SetAutoPageBreak(true, $printMargins->getBottom() * 72);
 
         $pdf->setPrintHeader(false);
-        $pdf->setPrintFooter(false);
+        $pdf->setPrintFooter(true);
 
         $pdf->AddPage();
 
