@@ -539,13 +539,12 @@ body {
    left: 0;
    top: 0
 }
-
 .sidebar, .sidebar[data-background-color=white] {
    position: fixed;
    top: 0;
    bottom: 0;
    left: 0;
-   width: 250px;
+   width: 260px;
    margin-top: 66px;
    display: block;
    /* z-index: 1000; */
@@ -558,8 +557,8 @@ body {
    background: #12707e;
    transition: all .3s;
    height: 100%;
+   overflow-y: scroll;
 }
-
 .sidebar.full-height,
 .sidebar[data-background-color=white].full-height {
    margin-top: 0
@@ -7376,8 +7375,8 @@ label.error {
 }
 
 .btn-primary {
-   background: #1572e8!important;
-   border-color: #1572e8!important
+   background: #00BCD4!important;
+   border-color: #00BCD4!important;
 }
 
 .btn-primary:disabled,
