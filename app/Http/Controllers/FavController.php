@@ -28,8 +28,9 @@ use App\Exports\FavouriteAssets;
 
 class FavController extends Controller
 {
-    public function index(){
-           //Department FAV CODE FOR FAV OR NOT FAV    
+    public function index()
+    {
+           //Department FAV CODE 
             $datas_dept = Department::leftJoin('organisation', 'department.org_id', '=', 'organisation.org_id')
                 ->select('department.*','organisation.org_name')->where('department.is_active',1)
                 ->orderBy('department.dept_id','asc')->get();
@@ -59,7 +60,7 @@ class FavController extends Controller
             }
 
 
-            //block fav code or not fav
+            //block fav code 
             $datas_block = GeoStructure::select('geo_id','geo_name')->where('level_id','3')
                         ->orderBy('geo_structure.geo_id','asc')->get();
             
@@ -86,16 +87,15 @@ class FavController extends Controller
                 }
             }
 
-            //fav Assets 
+            //fav Assets     
             $datas_define_asset = Asset::leftJoin('department', 'asset.dept_id', '=', 'department.dept_id')
                                 ->select('asset.*','department.dept_name')
                                 ->orderBy('asset.asset_id','asc')->get();
             
-            for($i=0;$i<count($datas_define_asset);$i++){
+            for($i=0;$i<count($datas_define_asset);$i++)
+            {
                 $fav_define_tmp = Fav_Define_Assets::select('favourite_asset_id')->where('user_id',1)->where('asset_id',$datas_define_asset[$i]->asset_id)->first();
-                // echo "<pre>";
-                // print_r($fav_define_tmp);
-                // exit;
+
                 if($fav_define_tmp){
                     $datas_define_asset[$i]->checked=1;
                 }
