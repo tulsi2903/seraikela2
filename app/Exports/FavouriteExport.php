@@ -8,51 +8,59 @@ use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\AfterSheet;
 use Maatwebsite\Excel\Events\BeforeExport;
-use PDF;
 use DB;
-use App\Asset;
 use App\Department;
-use App\asset_cat;
-use App\asset_subcat;
+use App\Organisation;
+use App\Fav_Dept;
 
-class AssetSectionExport implements FromCollection, WithHeadings, ShouldAutoSize, WithEvents
+
+
+
+class FavouriteExport implements FromCollection, WithHeadings, ShouldAutoSize, WithEvents
 {
     /**
     * @return \Illuminate\Support\Collection
     */
     public function collection()
     {
-        $AssetValue = Asset::leftJoin('department', 'asset.dept_id', '=', 'department.dept_id')
-                        ->leftJoin('asset_cat', 'asset.category_id', '=', 'asset_cat.asset_cat_id')
-                        ->leftJoin('asset_subcat', 'asset.subcategory_id', '=', 'asset_subcat.asset_sub_id')
-                        ->select('asset.asset_id as slId','asset.asset_name','asset.movable','department.dept_name','asset.created_at as createdDate')
-                        ->orderBy('asset.asset_id', 'desc')
-                        ->get();
+    $departmentexcel = Department::leftJoin('organisation', 'department.org_id', '=', 'organisation.org_id')
+        ->select('department.dept_id as slId','department.dept_name','department.created_at as createdDate')->where('department.is_active',1)
+        ->orderBy('department.dept_id','asc')
+        ->get();
 
-        foreach ($AssetValue as $key => $value) {
+        for($i=0;$i<count($departmentexcel);$i++){
+            $fav_dept_tmp = Fav_Dept::select('favourite_department_id')->where('user_id',1)->where('dept_id',$departmentexcel[$i]->dept_id)->first();
+
+            if($fav_dept_tmp){
+                $departmentexcel[$i]->checked=1;
+            }
+            else{
+                $departmentexcel[$i]->checked=0;
+            }
+        }
+
+        foreach ($departmentexcel as $key => $value) {
+            // if($value->is_active=="1"){
+            //     $value->is_active=="yahoo";
+            // }
+            // else{
+            //     $value->is_active="noeees";
+            // }
             $value->slId = $key+1;
-           
-            if($value->movable == 1) {
-                $value->movable = "Movable";
-            }
-            else {
-                $value->movable = "Immovable";
-            }
             $value->createdDate = date('d/m/Y',strtotime($value->createdDate));
         }
-        return $AssetValue;
+        return $departmentexcel;                      
     }
     public function headings(): array
     {
         return [
-            'Sl. No.',
-            'Name',
-            'Type',
+            'Sl.No.',
+            'Check Favourite',
             'Department Name',
             'Date'
         ];
     }
-   public function registerEvents(): array
+    public function registerEvents(): array
     {
         return [
             AfterSheet::class    => function (AfterSheet $event) {

@@ -12,6 +12,10 @@ use App\SchemeStructure;
 use App\Fav_Scheme;
 use App\Fav_Block;
 use App\Fav_Panchayat;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\FavouriteExport;
+use PDF;
+use DB;
 
 
 
@@ -21,15 +25,8 @@ class FavController extends Controller
            //Department FAV CODE FOR FAV OR NOT FAV    
             $datas_dept = Department::leftJoin('organisation', 'department.org_id', '=', 'organisation.org_id')
                 ->select('department.*','organisation.org_name')->where('department.is_active',1)
-                ->orderBy('department.dept_id','asc')
-                ->get();
-
-
-            // $datas_dept = Department::leftJoin('organisation', 'department.org_id', '=', 'organisation.org_id')->leftjoin('','department.dept_id','=','fav_dept.favourite_department_id')->where('user_id',1)
-            // ->select('department.*','organisation.org_name')->where('department.is_active',1)
-            // ->orderBy('department.dept_id','asc')
-            // ->get();
-
+                ->orderBy('department.dept_id','asc')->get();
+ 
             for($i=0;$i<count($datas_dept);$i++){
                 $fav_dept_tmp = Fav_Dept::select('favourite_department_id')->where('user_id',1)->where('dept_id',$datas_dept[$i]->dept_id)->first();
 
@@ -40,9 +37,6 @@ class FavController extends Controller
                     $datas_dept[$i]->checked=0;
                 }
             }
-        //   $datas_dept=$datas_dept::sort('Fav','desc');
-        //   sort($datas_dept,);
-
 
             //Scheme fav code or not fav
             $datas_scheme = SchemeStructure::select('scheme_id','scheme_name','scheme_short_name')->get();
@@ -176,7 +170,6 @@ class FavController extends Controller
     public function add_fav_panchayat(Request $request){
         if(($request->panchayat_id)!=0){
 
-
              // delete previous entries
              $delete_query = Fav_Panchayat::where('user_id',1)->delete(); 
 
@@ -199,5 +192,44 @@ class FavController extends Controller
             session()->put('alert-content','Select Atleast one Favourite Panchayat!');
             return redirect('favourites');
         }     
-    } 
+    }
+    
+    //asset department excel sectionrohit singh
+    public function export_Excel_Department()
+    {
+        return Excel::download(new FavouriteExport, 'FavouriteDepartment-Sheet.xls');
+    }
+    //asset department pdf sectionrohit singh
+    public function export_PDF_Department()
+    {
+        $departmentpdf = Department::leftJoin('organisation', 'department.org_id', '=', 'organisation.org_id')
+            ->select('department.*','organisation.org_name')->where('department.is_active',1)
+            ->orderBy('department.dept_id','asc')
+            ->get();
+
+        for($i=0;$i<count($departmentpdf);$i++){
+            $fav_dept_tmp = Fav_Dept::select('favourite_department_id')->where('user_id',1)->where('dept_id',$departmentpdf[$i]->dept_id)->first();
+
+            if($fav_dept_tmp){
+                $departmentpdf[$i]->checked=1;
+            }
+            else{
+                $departmentpdf[$i]->checked=0;
+            }
+        }
+        date_default_timezone_set('Asia/Kolkata');
+        $DeprtmentTime = date('d-m-Y H:i A');
+        $pdf = PDF::loadView('department/Createpdfs',compact('departmentpdf','DeprtmentTime'));
+        return $pdf->download('favouriteDeprtment.pdf');
+    }
+
+
+
+
+
+
+
+
+
+
 }

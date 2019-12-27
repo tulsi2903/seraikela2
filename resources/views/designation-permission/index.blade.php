@@ -47,7 +47,7 @@
                                     <h4>{{$to_return[$i][0]->name}} Permissions</h4>
                                     <form action="{{url('designation-permission/save-permissions')}}" method="POST">
                                     @csrf
-                                        <table class="table">
+                                        <table class="table table-datatable" id="printable-area">
                                             <thead style="background: #d6dcff;color: #000;">
                                                 <tr>
                                                     <th>#</th>

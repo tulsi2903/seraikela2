@@ -54,9 +54,10 @@ class SchemeStructureController extends Controller
 
         $request->scheme_id;
         $scheme_types = SchemeType::orderBy('sch_type_name','asc')->first();
-         $departments = Department::orderBy('dept_name')->first();
-          $uoms = Uom::orderBy('uom_name','asc')->first();
+        $departments = Department::orderBy('dept_name')->first();
+        $uoms = Uom::orderBy('uom_name','asc')->first();
         $scheme_details = SchemeStructure::where('scheme_id',$request->scheme_id)->first();
+        $asset_scheme = SchemeAsset::orderBy('scheme_asset_name')->first();
        
 
         if($scheme_details->is_active=='1')
@@ -74,7 +75,7 @@ class SchemeStructureController extends Controller
 
         
 
-        return view('scheme-structure.view')->with(compact('data','indicator_datas','department_datas','scheme_types','departments','uoms','scheme_details'));
+        return view('scheme-structure.view')->with(compact('data','indicator_datas','department_datas','scheme_types','departments','uoms','scheme_details','asset_scheme'));
     }
 
     public function store(Request $request){

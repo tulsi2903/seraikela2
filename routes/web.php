@@ -133,12 +133,16 @@ Route::get('assetcat','AssetController@index_cat');
 Route::get('assetcat/add','AssetController@add_cat');
 Route::post('assetcat/store','AssetController@store_cat');
 Route::get('assetcat/delete/{asset_cat_id}','AssetController@delete_cat');
+Route::get('assetcat/export/excelURL','AssetController@export_Excel_Asset_Category');
+Route::get('assetcat/pdf/pdfURL','AssetController@export_PDF_Asset_Category');
 
 /*Asset Sub Category*/
 Route::get('asset_subcat','AssetController@index_subcat');
 Route::get('asset_subcat/add','AssetController@add_subcat');
 Route::post('asset_subcat/store','AssetController@store_subcat');
 Route::get('asset_subcat/delete/{asset_sub_id}','AssetController@delete_subcat');
+Route::get('asset_subcat/export/excelURL','AssetController@export_Excel_Asset_SubCategory');
+Route::get('asset_subcat/pdf/pdfURL','AssetController@export_PDF_Asset_SubCategory');
 
 /*Scheme Type*/
 Route::get('scheme-type','SchemeTypeController@index');
@@ -226,6 +230,10 @@ Route::post('sendmail','EmailController@sendmail');
 //fav rohit
 Route::any('favourites','FavController@index');
 Route::post('fav_department','FavController@add_fav_departs');
+Route::get('fav_department/export/excelURL','FavController@export_Excel_Department');
+Route::get('fav_department/pdf/pdfURL','FavController@export_PDF_Department');
+
+
 Route::post('fav_scheme','FavController@add_fav_scheme');
 Route::post('fav_block','FavController@add_fav_block');
 Route::post('fav_panchayat','FavController@add_fav_panchayat');

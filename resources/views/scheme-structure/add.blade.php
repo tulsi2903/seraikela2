@@ -74,7 +74,7 @@
                                     <select name="scheme_asset_id" id="scheme_asset_id" class="form-control">
                                         <option value="">--Select--</option>
                                         @foreach($scheme_asset_datas as $scheme_asset_data)
-                                            <option value="{{$scheme_asset_data->scheme_asset_id}}">{{$scheme_asset_data->scheme_asset_name}}</option>
+                                            <option value="{{$scheme_asset_data->scheme_asset_id}}"<?php if($data->scheme_asset_id == $scheme_asset_data->scheme_asset_id){ echo "selected";}?>>{{$scheme_asset_data->scheme_asset_name}}</option>
                                         @endforeach
                                     </select>
                                     <div class="invalid-feedback" id="scheme_asset_id_error_msg"></div>
@@ -111,10 +111,10 @@
                                     <label for="status">Status<span style="color:red;margin-left:5px;">*</span></label>
                                     <select name="status" id="status" class="form-control">
                                         <option value="">---Select---</option>
-                                        <option value="1" <?php if ($data->is_active == '1') {
+                                        <option value="1" <?php if ($data->status == '1') {
                                                                 echo "selected";
                                                             } ?>>Active</option>
-                                        <option value="0" <?php if ($data->is_active == '0') {
+                                        <option value="0" <?php if ($data->status == '0') {
                                                                 echo "selected";
                                                             } ?>>Inactive</option>
                                     </select>
@@ -146,19 +146,44 @@
                                     <div class="invalid-feedback" id="attachment_error_msg"></div>
                                 </div>
                             </div>
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    <label for="scheme_logo">Scheme Logo</label>
-                                    <div class="input-icon">
-                                        <input type="file" class="form-control" name="scheme_logo" id="scheme_logo" placeholder="Scheme Logo" accept="image/*">
-                                        <span class="input-icon-addon">
-                                            <i class="fas fa-cloud-download-alt"></i>
-                                        </span>
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="scheme_logo">Scheme Logo</label>
+                                <input type="file" name="scheme_logo" id="scheme_logo" class="form-control">
+                                @if($hidden_input_purpose=="edit"&&$data->scheme_logo)
+                                    <div id="scheme_logo_delete_div" style="padding:5px 0;">
+                                        <div>Previous Icon</div>
+                                        <div style="display: inline-block;position:relative;padding:3px;border:1px solid #c4c4c4; border-radius:3px;">
+                                            <img src="{{url($data->scheme_logo)}}" style="height:80px;">
+                                            <span style="position:absolute;top:0;right:0; background: rgba(0,0,0,0.5); font-size: 18px; cursor: pointer; padding: 5px 10px;" class="text-white" onclick="to_delete('{{$data->scheme_logo}}',this)"><i class="fas fa-trash"></i></span>
+                                        </div>
                                     </div>
-                                    <div class="invalid-feedback" id="scheme_logo_error_msg"></div>
-                                </div>
+                                @endif
+                                <input type="text" name="scheme_logo_delete" id="scheme_logo_delete" value="" hidden>
+                                <div class="invalid-feedback" id="scheme_logo_error_msg"></div>
                             </div>
-                            <div class="col-md-3">
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="scheme_map_marker">Map Marker Icon</label>
+                                <input type="file" name="scheme_map_marker" id="scheme_map_marker" class="form-control">
+                                @if($hidden_input_purpose=="edit"&&$data->scheme_map_marker)
+                                    <div id="scheme_map_marker_delete_div" style="padding:5px 0;">
+                                        <div>Previous Icon</div>
+                                        <div style="display: inline-block;position:relative;padding:3px;border:1px solid #c4c4c4; border-radius:3px;">
+                                            <img src="{{url($data->scheme_map_marker)}}" style="height:80px;">
+                                            <span style="position:absolute;top:0;right:0; background: rgba(0,0,0,0.5); font-size: 18px; cursor: pointer; padding: 5px 10px;" class="text-white" onclick="to_delete_map_marker('{{$data->scheme_map_marker}}',this)"><i class="fas fa-trash"></i></span>
+                                        </div>
+                                    </div>
+                                @endif
+                                <input type="text" name="scheme_map_marker_delete" id="scheme_map_marker_delete" value="" hidden>
+                                <div class="invalid-feedback" id="scheme_map_marker_error_msg"></div>
+                            </div>
+                        </div>
+
+                            <!-- <div class="col-md-3">
                                 <div class="form-group">
                                     <label for="scheme_map_marker">Map Marker Icon</label>
                                     <div class="input-icon">
@@ -169,7 +194,7 @@
                                     </div>
                                     <div class="invalid-feedback" id="scheme_map_marker_error_msg"></div>
                                 </div>
-                            </div>
+                            </div> -->
                         </div>
                         <div id="attributes-block">
                             <div class="col-md-11">
@@ -210,7 +235,17 @@
         </div>
     </div>
 
+<script>
+function to_delete(image_path, e){
+    $("#scheme_logo_delete").val(image_path);
+    $(e).closest("#scheme_logo_delete_div").hide(200);
+}
 
+function to_delete_map_marker(image_path, e){
+    $("#scheme_map_marker_delete").val(image_path);
+    $(e).closest("#scheme_map_marker_delete_div").hide(200);
+}
+</script>
 
 <script>
     /*

@@ -19,7 +19,7 @@
                             <h4 class="card-title">Add Favourites Details</h4>
                             <div class="card-tools">
                                 <!-- <button type="button" class="btn btn-icon btn-round btn-success" data-target="#create-email" data-toggle="modal" ><i class="fa fa-envelope" aria-hidden="true"></i></button> -->
-                                <button type="button" class="btn btn-icon btn-round btn-default" id="print-button" onclick="printView();"><i class="fa fa-print" aria-hidden="true"></i></button>
+                                <!-- <button type="button" class="btn btn-icon btn-round btn-default" id="print-button" onclick="printView();"><i class="fa fa-print" aria-hidden="true"></i></button> -->
                                 <!-- <a id="toggle1" class="btn btn-secondary department-add-button" href="javascript:void();" role="button"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;Add</a> -->
                             </div>
                         </div>
@@ -40,6 +40,10 @@
                             <div class="col-md-10" id="printable-area">
                                 <div class="tab-content" id="v-pills-without-border-tabContent">
                                     <div class="tab-pane fade show active" id="v-pills-home-nobd" role="tabpanel" aria-labelledby="v-pills-home-tab-nobd">
+                                        <div style="float: right;">
+                                            <a href="{{url('fav_department/pdf/pdfURL')}}" data-toggle="tooltip" title="Export to PDF"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button></a>
+                                            <a href="{{url('fav_department/export/excelURL')}}" data-toggle="tooltip" title="Export to Excel"><button type="button" class="btn btn-icon btn-round btn-primary" ><i class="fas fa-file-excel"></i></button></a>
+                                        </div><br><br>
                                             <form action="{{url('fav_department')}}" method="post" >
                                                     @csrf
                                       
@@ -79,6 +83,10 @@
                                 
                                     
                                     <div class="tab-pane fade" id="v-pills-profile-nobd" role="tabpanel" aria-labelledby="v-pills-profile-tab-nobd">
+                                        <div style="float: right;margin-right: 2em;margin-bottom: 1em;">
+                                            <a href="{{url('#')}}" data-toggle="tooltip" title="Export to PDF"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button></a>
+                                            <a href="{{url('#')}}" data-toggle="tooltip" title="Export to Excel"><button type="button" class="btn btn-icon btn-round btn-primary" ><i class="fas fa-file-excel"></i></button></a>
+                                        </div><br><br>
                                             <form action="{{url('fav_scheme')}}" method="post">
                                                     @csrf
                                         <div class="card-body" style="margin-top:-32px;">											
@@ -115,6 +123,10 @@
                                     </div>  <!-- end of tab -->
 
                                     <div class="tab-pane fade" id="v-pills-messages-nobd" role="tabpanel" aria-labelledby="v-pills-messages-tab-nobd">
+                                        <div style="float: right;margin-right: 2em;margin-bottom: 1em;">
+                                            <a href="{{url('#')}}" data-toggle="tooltip" title="Export to PDF"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button></a>
+                                            <a href="{{url('#')}}" data-toggle="tooltip" title="Export to Excel"><button type="button" class="btn btn-icon btn-round btn-primary" ><i class="fas fa-file-excel"></i></button></a>
+                                        </div><br><br>
                                             <form action="{{url('fav_block')}}" method="post">
                                                     @csrf
                                         <div class="card-body" style="margin-top:-32px;">											
@@ -149,6 +161,10 @@
                                     
 
                                     <div class="tab-pane fade" id="v-pills-report-nobd" role="tabpanel" aria-labelledby="v-pills-report-tab-nobd" style="overflow-y: scroll; height:600px;">
+                                        <div style="float: right;margin-right: 2em;margin-bottom: 1em;">
+                                            <a href="{{url('#')}}" data-toggle="tooltip" title="Export to PDF"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button></a>
+                                            <a href="{{url('#')}}" data-toggle="tooltip" title="Export to Excel"><button type="button" class="btn btn-icon btn-round btn-primary" ><i class="fas fa-file-excel"></i></button></a>
+                                        </div><br><br>
                                             <form action="{{url('fav_panchayat')}}" method="post">
                                                     @csrf
                                         <div class="card-body" style="margin-top:-32px;">																								

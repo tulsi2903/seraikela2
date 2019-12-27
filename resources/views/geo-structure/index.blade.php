@@ -46,7 +46,7 @@
                         <a class="btn btn-secondary" href="{{url('geo-structure/add')}}" role="button"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;Add</a>
                     </div>-->
                     <div class="table-responsive table-hover table-sales">
-                        <table class="table table-geo-structure-datatable" id="printable-area">
+                        <table class="table table-datatable" id="printable-area">
                             <thead style="background: #d6dcff;color: #000;">
                                 <tr>
                                     <th>#</th>
@@ -68,7 +68,7 @@
                                         <td>{{$data->no_of_villages}}</td>
                                         <td>{{$data->parent_name}} <small>{{$data->parent_level_name}}</small></td>
                                         <td>{{$data->org_name}}</td>
-                                        <td class="action-buttons" style="    display: contents;">
+                                        <td class="action-buttons">
                                             <a href="{{url('geo-structure/delete')}}/{{$data->geo_id}}" class="btn btn-danger btn-sm delete-button"><i class="fas fa-trash-alt"></i></a>
                                             &nbsp;&nbsp;<a href="{{url('geo-structure/add')}}?purpose=edit&id={{$data->geo_id}}" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></a>
                                         </td>
@@ -89,17 +89,9 @@
 
    <script>
 $(document).ready(function(){
-$('.table-geo-structure-datatable').dataTable( {
+$('.table table-datatable').dataTable( {
   "pageLength": 15
 } );
-
-function block_search()
-{
-var table = $('.table-geo-structure-datatable').DataTable();
- $('#block').on( 'keyup', function () {
-    table.search( this.value ).draw();
-} );
-}
 });
 </script>
    

@@ -11,13 +11,15 @@ use App\asset_subcat;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\AssetSectionExport;
+use App\Exports\AssetCatagorySectionExport;
+use App\Exports\AssetSubCatagorySectionExport;
 use PDF;
+
 
 class AssetController extends Controller
 {
     public function index(){
-       
-        
+    
          $datas = Asset::leftJoin('department', 'asset.dept_id', '=', 'department.dept_id')
                         ->leftJoin('asset_cat','asset.category_id','=','asset_cat.asset_cat_id')
                         ->leftJoin('asset_subcat','asset.subcategory_id','=','asset_subcat.asset_sub_id')
@@ -33,6 +35,8 @@ class AssetController extends Controller
         
         return view('asset.index')->with(compact('datas','departments','categories','sub_categories'));
     }
+
+
     public function add(Request $request){
         $hidden_input_purpose = "add";
         $hidden_input_id= "NA";
@@ -179,16 +183,13 @@ class AssetController extends Controller
     }
 
 
-
-
-
-
     public function index_cat(){
-        $datas = asset_cat::orderBy('asset_cat.asset_cat_id','desc')
-        ->get();
+        $datas = asset_cat::orderBy('asset_cat.asset_cat_id','desc')->get();
 
         return view('asset.category.index')->with('datas', $datas);
-}
+    }
+
+    
 public function add_cat(Request $request){
     $hidden_input_purpose = "add";
     $hidden_input_id= "NA";
@@ -326,9 +327,51 @@ public function exportpdfFunctiuonforasset()
                     ->select('asset.*', 'department.dept_name', 'asset_cat.asset_cat_name', 'asset_subcat.asset_sub_cat_name')
                     ->orderBy('asset.asset_id', 'desc')
                     ->get();
+
     date_default_timezone_set('Asia/Kolkata');
     $AssetdateTime = date('d-m-Y H:i A');
     $pdf = PDF::loadView('department/Createpdfs',compact('Assetdata','AssetdateTime'));
     return $pdf->download('Assetdata.pdf');
 }
+
+
+    //asset catagory rohit singh
+    public function export_Excel_Asset_Category()
+    {
+        return Excel::download(new AssetCatagorySectionExport, 'AssetCatagory-Sheet.xls');
+    }
+
+    public function export_PDF_Asset_Category()
+    {
+        $export_assest_catagory = asset_cat::orderBy('asset_cat.asset_cat_id','desc')->get();
+        date_default_timezone_set('Asia/Kolkata');
+        $AssetCatagoryTime = date('d-m-Y H:i A');
+        $pdf = PDF::loadView('department/Createpdfs',compact('export_assest_catagory','AssetCatagoryTime'));
+        return $pdf->download('AssetCatagory.pdf');
+    }
+    
+     //asset subcatagory rohit singh
+     public function export_Excel_Asset_SubCategory()
+     {
+        return Excel::download(new AssetSubCatagorySectionExport, 'AssetSubCatagory-Sheet.xls');
+     }
+ 
+     public function export_PDF_Asset_SubCategory()
+     {
+ 
+        $export_assest_subcatagory = asset_subcat::leftjoin('asset_cat','asset_subcat.asset_cat_id','=','asset_cat.asset_cat_id')
+                                                ->select('asset_cat.*','asset_subcat.*')->orderBy('asset_subcat.asset_sub_id','desc')->get();      
+         date_default_timezone_set('Asia/Kolkata');
+         $AssetSubCatagoryTime = date('d-m-Y H:i A');
+         $pdf = PDF::loadView('department/Createpdfs',compact('export_assest_subcatagory','AssetSubCatagoryTime'));
+         return $pdf->download('AssetSubCatagory.pdf');
+     }
+
+
+
+
+
+
+
+
 }
