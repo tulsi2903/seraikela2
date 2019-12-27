@@ -34,6 +34,9 @@
     #map-view {
         display: none;
     }
+    .review-for-buttons:hover, .review-for-buttons.active{
+        color: white !important;
+    }
 
     svg text {
         fill: black;
