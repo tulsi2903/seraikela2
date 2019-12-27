@@ -88,12 +88,14 @@ class FavController extends Controller
 
             //fav Assets 
             $datas_define_asset = Asset::leftJoin('department', 'asset.dept_id', '=', 'department.dept_id')
-                       // ->leftJoin('asset_cat','asset.category_id','=','asset_cat.asset_cat_id')
-                        // ->leftJoin('asset_subcat','asset.subcategory_id','=','asset_subcat.asset_sub_id')
-                        ->select('asset.*','department.dept_name')
-                        ->orderBy('asset.asset_id','asc')->get();
+                                ->select('asset.*','department.dept_name')
+                                ->orderBy('asset.asset_id','asc')->get();
+            
             for($i=0;$i<count($datas_define_asset);$i++){
                 $fav_define_tmp = Fav_Define_Assets::select('favourite_asset_id')->where('user_id',1)->where('asset_id',$datas_define_asset[$i]->asset_id)->first();
+                // echo "<pre>";
+                // print_r($fav_define_tmp);
+                // exit;
                 if($fav_define_tmp){
                     $datas_define_asset[$i]->checked=1;
                 }
@@ -313,8 +315,6 @@ class FavController extends Controller
     }
 
 
-
-
     //Block_Excel  section by  rohit singh
     public function export_Block_Excel_Department()
     {
@@ -342,7 +342,6 @@ class FavController extends Controller
         $pdf = PDF::loadView('department/Createpdfs',compact('block_pdf','BlockTime'));
         return $pdf->download('favouriteBlock.pdf');
     }
-
 
 
     //Panchayat_Excel  section by  rohit singh
@@ -375,20 +374,20 @@ class FavController extends Controller
     }
 
 
-
-     //Panchayat_Excel   section by  rohit singh
+    //DefineAsset_Excel   section by  rohit singh
      public function export_DefineAsset_Excel_Department()
      {
          return Excel::download(new FavouriteAssets, 'FavouriteAssets-Sheet.xls');
      }
-     //Panchayat_ pdf section  by rohit singh
-     public function export_DefineAsset_PDF_Department()
-     {
+     //DefineAsset_ pdf section  by rohit singh
+    public function export_DefineAsset_PDF_Department()
+    {
         $asset_pdf = Asset::leftJoin('department', 'asset.dept_id', '=', 'department.dept_id')
                         ->select('asset.*','department.dept_name')->orderBy('asset.asset_id','asc')->get();
                     
         for($i=0;$i<count($asset_pdf);$i++){
             $fav_define_tmp = Fav_Define_Assets::select('favourite_asset_id')->where('user_id',1)->where('asset_id',$asset_pdf[$i]->asset_id)->first();
+
             if($fav_define_tmp){
                 $asset_pdf[$i]->checked=1;
             }
@@ -400,20 +399,6 @@ class FavController extends Controller
          $AssetsTime = date('d-m-Y H:i A');
          $pdf = PDF::loadView('department/Createpdfs',compact('asset_pdf','AssetsTime'));
          return $pdf->download('favouriteAssets.pdf');
-     }
+    }
     
-
-
-    
-
-
-
-
-
-
-
-
-
-
-
 }

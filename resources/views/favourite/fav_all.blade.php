@@ -213,7 +213,6 @@
                                                         <tr>
                                                             <th>#</th>
                                                             <th>Asset Name</th>
-                                                            <!-- <th>Type</th> -->
                                                             <th>Department Name</th>
                                                         </tr>
                                                     </thead>
@@ -222,7 +221,7 @@
                                                         @if(count($datas_define_asset)!=0)
                                                             @foreach($datas_define_asset as $key => $val)
                                                                 <tr>
-                                                                    <td><input type="checkbox" name="asset_id[]" value="{{$val->asset_id}}" @if($val->checked==1) checked @endif></td> 
+                                                                    <td><input type="checkbox" name="asset_id[]" value="{{$val->asset_id}}" @if($val->checked==1) checked @endif ></td> 
                                                                     <td>{{$val->asset_name}}</td>
                                                                     <td>{{$val->dept_name}}</td>
                                                                    
