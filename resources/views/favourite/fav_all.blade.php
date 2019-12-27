@@ -100,7 +100,7 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                         @if(count($datas_scheme)!=0)
+                                                        @if(count($datas_scheme)!=0)
                                                             @foreach($datas_scheme as $key => $val)
                                                                 <tr>
                                                                     <td><input type="checkbox" name="scheme_id[]" value="{{$val->scheme_id}}" @if($val->checked==1) checked @endif></td>
@@ -199,32 +199,37 @@
                                         </form>
                                     </div>
 
-
-
-
-
                                     <div class="tab-pane fade" id="v-pills-asset-nobd" role="tabpanel" aria-labelledby="v-pills-asset-tab-nobd" style="overflow-y: scroll; height:600px;">
                                         <div style="float: right;margin-right: 2em;margin-bottom: 1em;">
-                                            <a href="{{url('fav_panchayat/pdf/pdfURL')}}" data-toggle="tooltip" title="Export to PDF"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button></a>
-                                            <a href="{{url('fav_panchayat/export/excelURL')}}" data-toggle="tooltip" title="Export to Excel"><button type="button" class="btn btn-icon btn-round btn-primary" ><i class="fas fa-file-excel"></i></button></a>
+                                            <a href="{{url('fav_define_asset/pdf/pdfURL')}}" data-toggle="tooltip" title="Export to PDF"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button></a>
+                                            <a href="{{url('fav_define_asset/export/excelURL')}}" data-toggle="tooltip" title="Export to Excel"><button type="button" class="btn btn-icon btn-round btn-primary" ><i class="fas fa-file-excel"></i></button></a>
                                         </div><br><br>
-                                            <form action="{{url('')}}" method="post">
+                                            <form action="{{url('fav_define_asset')}}" method="post">
                                                     @csrf
                                         <div class="card-body" style="margin-top:-32px;">																								
                                             <div class="table-responsive">
                                                 <table class="display table-datatable table table-striped table-hover">
                                                     <thead style="background: #d6dcff;color: #000;">
                                                         <tr>
-                                                            <th>Name</th>
-                                                            <th>Type</th>
+                                                            <th>#</th>
+                                                            <th>Asset Name</th>
+                                                            <!-- <th>Type</th> -->
                                                             <th>Department Name</th>
                                                         </tr>
                                                     </thead>
                                                 
                                                     <tbody>
-                                                      <tr>
-                                                          <td>bfsdgfzhb</td>
-                                                      </tr>
+                                                        @if(count($datas_define_asset)!=0)
+                                                            @foreach($datas_define_asset as $key => $val)
+                                                                <tr>
+                                                                    <td><input type="checkbox" name="asset_id[]" value="{{$val->asset_id}}" @if($val->checked==1) checked @endif></td> 
+                                                                    <td>{{$val->asset_name}}</td>
+                                                                    <td>{{$val->dept_name}}</td>
+                                                                   
+                                                                </tr>
+                                                            @endforeach
+                                                        @endif
+                                                        
                                                     </tbody>
                                                 </table>
                                             </div>

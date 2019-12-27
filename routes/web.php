@@ -245,3 +245,7 @@ Route::post('sendmail','EmailController@sendmail');
  Route::post('fav_panchayat','FavController@add_fav_panchayat');
  Route::get('fav_panchayat/export/excelURL','FavController@export_Panchayat_Excel_Department');
  Route::get('fav_panchayat/pdf/pdfURL','FavController@export_Panchayat_PDF_Department');
+
+ Route::post('fav_define_asset','FavController@add_fav_define_asset');
+ Route::get('fav_define_asset/export/excelURL','FavController@export_DefineAsset_Excel_Department');
+ Route::get('fav_define_asset/pdf/pdfURL','FavController@export_DefineAsset_PDF_Department');

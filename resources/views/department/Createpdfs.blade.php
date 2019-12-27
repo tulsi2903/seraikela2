@@ -491,7 +491,34 @@
       </table>
       <p style="position: absolute; bottom: 0;"> {{ $PanchayatTime }}</p><!-- position:absolute and bottom:0 css is used to pull this pragraph at the end of the page -->
    </div>
+   @elseif($asset_pdf)
+   <div style="position: relative;"> <!-- position:realtive css is used for full page printing of pdf -->
+      <table border="1" class="table_css" style="width:100%">
+         <thead>
+            <tr>
+               <th style="text-align: center;" colspan="4">
+                  Assets
+               </th>
+            </tr>
+            <tr>
+               <th style="text-align: center;width: 30px;">Sl.No.</th>
+               <th style="text-align: center;">Asset Name</th>
+               <th style="text-align: center;">Department Name</th>
+               <th style="text-align: center;">Check Favourite</th>      
+            </tr>
+         </thead>
+         <tbody>
+            @foreach($asset_pdf as $index => $asset_pdf_data)
+            <tr>
+               <td>{{ $index+1 }}</td>               
+               <td>{{ $asset_pdf_data->asset_name}}</td>
+               <td>{{ $asset_pdf_data->dept_name}}</td>
+               <td>@if($asset_pdf_data->checked==1) Yes  @else  No @endif </td>
+            @endforeach
+         </tbody>
+      </table>
+      <p style="position: absolute; bottom: 0;"> {{ $AssetsTime }}</p><!-- position:absolute and bottom:0 css is used to pull this pragraph at the end of the page -->
+   </div>
    @endif
-
    
 </html>

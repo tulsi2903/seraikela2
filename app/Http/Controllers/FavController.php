@@ -19,6 +19,10 @@ use App\Exports\FavouriteBlock;
 use App\Exports\FavouritePanchayat;
 use PDF;
 use DB;
+use App\Asset;
+use App\Fav_Define_Assets;
+use App\Exports\FavouriteAssets;
+
 
 
 
@@ -80,9 +84,25 @@ class FavController extends Controller
                 else{
                     $datas_panchayat[$i]->checked=0;
                 }
-
             }
-        return view('favourite.fav_all',compact('datas_dept','datas_scheme','datas_block','datas_panchayat'));//->with('datas_dept', $datas_dept);
+
+            //fav Assets 
+            $datas_define_asset = Asset::leftJoin('department', 'asset.dept_id', '=', 'department.dept_id')
+                       // ->leftJoin('asset_cat','asset.category_id','=','asset_cat.asset_cat_id')
+                        // ->leftJoin('asset_subcat','asset.subcategory_id','=','asset_subcat.asset_sub_id')
+                        ->select('asset.*','department.dept_name')
+                        ->orderBy('asset.asset_id','asc')->get();
+            for($i=0;$i<count($datas_define_asset);$i++){
+                $fav_define_tmp = Fav_Define_Assets::select('favourite_asset_id')->where('user_id',1)->where('asset_id',$datas_define_asset[$i]->asset_id)->first();
+                if($fav_define_tmp){
+                    $datas_define_asset[$i]->checked=1;
+                }
+                else{
+                    $datas_define_asset[$i]->checked=0;
+                }
+            }
+
+        return view('favourite.fav_all',compact('datas_dept','datas_scheme','datas_block','datas_panchayat','datas_define_asset'));//->with('datas_dept', $datas_dept);
 
     }
 
@@ -179,7 +199,7 @@ class FavController extends Controller
         if(($request->panchayat_id)!=0){
 
              // delete previous entries
-             $delete_query = Fav_Panchayat::where('user_id',1)->delete(); 
+            $delete_query = Fav_Panchayat::where('user_id',1)->delete(); 
 
             $count_id = $request->panchayat_id;           
             foreach ($count_id as $panchayat_id) {        
@@ -202,7 +222,35 @@ class FavController extends Controller
         }     
     }
 
+    public function add_fav_define_asset(Request $request)
+    {
+        if(($request->asset_id)!=0)
+        {            
+            // delete previous entries
+            $delete_query = Fav_Define_Assets::where('user_id',1)->delete();
 
+            $count_id = $request->asset_id; 
+            foreach ($count_id as $asset_id) {     
+                $fav_define_asset= new Fav_Define_Assets();
+                $fav_define_asset->asset_id = $asset_id;              
+                $fav_define_asset->user_id =1;
+                $fav_define_asset->org_id = 1;
+                $fav_define_asset->created_by =1;
+                $fav_define_asset->updated_by = 1;
+                $fav_define_asset->save();
+            }
+            session()->put('alert-class','alert-success');
+            session()->put('alert-content','Your Favourite Assets is Inserted');
+            return redirect('favourites');
+        } 
+        else{
+            session()->put('alert-class','alert-danger');
+            session()->put('alert-content','Select Atleast one Favourite Assets!');
+            return redirect('favourites');
+
+        }  
+
+    }
 
 
 /** Here the export section started  */
@@ -236,6 +284,8 @@ class FavController extends Controller
         return $pdf->download('favouriteDeprtment.pdf');
     }
 
+
+
     //Scheme_Excel  section rohit singh
     public function export_Scheme_Excel_Department()
     {
@@ -261,6 +311,8 @@ class FavController extends Controller
         $pdf = PDF::loadView('department/Createpdfs',compact('Scheme_pdf','SchemeTime'));
         return $pdf->download('favouriteScheme.pdf');
     }
+
+
 
 
     //Block_Excel  section by  rohit singh
@@ -291,34 +343,64 @@ class FavController extends Controller
         return $pdf->download('favouriteBlock.pdf');
     }
 
-        //Panchayat_Excel   section by  rohit singh
-        public function export_Panchayat_Excel_Department()
-        {
-            return Excel::download(new FavouritePanchayat, 'FavouritePanchayat-Sheet.xls');
-        }
-        //Panchayat_ pdf section  by rohit singh
-        public function export_Panchayat_PDF_Department()
-        {
-            $panchayat_pdf = GeoStructure::select('geo_id','geo_name')->where('level_id','4')
-                        ->orderBy('geo_structure.geo_id','asc')->get();
 
-                for($i=0;$i<count($panchayat_pdf);$i++)
-                {
-                    $fav_panchayat_tmp = Fav_Panchayat::select('favourite_panchayat_id')->where('user_id',1)->where('panchayat_id',$panchayat_pdf[$i]->geo_id)->first();
-                    if($fav_panchayat_tmp){
-                        $panchayat_pdf[$i]->checked=1;
-                    }
-                    else{
-                        $panchayat_pdf[$i]->checked=0;
-                    }
 
+    //Panchayat_Excel  section by  rohit singh
+    public function export_Panchayat_Excel_Department()
+    {
+        return Excel::download(new FavouritePanchayat, 'FavouritePanchayat-Sheet.xls');
+    }
+    //Panchayat_ pdf section  by rohit singh
+    public function export_Panchayat_PDF_Department()
+    {
+        $panchayat_pdf = GeoStructure::select('geo_id','geo_name')->where('level_id','4')
+                    ->orderBy('geo_structure.geo_id','asc')->get();
+
+            for($i=0;$i<count($panchayat_pdf);$i++)
+            {
+                $fav_panchayat_tmp = Fav_Panchayat::select('favourite_panchayat_id')->where('user_id',1)->where('panchayat_id',$panchayat_pdf[$i]->geo_id)->first();
+                if($fav_panchayat_tmp){
+                    $panchayat_pdf[$i]->checked=1;
                 }
-    
-            date_default_timezone_set('Asia/Kolkata');
-            $PanchayatTime = date('d-m-Y H:i A');
-            $pdf = PDF::loadView('department/Createpdfs',compact('panchayat_pdf','PanchayatTime'));
-            return $pdf->download('favouritePanchayat.pdf');
-        }
+                else{
+                    $panchayat_pdf[$i]->checked=0;
+                }
+
+            }
+
+        date_default_timezone_set('Asia/Kolkata');
+        $PanchayatTime = date('d-m-Y H:i A');
+        $pdf = PDF::loadView('department/Createpdfs',compact('panchayat_pdf','PanchayatTime'));
+        return $pdf->download('favouritePanchayat.pdf');
+    }
+
+
+
+     //Panchayat_Excel   section by  rohit singh
+     public function export_DefineAsset_Excel_Department()
+     {
+         return Excel::download(new FavouriteAssets, 'FavouriteAssets-Sheet.xls');
+     }
+     //Panchayat_ pdf section  by rohit singh
+     public function export_DefineAsset_PDF_Department()
+     {
+        $asset_pdf = Asset::leftJoin('department', 'asset.dept_id', '=', 'department.dept_id')
+                        ->select('asset.*','department.dept_name')->orderBy('asset.asset_id','asc')->get();
+                    
+        for($i=0;$i<count($asset_pdf);$i++){
+            $fav_define_tmp = Fav_Define_Assets::select('favourite_asset_id')->where('user_id',1)->where('asset_id',$asset_pdf[$i]->asset_id)->first();
+            if($fav_define_tmp){
+                $asset_pdf[$i]->checked=1;
+            }
+            else{
+                $asset_pdf[$i]->checked=0;
+            }
+        }      
+         date_default_timezone_set('Asia/Kolkata');
+         $AssetsTime = date('d-m-Y H:i A');
+         $pdf = PDF::loadView('department/Createpdfs',compact('asset_pdf','AssetsTime'));
+         return $pdf->download('favouriteAssets.pdf');
+     }
     
 
 
