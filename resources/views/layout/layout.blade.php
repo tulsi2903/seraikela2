@@ -52,7 +52,7 @@
         .custom-loader {
             position: fixed;
             text-align: center;
-            z-index: +50;
+            z-index: +9999;
             width: 100vw;
             height: 100vh;
             padding-top: 250px;

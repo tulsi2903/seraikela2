@@ -44,11 +44,7 @@ class AssetReviewController extends Controller
 
         // received datas
         $review_for = $request->review_for;
-        $geo_id = explode(",", $request->geo_id); // geo_id received as
-        $panchayat_id = [];
-        if(isset($request->panchayat_id)){
-            $panchayat_id = explode(",", $request->panchayat_id); // panchayat_id received as
-        }
+        $geo_id = explode(",", $request->geo_id); // geo_id/block_id/panchayat_id received as
         $no_of_blocks = count($geo_id);
         $dept_id = $request->dept_id;
         $year = $request->year_id;
@@ -63,7 +59,7 @@ class AssetReviewController extends Controller
         else{ // panchayat review
             $get_asset_numbers_id_tmp = AssetNumbers::select('geo_id', 'asset_id', 'year', DB::raw('MAX(updated_at) AS max_updated'), DB::raw('MAX(asset_numbers_id) as asset_numbers_id'))
                 ->whereIn('asset_id', Asset::select('asset_id')->where('dept_id',$dept_id)->get())
-                ->whereIn('geo_id', $panchayat_id)
+                ->whereIn('geo_id', $geo_id)
                 ->where('year', $year)
                 ->groupBy('year','asset_id','geo_id')
                 ->get();
@@ -156,8 +152,8 @@ class AssetReviewController extends Controller
         else // panchayat review
         {
             $tabular_view_tmp=[''];
-            for($i=0;$i<count($panchayat_id);$i++){
-                $geo_name = GeoStructure::select('geo_id','geo_name')->where('geo_id',$panchayat_id[$i])->first();
+            for($i=0;$i<count($geo_id);$i++){
+                $geo_name = GeoStructure::select('geo_id','geo_name')->where('geo_id',$geo_id[$i])->first();
                 array_push($tabular_view_tmp, $geo_name->geo_name);
                 array_push($chart_labels, $geo_name->geo_name);
                 array_push($map_view_blocks, ['id'=>$geo_name->geo_id,'name'=>$geo_name->geo_name]);
@@ -171,13 +167,13 @@ class AssetReviewController extends Controller
                 $chart_datasets_tmp['label'] = $asset_name->asset_name;
                 $chart_datasets_tmp['data'] = [];
 
-                for($i=0;$i<count($panchayat_id);$i++){
+                for($i=0;$i<count($geo_id);$i++){
                     $found = 0;
                     foreach($datas as $data)
                     {
                         if($data->asset_id==$asset_unique_id)
                         {
-                            if($data->geo_id==$panchayat_id[$i]){
+                            if($data->geo_id==$geo_id[$i]){
                                 array_push($tabular_view_tmp, $data->current_value);
                                 array_push($chart_datasets_tmp['data'], $data->current_value);
                                 /****** for gallery images: starts *****/
