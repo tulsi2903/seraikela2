@@ -28,10 +28,10 @@
                         <div class="card-tools">
                             <a href="#" data-toggle="tooltip" title="Send Mail"><button type="button" class="btn btn-icon btn-round btn-success" data-target="#create-email" data-toggle="modal" ><i class="fa fa-envelope" aria-hidden="true"></i></button></a>
                             <a href="#" data-toggle="tooltip" title="Print"><button type="button" class="btn btn-icon btn-round btn-default" id="print-button" onclick="printView();"><i class="fa fa-print" aria-hidden="true"></i></button></a>
-                            <a href="#" data-toggle="tooltip" title="Export to PDF"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button></a>
-                            <a href="#" data-toggle="tooltip" title="Export to Excel"><button type="button" class="btn btn-icon btn-round btn-primary" ><i class="fas fa-file-excel"></i></button></a>
+                            <a href="{{URL('scheme-geo-target/pdf/pdfURL')}}" data-toggle="tooltip" title="Export to PDF"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button></a>
+                            <a href="{{URL('scheme-geo-target/export/excelURL')}}" data-toggle="tooltip" title="Export to Excel"><button type="button" class="btn btn-icon btn-round btn-primary" ><i class="fas fa-file-excel"></i></button></a>
                             <a class="btn btn-secondary" href="{{url('scheme-geo-target/add')}}" role="button"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;Add</a>
-
+                        
                         </div>
                     </div>
                 </div>
@@ -49,10 +49,9 @@
                                 <tr>
                                     <th>#</th>
                                     <th>Scheme</th>
-                                     <th>Indicator</th>
+                                    <th>Indicator</th>
                                     <th>Block Name</th>
-                                    <th>Panchayat</th>
-                                   
+                                    <th>Panchayat</th>                                   
                                     <th>Asset Group Name</th>
                                     <th>Target</th>
                                     <th>Year</th>
@@ -68,12 +67,10 @@
                                             <td>{{$data->scheme_name}}({{$data->scheme_short_name}})</td>
                                             <td>{{$data->indicator_name}}</td>
                                             <td>{{$data->bl_name}}</td>
-                                             <td>{{$data->geo_name}}</td>
-                                              
-                                              <td>{{$data->asset_group_name}}</td>
-                                               <td>{{$data->target}}</td>
-                                                <td>{{$data->year_value}}</td>
-                                            
+                                            <td>{{$data->geo_name}}</td>                                             
+                                            <td>{{$data->asset_group_name}}</td>
+                                            <td>{{$data->target}}</td>
+                                            <td>{{$data->year_value}}</td>                                           
                                             <td class="action-buttons" style="display: contents;">
                                                 <a href="{{url('scheme-geo-target/delete')}}/{{$data->scheme_geo_target_id}}" class="btn btn-danger btn-sm delete-button"><i class="fas fa-trash-alt"></i></a>
                                                 &nbsp;&nbsp;<a href="{{url('scheme-geo-target/add')}}?purpose=edit&id={{$data->scheme_geo_target_id}}" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></a>

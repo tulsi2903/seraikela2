@@ -83,6 +83,9 @@ Route::get('scheme-structure/add','SchemeStructureController@add');
 Route::post('scheme-structure/store','SchemeStructureController@store');
 Route::get('scheme-structure/delete/{scheme_id}','SchemeStructureController@delete');
 Route::get('scheme-structure/view/{scheme_id}','SchemeStructureController@view');
+Route::get('scheme-structure/export/excelURL','SchemeStructureController@exportExcel_Scheme_structure');
+Route::get('scheme-structure/pdf/pdfURL','SchemeStructureController@exportPDF_Scheme_structure');
+
 
 /*Scheme Geo Target*/
 Route::get('scheme-geo-target','SchemeGeoTargetController@index');
@@ -96,6 +99,8 @@ Route::get('scheme-geo-target/get-all-datas','SchemeGeoTargetController@get_all_
 Route::get('scheme-geo-target/get-scheme-sanction-id','SchemeGeoTargetController@get_scheme_sanction_id');
 Route::get('scheme-geo-target/get-target','SchemeGeoTargetController@get_target');
 Route::get('scheme-geo-target/delete/{scheme_geo_target_id}','SchemeGeoTargetController@delete');
+Route::get('scheme-geo-target/export/excelURL','SchemeGeoTargetController@exportExcel_Scheme_Geo_structure');
+Route::get('scheme-geo-target/pdf/pdfURL','SchemeGeoTargetController@exportPDF_Scheme_Geo_structure');
 
 /*Indicator*/
 // Route::get('scheme-indicator','SchemeIndicatorController@index');

@@ -519,6 +519,75 @@
       </table>
       <p style="position: absolute; bottom: 0;"> {{ $AssetsTime }}</p><!-- position:absolute and bottom:0 css is used to pull this pragraph at the end of the page -->
    </div>
+   @elseif($SchemeStructure_pdf)
+   <div style="position: relative;"> <!-- position:realtive css is used for full page printing of pdf -->
+      <table border="1" class="table_css" style="width:100%">
+         <thead>
+            <tr>
+               <th style="text-align: center;" colspan="4">
+                  Define Schemes
+               </th>
+            </tr>
+            <tr>
+               <th style="text-align: center;width: 30px;">Sl.No.</th>
+               <th style="text-align: center;">Scheme Name</th>
+               <th style="text-align: center;">Short Name</th>
+               <th style="text-align: center;">Department</th>      
+            </tr>
+         </thead>
+         <tbody>
+            @foreach($SchemeStructure_pdf as $index => $SchemeStructure_data)
+            <tr>
+               <td>{{ $index+1 }}</td>               
+               <td>{{ $SchemeStructure_data->scheme_name}}</td>
+               <td>{{ $SchemeStructure_data->scheme_short_name}}</td>
+               <td>{{ $SchemeStructure_data->dept_name}}</td>
+               
+            @endforeach
+         </tbody>
+      </table>
+      <p style="position: absolute; bottom: 0;"> {{ $SchemeStructureTime }}</p><!-- position:absolute and bottom:0 css is used to pull this pragraph at the end of the page -->
+   </div>
+   @elseif($SchemeGeoTarget_pdf)
+   <div style="position: relative;"> <!-- position:realtive css is used for full page printing of pdf -->
+      <table border="1" class="table_css" style="width:100%">
+         <thead>
+            <tr>
+               <th style="text-align: center;" colspan="8">
+                  Scheme Geo Target
+               </th>
+            </tr>
+            <tr>
+               <th style="text-align: center;width: 30px;">Sl.No.</th>
+               <th style="text-align: center;">Scheme</th>
+               <th style="text-align: center;">Indicator</th>
+               <th style="text-align: center;">Block Name</th>      
+               <th style="text-align: center;">Panchyat</th>      
+               <th style="text-align: center;">Asset Group Name</th>      
+               <th style="text-align: center;">Target</th>   
+               <th style="text-align: center;">Year</th>
+            </tr>
+         </thead>
+         <tbody>
+            @foreach($SchemeGeoTarget_pdf as $index => $SchemeGeoTarget_data)
+                  @if($SchemeGeoTarget_data->level_id=='4')
+                     <tr>                                   
+                           <td>{{ $index+1 }}</td>               
+                           <td>{{$SchemeGeoTarget_data->scheme_name}} ({{$SchemeGeoTarget_data->scheme_short_name}})</td>
+                           <td>{{ $SchemeGeoTarget_data->indicator_name}}</td>
+                           <td>{{ $SchemeGeoTarget_data->bl_name}}</td>               
+                           <td>{{ $SchemeGeoTarget_data->geo_name}}</td>
+                           <td>{{ $SchemeGeoTarget_data->asset_group_name}}</td>
+                           <td>{{ $SchemeGeoTarget_data->target}}</td>
+                           <td>{{ $SchemeGeoTarget_data->year_value}}</td>
+                     </tr>
+                  @endif            
+            @endforeach
+         </tbody>
+      </table>
+      <p style="position: absolute; bottom: 0;"> {{ $SchemeStructureTime }}</p><!-- position:absolute and bottom:0 css is used to pull this pragraph at the end of the page -->
+   </div>
    @endif
+   
    
 </html>

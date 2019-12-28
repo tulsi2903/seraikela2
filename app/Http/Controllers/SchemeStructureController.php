@@ -10,6 +10,14 @@ use App\Uom;
 use App\SchemeIndicator;
 use App\SchemeAsset;
 use App\Group;
+use PDF;
+use DB;
+use App\Exports\DefineSchemes;
+use Maatwebsite\Excel\Facades\Excel;
+
+
+
+
 
 class SchemeStructureController extends Controller
 {
@@ -231,4 +239,25 @@ class SchemeStructureController extends Controller
 
         return redirect('scheme-structure');
     }
+
+        // export to pdf and excel
+        public function exportExcel_Scheme_structure()
+        {
+    
+            return Excel::download(new DefineSchemes, 'Define_Schemes-Sheet.xls');
+    
+        }
+        public function exportPDF_Scheme_structure()
+        {
+            $SchemeStructure_pdf = SchemeStructure::leftJoin('department', 'scheme_structure.dept_id', '=', 'department.dept_id')
+                        ->select('scheme_structure.*','department.dept_name')
+                        ->orderBy('scheme_structure.scheme_id','desc')->get();
+          
+             date_default_timezone_set('Asia/Kolkata');
+             $SchemeStructureTime = date('d-m-Y H:i A');
+             $pdf = PDF::loadView('department/Createpdfs',compact('SchemeStructure_pdf','SchemeStructureTime'));
+             return $pdf->download('SchemeStructure.pdf');
+    
+        }
+    
 }

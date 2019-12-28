@@ -12,6 +12,11 @@ use App\SchemeStructure;
 use App\Group;
 use App\SchemeGeoTarget2;
 use App\SchemePerformance2;
+use App\Exports\SchemeGeoTargetExport;
+use Maatwebsite\Excel\Facades\Excel;
+use PDF;
+
+
 
 class SchemeGeoTargetController extends Controller
 {
@@ -25,7 +30,7 @@ class SchemeGeoTargetController extends Controller
                     ->select('scheme_geo_target.*','scheme_structure.scheme_name','scheme_structure.scheme_short_name','geo_structure.geo_name','geo_structure.level_id','geo_structure.parent_id','scheme_indicator.indicator_name','year.year_value','scheme_group.scheme_group_name')
                     ->orderBy('scheme_geo_target.scheme_geo_target_id','desc')
                     ->get();
-
+// return $datas;
         $i=0;
         foreach($datas as $data){
             if($data->level_id==4){
@@ -37,14 +42,12 @@ class SchemeGeoTargetController extends Controller
                 else{
                 $datas[$i]->bl_name = "NA";
                 }
-                }
+            }
                 else{
                     $datas[$i]->bl_name = "NA";
                 }
                 $i++;
         }
-
-      
 
         return view('scheme-geo-target.index')->with('datas',$datas);
     }
@@ -54,10 +57,6 @@ class SchemeGeoTargetController extends Controller
         $year_datas = Year::select('year_id','year_value')->orderBy('year_value','asc')->get();
         $group_datas = Group::select('scheme_group_id','scheme_group_name')->orderBy('scheme_group_name','asc')->get();
         $block_datas = GeoStructure::select('geo_id','geo_name')->orderBy('geo_name','asc')->where('level_id','=','3')->get();
-
-
-
-
 
         return view('scheme-geo-target.add')->with(compact('scheme_datas','year_datas','group_datas','block_datas'));
     }
@@ -361,6 +360,52 @@ class SchemeGeoTargetController extends Controller
         }
 
         return redirect('scheme-geo-target');
+    }
+
+
+    public function exportExcel_Scheme_Geo_structure()
+    {
+        return Excel::download(new SchemeGeoTargetExport, 'SchemeGeoTarget.xls');
+
+    }
+    public function exportPDF_Scheme_Geo_structure(){
+        $SchemeGeoTarget_pdf = SchemeGeoTarget::leftJoin('scheme_structure', 'scheme_geo_target.scheme_id', '=', 'scheme_structure.scheme_id')
+                    ->leftJoin('geo_structure', 'scheme_geo_target.geo_id', '=', 'geo_structure.geo_id')
+                    ->leftJoin('scheme_indicator','scheme_geo_target.indicator_id','=','scheme_indicator.indicator_id')
+                    ->leftJoin('year','scheme_geo_target.year_id','=','year.year_id')
+                    ->leftJoin('scheme_group','scheme_geo_target.group_id','=','scheme_group.scheme_group_id')
+                    ->select('scheme_geo_target.*','scheme_structure.scheme_name','scheme_structure.scheme_short_name','geo_structure.geo_name','geo_structure.level_id','geo_structure.parent_id','scheme_indicator.indicator_name','year.year_value','scheme_group.scheme_group_name')
+                    ->orderBy('scheme_geo_target.scheme_geo_target_id','desc')
+                    ->get();
+
+                    $i=0;
+                    foreach($SchemeGeoTarget_pdf as $data){
+                        if($data->level_id==4){
+                            $tmp = GeoStructure::find($data->parent_id);
+                            if($tmp->geo_name)
+                            { 
+                                $SchemeGeoTarget_pdf[$i]->bl_name = $tmp->geo_name; 
+                            }
+                            else{
+                            $SchemeGeoTarget_pdf[$i]->bl_name = "NA";
+                            }
+                            }
+                            else{
+                                $SchemeGeoTarget_pdf[$i]->bl_name = "NA";
+                            }
+                            $i++;
+                    }
+             
+        date_default_timezone_set('Asia/Kolkata');
+        $SchemeGeoTarget = date('d-m-Y H:i A');
+        // echo "<pre>";
+        // print_r($SchemeGeoTarget_pdf->toArray());
+        // exit;
+
+
+        $pdf = PDF::loadView('department/Createpdfs',compact('SchemeGeoTarget_pdf','SchemeGeoTarget'));
+        return $pdf->download('SchemeGeoTarget.pdf');
+
     }
 
 }
