@@ -33,9 +33,10 @@ class SchemeStructureController extends Controller
         $uoms = Uom::orderBy('uom_name','asc')->get();
         $scheme_asset_datas = SchemeAsset::select("scheme_asset_id","scheme_asset_name")->get();
         $scheme_group_datas = Group::select('scheme_group_id','scheme_group_name')->get();
-          
+       
 
         $data = new SchemeStructure;
+
         $indicator_datas = [];
 
         if(isset($request->purpose)&&isset($request->id)){
@@ -97,30 +98,76 @@ class SchemeStructureController extends Controller
         $scheme_structure->dept_id = $request->dept_id;
         $scheme_structure->scheme_type_id = $request->scheme_type_id;
         $scheme_structure->description = $request->description;
-        $scheme_structure->attachment = "";
-        $scheme_structure->scheme_logo = "";
-        $scheme_structure->scheme_map_marker = "";
         $scheme_structure->created_by = "1";
         $scheme_structure->updated_by = "1";
       
         // scheme attachment
-        if($request->hasFile('attachment'))
-        {
+        if($request->hasFile('attachment')){
             $file = $request->file('attachment');
             $attachment_tmp_name = "scheme-attachments-".time().rand(1000,5000).'.'.strtolower($file->getClientOriginalExtension());
             $file->move($upload_directory, $attachment_tmp_name);   // move the file to desired folder
             $scheme_structure->attachment = $upload_directory.$attachment_tmp_name;    // assign the location of folder to the model
+
+            // deleteprevious attachment
+            if($request->hidden_input_purpose=="edit")
+            {
+                if(file_exists($scheme_structure->attachment)){
+                    unlink($scheme_structure->attachment);
+                }
+            }
+            $scheme_structure->attachment = $upload_directory.$attachment_tmp_name;    // assign the location of folder to the model
+        }
+
+        else{
+            if($request->hidden_input_purpose=="add"){
+                $scheme_structure->attachment = "";
+            }
+            else if($request->hidden_input_purpose=="edit"&&$request->scheme_attachment_delete){ // edit
+                $scheme_structure->attachment = "";
+            }
+        }
+
+        // to previous attachment if delete clicked
+        if($request->scheme_attachment_delete){
+            if(file_exists($request->scheme_attachment_delete)){
+                unlink($request->scheme_attachment_delete);
+            }
         }
 
         // scheme logo
-        if($request->hasFile('scheme_logo'))
-        {
+        if($request->hasFile('scheme_logo')){
             $file = $request->file('scheme_logo');
             $scheme_logo_tmp_name = "scheme-logo-".time().rand(1000,5000).'.'.strtolower($file->getClientOriginalExtension());
             $file->move($upload_directory, $scheme_logo_tmp_name); //  move file
             $scheme_structure->scheme_logo = $upload_directory.$scheme_logo_tmp_name; // assign
+
+            //delete previous scheme logo
+        if($request->hidden_input_purpose=="edit")
+        {
+            if(file_exists($scheme_structure->scheme_logo)){
+                unlink($scheme_structure->scheme_logo);
+            }
+            $scheme_structure->scheme_logo = $upload_directory.$scheme_logo_tmp_name; 
         }
 
+        }
+        else{
+            if($request->hidden_input_purpose=="add"){
+                $scheme_structure->scheme_logo="";
+            }
+            else if($request->hidden_input_purpose=="edit" && $request->scheme_logo_delete){
+                $scheme_structure->scheme_logo = "";
+
+            }
+        }
+
+        // to previous scheme_logo if delete clicked
+        if($request->scheme_logo_delete){
+            if(file_exists($request->scheme_logo_delete)){
+                unlink($request->scheme_logo_delete);
+            }
+        }
+        
         // for scheme_map_maker
         if($request->hasFile('scheme_map_marker'))
         {
@@ -128,6 +175,30 @@ class SchemeStructureController extends Controller
             $scheme_map_marker_tmp_name = "scheme-map-marker-".time().rand(1000,5000).'.'.strtolower($file->getClientOriginalExtension());
             $file->move($upload_directory, $scheme_map_marker_tmp_name); //  move file
             $scheme_structure->scheme_map_marker = $upload_directory.$scheme_map_marker_tmp_name; // assign
+
+            if($request->hidden_input_purpose=="edit")
+            {
+                if(file_exists($scheme_structure->scheme_map_marker)){
+                    unlink($scheme_structure->scheme_map_marker);
+                }
+                $scheme_structure->scheme_map_marker = $upload_directory.$scheme_map_marker_tmp_name; 
+            }
+        }
+        else{
+            if($request->hidden_input_purpose=="add"){
+                $scheme_structure->scheme_map_marker="";
+            }
+            else if($request->hidden_input_purpose=="edit" && $request->scheme_map_marker_delete){
+                $scheme_structure->scheme_map_marker = "";
+
+            }
+        }
+
+        // to previous scheme_map_marker if delete clicked
+        if($request->scheme_map_marker_delete){
+            if(file_exists($request->scheme_map_marker_delete)){
+                unlink($request->scheme_map_marker_delete);
+            }
         }
 
         

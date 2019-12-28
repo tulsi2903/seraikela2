@@ -143,9 +143,22 @@
                                             <i class="fas fa-cloud-download-alt"></i>
                                         </span>
                                     </div>
+                                    @if($hidden_input_purpose=="edit" && $data->attachment)
+                                        <div id="scheme_attachment_delete_div">
+                                        <div>Previous Attachment</div>
+                                        <div>
+                                        <a href="{{url('public/uploaded_documents/schemes')}}/{{$data->attachment}}">{{$data->attachment}}</a>
+                                        <span  onclick="to_delete_attachment('{{$data->attachment}}',this)"><i class="fas fa-times-circle"></i></span>
+                                        </div>
+                                       
+                                       </div>
+                                    @endif
+                                    <input type="text" name="scheme_attachment_delete" id="scheme_attachment_delete" value="" hidden>
                                     <div class="invalid-feedback" id="attachment_error_msg"></div>
                                 </div>
                             </div>
+                           
+                           
 
                         <div class="col-md-3">
                             <div class="form-group">
@@ -182,20 +195,7 @@
                                 <div class="invalid-feedback" id="scheme_map_marker_error_msg"></div>
                             </div>
                         </div>
-
-                            <!-- <div class="col-md-3">
-                                <div class="form-group">
-                                    <label for="scheme_map_marker">Map Marker Icon</label>
-                                    <div class="input-icon">
-                                        <input type="file" class="form-control" name="scheme_map_marker" id="scheme_map_marker" placeholder="Map Marker Icon" accept="image/*">
-                                        <span class="input-icon-addon">
-                                            <i class="fas fa-cloud-download-alt"></i>
-                                        </span>
-                                    </div>
-                                    <div class="invalid-feedback" id="scheme_map_marker_error_msg"></div>
-                                </div>
-                            </div> -->
-                        </div>
+                    </div><!--End of Row-->
                         <div id="attributes-block">
                             <div class="col-md-11">
                                 <span class="btn" style="margin-left:1.5%;background: #0f85e2!important;color:#fff;"><i class="fas fa-sort-amount-up"></i> &nbsp;Attributes</span>
@@ -244,6 +244,11 @@ function to_delete(image_path, e){
 function to_delete_map_marker(image_path, e){
     $("#scheme_map_marker_delete").val(image_path);
     $(e).closest("#scheme_map_marker_delete_div").hide(200);
+}
+function to_delete_attachment(attachment_path, e){
+    $("#scheme_attachment_delete").val(attachment_path);
+    $(e).closest("#scheme_attachment_delete_div").hide(200);
+
 }
 </script>
 
