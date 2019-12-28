@@ -27,7 +27,7 @@ class PdfBuilder
 
 		// create new PDF document
 		$this->tcpdf = new \TCPDF($mode, 'mm', 'A4', true, 'UTF-8', false);
-		$this->tcpdf->SetCreator("Paatham");
+		$this->tcpdf->SetCreator("IT Scient");
 		$this->tcpdf->SetAuthor($this->doc_details['author']);
 		$this->tcpdf->SetTitle($this->doc_details['title']);
 		$this->tcpdf->SetSubject($this->doc_details['title']);
@@ -37,7 +37,7 @@ class PdfBuilder
 
 		$this->tcpdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, "", "", array(0, 0, 0), array(255, 255, 255));
 		$this->tcpdf->SetHeaderMargin('6');
-		$topMarginValue = 13;
+		$topMarginValue = 10;
 		$this->tcpdf->SetFont('dejavusans', '', 9);
 
 		// set header and footer fonts
@@ -49,10 +49,10 @@ class PdfBuilder
 
 		// set margins
 		$this->tcpdf->SetMargins('5', $topMarginValue, '5');
-		$this->tcpdf->SetFooterMargin('6');
+		$this->tcpdf->SetFooterMargin('7');
 
 		// set auto page breaks
-		$this->tcpdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+		$this->tcpdf->SetAutoPageBreak(TRUE, 14);
 
 		// set image scale factor
 		$this->tcpdf->setImageScale('1.25');

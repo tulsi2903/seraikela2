@@ -18,8 +18,8 @@
                         <div class="card-tools">
                             <a href="#" data-toggle="tooltip" title="Send Mail"><button type="button" class="btn btn-icon btn-round btn-success" data-target="#create-email" data-toggle="modal" ><i class="fa fa-envelope" aria-hidden="true"></i></button></a>
                             <a href="#" data-toggle="tooltip" title="Print"><button type="button" class="btn btn-icon btn-round btn-default" id="print-button" onclick="printView();"><i class="fa fa-print" aria-hidden="true"></i></button></a>
-                            <a href="#" data-toggle="tooltip" title="Export to Excel"><button type="button" class="btn btn-icon btn-round btn-primary" ><i class="fas fa-file-excel"></i></button></a>
-                            <a href="#" data-toggle="tooltip" title="Export to PDF"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="far fa-file-pdf" style="color: #850000;"></i></button></a>
+                            <a href="{{url('geo-structure/export/excelURL')}}" data-toggle="tooltip" title="Export to Excel"><button type="button" class="btn btn-icon btn-round btn-primary" ><i class="fas fa-file-excel"></i></button></a>
+                            <a href="{{url('geo-structure/pdf/pdfURL')}}" data-toggle="tooltip" target="_BLANK" title="Export to PDF"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="far fa-file-pdf" style="color: #850000;"></i></button></a>
 
                             <a class="btn btn-secondary department-add-button" href="{{url('geo-structure/add')}}" role="button"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;Add</a>
                         </div>

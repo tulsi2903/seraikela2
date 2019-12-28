@@ -141,4 +141,75 @@ class GeoStructureController extends Controller
         return redirect('geo-structure');
     }
 
+    public function exportpdfFunctiuonforgeostructure()
+    {
+        # code...
+        $GeoStructureData = GeoStructure::leftJoin('level', 'geo_structure.level_id', '=', 'level.level_id')
+                                ->leftJoin('organisation','geo_structure.org_id','=','organisation.org_id')
+                                ->select('geo_structure.*','level.level_name','level.parent_level_id as parent_name','organisation.org_name','organisation.updated_at as parent_level_name')
+                                ->orderBy('geo_structure.geo_id','desc')
+                                ->get();
+
+        foreach ($GeoStructureData as $key => $value) {
+            $parent_details = GeoStructure::where('geo_id',$GeoStructureData[$key]->parent_id)->first();
+            if($parent_details){
+                $value->parent_name = $parent_details->geo_name;
+                if($parent_details->level_id=="1"){ $value->parent_level_name = "(District)"; }
+                if($parent_details->level_id=="2"){ $value->parent_level_name = "(Sub Division)"; }
+                if($parent_details->level_id=="3"){ $value->parent_level_name = "(Block)"; }
+                if($parent_details->level_id=="4"){ $value->parent_level_name = "(Panchayat)"; }
+            }
+            else{
+                $value->parent_name = 'NA';
+                $value->parent_level_name = "";
+            }
+        }
+
+        $doc_details = array(
+            "title" => "Geo Structure",
+            "author" => $this->data['panelInit']->settingsArray['siteTitle'],
+            "topMarginValue" => 10,
+            "mode" => 'L'
+        );
+
+        $pdfbuilder = new \PdfBuilder($doc_details);
+
+        $content = "<table cellspacing=\"0\" cellpadding=\"4\" border=\"1\" ><tr>";
+        $content .= "<th style='border: solid 1px #000000;' colspan=\"6\" align=\"left\" ><b>Geo Structure</b></th></tr>";
+        
+
+        /* ========================================================================= */
+        /*                Total width of the pdf table is 1017px                     */
+        /* ========================================================================= */
+        $content .= "<thead>";
+        $content .= "<tr>";
+        $content .= "<th style=\"border: solid 1px #000000;width: 50px;\" align=\"center\"><b>Sl.</b></th>";
+        $content .= "<th style=\"border: solid 1px #000000;width: 428px;\" align=\"center\"><b>Name</b></th>";
+        $content .= "<th style=\"border: solid 1px #000000;width: 100px;\" align=\"center\"><b>Level</b></th>";
+        $content .= "<th style=\"border: solid 1px #000000;width: 100px;\" align=\"center\"><b>Villages</b></th>";
+        $content .= "<th style=\"border: solid 1px #000000;width: 170px;\" align=\"center\"><b>Parent</b></th>";
+        $content .= "<th style=\"border: solid 1px #000000;width: 169px;\" align=\"center\"><b>Organisation</b></th>";
+        $content .= "</tr>";
+        $content .= "</thead>";
+        $content .= "<tbody>";
+
+        // echo "<pre>";
+        // print_r($GeoStructureData);exit;
+        foreach ($GeoStructureData as $key => $row) {
+            $index = $key+1;
+            $content .= "<tr>";
+            $content .= "<td style=\"border: solid 1px #000000;width: 50px;\">" . $index . "</td>";
+            $content .= "<td style=\"border: solid 1px #000000;width: 428px;\">" . $row->geo_name . "</td>";
+            $content .= "<td style=\"border: solid 1px #000000;width: 100px;\">" . $row->level_name . "</td>";
+            $content .= "<td style=\"border: solid 1px #000000;width: 100px;\">" . $row->no_of_villages . "</td>";
+            $content .= "<td style=\"border: solid 1px #000000;width: 170px;\">" . $row->parent_name.$row->parent_level_name . "</td>";
+            $content .= "<td style=\"border: solid 1px #000000;width: 169px;\">" . $row->org_name . "</td>";
+            $content .= "</tr>";
+        }
+        $content .= "</tbody></table>";
+        // print_r($content);exit;
+        $pdfbuilder->table($content, array('border' => '1', 'align' => ''));
+        $pdfbuilder->output('Geo Structure.pdf');
+        exit;
+    }
 }
