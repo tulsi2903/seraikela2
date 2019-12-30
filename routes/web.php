@@ -61,6 +61,8 @@ Route::get('department/export/excelURL','DepartmentController@exportExcelFunctiu
 Route::get('department/pdf/pdfURL','DepartmentController@exportpdfFunctiuon');
 Route::get('department/changeView','DepartmentController@changeView');
 Route::post('department/importFromExcel','DepartmentController@importFromExcel');
+Route::post('department/ImportreviewSave','DepartmentController@ImportreviewSave');
+
 /* designation */
 Route::get('designation','DesignationController@index');
 Route::get('designation/add','DesignationController@add');

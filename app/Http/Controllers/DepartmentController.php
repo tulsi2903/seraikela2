@@ -9,6 +9,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\DisneyplusExport;
 use DB;
 use PDF;
+use Session;
 
 class DepartmentController extends Controller
 {
@@ -102,7 +103,7 @@ class DepartmentController extends Controller
             }
             $value->created_at = date('d/m/Y', strtotime($value->created_at));
             $data[] = array(
-                $key + 1,
+                $key+1,
                 $value->dept_name,
                 $value->org_name,
                 $value->is_active,
@@ -169,12 +170,57 @@ class DepartmentController extends Controller
 
         if ( $_FILES['excelcsv']['tmp_name'] ){
             $readExcel = \Excel::load($_FILES['excelcsv']['tmp_name'], function($reader) { })->get()->toArray();
-            $dataImport = array("ready"=>array(),"revise"=>array());
+            // $dataImport = array("ready"=>array(),"revise"=>array());
             foreach ($readExcel as $row){
-                echo "<pre>";
-                print_r($row['sl._no.']);
+               
+                $importItem = array();
+                if(isset($row['sl']) AND $row['sl'] != null){
+                    $importItem['sl'] = $row['sl'];
+                }
+                if(isset($row['department_name']) AND $row['department_name'] != null){
+                    $importItem['department_name'] = $row['department_name'];
+                }
+                if(isset($row['organization_name']) AND $row['organization_name'] != null){
+                    $importItem['organization_name'] = $row['organization_name'];
+                }
+                if(isset($row['status']) AND $row['status'] != null){
+                    $importItem['status'] = $row['status'];
+                }
+                if(isset($row['date']) AND $row['date'] != null){
+                    $importItem['date'] = $row['date'];
+                }
+                $dataImport[]= $importItem;
             }
+            $toReturn = array();
+            $toReturn = $dataImport;
         }
+        // echo "<pre>";
+        // print_r($toReturn);exit;
+        return view('department.reviewImport')->with(compact('toReturn'));
+    }
 
+    public function ImportreviewSave(Request $request)
+    {
+        # code...
+        $totalLength = $request->slno;
+        foreach ($totalLength as $key => $value) {
+            $Department = new Department;
+            $Department->dept_name = $request->department_name[$key];
+            if($request->status[$key] == "Active")
+            {
+                $Department->is_active = 1;
+            }
+            else
+            {
+                $Department->is_active = 0;
+            }
+            // $Department->created_at = date('Y-m-d');
+            $Department->created_by = Session::get('user_id');
+            $Department->org_id = 1;
+            $Department->save();
+        }
+        session()->put('alert-class','alert-success');
+        session()->put('alert-content','Department Details has been Saved');
+        return redirect('department');
     }
 }
