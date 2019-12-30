@@ -70,11 +70,11 @@
                             </div>
                             <div class="col-md-2">
                                 <div class="form-group">
-                                    <label for="scheme_asset_id">Scheme Assset</label>
-                                    <select name="scheme_asset_id" id="scheme_asset_id" class="form-control">
+                                    <label for="scheme_assets_id">Scheme Assset</label>
+                                    <select name="scheme_assets_id" id="scheme_asset_id" class="form-control">
                                         <option value="">--Select--</option>
                                         @foreach($scheme_asset_datas as $scheme_asset_data)
-                                            <option value="{{$scheme_asset_data->scheme_asset_id}}"<?php if($data->scheme_asset_id == $scheme_asset_data->scheme_asset_id){ echo "selected";}?>>{{$scheme_asset_data->scheme_asset_name}}</option>
+                                            <option value="{{$scheme_asset_data->scheme_asset_id}}"<?php if($data->scheme_assets_id == $scheme_asset_data->scheme_assets_id){ echo "selected";}?>>{{$scheme_asset_data->scheme_asset_name}}</option>
                                         @endforeach
                                     </select>
                                     <div class="invalid-feedback" id="scheme_asset_id_error_msg"></div>

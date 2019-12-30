@@ -184,9 +184,10 @@ Route::get('scheme-type/delete/{sch_type_id}','SchemeTypeController@delete');
 
 /*scheme-asset*/
 Route::get('scheme-asset','Scheme_Asset_Controller@index');
-// Route::get('scheme-asset/add','Scheme_Asset_Controller@add');
+Route::get('scheme-asset/add','Scheme_Asset_Controller@add');
 Route::post('scheme-asset/store','Scheme_Asset_Controller@store');
-Route::get('scheme-asset/delete/{scheme_assets_id}','Scheme_Asset_Controller@delete');
+Route::get('scheme-asset/view/{scheme_asset_id}','Scheme_Asset_Controller@view');
+Route::get('scheme-asset/delete/{scheme_asset_id}','Scheme_Asset_Controller@delete');
 
 /*Scheme Performance*/
 Route::get('scheme-performance/add','SchemePerformanceController@add');
