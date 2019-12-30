@@ -16,9 +16,6 @@ use App\Exports\DefineSchemes;
 use Maatwebsite\Excel\Facades\Excel;
 
 
-
-
-
 class SchemeStructureController extends Controller
 {
     public function index(){
@@ -35,60 +32,32 @@ class SchemeStructureController extends Controller
         $hidden_input_purpose = "add";
         $hidden_input_id= "NA";
 
-        
-        $scheme_types = SchemeType::orderBy('sch_type_name','asc')->get();
-        $departments = Department::orderBy('dept_name')->get();
-        $uoms = Uom::orderBy('uom_name','asc')->get();
-        $scheme_asset_datas = SchemeAsset::select("scheme_asset_id","scheme_asset_name")->get();
-        $scheme_group_datas = Group::select('scheme_group_id','scheme_group_name')->get();
+        $scheme_type_datas = SchemeType::orderBy('sch_type_name','asc')->get();
+        $department_datas = Department::orderBy('dept_name')->get();
        
-
         $data = new SchemeStructure;
-
-        $indicator_datas = [];
 
         if(isset($request->purpose)&&isset($request->id)){
             $hidden_input_purpose=$request->purpose;
             $hidden_input_id=$request->id;
             $data = $data->find($request->id);
-            if($data){
-                $indicator_datas = SchemeIndicator::where('scheme_id',$data->scheme_id)->get();
-            }
         }
 
-        return view('scheme-structure.add')->with(compact('hidden_input_purpose','hidden_input_id','data','indicator_datas','department_datas','scheme_types','departments','uoms','scheme_asset_datas','scheme_group_datas'));
+        return view('scheme-structure.add')->with(compact('hidden_input_purpose','hidden_input_id','data','department_datas','scheme_type_datas','departments'));
     }
 
     public function view(Request $request){
+        $data = SchemeStructure::leftJoin('department','scheme_structure.dept_id','=','department.dept_id')
+                                        ->leftJoin('scheme_type','scheme_type.sch_type_id','=','scheme_structure.scheme_type_id')
+                                        ->select('scheme_structure.*','department.dept_name',"scheme_type.sch_type_name")
+                                        ->where('scheme_id',$request->scheme_id)
+                                        ->first();
 
-        $request->scheme_id;
-        $scheme_types = SchemeType::orderBy('sch_type_name','asc')->first();
-        $departments = Department::orderBy('dept_name')->first();
-        $uoms = Uom::orderBy('uom_name','asc')->first();
-        $scheme_details = SchemeStructure::where('scheme_id',$request->scheme_id)->first();
-        $asset_scheme = SchemeAsset::orderBy('scheme_asset_name')->first();
-       
-
-        if($scheme_details->is_active=='1')
-        {
-            $scheme_details->is_active = 'Yes';
-        }
-        else
-        {
-            $scheme_details->is_active = 'No';
-        }
-        
-        $indicator_datas = SchemeIndicator::leftJoin('uom','scheme_indicator.uom','=','uom.uom_id')
-                                            ->select('scheme_indicator.*','uom.uom_name')
-                                            ->where('scheme_indicator.scheme_id',$request->scheme_id)->get();
-
-        
-
-        return view('scheme-structure.view')->with(compact('data','indicator_datas','department_datas','scheme_types','departments','uoms','scheme_details','asset_scheme'));
+        return view('scheme-structure.view')->with(compact('data'));
     }
 
     public function store(Request $request){
-        $upload_directory = "public/uploaded_documents/schemes/";
+        $upload_directory = "public/uploaded_documents/schemes/"; // directory to upload docs/icons etc related to scheme
 
         // return $request;
         $scheme_structure = new SchemeStructure;
@@ -97,11 +66,8 @@ class SchemeStructureController extends Controller
             $scheme_structure = $scheme_structure->find($request->hidden_input_id);
         }
         $scheme_structure->org_id = "1";
-        $scheme_structure->scheme_related =$request->scheme_related;
-        $scheme_structure->scheme_group_id = $request->scheme_group_id;
         $scheme_structure->scheme_name = $request->scheme_name;
         $scheme_structure->scheme_short_name = $request->scheme_short_name;
-        $scheme_structure->scheme_asset_id = $request->scheme_asset_id;
         $scheme_structure->status = $request->status;
         $scheme_structure->dept_id = $request->dept_id;
         $scheme_structure->scheme_type_id = $request->scheme_type_id;
@@ -111,21 +77,19 @@ class SchemeStructureController extends Controller
       
         // scheme attachment
         if($request->hasFile('attachment')){
-            $file = $request->file('attachment');
-            $attachment_tmp_name = "scheme-attachments-".time().rand(1000,5000).'.'.strtolower($file->getClientOriginalExtension());
-            $file->move($upload_directory, $attachment_tmp_name);   // move the file to desired folder
-            $scheme_structure->attachment = $upload_directory.$attachment_tmp_name;    // assign the location of folder to the model
-
-            // deleteprevious attachment
+            // delete previous attachment
             if($request->hidden_input_purpose=="edit")
             {
                 if(file_exists($scheme_structure->attachment)){
                     unlink($scheme_structure->attachment);
                 }
             }
+
+            $file = $request->file('attachment');
+            $attachment_tmp_name = "scheme-attachments-".time().rand(1000,5000).'.'.strtolower($file->getClientOriginalExtension());
+            $file->move($upload_directory, $attachment_tmp_name);   // move the file to desired folder
             $scheme_structure->attachment = $upload_directory.$attachment_tmp_name;    // assign the location of folder to the model
         }
-
         else{
             if($request->hidden_input_purpose=="add"){
                 $scheme_structure->attachment = "";
@@ -134,7 +98,6 @@ class SchemeStructureController extends Controller
                 $scheme_structure->attachment = "";
             }
         }
-
         // to previous attachment if delete clicked
         if($request->scheme_attachment_delete){
             if(file_exists($request->scheme_attachment_delete)){
@@ -144,20 +107,18 @@ class SchemeStructureController extends Controller
 
         // scheme logo
         if($request->hasFile('scheme_logo')){
+            //delete previous scheme logo
+            if($request->hidden_input_purpose=="edit")
+            {
+                if(file_exists($scheme_structure->scheme_logo)){
+                    unlink($scheme_structure->scheme_logo);
+                }
+            }
+
             $file = $request->file('scheme_logo');
             $scheme_logo_tmp_name = "scheme-logo-".time().rand(1000,5000).'.'.strtolower($file->getClientOriginalExtension());
             $file->move($upload_directory, $scheme_logo_tmp_name); //  move file
             $scheme_structure->scheme_logo = $upload_directory.$scheme_logo_tmp_name; // assign
-
-            //delete previous scheme logo
-        if($request->hidden_input_purpose=="edit")
-        {
-            if(file_exists($scheme_structure->scheme_logo)){
-                unlink($scheme_structure->scheme_logo);
-            }
-            $scheme_structure->scheme_logo = $upload_directory.$scheme_logo_tmp_name; 
-        }
-
         }
         else{
             if($request->hidden_input_purpose=="add"){
@@ -175,22 +136,20 @@ class SchemeStructureController extends Controller
                 unlink($request->scheme_logo_delete);
             }
         }
-        
         // for scheme_map_maker
         if($request->hasFile('scheme_map_marker'))
         {
-            $file = $request->file('scheme_map_marker');
-            $scheme_map_marker_tmp_name = "scheme-map-marker-".time().rand(1000,5000).'.'.strtolower($file->getClientOriginalExtension());
-            $file->move($upload_directory, $scheme_map_marker_tmp_name); //  move file
-            $scheme_structure->scheme_map_marker = $upload_directory.$scheme_map_marker_tmp_name; // assign
-
             if($request->hidden_input_purpose=="edit")
             {
                 if(file_exists($scheme_structure->scheme_map_marker)){
                     unlink($scheme_structure->scheme_map_marker);
                 }
-                $scheme_structure->scheme_map_marker = $upload_directory.$scheme_map_marker_tmp_name; 
             }
+
+            $file = $request->file('scheme_map_marker');
+            $scheme_map_marker_tmp_name = "scheme-map-marker-".time().rand(1000,5000).'.'.strtolower($file->getClientOriginalExtension());
+            $file->move($upload_directory, $scheme_map_marker_tmp_name); //  move file
+            $scheme_structure->scheme_map_marker = $upload_directory.$scheme_map_marker_tmp_name; // assign
         }
         else{
             if($request->hidden_input_purpose=="add"){
@@ -201,7 +160,6 @@ class SchemeStructureController extends Controller
 
             }
         }
-
         // to previous scheme_map_marker if delete clicked
         if($request->scheme_map_marker_delete){
             if(file_exists($request->scheme_map_marker_delete)){
@@ -209,7 +167,6 @@ class SchemeStructureController extends Controller
             }
         }
 
-        
         // saving/response
         if(SchemeStructure::where('scheme_name',$request->scheme_name)->first()&&$request->hidden_input_purpose!="edit"){
             session()->put('alert-class','alert-danger');
@@ -230,9 +187,17 @@ class SchemeStructureController extends Controller
    
     public function delete(Request $request){
         if(SchemeStructure::find($request->scheme_id)){
-           SchemeStructure::where('scheme_id',$request->scheme_id)->delete();
-          
-           SchemeIndicator::where('scheme_id',$request->scheme_id)->delete();
+            $scheme_structure = SchemeStructure::find($request->scheme_id);
+            if(file_exists($scheme_structure->attachment)){
+                unlink($scheme_structure->attachment);
+            }
+            if(file_exists($scheme_structure->scheme_logo)){
+                unlink($scheme_structure->scheme_logo);
+            }
+            if(file_exists($scheme_structure->scheme_map_marker)){
+                unlink($scheme_structure->scheme_map_marker);
+            }
+            SchemeStructure::where('scheme_id',$request->scheme_id)->delete();
             session()->put('alert-class','alert-success');
             session()->put('alert-content','Deleted successfully !');
         }

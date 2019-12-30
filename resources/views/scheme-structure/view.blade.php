@@ -26,105 +26,56 @@ hr.new2 {
 
 @section('page-content')
 
-<div class="row row-card-no-pd" style="border-top: 3px solid #5c76b7;">
+<div class="card">
     <div class="col-md-12">
-        <div class="card-title" style="float:left; margin-top: 11px;">Scheme Details</div><br><br>
-        <hr class="new2">
-        <div class="card-body" style="margin-top: -35px;">
-
-            <table class="table table-striped mt-3">
-                <tbody>
-                    <tr>
-                        <th>Scheme Name</th>
-                        <th>Short Name</th>
-                        <th>Scheme Type</th>
-                        <th>Scheme Asset</th>
-                        <th>Department</th>
-                        <th>Status(is_active)</th>
-                    </tr>
-
-                    <tr>
-                        <td>{{$scheme_details->scheme_name}}</td>
-                        <td>{{$scheme_details->scheme_short_name}}</td>
-                        <td>{{$scheme_types->sch_type_name}}</td>
-                        <td>{{$asset_scheme->scheme_asset_name}}</td>
-                        <td>{{$departments->dept_name}}</td>
-
-                        <td>{{$scheme_details->is_active}}</td>
-                    </tr>
-                    <tr>
-                        <th colspan="6">Description</th>
-                    </tr>
-                    <tr style="height: 85px;">
-                        <td colspan="6">{{$scheme_details->description}}</td>
-                    </tr>
-
-                    <tr>
-                        <th colspan="2">Attachment</th>
-                        <th colspan="2">Scheme Logo</th>
-                        <th colspan="2">Map Marker Icon</th>
-                    </tr>
-                    <tr>
-                        <td colspan='2'>
-                            <?php
-
-                                    $attachment_array = explode(":",$scheme_details->attachment);
-                                    for($i=0;$i<count($attachment_array);$i++)
-                                    {
-                                        ?>
-                            <a
-                                href="{{url('public/uploaded_documents/schemes')}}/{{$attachment_array[$i]}}">{{$attachment_array[$i]}}</a>
-                            <br>
-
-                            <?php
-                                        
-                                        
-
-                                    }
-                                    ?>
-                        </td>
-
-                        <td colspan='2'><img src="{{url('public/uploaded_documents/schemes')}}/{{$scheme_details->scheme_logo}}"
-                                style="max-height:200px;"></td>
-                        <td colspan='1'><img src="{{url('public/uploaded_documents/schemes')}}/{{$scheme_details->scheme_map_marker}}"
-                                style="max-height:200px;"></td>
-
-
-                    </tr>
-
-                </tbody>
-            </table>
-
-            <div class="col-md-12">
-                <button class="btn" style="margin-left:1.5%;background: #0f85e2!important;color:#fff;"><i
-                        class="fas fa-sort-amount-up"></i> &nbsp;Indicator</button>
-                <div class="card-body" style="background: #f2f6ff; border: 1px solid #a5bbf6;margin-top: -18px;">
-                    <table id="basic-datatables" class=" table order-list" style="margin-top: 10px;">
-                        <thead style="background: #cedcff">
-                            <tr>
-                                <th>Name</th>
-                                <th>Unit</th>
-                                <th>Performance</th>
-                            </tr>
-                        </thead>
-                        <?php if(count($indicator_datas)!=0){ ?>
-                        @foreach($indicator_datas as $indicator_data)
-                        <tbody>
-
-
-                            <td>{{$indicator_data->indicator_name}}</td>
-                            <td>{{$indicator_data->uom_name}}</td>
-                            <td>{{$indicator_data->performance}}</td>
-
-                        </tbody>
-                        @endforeach
-                        <?php }?>
-                    </table>
-
+        <div class="card-header">
+            <div class="card-head-row card-tools-still-right" style="background:#fff;">
+                <h4 class="card-title">Scheme Details</h4>
+                <div class="card-tools">
+                    <a href="{{url('scheme-structure')}}" class="btn btn-sm btn-secondary" style="float:right;"><i class="fas fa-arrow-left"></i>&nbsp;&nbsp;Back</a>
                 </div>
             </div>
-            <br>
-            <a href="{{url('scheme-structure')}}" class="btn btn-danger" style="float:right;">Cancel</a>
+        </div>
+    </div>
+    <!-----------------------------------------start of Scheme Detail Form------------------------------------------>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-12">
+                <div style="display: inline-block; width: 150px; float:left; ">
+                    <img src="{{url($data->scheme_logo)}}" style="max-width: 100%;">
+                </div>
+                <div style="display: inline-block; padding-left: 20px;;">
+                    <h2 style="color: black;">{{$data->scheme_name}} ({{$data->scheme_short_name}})</h2>
+                    <p>
+                        <b>Scheme Type:</b> {{$data->sch_type_name}}
+                        <br/><b>Department:</b> {{$data->dept_name}}
+                        <br/><b>Status:</b> <?php if($data->status=="1"){
+                            ?><i class="fas fa-check-circle text-success"></i>&nbsp;&nbsp;Active<?php
+                        } else{
+                            ?><i class="fas fa-dot-circle text-dark"></i>&nbsp;&nbsp;Inactive<?php
+                        } ?>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <hr/>
+        <div class="row">
+            <div class="col-12">
+                <h4 style="color: black;">Description</h4 style="color: black;">
+                <p>{!! nl2br(e($data->description)) !!}</p>
+            </div>
+            <hr/>
+        </div>
+        <hr/>
+        <div class="row">
+            <div class="col-3">
+                <h4 style="color: black;">Map Marker</h4 style="color: black;">
+                <img src="{{url($data->scheme_map_marker)}}" style="max-width: 80px;">
+            </div>
+            <div class="col-3">
+                <h4 style="color: black;">Attachment</h4 style="color: black;">
+                <a href="{{url($data->attachment)}}" target="_blank"><i class="fas fa-file-download"></i><b>&nbsp;&nbsp;Click here to show/ download</b></a>
+            </div>
         </div>
     </div>
 </div>
