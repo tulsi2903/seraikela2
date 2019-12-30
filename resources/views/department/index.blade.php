@@ -37,6 +37,7 @@
                             <button type="button" class="btn btn-icon btn-round btn-default" id="print-button" onclick="printView();"><i class="fa fa-print" aria-hidden="true"></i></button>
                             <a href="{{url('department/export/excelURL')}}"><button type="button" class="btn btn-icon btn-round btn-success" ><i class="fas fa-file-excel"></i></button></a>
                             <a href="{{url('department/pdf/pdfURL')}}"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button></a>
+                            <a href="{{url('department/changeView')}}" data-toggle="tooltip" title="Import From Excel"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fa fa-upload"></i></button></a>
 
                             @if($desig_permissions["department"]["add"])
                                 <a id="toggle1" class="btn btn-secondary department-add-button" href="javascript:void();" role="button"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;Add</a>

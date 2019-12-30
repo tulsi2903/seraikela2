@@ -87,7 +87,46 @@ class DepartmentController extends Controller
 
     public function exportExcelFunctiuon()
     {
-        return Excel::download(new DisneyplusExport, 'Departments-Sheet.xls');
+
+        $data = array(1 => array("Department Detail Sheet"));
+        $data[] = array('Sl. No.', 'Department Name', 'Organization Name', 'Status', 'Date');
+
+        $items =  DB::table('department')
+            ->join('organisation', 'department.org_id', '=', 'organisation.org_id')
+            ->select('department.dept_id as slId', 'department.dept_name', 'organisation.org_name', 'department.is_active', 'department.created_at')->get();
+
+        foreach ($items as $key => $value) {
+            if ($value->is_active == 1) {
+                $value->is_active = "Active";
+            } else {
+                $value->is_active = "Inactive";
+            }
+            $value->created_at = date('d/m/Y', strtotime($value->created_at));
+            $data[] = array(
+                $key + 1,
+                $value->dept_name,
+                $value->org_name,
+                $value->is_active,
+                $value->created_at,
+            );
+
+
+        }
+        \Excel::create('Department-Sheet', function ($excel) use ($data) {
+
+            // Set the title
+            $excel->setTitle('Department-Sheet');
+
+            // Chain the setters
+            $excel->setCreator('Paatham')->setCompany('Paatham');
+
+            $excel->sheet('Fees', function ($sheet) use ($data) {
+                $sheet->freezePane('A3');
+                $sheet->mergeCells('A1:I1');
+                $sheet->fromArray($data, null, 'A1', true, false);
+                $sheet->setColumnFormat(array('I1' => '@'));
+            });
+        })->download('xls');
     }
     
     public function exportpdfFunctiuon()
@@ -97,5 +136,46 @@ class DepartmentController extends Controller
             ->select('department.dept_id','department.dept_name','organisation.org_name','department.is_active','department.created_at')->get();
         $pdf = PDF::loadView('department/Createpdfs',compact('department'));
         return $pdf->download('Department.pdf');
+    }
+
+    public function changeView()
+    {
+        # code...
+        return view('department.ImportExcel');
+    }
+    public function importFromExcel(Request $request)
+    {
+        # code...
+
+        // $request->validate([
+        //     'excelcsv' => 'required'
+        // ]);
+        // $path = $request->file('excelcsv');
+        // $arr_file = explode('.', $_FILES['excelcsv']['name']);
+        // $extension = end($arr_file);
+        
+        // if('csv' == $extension) {
+        //         $reader = new \PhpOffice\PhpSpreadsheet\Reader\Csv();
+        // } else {
+        //     $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
+        //     $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xls();
+            
+        // }
+        // $spreadsheet = $reader->load($path);
+        // $sheetData = $spreadsheet->getActiveSheet()->toArray();
+        // foreach ($sheetData as $key => $value){
+        //     echo "<pre>";
+        //     print_r($sheetData[$key][$key]);
+        // }exit;
+
+        if ( $_FILES['excelcsv']['tmp_name'] ){
+            $readExcel = \Excel::load($_FILES['excelcsv']['tmp_name'], function($reader) { })->get()->toArray();
+            $dataImport = array("ready"=>array(),"revise"=>array());
+            foreach ($readExcel as $row){
+                echo "<pre>";
+                print_r($row['sl._no.']);
+            }
+        }
+
     }
 }

@@ -365,7 +365,58 @@ class SchemeGeoTargetController extends Controller
 
     public function exportExcel_Scheme_Geo_structure()
     {
-        return Excel::download(new SchemeGeoTargetExport, 'SchemeGeoTarget.xls');
+       # code...
+       $data = array(1 => array("Scheme Geo target Sheet"));
+       $data[] = array('Sl. No.', 'Scheme', 'Block Name', 'Panchayat', 'Target', 'Year');
+
+
+       $datas = SchemeGeoTarget::
+             leftJoin('scheme_structure', 'scheme_geo_target.scheme_id', '=', 'scheme_structure.scheme_id')
+           ->leftJoin('geo_structure', 'scheme_geo_target.geo_id', '=', 'geo_structure.geo_id')
+           ->leftJoin('scheme_indicator', 'scheme_geo_target.indicator_id', '=', 'scheme_indicator.indicator_id')
+           ->leftJoin('year', 'scheme_geo_target.year_id', '=', 'year.year_id')
+           ->leftJoin('scheme_group', 'scheme_geo_target.group_id', '=', 'scheme_group.scheme_group_id')
+           ->select('scheme_geo_target.*', 'scheme_structure.scheme_name', 'scheme_structure.scheme_short_name', 'geo_structure.geo_name', 'geo_structure.level_id', 'geo_structure.parent_id', 'scheme_indicator.indicator_name', 'year.year_value', 'scheme_group.scheme_group_name')
+           ->orderBy('scheme_geo_target.scheme_geo_target_id', 'desc')
+           ->get();
+
+       foreach ($datas as $key => $value) {
+           if ($data->level_id == 4) {
+               $tmp = GeoStructure::find($value->parent_id);
+               if ($tmp->geo_name) {
+                   $value->bl_name = $tmp->geo_name;
+               } else {
+                   $value->bl_name = "NA";
+               }
+           } else {
+               $value->bl_name = "NA";
+           }
+           $data[] = array(
+               $key + 1,
+               $value->scheme_name,
+               $value->bl_name,
+               $value->geo_name,
+               $value->target,
+               $value->year_value,
+           );
+       }
+
+
+       \Excel::create('Scheme-Geo-target-Sheet', function ($excel) use ($data) {
+
+           // Set the title
+           $excel->setTitle('Scheme-Geo-target-Sheet');
+
+           // Chain the setters
+           $excel->setCreator('Paatham')->setCompany('Paatham');
+
+           $excel->sheet('Fees', function ($sheet) use ($data) {
+               $sheet->freezePane('A3');
+               $sheet->mergeCells('A1:I1');
+               $sheet->fromArray($data, null, 'A1', true, false);
+               $sheet->setColumnFormat(array('I1' => '@'));
+           });
+       })->download('xls');
 
     }
     public function exportPDF_Scheme_Geo_structure(){

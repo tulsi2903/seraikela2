@@ -76,7 +76,48 @@ class YearController extends Controller
 
     public function exportExcelFunctiuonforyear()
     {
-        return Excel::download(new YearSectionExport, 'Year-Sheet.xls');
+        // return Excel::download(new YearSectionExport, 'Year-Sheet.xls');
+
+
+        $data = array(1 => array("Year-Sheet"));
+        $data[] = array( 'Sl. No.','Year','Status','Date');
+
+
+        $yearValue = Year::orderBy('year_id','desc')->select('year_id as slId', 'year_value', 'status', 'created_at as createdDate')->get();
+
+        foreach ($yearValue as $key => $value) {
+            if($value->status == 1) {
+                $value->status = "Active";
+            }
+            else {
+                $value->status = "Inactive";
+            }
+            $value->createdDate = date('d/m/Y',strtotime($value->createdDate));
+            $data[] = array(
+                $key + 1,
+                $value->year_value,
+                $value->status,
+                $value->createdDate,
+            );
+        }
+        
+        \Excel::create('Year-Sheet', function ($excel) use ($data) {
+
+            // Set the title
+            $excel->setTitle('Year-Sheet');
+
+            // Chain the setters
+            $excel->setCreator('Paatham')->setCompany('Paatham');
+
+            $excel->sheet('Fees', function ($sheet) use ($data) {
+                $sheet->freezePane('A3');
+                $sheet->mergeCells('A1:I1');
+                $sheet->fromArray($data, null, 'A1', true, false);
+                $sheet->setColumnFormat(array('I1' => '@'));
+            });
+        })->download('xls');
+
+
     }
 
     public function exportpdfFunctiuonforyear()
