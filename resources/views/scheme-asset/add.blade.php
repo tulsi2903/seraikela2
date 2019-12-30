@@ -161,6 +161,21 @@ $(this).closest("tr").remove();
       });
     });
 </script>
+
+<script>
+$(document).ready(function () {
+    var chkbox = $('#multiple_geo_tags');
+    $('#multiple_geo_tags').on('click',function () {
+        if (chkbox.is(':checked')) {
+           
+        } 
+        else{
+            $('#no_of_tags').val("");
+            
+        }
+    });
+});
+</script>
 <!-- <script>
 $(document).ready(function(){
    $("#multiple_geo_tag").hide();
@@ -299,12 +314,12 @@ $(document).ready(function(){
 
 
         if (scheme_asset_name_error || no_of_tags_error || attribute_name_error || attribute_uom_error) {
-           alert("false");
+        //    alert("false");
             return false;
            
         } // error occured
         else {
-            alert("true");
+            // alert("true");
             return true;
            
         } // proceed to submit form data
