@@ -332,6 +332,75 @@ class AssetNumbersController extends Controller
 
     public function exportExcelFunctiuonforasset_Numbers()
     {
+        config()->set('database.connections.mysql.strict', false);
+        \DB::reconnect(); //important as the existing connection if any would be in strict mode
+
+
+        $data = array(1 => array("Asset Numbers Sheet"));
+        $data[] = array('Sl. No.','Year','Asset','Block','Panchyat','Current Value','Date');       
+     
+        $items = DB::table('asset_numbers')
+		->leftJoin('geo_structure', 'asset_numbers.geo_id', '=', 'geo_structure.geo_id')
+		->leftJoin('asset', 'asset_numbers.asset_id', '=', 'asset.asset_id')
+		->leftJoin('year', 'asset_numbers.year', '=', 'year.year_id')
+		->select('asset_numbers.asset_numbers_id as slNo', 
+                'year.year_value', 
+                'asset.asset_name', 
+                'geo_structure.bl_id as Block', 
+                'geo_structure.geo_name', 
+                'asset_numbers.current_value','asset_numbers.created_at as CreatedDate')
+        ->groupBy('asset_numbers.year', 'asset_numbers.asset_id', 'asset_numbers.geo_id')->get();
+
+           //now changing back the strict ON
+           config()->set('database.connections.mysql.strict', true);
+           \DB::reconnect();
+         
+
+        foreach ($items as $key => $value) {
+            $value->CreatedDate = date('d/m/Y', strtotime($value->CreatedDate));
+            $block_data_tmp = GeoStructure::find($value->Block);
+            $value->Block = $block_data_tmp->geo_name;
+            
+            $data[] = array(
+                $key + 1,
+                $value->year_value,
+                $value->asset_name,
+                $value->Block,
+                $value->geo_name,
+                $value->current_value,
+                $value->CreatedDate
+            );
+
+
+        }
+        \Excel::create('Asset_Numbers', function ($excel) use ($data) {
+
+            // Set the title
+            $excel->setTitle('Asset Numbers Sheet');
+
+            // Chain the setters
+            $excel->setCreator('Seraikela')->setCompany('Seraikela');
+
+            $excel->sheet('Fees', function ($sheet) use ($data) {
+                $sheet->freezePane('A3');
+                $sheet->mergeCells('A1:I1');
+                $sheet->fromArray($data, null, 'A1', true, false);
+                $sheet->setColumnFormat(array('I1' => '@'));
+            });
+        })->download('xls');
+
+
+
+
+
+
+
+
+
+
+
+
+
         return Excel::download(new AssetNumberSectionExport, 'Asset Number-Sheet.xls');
     }
 

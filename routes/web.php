@@ -75,7 +75,7 @@ Route::get('geo-structure/add','GeoStructureController@add');
 Route::post('geo-structure/store','GeoStructureController@store');
 Route::get('geo-structure/delete/{geo_id}','GeoStructureController@delete');
 Route::get('geo-structure/get-block-data','GeoStructureController@get_block_data');
-// Route::get('geo-structure/export/excelURL','GeoStructureController@exportExcelFunctiuonforgeostructure');
+Route::get('geo-structure/export/excelURL','GeoStructureController@exportExcelFunctiuonforgeostructure');
 Route::get('geo-structure/pdf/pdfURL','GeoStructureController@exportpdfFunctiuonforgeostructure');
 
 /* Scheme Structure */
@@ -181,6 +181,8 @@ Route::get('scheme-type','SchemeTypeController@index');
 Route::get('scheme-type/add','SchemeTypeController@add');
 Route::post('scheme-type/store','SchemeTypeController@store');
 Route::get('scheme-type/delete/{sch_type_id}','SchemeTypeController@delete');
+Route::get('scheme-type/pdf/pdfURL','SchemeTypeController@export_PDF_SchemeType');
+Route::get('scheme-type/export/excelURL','SchemeTypeController@export_Excel_SchemeType');
 
 /*scheme-asset*/
 Route::get('scheme-asset','Scheme_Asset_Controller@index');
@@ -212,6 +214,9 @@ Route::get('scheme-group/add','GroupController@add');
 Route::post('scheme-group/store','GroupController@store');
 Route::get('scheme-group/delete/{id}','GroupController@delete');
 //Route::post('scheme-group/send_mail','GroupController@sendEmail');
+Route::get('scheme-group/export/excelURL','GroupController@scheme_group_excel_function');
+Route::get('scheme-group/pdf/pdfURL','GroupController@scheme_group_pdf_function');
+
 
 /*Designation Permission*/
 Route::get('designation-permission','DesignationPermissionController@index');

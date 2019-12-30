@@ -87,7 +87,6 @@ class DepartmentController extends Controller
 
     public function exportExcelFunctiuon()
     {
-
         $data = array(1 => array("Department Detail Sheet"));
         $data[] = array('Sl. No.', 'Department Name', 'Organization Name', 'Status', 'Date');
 
@@ -118,7 +117,7 @@ class DepartmentController extends Controller
             $excel->setTitle('Department-Sheet');
 
             // Chain the setters
-            $excel->setCreator('Paatham')->setCompany('Paatham');
+            $excel->setCreator('Seraikela')->setCompany('Seraikela');
 
             $excel->sheet('Fees', function ($sheet) use ($data) {
                 $sheet->freezePane('A3');

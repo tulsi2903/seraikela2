@@ -83,7 +83,39 @@ class DesignationController extends Controller
 
     public function exportExcelFunctiuonforDesignation()
     {
-        return Excel::download(new DesignationSectionExport, 'Designation-Sheet.xls');
+
+        $data = array(1 => array("Designation Detail Sheet"));
+        $data[] = array('Sl. No.','Name','Organisation Name','Date');
+
+        $items = Designation::leftJoin('organisation', 'designation.org_id', '=', 'organisation.org_id')
+                ->select('designation.desig_id as slId','designation.name','organisation.org_name','designation.created_at as createdDate')
+                ->orderBy('designation.desig_id','desc')
+                ->get();
+
+        foreach ($items as $key => $value) {
+            $value->createdDate = date('d/m/Y',strtotime($value->createdDate));
+            $data[] = array(
+                $key + 1,
+                $value->name,
+                $value->org_name,
+                $value->createdDate,
+            );
+        }
+        \Excel::create('Designation sheet ', function ($excel) use ($data) {
+
+            // Set the title
+            $excel->setTitle('Designation-Sheet');
+
+            // Chain the setters
+            $excel->setCreator('Seraikela')->setCompany('Seraikela');
+
+            $excel->sheet('Fees', function ($sheet) use ($data) {
+                $sheet->freezePane('A3');
+                $sheet->mergeCells('A1:I1');
+                $sheet->fromArray($data, null, 'A1', true, false);
+                $sheet->setColumnFormat(array('I1' => '@'));
+            });
+        })->download('xls');
     }
 
     public function exportpdfFunctiuonforDesignation()

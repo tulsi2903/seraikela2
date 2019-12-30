@@ -76,7 +76,35 @@ class ModuleController extends Controller
 
     public function exportExcelFunctiuonformodule()
     {
-        return Excel::download(new ModuleSectionExport, 'Module-Sheet.xls');
+        $data = array(1 => array("Module Sheet"));
+        $data[] = array('Sl. No.','Module Name','Date');
+
+        $items =  Module::orderBy('mod_id','desc')->select('mod_id', 'mod_name', 'created_at as createdDate')->get();
+
+        foreach ($items as $key => $value) {
+
+            $value->createdDate = date('d/m/Y', strtotime($value->createdDate));
+            $data[] = array(
+                $key + 1,
+                $value->mod_name,
+                $value->createdDate,
+            );
+        }
+        \Excel::create('Module-Sheet', function ($excel) use ($data) {
+
+            // Set the title
+            $excel->setTitle('Module-Sheet');
+
+            // Chain the setters
+            $excel->setCreator('Seraikela')->setCompany('Seraikela');
+
+            $excel->sheet('Fees', function ($sheet) use ($data) {
+                $sheet->freezePane('A3');
+                $sheet->mergeCells('A1:I1');
+                $sheet->fromArray($data, null, 'A1', true, false);
+                $sheet->setColumnFormat(array('I1' => '@'));
+            });
+        })->download('xls');
     }
 
     public function exportpdfFunctiuonformodule()

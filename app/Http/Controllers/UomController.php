@@ -73,7 +73,39 @@ class UomController extends Controller
     }
     public function exportExcelFunctiuonforuom()
     {
-        return Excel::download(new UoMSectionExport, 'UoM-Sheet.xls');
+
+        $data = array(1 => array("Uom Detail Sheet"));
+        $data[] = array('Sl. No.','Name','Date');
+
+        $items = Uom::orderBy('uom_id','desc')->select('uom_id as slId', 'uom_name', 'created_at as datecreated')->get();
+
+        foreach ($items as $key => $value) {
+            // $value->slId = $key+1;
+            $value->datecreated = date('d/m/Y',strtotime($value->datecreated));
+             
+            $data[] = array(
+                $key + 1,
+                $value->uom_name,
+                $value->datecreated,
+            );
+
+
+        }
+        \Excel::create('Uom Detail-Sheet', function ($excel) use ($data) {
+
+            // Set the title
+            $excel->setTitle('Uom Detail-Sheet');
+
+            // Chain the setters
+            $excel->setCreator('Seraikela')->setCompany('Seraikela');
+
+            $excel->sheet('Fees', function ($sheet) use ($data) {
+                $sheet->freezePane('A3');
+                $sheet->mergeCells('A1:I1');
+                $sheet->fromArray($data, null, 'A1', true, false);
+                $sheet->setColumnFormat(array('I1' => '@'));
+            });
+        })->download('xls');
     }
 
     public function exportpdfFunctiuonforuom()

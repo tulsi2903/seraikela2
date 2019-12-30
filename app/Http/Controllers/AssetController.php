@@ -316,7 +316,50 @@ public function delete_subcat(Request $request){
 
 public function exportExcelFunctiuonforasset()
 {
-    return Excel::download(new AssetSectionExport, 'Assetdata-Sheet.xls');
+    $data = array(1 => array("Asset data  Sheet"));
+    $data[] = array('Sl. No.','Name','Type','Department Name','Date');
+
+    $items =  Asset::leftJoin('department', 'asset.dept_id', '=', 'department.dept_id')
+            ->leftJoin('asset_cat', 'asset.category_id', '=', 'asset_cat.asset_cat_id')
+            ->leftJoin('asset_subcat', 'asset.subcategory_id', '=', 'asset_subcat.asset_sub_id')
+            ->select('asset.asset_id as slId','asset.asset_name','asset.movable','department.dept_name','asset.created_at as createdDate')
+            ->orderBy('asset.asset_id', 'desc')
+            ->get();
+
+    foreach ($items as $key => $value) {
+        if($value->movable == 1) {
+            $value->movable = "Movable";
+        }
+        else {
+            $value->movable = "Immovable";
+        }      
+        $value->createdDate = date('d/m/Y', strtotime($value->createdDate));
+        $data[] = array(
+            $key + 1,
+            $value->asset_name,
+            $value->movable,
+            $value->dept_name,
+            $value->createdDate,
+        );
+
+    }
+    \Excel::create('Asset_data', function ($excel) use ($data) {
+
+        // Set the title
+        $excel->setTitle('Asset data Sheet');
+
+        // Chain the setters
+        $excel->setCreator('Seraikela')->setCompany('Seraikela');
+
+        $excel->sheet('Fees', function ($sheet) use ($data) {
+            $sheet->freezePane('A3');
+            $sheet->mergeCells('A1:I1');
+            $sheet->fromArray($data, null, 'A1', true, false);
+            $sheet->setColumnFormat(array('I1' => '@'));
+        });
+    })->download('xls');
+
+
 }
 
 public function exportpdfFunctiuonforasset()
@@ -338,7 +381,45 @@ public function exportpdfFunctiuonforasset()
     //asset catagory rohit singh
     public function export_Excel_Asset_Category()
     {
-        return Excel::download(new AssetCatagorySectionExport, 'AssetCatagory-Sheet.xls');
+        $data = array(1 => array("Asset Category Sheet"));
+        $data[] = array('Sl. No.','Name','Category Description','Type','Date');
+
+        $items = asset_cat::orderBy('asset_cat.asset_cat_id','desc')->select('asset_cat_id','asset_cat_name',
+                     'asset_cat_description','movable','created_at as createdDate')->get();  
+
+        foreach ($items as $key => $value) {
+            if($value->movable == 1) {
+                $value->movable = "Movable";
+            }
+            else {
+                $value->movable = "Immovable";
+            }
+            $value->createdDate = date('d/m/Y', strtotime($value->createdDate));
+            $data[] = array(
+                $key + 1,
+                $value->asset_cat_name,
+                $value->asset_cat_description,
+                $value->movable,
+                $value->createdDate,
+            );
+
+
+        }
+        \Excel::create('Asset_Category', function ($excel) use ($data) {
+
+            // Set the title
+            $excel->setTitle('Asset Category Sheet');
+
+            // Chain the setters
+            $excel->setCreator('Seraikela')->setCompany('Seraikela');
+
+            $excel->sheet('Fees', function ($sheet) use ($data) {
+                $sheet->freezePane('A3');
+                $sheet->mergeCells('A1:I1');
+                $sheet->fromArray($data, null, 'A1', true, false);
+                $sheet->setColumnFormat(array('I1' => '@'));
+            });
+        })->download('xls');
     }
 
     public function export_PDF_Asset_Category()
@@ -353,7 +434,38 @@ public function exportpdfFunctiuonforasset()
      //asset subcatagory rohit singh
      public function export_Excel_Asset_SubCategory()
      {
-        return Excel::download(new AssetSubCatagorySectionExport, 'AssetSubCatagory-Sheet.xls');
+        $data = array(1 => array("Asset Sub Catagory-Sheet"));
+        $data[] = array('Sl.No.','Sub Category Name','Sub Category Description','Category Name','Date');
+
+        $items =  asset_subcat::leftjoin('asset_cat','asset_subcat.asset_cat_id','=','asset_cat.asset_cat_id')
+                    ->select('asset_subcat.asset_sub_id as slId','asset_subcat.asset_sub_cat_name','asset_subcat.asset_sub_cat_description',
+                    'asset_cat.asset_cat_name','asset_subcat.created_at as createdDate')->orderBy('asset_subcat.asset_sub_id','desc')->get();
+
+        foreach ($items as $key => $value) {
+            $value->createdDate = date('d/m/Y', strtotime($value->createdDate));
+            $data[] = array(
+                $key + 1,
+                $value->asset_sub_cat_name,
+                $value->asset_sub_cat_description,
+                $value->asset_cat_name,
+                $value->createdDate
+            );
+        }
+        \Excel::create('AssetSubCatagory', function ($excel) use ($data) {
+
+            // Set the title
+            $excel->setTitle('AssetSubCatagory-Sheet');
+
+            // Chain the setters
+            $excel->setCreator('Seraikela')->setCompany('Seraikela');
+
+            $excel->sheet('Fees', function ($sheet) use ($data) {
+                $sheet->freezePane('A3');
+                $sheet->mergeCells('A1:I1');
+                $sheet->fromArray($data, null, 'A1', true, false);
+                $sheet->setColumnFormat(array('I1' => '@'));
+            });
+        })->download('xls');
      }
  
      public function export_PDF_Asset_SubCategory()

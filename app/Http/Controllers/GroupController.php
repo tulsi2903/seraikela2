@@ -107,7 +107,46 @@ class GroupController extends Controller
                 session()->put('alert-content','Email send');
             });
             return redirect('scheme-group');
-    
     }
- 
+    public function scheme_group_excel_function()        
+    {
+
+            $data = array(1 => array("Scheme Group Sheet"));
+            $data[] = array('Sl. No.','Group','Is Active','Date');
+    
+            $items = Group::orderBy('scheme_group_id','desc')->Select('scheme_group_name','is_active','created_at as createdDate')->get(); 
+            foreach ($items as $key => $value) {
+                if ($value->is_active == 1) {
+                    $value->is_active = "Active";
+                } else {
+                    $value->is_active = "Inactive";
+                }       
+                $value->createdDate = date('d/m/Y', strtotime($value->createdDate));
+                $data[] = array(
+                    $key + 1,
+                    $value->scheme_group_name,
+                    $value->is_active,
+                    $value->createdDate,
+                );
+    
+    
+            }
+            \Excel::create('SchemeGroup-Sheet', function ($excel) use ($data) {
+    
+                // Set the title
+                $excel->setTitle('Scheme Group Sheet');
+    
+                // Chain the setters
+                $excel->setCreator('Seraikela')->setCompany('Seraikela');
+    
+                $excel->sheet('Fees', function ($sheet) use ($data) {
+                    $sheet->freezePane('A3');
+                    $sheet->mergeCells('A1:I1');
+                    $sheet->fromArray($data, null, 'A1', true, false);
+                    $sheet->setColumnFormat(array('I1' => '@'));
+                });
+            })->download('xls');
+        }
+
 }
+

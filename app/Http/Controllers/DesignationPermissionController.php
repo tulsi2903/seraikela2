@@ -43,9 +43,7 @@ class DesignationPermissionController extends Controller
 
             array_push($to_return, $to_return_tmp);
         }
-
         // return $to_return;
-
         return view('designation-permission.index')->with(compact('datas', 'to_return', 'to_return_designation'));
     }
 
@@ -234,7 +232,12 @@ class DesignationPermissionController extends Controller
             session()->put('alert-class', 'alert-success');
             session()->put('alert-content', 'Deleted successfully');
         }
-
         return redirect('designation-permission');
     }
+    public function export_to_Excel()
+    {
+
+    }
+
+
 }

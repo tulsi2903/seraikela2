@@ -60,4 +60,39 @@ class SchemeTypeController extends Controller
 
         return redirect('scheme-type');
     }
+    
+    public function export_Excel_SchemeType(){
+        {
+            $data = array(1 => array("Scheme Type Sheet"));
+            $data[] = array('Sl. No.','Scheme Type Name','Date');
+    
+            $items = SchemeType::orderBy('sch_type_id','desc')->select('sch_type_name','created_at as createdDate')->get(); 
+            foreach ($items as $key => $value) {
+                $value->createdDate = date('d/m/Y',strtotime($value->createdDate));
+                $data[] = array(
+                    $key + 1,
+                    $value->sch_type_name,
+                    $value->createdDate,
+                );
+            }
+            \Excel::create('Scheme Type Sheet', function ($excel) use ($data) {
+    
+                // Set the title
+                $excel->setTitle('Scheme Type Sheet');
+    
+                // Chain the setters
+                $excel->setCreator('Seraikela')->setCompany('Seraikela');
+    
+                $excel->sheet('Fees', function ($sheet) use ($data) {
+                    $sheet->freezePane('A3');
+                    $sheet->mergeCells('A1:I1');
+                    $sheet->fromArray($data, null, 'A1', true, false);
+                    $sheet->setColumnFormat(array('I1' => '@'));
+                });
+            })->download('xls');
+        }
+    }
+
+
+
 }

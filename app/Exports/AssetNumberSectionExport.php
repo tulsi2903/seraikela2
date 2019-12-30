@@ -27,8 +27,8 @@ class AssetNumberSectionExport implements FromCollection, WithHeadings, ShouldAu
     {
         config()->set('database.connections.mysql.strict', false);
         \DB::reconnect(); //important as the existing connection if any would be in strict mode
+    
         
-     
         $ExportData = DB::table('asset_numbers')
 		->leftJoin('geo_structure', 'asset_numbers.geo_id', '=', 'geo_structure.geo_id')
 		->leftJoin('asset', 'asset_numbers.asset_id', '=', 'asset.asset_id')

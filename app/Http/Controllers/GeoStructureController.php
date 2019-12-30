@@ -216,4 +216,64 @@ class GeoStructureController extends Controller
         $pdfbuilder->output('Geo Structure.pdf');
         exit;
     }
+
+    public function exportExcelFunctiuonforgeostructure(){
+        $data = array(1 => array("Geo Structure Sheet"));
+        $data[] = array('Sl. No.','Name','Level','Village','Parent','Organisation','Date');
+
+        $items = GeoStructure::
+            leftJoin('level', 'geo_structure.level_id', '=', 'level.level_id')
+            ->leftJoin('organisation','geo_structure.org_id','=','organisation.org_id')
+            ->select('geo_structure.*','level.level_name','level.parent_level_id as parent_name',
+                    'organisation.org_name','organisation.updated_at as parent_level_name','geo_structure.created_at as createdDate')->orderBy('geo_structure.geo_id','desc')->get();    
+                    
+                    
+            foreach ($items as $key => $value) {
+                $value->createdDate = date('d/m/Y', strtotime($value->createdDate));
+                $parent_details = GeoStructure::where('geo_id',$items[$key]->parent_id)->first();
+                if($parent_details){
+                    $value->parent_name = $parent_details->geo_name;
+                    if($parent_details->level_id=="1")
+                        { $value->parent_level_name = "(District)"; }
+                    if($parent_details->level_id=="2")
+                        { $value->parent_level_name = "(Sub Division)"; }
+                    if($parent_details->level_id=="3")
+                        { $value->parent_level_name = "(Block)"; }
+                    if($parent_details->level_id=="4")
+                        { $value->parent_level_name = "(Panchayat)"; }
+                }
+                else{
+                    $value->parent_name = 'NA';
+                    $value->parent_level_name = "";
+                }
+                $data[] = array(
+                    $key + 1,
+                    $value->geo_name,
+                    $value->level_name,
+                    $value->no_of_villages,
+                    $value->parent_name.$value->parent_level_name,
+                    $value->org_name,
+                    $value->createdDate,
+
+                );
+
+
+        }
+        \Excel::create('GeoStructure-Sheet', function ($excel) use ($data) {
+
+            // Set the title
+            $excel->setTitle('Geo Structure Sheet');
+
+            // Chain the setters
+            $excel->setCreator('Seraikela')->setCompany('Seraikela');
+
+            $excel->sheet('Fees', function ($sheet) use ($data) {
+                $sheet->freezePane('A3');
+                $sheet->mergeCells('A1:I1');
+                $sheet->fromArray($data, null, 'A1', true, false);
+                $sheet->setColumnFormat(array('I1' => '@'));
+            });
+        })->download('xls');
+
+    }
 }
