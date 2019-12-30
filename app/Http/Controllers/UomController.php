@@ -73,14 +73,11 @@ class UomController extends Controller
     }
     public function exportExcelFunctiuonforuom()
     {
-
         $data = array(1 => array("Uom Detail Sheet"));
         $data[] = array('Sl. No.','Name','Date');
 
         $items = Uom::orderBy('uom_id','desc')->select('uom_id as slId', 'uom_name', 'created_at as datecreated')->get();
-
         foreach ($items as $key => $value) {
-            // $value->slId = $key+1;
             $value->datecreated = date('d/m/Y',strtotime($value->datecreated));
              
             $data[] = array(
@@ -88,9 +85,8 @@ class UomController extends Controller
                 $value->uom_name,
                 $value->datecreated,
             );
-
-
         }
+        
         \Excel::create('Uom Detail-Sheet', function ($excel) use ($data) {
 
             // Set the title
