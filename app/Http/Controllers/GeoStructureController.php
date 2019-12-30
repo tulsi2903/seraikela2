@@ -149,15 +149,19 @@ class GeoStructureController extends Controller
                                 ->select('geo_structure.*','level.level_name','level.parent_level_id as parent_name','organisation.org_name','organisation.updated_at as parent_level_name')
                                 ->orderBy('geo_structure.geo_id','desc')
                                 ->get();
-
+        
         foreach ($GeoStructureData as $key => $value) {
             $parent_details = GeoStructure::where('geo_id',$GeoStructureData[$key]->parent_id)->first();
             if($parent_details){
                 $value->parent_name = $parent_details->geo_name;
-                if($parent_details->level_id=="1"){ $value->parent_level_name = "(District)"; }
-                if($parent_details->level_id=="2"){ $value->parent_level_name = "(Sub Division)"; }
-                if($parent_details->level_id=="3"){ $value->parent_level_name = "(Block)"; }
-                if($parent_details->level_id=="4"){ $value->parent_level_name = "(Panchayat)"; }
+                if($parent_details->level_id=="1")
+                    { $value->parent_level_name = "(District)"; }
+                if($parent_details->level_id=="2")
+                    { $value->parent_level_name = "(Sub Division)"; }
+                if($parent_details->level_id=="3")
+                    { $value->parent_level_name = "(Block)"; }
+                if($parent_details->level_id=="4")
+                    { $value->parent_level_name = "(Panchayat)"; }
             }
             else{
                 $value->parent_name = 'NA';
