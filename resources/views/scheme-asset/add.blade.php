@@ -174,6 +174,10 @@ $(document).ready(function () {
             
         }
     });
+    // if(chkbox="" && tags_val!="")
+    // {
+    //     $('.multiple_geo_tags').attr('checked', true);
+    // }
 });
 </script>
 <!-- <script>
@@ -220,7 +224,14 @@ $(document).ready(function(){
         scheme_asset_name_validate();
     });
     $("#no_of_tags").change(function(){
+        var tags_val = $('#no_of_tags').val();
+       if(tags_val)
+       {
+        $('#multiple_geo_tags').attr('checked', true);
+        $('#geo_related').attr('checked', true);
+       }
         no_of_tags_validate();
+       
     });
     
 });
@@ -314,12 +325,11 @@ $(document).ready(function(){
 
 
         if (scheme_asset_name_error || no_of_tags_error || attribute_name_error || attribute_uom_error) {
-        //    alert("false");
             return false;
            
         } // error occured
         else {
-            // alert("true");
+           
             return true;
            
         } // proceed to submit form data
