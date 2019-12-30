@@ -51,16 +51,21 @@ class Scheme_Asset_Controller extends Controller
         $scheme_asset->scheme_asset_name = $request->scheme_asset_name;
         
         $scheme_asset->geo_related = $request->geo_related;
-        if($request->geo_related!='1')
+        
+
+        if($request->geo_related!="")
         {
-            $scheme_asset->geo_related ='0';
+            $scheme_asset->multiple_geo_tags = $request->multiple_geo_tags;
+            $scheme_asset->no_of_tags = $request->no_of_tags;
         }
-        $scheme_asset->multiple_geo_tags = $request->multiple_geo_tags;
-        if($request->multiple_geo_tags!='1')
-        {
-            $scheme_asset->multiple_geo_tags='0';
+        else{
+            $scheme_asset->multiple_geo_tags = null;
+            $scheme_asset->no_of_tags = null;
         }
-        $scheme_asset->no_of_tags = $request->no_of_tags;
+       
+       
+       
+        
         $scheme_asset->created_by = '1';
         $scheme_asset->updated_by = '1';
 
@@ -72,6 +77,7 @@ class Scheme_Asset_Controller extends Controller
         }
         $scheme_asset->attribute=serialize($attribute);
       
+        // return $scheme_asset;
 
         if(SchemeAsset::where('scheme_asset_name',$request->scheme_asset_name)->first() && $request->hidden_input_purpose!="edit"){
             session()->put('alert-class','alert-danger');

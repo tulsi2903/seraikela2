@@ -45,7 +45,7 @@
                         </div>
 
                         
-                        @if($hidden_input_purpose=="edit" && $data['geo_related']==1)
+                        <!-- @if($hidden_input_purpose=="edit" && $data['geo_related']==1)
                           
                             <div class="form-group" id="multiple_geo_tag">
                                 <br><br>
@@ -64,7 +64,7 @@
                             </div>
                        
                         
-                        @endif
+                        @endif -->
 
                         <div class="col-md-2">
                             <div class="form-group" id="multiple_geo_tag">
@@ -161,7 +161,7 @@ $(this).closest("tr").remove();
       });
     });
 </script>
-<script>
+<!-- <script>
 $(document).ready(function(){
    $("#multiple_geo_tag").hide();
    $("#no_of_tag").hide();
@@ -175,6 +175,7 @@ $(document).ready(function () {
         } 
         else{
             $("#multiple_geo_tag").hide();
+            $("#no_of_tag").hide();
         }
     });
 });
@@ -189,7 +190,7 @@ $(document).ready(function () {
         }
     });
 });
-</script>
+</script> -->
 
 <!-- for validation -->
 <script>
@@ -216,9 +217,9 @@ $(document).ready(function(){
         var no_of_tags_val = $("#no_of_tags").val();
         var regNumericSpace = new RegExp('^[0-9 ]+$');
         if (no_of_tags_val == "") {
-            no_of_tags_error = true;
-            $("#no_of_tags").addClass('is-invalid');
-            $("#no_of_tags_error_msg").html("Number of tags should not be blank");
+            no_of_tags_error = false;
+            // $("#no_of_tags").addClass('is-invalid');
+            // $("#no_of_tags_error_msg").html("Number of tags should not be blank");
         } else if (!regNumericSpace.test(no_of_tags_val)) {
             no_of_tags_error = true;
             $("#no_of_tags").addClass('is-invalid');
@@ -261,6 +262,11 @@ $(document).ready(function(){
                 $(attribute_name_val[i]).removeClass('is-invalid');
             }
         }
+
+        if(attribute_name_val.length == 0)
+        {
+            attribute_name_error = false;
+        }
     }
 
     function attribute_uom_validate(){
@@ -276,6 +282,11 @@ $(document).ready(function(){
                 $(attribute_uom_val[i]).removeClass('is-invalid');
             }
         }
+        if(attribute_uom_val.length == 0)
+        {
+            attribute_uom_error = false;
+        }
+
     }
 
 
@@ -287,11 +298,13 @@ $(document).ready(function(){
 
 
 
-        if (scheme_asset_name_error  || attribute_name_error || attribute_uom_error) {
+        if (scheme_asset_name_error || no_of_tags_error || attribute_name_error || attribute_uom_error) {
+           alert("false");
             return false;
            
         } // error occured
         else {
+            alert("true");
             return true;
            
         } // proceed to submit form data
