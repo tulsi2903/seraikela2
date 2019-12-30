@@ -260,8 +260,49 @@ class FavController extends Controller
 
     public function export_Excel_Department()
     {
-        return Excel::download(new FavouriteExport, 'FavouriteDepartment-Sheet.xls');
+            $data = array(1 => array("Favourite Department-Sheet"));
+            $data[] = array('Sl.No.','Department Name','Date','Check Favourite');
+    
+            $items = Department::leftJoin('organisation', 'department.org_id', '=', 'organisation.org_id')
+            ->select('department.dept_id as slId','department.dept_name','department.updated_at as checked','department.created_at as createdDate')->where('department.is_active',1)
+            ->orderBy('department.dept_id','asc')
+            ->get();
+    
+            foreach ($items as $key => $value) {
+                    $fav_dept_tmp = Fav_Dept::where('user_id',1)->where('dept_id',$items[$key]->slId)->first();
+                    if($fav_dept_tmp!=""){
+                        $value->checked="Yes";
+                    }
+                    else{
+                        $value->checked="No";
+                    }
+                $value->createdDate = date('d/m/Y', strtotime($value->createdDate));
+                $data[] = array(
+                    $key + 1,
+                    $value->dept_name,
+                    $value->createdDate,
+                    $value->checked,
+                );
+     
+            }
+            \Excel::create('FavouriteDepartment', function ($excel) use ($data) {
+    
+                // Set the title
+                $excel->setTitle('FavouriteDepartment-Sheet');
+    
+                // Chain the setters
+                $excel->setCreator('Seraikela')->setCompany('Seraikela');
+    
+                $excel->sheet('Fees', function ($sheet) use ($data) {
+                    $sheet->freezePane('A3');
+                    $sheet->mergeCells('A1:I1');
+                    $sheet->fromArray($data, null, 'A1', true, false);
+                    $sheet->setColumnFormat(array('I1' => '@'));
+                });
+            })->download('xls');
     }
+
+
     //Asset Department pdf sectionrohit singh
     public function export_PDF_Department()
     {
@@ -291,7 +332,44 @@ class FavController extends Controller
     //Scheme_Excel  section rohit singh
     public function export_Scheme_Excel_Department()
     {
-        return Excel::download(new FavouriteScheme, 'FavouriteScheme-Sheet.xls');
+        $data = array(1 => array("Favourite Scheme Sheet"));
+        $data[] = array('Sl.No.','Scheme Name','Short Name','Date','Check Favourite');
+
+        $items = SchemeStructure::select('scheme_id as slId','scheme_name','scheme_short_name','created_at as createdDate')->get();
+
+        foreach ($items as $key => $value) {
+            $fav_scheme_tmp = Fav_Scheme::where('user_id',1)->where('scheme_id',$items[$key]->slId)->first();
+                if($fav_scheme_tmp!=""){
+                    $value->checked="Yes";
+                }
+                else{
+                    $value->checked="No";
+                }
+            $value->createdDate = date('d/m/Y', strtotime($value->createdDate));
+            $data[] = array(
+                $key + 1,
+                $value->scheme_name,
+                $value->scheme_short_name,
+                $value->createdDate,
+                $value->checked,
+            );
+ 
+        }
+        \Excel::create('FavouriteScheme-Sheet', function ($excel) use ($data) {
+
+            // Set the title
+            $excel->setTitle('Favourite Scheme-Sheet');
+
+            // Chain the setters
+            $excel->setCreator('Seraikela')->setCompany('Seraikela');
+
+            $excel->sheet('Fees', function ($sheet) use ($data) {
+                $sheet->freezePane('A3');
+                $sheet->mergeCells('A1:I1');
+                $sheet->fromArray($data, null, 'A1', true, false);
+                $sheet->setColumnFormat(array('I1' => '@'));
+            });
+        })->download('xls');
     }
     //Scheme pdf section rohit singh
     public function export_Scheme_PDF_Department()
@@ -318,8 +396,47 @@ class FavController extends Controller
     //Block_Excel  section by  rohit singh
     public function export_Block_Excel_Department()
     {
-        return Excel::download(new FavouriteBlock, 'FavouriteBlock-Sheet.xls');
-    }
+            $data = array(1 => array("Favourite Block-Sheet"));
+            $data[] = array('Sl.No.','Block Name','Date','Check Favourite');
+    
+            $items = GeoStructure::select('geo_id as slId','geo_name','created_at as createdDate')->where('level_id','3')
+                ->orderBy('geo_structure.geo_id','asc')->get();
+    
+            foreach ($items as $key => $value) 
+            {
+                $fav_block_tmp = Fav_Block::select('favourite_block_id')->where('user_id',1)->where('block_id',$items[$key]->slId)->first();
+                    if($fav_block_tmp!=""){
+                        $value->checked="Yes";
+                    }
+                    else{
+                        $value->checked="No";
+                    }
+                $value->createdDate = date('d/m/Y', strtotime($value->createdDate));
+                $data[] = array(
+                    $key + 1,
+                    $value->geo_name,
+                    $value->createdDate,
+                    $value->checked,
+                );
+            }
+
+            \Excel::create('FavouriteBlock_Sheet', function ($excel) use ($data) {
+    
+                // Set the title
+                $excel->setTitle('Favourite Block-Sheet');
+    
+                // Chain the setters
+                $excel->setCreator('Seraikela')->setCompany('Seraikela');
+    
+                $excel->sheet('Fees', function ($sheet) use ($data) {
+                    $sheet->freezePane('A3');
+                    $sheet->mergeCells('A1:I1');
+                    $sheet->fromArray($data, null, 'A1', true, false);
+                    $sheet->setColumnFormat(array('I1' => '@'));
+                });
+            })->download('xls');       
+        }      
+
     //Block_pdf section  by rohit singh
     public function export_Block_PDF_Department()
     {
@@ -347,7 +464,45 @@ class FavController extends Controller
     //Panchayat_Excel  section by  rohit singh
     public function export_Panchayat_Excel_Department()
     {
-        return Excel::download(new FavouritePanchayat, 'FavouritePanchayat-Sheet.xls');
+        $data = array(1 => array("Favourite Panchayat-Sheet"));
+        $data[] = array('Sl.No.','Panchayat Name','Date','Check Favourite');
+
+        $items = GeoStructure::select('geo_id as slId','geo_name','created_at as createdDate' )->where('level_id','4')
+        ->orderBy('geo_structure.geo_id','asc')->get();
+       
+        foreach ($items as $key => $value) 
+        {
+            $fav_panchayat_tmp = Fav_Panchayat::where('user_id',1)->where('panchayat_id',$items[$key]->slId)->first();
+                if($fav_panchayat_tmp!=""){
+                    $value->checked="Yes";
+                }
+                else{
+                    $value->checked="No";
+                }
+            $value->createdDate = date('d/m/Y', strtotime($value->createdDate));
+            $data[] = array(
+                $key + 1,
+                $value->geo_name,
+                $value->createdDate,
+                $value->checked,
+            );
+        }
+
+        \Excel::create('FavouritePanchayat_Sheet', function ($excel) use ($data) {
+
+            // Set the title
+            $excel->setTitle('Favourite Panchayat-Sheet');
+
+            // Chain the setters
+            $excel->setCreator('Seraikela')->setCompany('Seraikela');
+
+            $excel->sheet('Fees', function ($sheet) use ($data) {
+                $sheet->freezePane('A3');
+                $sheet->mergeCells('A1:I1');
+                $sheet->fromArray($data, null, 'A1', true, false);
+                $sheet->setColumnFormat(array('I1' => '@'));
+            });
+        })->download('xls');
     }
     //Panchayat_ pdf section  by rohit singh
     public function export_Panchayat_PDF_Department()
@@ -377,7 +532,47 @@ class FavController extends Controller
     //DefineAsset_Excel   section by  rohit singh
      public function export_DefineAsset_Excel_Department()
      {
-         return Excel::download(new FavouriteAssets, 'FavouriteAssets-Sheet.xls');
+         $data = array(1 => array("FavouriteAssets-Sheet"));
+         $data[] = array('Sl.No.','Asset Name','Department Name','Date','Check Favourite');
+ 
+         $items = Asset::leftJoin('department', 'asset.dept_id', '=', 'department.dept_id')
+                        ->select('asset.asset_id as slId','asset.asset_name as asset_name','department.dept_name','asset.created_at as createdDate')
+                        ->orderBy('asset.asset_id','asc')->get();
+        
+         foreach ($items as $key => $value) 
+         {
+            $fav_define_tmp = Fav_Define_Assets::where('user_id',1)->where('asset_id',$items[$key]->slId)->first();
+                 if($fav_define_tmp!=""){
+                     $value->checked="Yes";
+                 }
+                 else{
+                     $value->checked="No";
+                 }
+             $value->createdDate = date('d/m/Y', strtotime($value->createdDate));
+             $data[] = array(
+                 $key + 1,
+                 $value->asset_name,
+                 $value->dept_name,
+                 $value->createdDate,
+                 $value->checked,
+                );
+         }
+ 
+         \Excel::create('FavouriteAssets_Sheet', function ($excel) use ($data) {
+ 
+             // Set the title
+             $excel->setTitle('FavouriteAssets-Sheet');
+ 
+             // Chain the setters
+             $excel->setCreator('Seraikela')->setCompany('Seraikela');
+ 
+             $excel->sheet('Fees', function ($sheet) use ($data) {
+                 $sheet->freezePane('A3');
+                 $sheet->mergeCells('A1:I1');
+                 $sheet->fromArray($data, null, 'A1', true, false);
+                 $sheet->setColumnFormat(array('I1' => '@'));
+             });
+         })->download('xls');
      }
      //DefineAsset_ pdf section  by rohit singh
     public function export_DefineAsset_PDF_Department()
