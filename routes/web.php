@@ -204,6 +204,15 @@ Route::get('scheme-performance/get-indicator-name','SchemePerformanceController@
 Route::get('scheme-performance/get-target','SchemePerformanceController@get_target');
 Route::get("scheme-performance/get-scheme-performance-datas", "SchemePerformanceController@get_scheme_performance_datas");
 
+
+Route::get('scheme-performance/mgnrega','MgnregaController@performance');
+Route::get('scheme-performance/mgnrega/get-panchayat-datas','MgnregaController@get_panchayat_datas');
+
+
+
+
+
+
 /* scheme review */
 Route::get('review/{review_type}', 'SchemeReviewController@index');
 Route::get('scheme-review/get-datas', 'SchemeReviewController@get_datas');
