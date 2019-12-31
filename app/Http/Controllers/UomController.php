@@ -72,6 +72,8 @@ class UomController extends Controller
         }
         return redirect('uom');
     }
+
+    
     public function exportExcelFunctiuonforuom()
     {
         $data = array(1 => array("Uom Detail Sheet"));

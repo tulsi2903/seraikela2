@@ -265,3 +265,7 @@ Route::post('sendmail','EmailController@sendmail');
  Route::post('fav_define_asset','FavController@add_fav_define_asset');
  Route::get('fav_define_asset/export/excelURL','FavController@export_DefineAsset_Excel_Department');
  Route::get('fav_define_asset/pdf/pdfURL','FavController@export_DefineAsset_PDF_Department');
+
+ Route::get('mgnrega','MgnregaCategoryController@index');
+ Route::post('mgnrega/store','MgnregaCategoryController@store');
+ Route::get('mgnrega/delete/{mgnrega_category_id}','MgnregaCategoryController@delete');

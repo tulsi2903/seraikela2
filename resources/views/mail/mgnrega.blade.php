@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title>uom</title>
+    <title>Mgnrega</title>
     <style type="text/css">
         table {
             border-color: black;
@@ -9,7 +9,7 @@
 </head>
 
 <body>
-    <h3><u>UoM</h3></u>
+    <h3><u>Mgnrega</h3></u>
     <br> 
     <table border="1px" style="border-collapse: collapse; width: 80%;margin-left:10%;" class="table table-striped table-bordered table-datatable">
             <thead>
@@ -24,9 +24,7 @@
                 <tbody style="text-align:center;">
                     <tr>
                         <td style="width:40px">{{++$key}}</td>
-                        <td>{{$val->uom_name}}</td>
-                        
-                        
+                        <td>{{$val->mgnrega_category_name}}</td>         
                     </tr>
                 </tbody>
                 @endforeach

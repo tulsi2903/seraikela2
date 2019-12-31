@@ -15,7 +15,6 @@ class EmailController extends Controller
 {
     public function sendEmail(Request $request)
     {
- 
         if($request->department=="department")
         {
             $email_from=$request->from;
@@ -492,8 +491,6 @@ class EmailController extends Controller
               return redirect('assetcat');
         }
 
-
-
         elseif($request->asset=="asset"){
             
             $email_from=$request->from;
@@ -527,40 +524,76 @@ class EmailController extends Controller
              });
               return redirect('asset');
         }
-    }
-    // public function mail(){
-    //     return view('index1');
-    // }
-        public function sendmail(Request $request){
-            
-            ini_set('memory_limit', '-1');
-            $data["email"]=$request->get("email");
-            $data["client_name"]=$request->get("client_name");
-            $data["subject"]=$request->get("subject");
-                // print_r($data);
-                // die;
 
-            $pdf = PDF::loadView('mail.test',['data'=>$data] );
-            try{
-                Mail::send('mail.test', $data, function($message)use($data,$pdf) {
-                $message->to($data["email"], $data["client_name"])
-                ->subject($data["subject"])
-                ->attachData($pdf->output(), "invoice.pdf");
-                });
-            }catch(JWTException $exception){
-                $this->serverstatuscode = "0";
-                $this->serverstatusdes = $exception->getMessage();
-            }
-            if (Mail::failures()) {
-                 $this->statusdesc  =   "Error sending mail";
-                 $this->statuscode  =   "0";
-    
-            }else{
-    
-               $this->statusdesc  =   "Message sent Succesfully";
-               $this->statuscode  =   "1";
-            }
-            return response()->json(compact('this'));
+        elseif($request->mgnrega=="mgnrega"){
+                        
+            $email_from=$request->from;
+            $email_to=$request->to;
+            $email_cc=$request->cc;
+            $send_subject=$request->subject;
+            $details=json_decode($request->data);
+
+            $user = array('email_from'=>$email_from,'email_to'=>$email_to, 'cc'=>$email_cc, 'subject'=>$request->subject, 'content'=>$request->message,'results'=>$details);
+            
+            Mail::send('mail.mgnrega',['user'=> $user], function($message) use ($user)
+             {
+                 $email_to=explode(',',$user['email_to']);
+                 foreach($email_to as $key=>$value)
+                {
+                    $message->to($email_to[$key]);
+                }
+
+                if(@$user['cc'])
+                {
+                 $email_cc=explode(',',$user['cc']);
+                    foreach($email_cc as $key=>$value)
+                    {
+                        $message->cc($email_cc[$key]);
+                    }
+                }
+                $message->subject($user['subject']);
+                $message->from('dsrm.skla@gmail.com','seraikela'); 
+                 session()->put('alert-class','alert-success');
+                 session()->put('alert-content','Email send');
+             });
+              return redirect('mgnrega');
+
+            
+          
         }
+    }
+
+
+    public function sendmail(Request $request){
+        
+        ini_set('memory_limit', '-1');
+        $data["email"]=$request->get("email");
+        $data["client_name"]=$request->get("client_name");
+        $data["subject"]=$request->get("subject");
+            // print_r($data);
+            // die;
+
+        $pdf = PDF::loadView('mail.test',['data'=>$data] );
+        try{
+            Mail::send('mail.test', $data, function($message)use($data,$pdf) {
+            $message->to($data["email"], $data["client_name"])
+            ->subject($data["subject"])
+            ->attachData($pdf->output(), "invoice.pdf");
+            });
+        }catch(JWTException $exception){
+            $this->serverstatuscode = "0";
+            $this->serverstatusdes = $exception->getMessage();
+        }
+        if (Mail::failures()) {
+                $this->statusdesc  =   "Error sending mail";
+                $this->statuscode  =   "0";
+
+        }else{
+
+            $this->statusdesc  =   "Message sent Succesfully";
+            $this->statuscode  =   "1";
+        }
+        return response()->json(compact('this'));
+    }
         
 }
