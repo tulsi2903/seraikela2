@@ -8,13 +8,14 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\UoMSectionExport;
 use PDF;
 
+
+
 class UomController extends Controller
 {
     public function index(){
         $datas = Uom::orderBy('uom_id','desc')->get();
         return view('uom.index')->with('datas', $datas);
     }
-
 
     
     public function add(Request $request){
@@ -78,15 +79,14 @@ class UomController extends Controller
 
         $items = Uom::orderBy('uom_id','desc')->select('uom_id as slId', 'uom_name', 'created_at as datecreated')->get();
         foreach ($items as $key => $value) {
-            $value->datecreated = date('d/m/Y',strtotime($value->datecreated));
-             
+            $value->datecreated = date('d/m/Y',strtotime($value->datecreated));       
             $data[] = array(
                 $key + 1,
                 $value->uom_name,
                 $value->datecreated,
             );
         }
-        
+
         \Excel::create('Uom Detail-Sheet', function ($excel) use ($data) {
 
             // Set the title
