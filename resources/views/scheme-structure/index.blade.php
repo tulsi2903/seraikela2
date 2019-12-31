@@ -44,7 +44,7 @@
                         <a class="btn btn-secondary" href="{{url('scheme-structure/add')}}" role="button"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;Add</a>
                     </div><br><br> -->
                 <div class="table-responsive table-hover table-sales">
-                    <table class="table table-datatable" id="printable-area">
+                    <table class="table" id="printable-area">
                         <thead style="background: #d6dcff;color: #000;">
                             <tr>
                                 <th>#</th>

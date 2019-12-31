@@ -41,7 +41,7 @@ hr.new2 {
     <div class="card-body">
         <div class="row">
             <div class="col-12">
-                <div style="display: inline-block; width: 150px; float:left; ">
+                <div style="display: inline-block; width: 150px; float: left; ">
                     <img src="{{url($data->scheme_logo)}}" style="max-width: 100%;">
                 </div>
                 <div style="display: inline-block; padding-left: 20px;;">
