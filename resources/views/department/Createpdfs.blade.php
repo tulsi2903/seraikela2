@@ -587,7 +587,31 @@
       </table>
       <p style="position: absolute; bottom: 0;"> {{ $SchemeStructureTime }}</p><!-- position:absolute and bottom:0 css is used to pull this pragraph at the end of the page -->
    </div>
+   @elseif($mgnrega_pdf)
+   <div style="position: relative;"> <!-- position:realtive css is used for full page printing of pdf -->
+      <table border="1" class="table_css" style="width:100%">
+         <thead>
+            <tr>
+               <th style="text-align: center;" colspan="2">
+                  MGNREGS
+               </th>
+            </tr>
+            <tr>
+               <th style="text-align: center;width: 30px;">Sl.No.</th>
+               <th style="text-align: center;">Mgnregs Name </th>
+            </tr>
+         </thead>
+         <tbody>
+            @foreach($mgnrega_pdf as $index => $mgnrega_pdf_data)
+                     <tr>                                   
+                           <td>{{ $index+1 }}</td>               
+                           <td>{{$mgnrega_pdf_data->mgnrega_category_name}}</td>
+                     </tr>
+            @endforeach
+         </tbody>
+      </table>
+      <p style="position: absolute; bottom: 0;"> {{ $mgnrega_Time }}</p><!-- position:absolute and bottom:0 css is used to pull this pragraph at the end of the page -->
+   </div>
    @endif
-   
-   
+
 </html>

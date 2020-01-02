@@ -278,3 +278,5 @@ Route::post('sendmail','EmailController@sendmail');
  Route::get('mgnrega','MgnregaCategoryController@index');
  Route::post('mgnrega/store','MgnregaCategoryController@store');
  Route::get('mgnrega/delete/{mgnrega_category_id}','MgnregaCategoryController@delete');
+ Route::get('mgnrega/export/excelURL','MgnregaCategoryController@export_ExcelFunction');
+ Route::get('mgnrega/pdf/pdfURL','MgnregaCategoryController@export_PDF_Function');
