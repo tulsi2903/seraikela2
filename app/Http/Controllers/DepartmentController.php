@@ -147,27 +147,7 @@ class DepartmentController extends Controller
     {
         # code...
 
-        // $request->validate([
-        //     'excelcsv' => 'required'
-        // ]);
-        // $path = $request->file('excelcsv');
-        // $arr_file = explode('.', $_FILES['excelcsv']['name']);
-        // $extension = end($arr_file);
-        
-        // if('csv' == $extension) {
-        //         $reader = new \PhpOffice\PhpSpreadsheet\Reader\Csv();
-        // } else {
-        //     $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
-        //     $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xls();
-            
-        // }
-        // $spreadsheet = $reader->load($path);
-        // $sheetData = $spreadsheet->getActiveSheet()->toArray();
-        // foreach ($sheetData as $key => $value){
-        //     echo "<pre>";
-        //     print_r($sheetData[$key][$key]);
-        // }exit;
-
+        /* $clean = preg_replace('/[^\w]/', '', $clean); // drop anything but ASCII */
         if ( $_FILES['excelcsv']['tmp_name'] ){
             $readExcel = \Excel::load($_FILES['excelcsv']['tmp_name'], function($reader) { })->get()->toArray();
             // $dataImport = array("ready"=>array(),"revise"=>array());
@@ -205,7 +185,7 @@ class DepartmentController extends Controller
         $totalLength = $request->slno;
         foreach ($totalLength as $key => $value) {
             $Department = Department::where('dept_name',$request->department_name[$key])->first();
-            echo"<pre>";print_r($Department);exit;
+            // echo"<pre>";print_r($Department);exit;
             if($Department->dept_name == $request->department_name[$key])
             {
                 $Department_edit = Department::find($Department->dept_id);
