@@ -204,20 +204,40 @@ class DepartmentController extends Controller
         # code...
         $totalLength = $request->slno;
         foreach ($totalLength as $key => $value) {
-            $Department = new Department;
-            $Department->dept_name = $request->department_name[$key];
-            if($request->status[$key] == "Active")
+            $Department = Department::where('dept_name',$request->department_name[$key])->first();
+            echo"<pre>";print_r($Department);exit;
+            if($Department->dept_name == $request->department_name[$key])
             {
-                $Department->is_active = 1;
+                $Department_edit = Department::find($Department->dept_id);
+                if($request->status[$key] == "Active")
+                {
+                    $Department_edit->is_active = 1;
+                }
+                else
+                {
+                    $Department_edit->is_active = 0;
+                }
+                $Department_edit->updated_by = Session::get('user_id');
+                $Department_edit->org_id = 1;
+                $Department_edit->save();
             }
             else
             {
-                $Department->is_active = 0;
+                $Department = new Department;
+                $Department->dept_name = $request->department_name[$key];
+                if($request->status[$key] == "Active")
+                {
+                    $Department->is_active = 1;
+                }
+                else
+                {
+                    $Department->is_active = 0;
+                }
+                // $Department->created_at = date('Y-m-d');
+                $Department->created_by = Session::get('user_id');
+                $Department->org_id = 1;
+                $Department->save();
             }
-            // $Department->created_at = date('Y-m-d');
-            $Department->created_by = Session::get('user_id');
-            $Department->org_id = 1;
-            $Department->save();
         }
         session()->put('alert-class','alert-success');
         session()->put('alert-content','Department Details has been Saved');

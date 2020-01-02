@@ -171,7 +171,7 @@ class GeoStructureController extends Controller
 
         $doc_details = array(
             "title" => "Geo Structure",
-            "author" => $this->data['panelInit']->settingsArray['siteTitle'],
+            "author" => 'IT-Scient',
             "topMarginValue" => 10,
             "mode" => 'L'
         );
@@ -195,19 +195,19 @@ class GeoStructureController extends Controller
         $content .= "<th style=\"border: solid 1px #000000;width: 169px;\" align=\"center\"><b>Organisation</b></th>";
         $content .= "</tr>";
         $content .= "</thead>";
-        $content .= "<tbody>";
-
+        
         // echo "<pre>";
         // print_r($GeoStructureData);exit;
+        $content .= "<tbody>";
         foreach ($GeoStructureData as $key => $row) {
             $index = $key+1;
             $content .= "<tr>";
-            $content .= "<td style=\"border: solid 1px #000000;width: 50px;\">" . $index . "</td>";
-            $content .= "<td style=\"border: solid 1px #000000;width: 428px;\">" . $row->geo_name . "</td>";
-            $content .= "<td style=\"border: solid 1px #000000;width: 100px;\">" . $row->level_name . "</td>";
-            $content .= "<td style=\"border: solid 1px #000000;width: 100px;\">" . $row->no_of_villages . "</td>";
-            $content .= "<td style=\"border: solid 1px #000000;width: 170px;\">" . $row->parent_name.$row->parent_level_name . "</td>";
-            $content .= "<td style=\"border: solid 1px #000000;width: 169px;\">" . $row->org_name . "</td>";
+            $content .= "<td style=\"border: solid 1px #000000;width: 50px;\" align=\"right\">" . $index . "</td>";
+            $content .= "<td style=\"border: solid 1px #000000;width: 428px;\" align=\"left\">" . $row->geo_name . "</td>";
+            $content .= "<td style=\"border: solid 1px #000000;width: 100px;\" align=\"left\">" . $row->level_name . "</td>";
+            $content .= "<td style=\"border: solid 1px #000000;width: 100px;\" align=\"right\">" . $row->no_of_villages . "</td>";
+            $content .= "<td style=\"border: solid 1px #000000;width: 170px;\" align=\"left\">" . $row->parent_name.$row->parent_level_name . "</td>";
+            $content .= "<td style=\"border: solid 1px #000000;width: 169px;\" align=\"left\">" . $row->org_name . "</td>";
             $content .= "</tr>";
         }
         $content .= "</tbody></table>";
