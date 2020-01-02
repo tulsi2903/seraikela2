@@ -208,10 +208,14 @@ Route::get("scheme-performance/get-scheme-performance-datas", "SchemePerformance
 Route::get('scheme-performance/mgnrega','MgnregaController@performance');
 Route::get('scheme-performance/mgnrega/get-panchayat-datas','MgnregaController@get_panchayat_datas');
 
-
-
-
-
+//*Scheme Geo Target(PMAYG)*/
+Route::get('scheme-geo-target/pmayg','PMAYGTargetController@index');
+Route::get('scheme-geo-target/pmayg/add','PMAYGTargetController@add');
+Route::get('scheme-geo-target/pmayg/get-block-datas','PMAYGTargetController@get_block_name');
+Route::get('scheme-geo-target/pmayg/get-panchayat-datas','PMAYGTargetController@get_panchayat_name');
+Route::post('scheme-geo-target/pmayg/store','PMAYGTargetController@store');
+Route::get('scheme-geo-target/pmayg/delete/{pmayg_target_id}','PMAYGTargetController@delete');
+Route::get('scheme-geo-target/pmayg/get-updated-datas','PMAYGTargetController@get_updated_datas');
 
 /* scheme review */
 Route::get('review/{review_type}', 'SchemeReviewController@index');

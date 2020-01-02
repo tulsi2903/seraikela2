@@ -77,7 +77,6 @@ class Scheme_Asset_Controller extends Controller
         }
         $scheme_asset->attribute=serialize($attribute);
       
-        // return $scheme_asset;
 
         if(SchemeAsset::where('scheme_asset_name',$request->scheme_asset_name)->first() && $request->hidden_input_purpose!="edit"){
             session()->put('alert-class','alert-danger');
