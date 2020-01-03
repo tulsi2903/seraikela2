@@ -8,12 +8,32 @@
         margin-top: 15px;
     }
     
-    #add-performance-datas-rows {
+    .to-append-block{
+
+    }
+    .to-append-row{
         border: 1px solid #c9c9c9;
-        border-radius: 3px;
-        padding: 10px;
+        border-radius: 5px;
+        overflow: hidden;
+        padding: 15px;
         margin-bottom: 15px;
         background: white;
+        position: relative;
+    }
+    #append-new-form{
+        text-align: right;
+    }
+    .delete-to-append{
+        padding: 5px 10px;
+        border-bottom-left-radius: 5px;
+        background: #f0f0f0;
+        border: 1px solid #e4e4e4;
+        position: absolute;
+        right: -1px;
+        top: -1px;
+        background: #f25961;
+        color: white;
+        cursor: pointer;
     }
 </style>
 @endsection @section('page-content')
@@ -86,30 +106,60 @@
 
             <div id="add-performance-datas-block">
                 <h4 class="div-title">Add Datas</h4>
-                <div id="add-performance-datas-rows">
-                    <div class="row">
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label for="sanction_no">Sanction No<span style="color:red;margin-left:5px;">*</span></label>
-                                <input type="text" name="sanction_no" id="sanction_no" class="form-control">
-                                <div class="invalid-feedback" id="sanction_no_error_msg"></div>
+                <div id="to-append-block">
+                    <div class="to-append-row">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="sanction_no">Sanction No<span style="color:red;margin-left:5px;">*</span></label>
+                                    <input type="text" name="sanction_no" id="sanction_no" class="form-control">
+                                    <div class="invalid-feedback" id="sanction_no_error_msg"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="title">Title<span style="color:red;margin-left:5px;">*</span></label>
+                                    <input type="text" name="title" id="title" class="form-control">
+                                    <div class="invalid-feedback" id="title_error_msg"></div>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label for="title">Title<span style="color:red;margin-left:5px;">*</span></label>
-                                <input type="text" name="title" id="title" class="form-control">
-                                <div class="invalid-feedback" id="title_error_msg"></div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="latitude">Latitude<span style="color:red;margin-left:5px;">*</span></label>
+                                    <input type="text" name="latitude" id="latitude" class="form-control">
+                                    <div class="invalid-feedback" id="latitude_error_msg"></div>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="longitude">Longitude<span style="color:red;margin-left:5px;">*</span></label>
+                                    <input type="text" name="longitude" id="longitude" class="form-control">
+                                    <div class="invalid-feedback" id="longitude_error_msg"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="status">Status<span style="color:red;margin-left:5px;">*</span></label>
+                                    <select name="status" id="status" class="form-control">
+                                        <option value="">--Select--</option>
+                                        <option value="1">Approoved not in progress</option>
+                                        <option value="2">Ongoing</option>
+                                        <option value="3">Completed</option>
+                                    </select>
+                                    <div class="invalid-feedback" id="status_error_msg"></div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+                <div id="append-new-form">
+                    <button class="btn btn-dark btn-sm"><i class="fas fa-plus"></i>&nbsp;&nbsp;Add More</button>
+                </div>
             </div>
+
+            <button type="button" onclick="submitForm();" class="btn btn-secondary"><i class="fas fa-check"></i>&nbsp;&nbsp;Save</button>
 
             <!-- <div id="previous_performance_datas">
                 <div class="table-responsive table-hover">
@@ -179,7 +229,7 @@
                     alert("error" + xhr.status + "," + xhr.statusText);
                 },
                 success: function(data) {
-                    console.log(data);
+                    // console.log(data);
                     for (var i = 0; i < data.length; i++) {
                         $("#panchayat_id").append("<option value='" + data[i].geo_id + "'>" + data[i].geo_name + "</option>");
                     }
@@ -191,6 +241,94 @@
 
     function next() {
 
+    }
+</script>
+
+<script>
+    // append content
+    var to_append = $(".to-append-row").first().html();
+    $(document).ready(function(){
+        $("#append-new-form .btn").click(function(){
+            $("#to-append-block").append(`<div class="to-append-row">`+to_append+`<span class="delete-to-append"><i class="fas fa-times"></i>&nbsp;&nbsp;Remove</span></div>`);
+        });
+
+        // to delete append
+        $("body").delegate(".delete-to-append", "click", function(){
+            swal({
+                title: 'Are you sure?',
+                // text: "You won't be able to revert this!",
+                icon: 'warning',
+                buttons:{
+                    cancel: {
+                        visible: true,
+                        text : 'No, cancel!',
+                        className: 'btn btn-danger'
+                    },
+                    confirm: {
+                        text : 'Yes, remove it!',
+                        className : 'btn btn-success'
+                    }
+                }
+            }).then((willDelete) => {
+                if (willDelete) {
+                    $(this).parent(".to-append-row").remove();
+                }
+            });
+        });
+    });
+</script>
+
+<script>
+    function submitForm(){
+        if(true){
+            var formElement = $('#scheme-performance')[0]; 
+            var form_data = new FormData(formElement);
+
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                url: "{{url('scheme-performance/mgnrega/store')}}",
+                data: form_data,
+                method: "POST",
+                dataType: 'json',
+                processData: false,
+                contentType: false,
+                beforeSend: function(data){
+                    $(".custom-loader").fadeIn(300);
+                },
+                error: function(xhr){
+                    alert("error"+xhr.status+", "+xhr.statusText);
+                    $(".custom-loader").fadeOut(300);
+                },
+                success: function (data){
+                    console.log(data);
+                    // if(data.response=="success"){
+                    //     reset_target_block();
+                    //     swal("Success!", "Scheme target datas has been saved", {
+                    //         icon : "success",
+                    //         buttons: {
+                    //             confirm: {
+                    //                 className : 'btn btn-success'
+                    //             }
+                    //         },
+                    //     });
+                    //     setTimeout(function() {
+                    //             document.location.reload()
+                    //     }, 3000);
+                    // }
+                    // else{
+                    //     // error occured
+                    // }
+                    $(".custom-loader").fadeOut(300);
+                }
+            });
+        }
+        else{
+            // error occured
+        }
     }
 </script>
 
