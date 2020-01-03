@@ -388,51 +388,82 @@ class AssetNumbersController extends Controller
                 $sheet->setColumnFormat(array('I1' => '@'));
             });
         })->download('xls');
-
-
-
-
-
-
-
-
-
-
-
-
-
         return Excel::download(new AssetNumberSectionExport, 'Asset Number-Sheet.xls');
     }
 
     public function exportpdfFunctiuonforasset_Numbers()
     {
-        $AssetNumberdata = AssetNumbers::select('geo_id', 'asset_id', 'year', DB::raw('MAX(updated_at) AS max_updated'), DB::raw('MAX(asset_numbers_id) as asset_numbers_id'))
-                                ->groupBy('year', 'asset_id', 'geo_id')
-                                ->get() ;
-                                
-        foreach ($AssetNumberdata as $data) {
-            if (Asset::find($data->asset_id)) {
-                $data->asset_name = Asset::find($data->asset_id)->asset_name;
+        $AssetNumberdata = AssetNumbers::select('geo_id', 'asset_id', 'year','created_at as date', DB::raw('MAX(updated_at) AS max_updated'), DB::raw('MAX(asset_numbers_id) as asset_numbers_id'))
+                                ->groupBy('year', 'asset_id', 'geo_id','created_at')
+                                // ->format("Y-m-d")
+                                ->get();
+
+        foreach ($AssetNumberdata as $key => $value) {
+            if (Asset::find($value->asset_id)) {
+                $value->asset_name = Asset::find($value->asset_id)->asset_name;
             }
-            if (GeoStructure::find($data->geo_id)) {
-                $panchayat_data_tmp = GeoStructure::find($data->geo_id);
-                $data->panchayat_name = $panchayat_data_tmp->geo_name;
+            if (GeoStructure::find($value->geo_id)) {
+                $panchayat_data_tmp = GeoStructure::find($value->geo_id);
+                $value->panchayat_name = $panchayat_data_tmp->geo_name;
                 $block_data_tmp = GeoStructure::find($panchayat_data_tmp->bl_id);
-                $data->block_name = $block_data_tmp->geo_name;
+                $value->block_name = $block_data_tmp->geo_name;
             }
-            if (Year::find($data->year)) {
-                $data->year_value = Year::find($data->year)->year_value;
+            if (Year::find($value->year)) {
+                $value->year_value = Year::find($value->year)->year_value;
             }
-            $tmp = AssetNumbers::select('asset_numbers_id', 'pre_value', 'current_value')->where('asset_numbers_id', $data->asset_numbers_id)->first();
+            $tmp = AssetNumbers::select('asset_numbers_id', 'pre_value', 'current_value')->where('asset_numbers_id', $value->asset_numbers_id)->first();
             if (count($tmp) > 0) {
-                $data->pre_value = $tmp->pre_value;
-                $data->current_value = $tmp->current_value;
-                $data->asset_numbers_id = $tmp->asset_numbers_id;
+                $value->pre_value = $tmp->pre_value;
+                $value->current_value = $tmp->current_value;
+                $value->asset_numbers_id = $tmp->asset_numbers_id;
             }
+            $value->date = date("d/m/Y", strtotime($value->date));
         }
-        date_default_timezone_set('Asia/Kolkata');
-        $AssetNumberdateTime = date('d-m-Y H:i A');
-        $pdf = PDF::loadView('department/Createpdfs', compact('AssetNumberdata', 'AssetNumberdateTime'));
-        return $pdf->download('Asset Number.pdf');
+                
+        $doc_details = array(
+            "title" => "Asset Number Data",
+            "author" => 'IT-Scient',
+            "topMarginValue" => 10,
+            "mode" => 'L'
+        );
+
+        $pdfbuilder = new \PdfBuilder($doc_details);
+
+        $content = "<table cellspacing=\"0\" cellpadding=\"4\" border=\"1\" ><tr>";
+        $content .= "<th style='border: solid 1px #000000;' colspan=\"7\" align=\"left\" ><b>Asset Number</b></th></tr>";
+        
+        /* ========================================================================= */
+        /*                Total width of the pdf table is 1017px                     */
+        /* ========================================================================= */
+        $content .= "<thead>";
+        $content .= "<tr>";
+        $content .= "<th style=\"width: 50px;\" align=\"center\"><b>Sl. No.</b></th>";
+        $content .= "<th style=\"width: 250px;\" align=\"center\"><b>Year</b></th>";
+        $content .= "<th style=\"width: 160px;\" align=\"center\"><b>Asset</b></th>";
+        $content .= "<th style=\"width: 160px;\" align=\"center\"><b>Block</b></th>";
+        $content .= "<th style=\"width: 160px;\" align=\"center\"><b>Panchyat</b></th>";
+        $content .= "<th style=\"width: 140px;\" align=\"center\"><b>Current Value</b></th>";
+        $content .= "<th style=\"width: 97px;\" align=\"center\"><b>Date</b></th>";
+        $content .= "</tr>";
+        $content .= "</thead>";
+
+        $content .= "<tbody>";
+        foreach ($AssetNumberdata as $key => $row) {
+            $index = $key+1;
+            $content .= "<tr>";
+            $content .= "<td style=\"width: 50px;\" align=\"right\">" . $index . "</td>";
+            $content .= "<td style=\"width: 250px;\" align=\"left\">" . $row->year_value . "</td>";
+            $content .= "<td style=\"width: 160px;\" align=\"left\">" . $row->asset_name. "</td>";
+            $content .= "<td style=\"width: 160px;\" align=\"left\">" . $row->block_name . "</td>";
+            $content .= "<td style=\"width: 160px;\" align=\"left\">" . $row->panchayat_name."</td>";
+            $content .= "<td style=\"width: 140px;\" align=\"right\">" . $row->current_value . "</td>";
+            $content .= "<td style=\"width: 97px;\" align=\"right\">" . $row->date . "</td>";
+            $content .= "</tr>";
+        }
+        $content .= "</tbody></table>";
+        // print_r($content);exit;
+        $pdfbuilder->table($content, array('border' => '1', 'align' => ''));
+        $pdfbuilder->output('AssetNumber.pdf');
+        exit;
     }
 }

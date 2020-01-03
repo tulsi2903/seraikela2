@@ -108,10 +108,47 @@ class UomController extends Controller
 
     public function exportpdfFunctiuonforuom()
     {
-        $uomdata =  Uom::orderBy('uom_id','desc')->get();
-        date_default_timezone_set('Asia/Kolkata');
-        $UoMdateTime = date('d-m-Y H:i A');
-        $pdf = PDF::loadView('department/Createpdfs',compact('uomdata','UoMdateTime'));
-        return $pdf->download('UoM.pdf');
+       $uomdata =  Uom::orderBy('uom_id','desc')->get();
+        foreach ($uomdata as $key => $value) {
+            $value->createdDate = date('d/m/Y',strtotime($value->created_at));
+        }
+
+        $doc_details = array(
+            "title" => "UoM",
+            "author" => 'IT-Scient',
+            "topMarginValue" => 10,
+            "mode" => 'P'
+        );
+
+        $pdfbuilder = new \PdfBuilder($doc_details);
+
+        $content = "<table cellspacing=\"0\" cellpadding=\"4\" border=\"1\" ><tr>";
+        $content .= "<th style='border: solid 1px #000000;' colspan=\"3\" align=\"left\" ><b>UoM</b></th></tr>";
+        
+
+        /* ========================================================================= */
+        /*             Total width of the pdf table is 1017px lanscape               */
+        /*             Total width of the pdf table is 709px portrait                */
+        /* ========================================================================= */
+        $content .= "<thead>";
+        $content .= "<tr>";
+        $content .= "<th style=\"border: solid 1px #000000;width: 50px;\" align=\"center\"><b>Sl.No.</b></th>";
+        $content .= "<th style=\"border: solid 1px #000000;width: 559px;\" align=\"center\"><b>Name</b></th>";
+        $content .= "<th style=\"border: solid 1px #000000;width: 100px;\" align=\"center\"><b>Date</b></th>";
+        $content .= "</tr>";
+        $content .= "</thead>";
+        $content .= "<tbody>";
+        foreach ($uomdata as $key => $row) {
+            $index = $key+1;
+            $content .= "<tr>";
+            $content .= "<td style=\"border: solid 1px #000000;width: 50px;\" align=\"right\">" . $index . "</td>";
+            $content .= "<td style=\"border: solid 1px #000000;width: 559px;\" align=\"left\">" . $row->uom_name . "</td>";
+            $content .= "<td style=\"border: solid 1px #000000;width: 100px;\" align=\"right\">" . $row->createdDate. "</td>";
+            $content .= "</tr>";
+        }
+        $content .= "</tbody></table>";
+        $pdfbuilder->table($content, array('border' => '1', 'align' => ''));
+        $pdfbuilder->output('Uom.pdf');
+        exit;
     }
 }

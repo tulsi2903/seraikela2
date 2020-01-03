@@ -58,7 +58,8 @@ Route::get('pdfview',array('as'=>'pdfview','uses'=>'DepartmentController@pdfview
 // Route::get('/articles/exportExcel','PostsController@exportExcel');
 Route::get('export','DepartmentController@export');
 Route::get('department/export/excelURL','DepartmentController@exportExcelFunctiuon');
-Route::get('department/pdf/pdfURL','DepartmentController@exportpdfFunctiuon');
+// Route::get('department/pdf/pdfURL','DepartmentController@exportpdfFunctiuon');
+Route::get('department/pdf/pdfURL','DepartmentController@export_PDF_Function');
 Route::get('department/changeView','DepartmentController@changeView');
 Route::post('department/importFromExcel','DepartmentController@importFromExcel');
 Route::post('department/ImportreviewSave','DepartmentController@ImportreviewSave');
@@ -201,6 +202,7 @@ Route::get('scheme-performance/get-block-name','SchemePerformanceController@get_
 Route::get('scheme-performance/get-panchayat-name','SchemePerformanceController@get_panchayat_name');
 Route::get('scheme-performance/get-indicator-name','SchemePerformanceController@get_indicator_name');
 // Route::get('scheme-performance/get-indicator-table','SchemePerformanceController@get_indicator_table');
+Route::get('scheme-performance/get-targeGt','SchemePerformanceController@get_target');
 Route::get('scheme-performance/get-target','SchemePerformanceController@get_target');
 Route::get("scheme-performance/get-scheme-performance-datas", "SchemePerformanceController@get_scheme_performance_datas");
 

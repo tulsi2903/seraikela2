@@ -307,24 +307,59 @@ class FavController extends Controller
     public function export_PDF_Department()
     {
         $departmentpdf = Department::leftJoin('organisation', 'department.org_id', '=', 'organisation.org_id')
-            ->select('department.*','organisation.org_name')->where('department.is_active',1)
-            ->orderBy('department.dept_id','asc')
-            ->get();
-
-        for($i=0;$i<count($departmentpdf);$i++){
-            $fav_dept_tmp = Fav_Dept::select('favourite_department_id')->where('user_id',1)->where('dept_id',$departmentpdf[$i]->dept_id)->first();
-
-            if($fav_dept_tmp){
-                $departmentpdf[$i]->checked=1;
-            }
-            else{
-                $departmentpdf[$i]->checked=0;
-            }
+                            ->select('department.*','organisation.org_name')->where('department.is_active',1)
+                            ->orderBy('department.dept_id','asc')
+                            ->get();                 
+          foreach ($departmentpdf as $key => $value) {
+            $value->createdDate = date('d/m/Y',strtotime($value->created_at));
+            $fav_dept_tmp = Fav_Dept::select('favourite_department_id')->where('user_id',1)->where('dept_id',$departmentpdf[$key]->dept_id)->first();
+                if($fav_dept_tmp){
+                    $departmentpdf[$key]->checked="Yes";
+                }
+                else{
+                    $departmentpdf[$key]->checked="No";
+                }
+            
         }
-        date_default_timezone_set('Asia/Kolkata');
-        $DeprtmentTime = date('d-m-Y H:i A');
-        $pdf = PDF::loadView('department/Createpdfs',compact('departmentpdf','DeprtmentTime'));
-        return $pdf->download('favouriteDeprtment.pdf');
+
+        $doc_details = array(
+            "title" => "Department Favourite",
+            "author" => 'IT-Scient',
+            "topMarginValue" => 10,
+            "mode" => 'P'
+        );
+
+        $pdfbuilder = new \PdfBuilder($doc_details);
+        $content = "<table cellspacing=\"0\" cellpadding=\"4\" border=\"1\" ><tr>";
+        $content .= "<th style='border: solid 1px #000000;' colspan=\"4\" align=\"left\" ><b>Department Favourite Details</b></th></tr>";
+        
+
+        /* ========================================================================= */
+        /*             Total width of the pdf table is 1017px lanscape               */
+        /*             Total width of the pdf table is 709px portrait                */
+        /* ========================================================================= */
+        $content .= "<thead>";
+        $content .= "<tr>";
+        $content .= "<th style=\"border: solid 1px #000000;width: 50px;\" align=\"center\"><b>Sl.No.</b></th>";
+        $content .= "<th style=\"border: solid 1px #000000;width: 140px;\" align=\"center\"><b>Check Favourite</b></th>";
+        $content .= "<th style=\"border: solid 1px #000000;width: 429px;\" align=\"center\"><b>Department Name</b></th>";
+        $content .= "<th style=\"border: solid 1px #000000;width: 90px;\" align=\"center\"><b>Date</b></th>";
+        $content .= "</tr>";
+        $content .= "</thead>";
+        $content .= "<tbody>";
+        foreach ($departmentpdf as $key => $row) {
+            $index = $key+1;
+            $content .= "<tr>";
+            $content .= "<td style=\"border: solid 1px #000000;width: 50px;\" align=\"right\">" . $index . "</td>";
+            $content .= "<td style=\"border: solid 1px #000000;width: 140px;\" align=\"left\">" . $row->checked . "</td>";
+            $content .= "<td style=\"border: solid 1px #000000;width: 429px;\" align=\"left\">" . $row->dept_name . "</td>";
+            $content .= "<td style=\"border: solid 1px #000000;width: 90px;\" align=\"right\">" . $row->createdDate. "</td>";
+            $content .= "</tr>";
+        }
+        $content .= "</tbody></table>";
+        $pdfbuilder->table($content, array('border' => '1', 'align' => ''));
+        $pdfbuilder->output('DepartmentFav.pdf');
+        exit;
     }
 
 
@@ -374,22 +409,61 @@ class FavController extends Controller
     //Scheme pdf section rohit singh
     public function export_Scheme_PDF_Department()
     {
-        $Scheme_pdf = SchemeStructure::select('scheme_id','scheme_name','scheme_short_name')->get();
-        for($i=0;$i<count($Scheme_pdf);$i++)
-        {
-            $fav_scheme_tmp = Fav_Scheme::select('favourite_scheme_id')->where('user_id',1)->where('scheme_id',$Scheme_pdf[$i]->scheme_id)->first();
+        $Scheme_pdf = SchemeStructure::select('scheme_id','scheme_name','scheme_short_name','created_at as createdDate')->get();
+        foreach ($Scheme_pdf as $key => $value) {
+            $fav_scheme_tmp = Fav_Scheme::select('favourite_scheme_id')->where('user_id',1)->where('scheme_id',$Scheme_pdf[$key]->scheme_id)->first();
             if($fav_scheme_tmp){
-                $Scheme_pdf[$i]->checked=1;
+                $Scheme_pdf[$key]->checked="Yes";
             }
             else{
-                $Scheme_pdf[$i]->checked=0;
+                $Scheme_pdf[$key]->checked="No";
             }
+            $value->createdDate = date('d/m/Y',strtotime($value->createdDate));
         }
+        // echo"<pre>";
+        // print_r($Scheme_pdf);
+        // exit;
 
-        date_default_timezone_set('Asia/Kolkata');
-        $SchemeTime = date('d-m-Y H:i A');
-        $pdf = PDF::loadView('department/Createpdfs',compact('Scheme_pdf','SchemeTime'));
-        return $pdf->download('favouriteScheme.pdf');
+        $doc_details = array(
+            "title" => "Scheme Structure Favourite",
+            "author" => 'IT-Scient',
+            "topMarginValue" => 10,
+            "mode" => 'P'
+        );
+
+        $pdfbuilder = new \PdfBuilder($doc_details);
+        $content = "<table cellspacing=\"0\" cellpadding=\"4\" border=\"1\" ><tr>";
+        $content .= "<th style='border: solid 1px #000000;' colspan=\"5\" align=\"left\" ><b>Scheme Structure Favourite Details</b></th></tr>";
+        
+
+        /* ========================================================================= */
+        /*             Total width of the pdf table is 1017px lanscape               */
+        /*             Total width of the pdf table is 709px portrait                */
+        /* ========================================================================= */
+        $content .= "<thead>";
+        $content .= "<tr>";
+        $content .= "<th style=\"border: solid 1px #000000;width: 50px;\" align=\"center\"><b>Sl.No.</b></th>";
+        $content .= "<th style=\"border: solid 1px #000000;width: 169px;\" align=\"center\"><b>Check Favourite</b></th>";
+        $content .= "<th style=\"border: solid 1px #000000;width: 300px;\" align=\"center\"><b>Scheme Name</b></th>";
+        $content .= "<th style=\"border: solid 1px #000000;width: 100px;\" align=\"center\"><b>Short Name</b></th>";
+        $content .= "<th style=\"border: solid 1px #000000;width: 90px;\" align=\"center\"><b>Date</b></th>";
+        $content .= "</tr>";
+        $content .= "</thead>";
+        $content .= "<tbody>";
+        foreach ($Scheme_pdf as $key => $row) {
+            $index = $key+1;
+            $content .= "<tr>";
+            $content .= "<td style=\"border: solid 1px #000000;width: 50px;\" align=\"right\">" . $index . "</td>";
+            $content .= "<td style=\"border: solid 1px #000000;width: 169px;\" align=\"left\">" . $row->checked . "</td>";
+            $content .= "<td style=\"border: solid 1px #000000;width: 300px;\" align=\"left\">" . $row->scheme_name . "</td>";
+            $content .= "<td style=\"border: solid 1px #000000;width: 100px;\" align=\"left\">" . $row->scheme_short_name . "</td>";
+            $content .= "<td style=\"border: solid 1px #000000;width: 90px;\" align=\"right\">" . $row->createdDate. "</td>";
+            $content .= "</tr>";
+        }
+        $content .= "</tbody></table>";
+        $pdfbuilder->table($content, array('border' => '1', 'align' => ''));
+        $pdfbuilder->output('SchemeFavourite.pdf');
+        exit;
     }
 
 
@@ -435,29 +509,82 @@ class FavController extends Controller
                     $sheet->setColumnFormat(array('I1' => '@'));
                 });
             })->download('xls');       
-        }      
+    }      
 
+    
+        
     //Block_pdf section  by rohit singh
     public function export_Block_PDF_Department()
     {
-        $block_pdf = GeoStructure::select('geo_id','geo_name')->where('level_id','3')
-                        ->orderBy('geo_structure.geo_id','asc')->get();
+        
+        // for($i=0;$i<count($block_pdf);$i++)
+        // {
+            //     $fav_block_tmp = Fav_Block::select('favourite_block_id')->where('user_id',1)->where('block_id',$block_pdf[$i]->geo_id)->first();
+            //     if($fav_block_tmp){
+                //         $block_pdf[$i]->checked=1;
+                //     }
+                //     else{
+                    //         $block_pdf[$i]->checked=0;
+                    //     }
+                    // }
+                    
+                    // date_default_timezone_set('Asia/Kolkata');
+                    // $BlockTime = date('d-m-Y H:i A');
+                    // $pdf = PDF::loadView('department/Createpdfs',compact('block_pdf','BlockTime'));
+                    // return $pdf->download('favouriteBlock.pdf');
+                    
+        $block_pdf = GeoStructure::select('geo_id','geo_name')->where('level_id','3')->orderBy('geo_structure.geo_id','asc')->get();
 
-        for($i=0;$i<count($block_pdf);$i++)
-        {
-            $fav_block_tmp = Fav_Block::select('favourite_block_id')->where('user_id',1)->where('block_id',$block_pdf[$i]->geo_id)->first();
-            if($fav_block_tmp){
-                $block_pdf[$i]->checked=1;
-            }
-            else{
-                $block_pdf[$i]->checked=0;
-            }
+          foreach ($block_pdf as $key => $value) {
+            $value->createdDate = date('d/m/Y',strtotime($value->created_at));
+            $fav_block_tmp = Fav_Block::select('favourite_block_id')->where('user_id',1)->where('block_id',$block_pdf[$key]->geo_id)->first();
+                if($fav_block_tmp){
+                    $block_pdf[$key]->checked="Yes";
+                }
+                else{
+                    $block_pdf[$key]->checked="No";
+                }
+            
         }
 
-        date_default_timezone_set('Asia/Kolkata');
-        $BlockTime = date('d-m-Y H:i A');
-        $pdf = PDF::loadView('department/Createpdfs',compact('block_pdf','BlockTime'));
-        return $pdf->download('favouriteBlock.pdf');
+        $doc_details = array(
+            "title" => "Favourite Block",
+            "author" => 'IT-Scient',
+            "topMarginValue" => 10,
+            "mode" => 'P'
+        );
+
+        $pdfbuilder = new \PdfBuilder($doc_details);
+        $content = "<table cellspacing=\"0\" cellpadding=\"4\" border=\"1\" ><tr>";
+        $content .= "<th style='border: solid 1px #000000;' colspan=\"4\" align=\"left\" ><b>Favourite Block Details</b></th></tr>";
+        
+
+        /* ========================================================================= */
+        /*             Total width of the pdf table is 1017px lanscape               */
+        /*             Total width of the pdf table is 709px portrait                */
+        /* ========================================================================= */
+        $content .= "<thead>";
+        $content .= "<tr>";
+        $content .= "<th style=\"border: solid 1px #000000;width: 50px;\" align=\"center\"><b>Sl.No.</b></th>";
+        $content .= "<th style=\"border: solid 1px #000000;width: 140px;\" align=\"center\"><b>Check Favourite</b></th>";
+        $content .= "<th style=\"border: solid 1px #000000;width: 429px;\" align=\"center\"><b>Block Name</b></th>";
+        $content .= "<th style=\"border: solid 1px #000000;width: 90px;\" align=\"center\"><b>Date</b></th>";
+        $content .= "</tr>";
+        $content .= "</thead>";
+        $content .= "<tbody>";
+        foreach ($block_pdf as $key => $row) {
+            $index = $key+1;
+            $content .= "<tr>";
+            $content .= "<td style=\"border: solid 1px #000000;width: 50px;\" align=\"right\">" . $index . "</td>";
+            $content .= "<td style=\"border: solid 1px #000000;width: 140px;\" align=\"left\">" . $row->checked . "</td>";
+            $content .= "<td style=\"border: solid 1px #000000;width: 429px;\" align=\"left\">" . $row->dept_name . "</td>";
+            $content .= "<td style=\"border: solid 1px #000000;width: 90px;\" align=\"right\">" . $row->createdDate. "</td>";
+            $content .= "</tr>";
+        }
+        $content .= "</tbody></table>";
+        $pdfbuilder->table($content, array('border' => '1', 'align' => ''));
+        $pdfbuilder->output('DepartmentFav.pdf');
+        exit;
     }
 
 

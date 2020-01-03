@@ -110,7 +110,6 @@ class GroupController extends Controller
     }
     public function scheme_group_excel_function()        
     {
-
             $data = array(1 => array("Scheme Group Sheet"));
             $data[] = array('Sl. No.','Group','Is Active','Date');
     
@@ -128,8 +127,6 @@ class GroupController extends Controller
                     $value->is_active,
                     $value->createdDate,
                 );
-    
-    
             }
             \Excel::create('SchemeGroup-Sheet', function ($excel) use ($data) {
     
@@ -147,6 +144,56 @@ class GroupController extends Controller
                 });
             })->download('xls');
         }
+    public function scheme_group_pdf_function(){
+        $scheme_group = Group::orderBy('scheme_group_id','desc')->Select('scheme_group_name','is_active','created_at as createdDate')->get();
+        
+        foreach ($scheme_group as $key => $value) {
+            $value->createdDate = date('d/m/Y',strtotime($value->createdDate));
+            if ($value->is_active == 1) {
+                $value->is_active = "Active";
+            } else {
+                $value->is_active = "Inactive";
+            }
+        }
 
+        $doc_details = array(
+            "title" => "Scheme Group",
+            "author" => 'IT-Scient',
+            "topMarginValue" => 10,
+            "mode" => 'P'
+        );
+
+        $pdfbuilder = new \PdfBuilder($doc_details);
+
+        $content = "<table cellspacing=\"0\" cellpadding=\"4\" border=\"1\" ><tr>";
+        $content .= "<th style='border: solid 1px #000000;' colspan=\"4\" align=\"left\" ><b>Scheme Group</b></th></tr>";
+        
+
+        /* ========================================================================= */
+        /*                Total width of the pdf table is 1017px                     */
+        /* ========================================================================= */
+        $content .= "<thead>";
+        $content .= "<tr>";
+        $content .= "<th style=\"border: solid 1px #000000;width: 50px;\" align=\"center\"><b>Sl.No.</b></th>";
+        $content .= "<th style=\"border: solid 1px #000000;width: 459px;\" align=\"center\"><b>Group</b></th>";
+        $content .= "<th style=\"border: solid 1px #000000;width: 110px;\" align=\"center\"><b>Status</b></th>";
+        $content .= "<th style=\"border: solid 1px #000000;width: 90px;\" align=\"center\"><b>Date</b></th>";
+        $content .= "</tr>";
+        $content .= "</thead>";
+        $content .= "<tbody>";
+        foreach ($scheme_group as $key => $row) {
+            $index = $key+1;
+            $content .= "<tr>";
+            $content .= "<td style=\"border: solid 1px #000000;width: 50px;\" align=\"right\">" . $index . "</td>";
+            $content .= "<td style=\"border: solid 1px #000000;width: 459px;\" align=\"left\">" . $row->scheme_group_name . "</td>";
+            $content .= "<td style=\"border: solid 1px #000000;width: 110px;\" align=\"left\">" . $row->is_active . "</td>";
+            $content .= "<td style=\"border: solid 1px #000000;width: 90px;\" align=\"right\">" . $row->createdDate. "</td>";
+            $content .= "</tr>";
+        }
+        $content .= "</tbody></table>";
+        $pdfbuilder->table($content, array('border' => '1', 'align' => ''));
+        $pdfbuilder->output('SchemeGroup.pdf');
+        exit;
+    }
 }
 

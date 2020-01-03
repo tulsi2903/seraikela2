@@ -92,7 +92,50 @@ class SchemeTypeController extends Controller
             })->download('xls');
         }
     }
+    public function export_PDF_SchemeType(){
 
+        $SchemeType = SchemeType::orderBy('sch_type_id','desc')->select('sch_type_name','created_at as createdDate')->get(); 
 
+        foreach ($SchemeType as $key => $value) {
+            $value->createdDate = date('d/m/Y',strtotime($value->createdDate));
+        }
+
+        $doc_details = array(
+            "title" => "Scheme Type",
+            "author" => 'IT-Scient',
+            "topMarginValue" => 10,
+            "mode" => 'P'
+        );
+
+        $pdfbuilder = new \PdfBuilder($doc_details);
+
+        $content = "<table cellspacing=\"0\" cellpadding=\"4\" border=\"1\" ><tr>";
+        $content .= "<th style='border: solid 1px #000000;' colspan=\"3\" align=\"left\" ><b>Scheme Type</b></th></tr>";
+        
+
+        /* ========================================================================= */
+        /*                Total width of the pdf table is 1017px                     */
+        /* ========================================================================= */
+        $content .= "<thead>";
+        $content .= "<tr>";
+        $content .= "<th style=\"border: solid 1px #000000;width: 50px;\" align=\"center\"><b>Sl.No.</b></th>";
+        $content .= "<th style=\"border: solid 1px #000000;width: 559px;\" align=\"center\"><b>Scheme Type Name</b></th>";
+        $content .= "<th style=\"border: solid 1px #000000;width: 100px;\" align=\"center\"><b>Date</b></th>";
+        $content .= "</tr>";
+        $content .= "</thead>";
+        $content .= "<tbody>";
+        foreach ($SchemeType as $key => $row) {
+            $index = $key+1;
+            $content .= "<tr>";
+            $content .= "<td style=\"border: solid 1px #000000;width: 50px;\" align=\"right\">" . $index . "</td>";
+            $content .= "<td style=\"border: solid 1px #000000;width: 559px;\" align=\"left\">" . $row->sch_type_name . "</td>";
+            $content .= "<td style=\"border: solid 1px #000000;width: 100px;\" align=\"right\">" . $row->createdDate. "</td>";
+            $content .= "</tr>";
+        }
+        $content .= "</tbody></table>";
+        $pdfbuilder->table($content, array('border' => '1', 'align' => ''));
+        $pdfbuilder->output('SchemeType.pdf');
+        exit;
+    }
 
 }

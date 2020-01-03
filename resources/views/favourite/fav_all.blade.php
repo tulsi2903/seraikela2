@@ -41,7 +41,7 @@
                                 <div class="tab-content" id="v-pills-without-border-tabContent">
                                     <div class="tab-pane fade show active" id="v-pills-home-nobd" role="tabpanel" aria-labelledby="v-pills-home-tab-nobd">
                                         <div style="float: right;">
-                                            <a href="{{url('fav_department/pdf/pdfURL')}}" data-toggle="tooltip" title="Export to PDF"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button></a>
+                                            <a href="{{url('fav_department/pdf/pdfURL')}}" target="_blank" data-toggle="tooltip" title="Export to PDF"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button></a>
                                             <a href="{{url('fav_department/export/excelURL')}}" data-toggle="tooltip" title="Export to Excel"><button type="button" class="btn btn-icon btn-round btn-primary" ><i class="fas fa-file-excel"></i></button></a>
                                         </div><br><br>
                                             <form action="{{url('fav_department')}}" method="post" >
@@ -83,7 +83,7 @@
 
                                     <div class="tab-pane fade" id="v-pills-profile-nobd" role="tabpanel" aria-labelledby="v-pills-profile-tab-nobd">
                                         <div style="float: right;margin-right: 2em;margin-bottom: 1em;">
-                                            <a href="{{url('fav_scheme/pdf/pdfURL')}}" data-toggle="tooltip" title="Export to PDF"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button></a>
+                                            <a href="{{url('fav_scheme/pdf/pdfURL')}}" target="_blank" data-toggle="tooltip" title="Export to PDF"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button></a>
                                             <a href="{{url('fav_scheme/export/excelURL')}}" data-toggle="tooltip" title="Export to Excel"><button type="button" class="btn btn-icon btn-round btn-primary" ><i class="fas fa-file-excel"></i></button></a>
                                         </div><br><br>
                                             <form action="{{url('fav_scheme')}}" method="post">
@@ -123,7 +123,7 @@
                                     
                                     <div class="tab-pane fade" id="v-pills-messages-nobd" role="tabpanel" aria-labelledby="v-pills-messages-tab-nobd">
                                         <div style="float: right;margin-right: 2em;margin-bottom: 1em;">
-                                            <a href="{{url('fav_block/pdf/pdfURL')}}" data-toggle="tooltip" title="Export to PDF"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button></a>
+                                            <a href="{{url('fav_block/pdf/pdfURL')}}" target="_blank" data-toggle="tooltip" title="Export to PDF"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button></a>
                                             <a href="{{url('fav_block/export/excelURL')}}" data-toggle="tooltip" title="Export to Excel"><button type="button" class="btn btn-icon btn-round btn-primary" ><i class="fas fa-file-excel"></i></button></a>
                                         </div><br><br>
                                             <form action="{{url('fav_block')}}" method="post">
@@ -161,7 +161,7 @@
                                                                        
                                     <div class="tab-pane fade" id="v-pills-report-nobd" role="tabpanel" aria-labelledby="v-pills-report-tab-nobd" style="overflow-y: scroll; height:600px;">
                                         <div style="float: right;margin-right: 2em;margin-bottom: 1em;">
-                                            <a href="{{url('fav_panchayat/pdf/pdfURL')}}" data-toggle="tooltip" title="Export to PDF"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button></a>
+                                            <a href="{{url('fav_panchayat/pdf/pdfURL')}}" target="_blank" data-toggle="tooltip" title="Export to PDF"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button></a>
                                             <a href="{{url('fav_panchayat/export/excelURL')}}" data-toggle="tooltip" title="Export to Excel"><button type="button" class="btn btn-icon btn-round btn-primary" ><i class="fas fa-file-excel"></i></button></a>
                                         </div><br><br>
                                             <form action="{{url('fav_panchayat')}}" method="post">
@@ -201,7 +201,7 @@
 
                                     <div class="tab-pane fade" id="v-pills-asset-nobd" role="tabpanel" aria-labelledby="v-pills-asset-tab-nobd" style="overflow-y: scroll; height:600px;">
                                         <div style="float: right;margin-right: 2em;margin-bottom: 1em;">
-                                            <a href="{{url('fav_define_asset/pdf/pdfURL')}}" data-toggle="tooltip" title="Export to PDF"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button></a>
+                                            <a href="{{url('fav_define_asset/pdf/pdfURL')}}" target="_blank" data-toggle="tooltip" title="Export to PDF"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button></a>
                                             <a href="{{url('fav_define_asset/export/excelURL')}}" data-toggle="tooltip" title="Export to Excel"><button type="button" class="btn btn-icon btn-round btn-primary" ><i class="fas fa-file-excel"></i></button></a>
                                         </div><br><br>
                                             <form action="{{url('fav_define_asset')}}" method="post">

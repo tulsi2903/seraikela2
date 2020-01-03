@@ -364,17 +364,71 @@ public function exportExcelFunctiuonforasset()
 
 public function exportpdfFunctiuonforasset()
 {
+    // $Assetdata = Asset::leftJoin('department', 'asset.dept_id', '=', 'department.dept_id')
+    //                 ->leftJoin('asset_cat', 'asset.category_id', '=', 'asset_cat.asset_cat_id')
+    //                 ->leftJoin('asset_subcat', 'asset.subcategory_id', '=', 'asset_subcat.asset_sub_id')
+    //                 ->select('asset.*', 'department.dept_name', 'asset_cat.asset_cat_name', 'asset_subcat.asset_sub_cat_name')
+    //                 ->orderBy('asset.asset_id', 'desc')
+    //                 ->get();
     $Assetdata = Asset::leftJoin('department', 'asset.dept_id', '=', 'department.dept_id')
                     ->leftJoin('asset_cat', 'asset.category_id', '=', 'asset_cat.asset_cat_id')
                     ->leftJoin('asset_subcat', 'asset.subcategory_id', '=', 'asset_subcat.asset_sub_id')
                     ->select('asset.*', 'department.dept_name', 'asset_cat.asset_cat_name', 'asset_subcat.asset_sub_cat_name')
                     ->orderBy('asset.asset_id', 'desc')
                     ->get();
+ 
+        foreach ($Assetdata as $key => $value) {
+            $value->createdDate = date('d/m/Y',strtotime($value->created_at));
+            if($value->movable == 1){
+                $value->movable ="Movable";
 
-    date_default_timezone_set('Asia/Kolkata');
-    $AssetdateTime = date('d-m-Y H:i A');
-    $pdf = PDF::loadView('department/Createpdfs',compact('Assetdata','AssetdateTime'));
-    return $pdf->download('Assetdata.pdf');
+            }
+            else{
+                $value->movable ="Immovable";
+            }              
+        }
+
+        $doc_details = array(
+            "title" => "Assetdata",
+            "author" => 'IT-Scient',
+            "topMarginValue" => 10,
+            "mode" => 'P'
+        );
+
+        $pdfbuilder = new \PdfBuilder($doc_details);
+
+        $content = "<table cellspacing=\"0\" cellpadding=\"4\" border=\"1\" ><tr>";
+        $content .= "<th style='border: solid 1px #000000;' colspan=\"5\" align=\"left\" ><b>Department</b></th></tr>";
+        
+
+        /* ========================================================================= */
+        /*             Total width of the pdf table is 1017px lanscape               */
+        /*             Total width of the pdf table is 709px portrait                */
+        /* ========================================================================= */
+        $content .= "<thead>";
+        $content .= "<tr>";
+        $content .= "<th style=\"width: 50px;\" align=\"center\"><b>Sl.No.</b></th>";
+        $content .= "<th style=\"width: 300px;\" align=\"center\"><b>Name</b></th>";
+        $content .= "<th style=\"width: 90px;\" align=\"center\"><b>Type</b></th>";
+        $content .= "<th style=\"width: 179px;\" align=\"center\"><b>Department Name</b></th>";
+        $content .= "<th style=\"width: 90px;\" align=\"center\"><b>Date</b></th>";
+        $content .= "</tr>";
+        $content .= "</thead>";
+        $content .= "<tbody>";
+        foreach ($Assetdata as $key => $row) {
+            $index = $key+1;
+            $content .= "<tr>";
+            $content .= "<td style=\"width: 50px;\" align=\"right\">" . $index . "</td>";
+            $content .= "<td style=\"width: 300px;\" align=\"left\">" . $row->asset_name . "</td>";
+            $content .= "<td style=\"width: 90px;\" align=\"left\">" . $row->movable. "</td>";
+            $content .= "<td style=\"width: 179px;\" align=\"left\">" . $row->dept_name . "</td>";
+            $content .= "<td style=\"width: 90px;\" align=\"right\">" . $row->createdDate. "</td>";
+            $content .= "</tr>";
+        }
+        $content .= "</tbody></table>";
+        $pdfbuilder->table($content, array('border' => '1', 'align' => ''));
+        $pdfbuilder->output('AssetData.pdf');
+        exit;
 }
 
 
@@ -425,10 +479,56 @@ public function exportpdfFunctiuonforasset()
     public function export_PDF_Asset_Category()
     {
         $export_assest_catagory = asset_cat::orderBy('asset_cat.asset_cat_id','desc')->get();
-        date_default_timezone_set('Asia/Kolkata');
-        $AssetCatagoryTime = date('d-m-Y H:i A');
-        $pdf = PDF::loadView('department/Createpdfs',compact('export_assest_catagory','AssetCatagoryTime'));
-        return $pdf->download('AssetCatagory.pdf');
+        foreach ($export_assest_catagory as $key => $value) {
+            $value->createdDate = date('d/m/Y',strtotime($value->created_at));
+            if($value->movable == '1'){
+                $value->movable="Movable";
+            }
+            else{
+                $value->movable="Immovable";
+            }
+        }
+
+        $doc_details = array(
+            "title" => "Asset Category",
+            "author" => 'IT-Scient',
+            "topMarginValue" => 10,
+            "mode" => 'L'
+        );
+
+        $pdfbuilder = new \PdfBuilder($doc_details);
+
+        $content = "<table cellspacing=\"0\" cellpadding=\"4\" border=\"1\" ><tr>";
+        $content .= "<th colspan=\"5\" align=\"left\" ><b>Asset Category</b></th></tr>";
+        
+
+        /* ========================================================================= */
+        /*                Total width of the pdf table is 1017px                     */
+        /* ========================================================================= */
+        $content .= "<thead>";
+        $content .= "<tr>";
+        $content .= "<th style=\"width: 50px;\" align=\"center\"><b>Sl.No.</b></th>";
+        $content .= "<th style=\"width: 500px;\" align=\"center\"><b>Name</b></th>";
+        $content .= "<th style=\"width: 267px;\" align=\"center\"><b>Category Description</b></th>";
+        $content .= "<th style=\"width: 100px;\" align=\"center\"><b>Type</b></th>";
+        $content .= "<th style=\"width: 100px;\" align=\"center\"><b>Date</b></th>";
+        $content .= "</tr>";
+        $content .= "</thead>";
+        $content .= "<tbody>";
+        foreach ($export_assest_catagory as $key => $row) {
+            $index = $key+1;
+            $content .= "<tr>";
+            $content .= "<td style=\"width: 50px;\" align=\"right\">" . $index . "</td>";
+            $content .= "<td style=\"width: 500px;\" align=\"left\">" . $row->asset_cat_name . "</td>";
+            $content .= "<td style=\"width: 267px;\" align=\"left\">" . $row->asset_cat_description . "</td>";
+            $content .= "<td style=\"width: 100px;\" align=\"left\">" . $row->movable. "</td>";
+            $content .= "<td style=\"width: 100px;\" align=\"right\">" . $row->createdDate. "</td>";
+            $content .= "</tr>";
+        }
+        $content .= "</tbody></table>";
+        $pdfbuilder->table($content, array('border' => '1', 'align' => ''));
+        $pdfbuilder->output('AssetCategory.pdf');
+        exit;
     }
     
      //asset subcatagory rohit singh
@@ -470,20 +570,53 @@ public function exportpdfFunctiuonforasset()
  
      public function export_PDF_Asset_SubCategory()
      {
- 
         $export_assest_subcatagory = asset_subcat::leftjoin('asset_cat','asset_subcat.asset_cat_id','=','asset_cat.asset_cat_id')
-                                                ->select('asset_cat.*','asset_subcat.*')->orderBy('asset_subcat.asset_sub_id','desc')->get();      
-         date_default_timezone_set('Asia/Kolkata');
-         $AssetSubCatagoryTime = date('d-m-Y H:i A');
-         $pdf = PDF::loadView('department/Createpdfs',compact('export_assest_subcatagory','AssetSubCatagoryTime'));
-         return $pdf->download('AssetSubCatagory.pdf');
-     }
+                            ->select('asset_cat.*','asset_subcat.*')->orderBy('asset_subcat.asset_sub_id','desc')->get(); 
 
+        foreach ($export_assest_subcatagory as $key => $value) {
+            $value->createdDate = date('d/m/Y',strtotime($value->created_at));
+        }
 
+        $doc_details = array(
+            "title" => "Asset Sub Category",
+            "author" => 'IT-Scient',
+            "topMarginValue" => 10,
+            "mode" => 'L'
+        );
 
+        $pdfbuilder = new \PdfBuilder($doc_details);
 
+        $content = "<table cellspacing=\"0\" cellpadding=\"4\" border=\"1\" ><tr>";
+        $content .= "<th style='border: solid 1px #000000;' colspan=\"5\" align=\"left\" ><b>Asset Sub Category</b></th></tr>";
+        
 
-
-
-
+        /* ========================================================================= */
+        /*             Total width of the pdf table is 1017px lanscape               */
+        /*             Total width of the pdf table is 709px portrait                */
+        /* ========================================================================= */
+        $content .= "<thead>";
+        $content .= "<tr>";
+        $content .= "<th style=\"width: 50px;\" align=\"center\"><b>Sl.No.</b></th>";
+        $content .= "<th style=\"width: 300px;\" align=\"center\"><b>Category Name</b></th>";
+        $content .= "<th style=\"width: 370px;\" align=\"center\"><b>Sub Category Name</b></th>";
+        $content .= "<th style=\"width: 207px;\" align=\"center\"><b>Sub Category Description </b></th>";
+        $content .= "<th style=\"width: 90px;\" align=\"center\"><b>Date</b></th>";
+        $content .= "</tr>";
+        $content .= "</thead>";
+        $content .= "<tbody>";
+        foreach ($export_assest_subcatagory as $key => $row) {
+            $index = $key+1;
+            $content .= "<tr>";
+            $content .= "<td style=\"width: 50px;\" align=\"right\">" . $index . "</td>";
+            $content .= "<td style=\"width: 300px;\" align=\"left\">" . $row->asset_cat_name . "</td>";
+            $content .= "<td style=\"width: 370px;\" align=\"left\">" . $row->asset_sub_cat_name . "</td>";
+            $content .= "<td style=\"width: 207px;\" align=\"left\">" . $row->asset_sub_cat_description. "</td>";
+            $content .= "<td style=\"width: 90px;\" align=\"right\">" . $row->createdDate. "</td>";
+            $content .= "</tr>";
+        }
+        $content .= "</tbody></table>";
+        $pdfbuilder->table($content, array('border' => '1', 'align' => ''));
+        $pdfbuilder->output('AssetSubCatagory.pdf');
+        exit;
+    }
 }

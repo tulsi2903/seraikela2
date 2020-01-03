@@ -120,13 +120,62 @@ class DesignationController extends Controller
 
     public function exportpdfFunctiuonforDesignation()
     {
+        // $Designationdata = Designation::leftJoin('organisation', 'designation.org_id', '=', 'organisation.org_id')
+        //                         ->select('designation.*','organisation.org_name')
+        //                         ->orderBy('designation.desig_id','desc')
+        //                         ->get();
+        // date_default_timezone_set('Asia/Kolkata');
+        // $DesignationdateTime = date('d-m-Y H:i A');
+        // $pdf = PDF::loadView('department/Createpdfs',compact('Designationdata','DesignationdateTime'));
+        // return $pdf->download('Designation.pdf');
+
         $Designationdata = Designation::leftJoin('organisation', 'designation.org_id', '=', 'organisation.org_id')
                                 ->select('designation.*','organisation.org_name')
                                 ->orderBy('designation.desig_id','desc')
                                 ->get();
-        date_default_timezone_set('Asia/Kolkata');
-        $DesignationdateTime = date('d-m-Y H:i A');
-        $pdf = PDF::loadView('department/Createpdfs',compact('Designationdata','DesignationdateTime'));
-        return $pdf->download('Designation.pdf');
+        foreach ($Designationdata as $key => $value) {
+            $value->createdDate = date('d/m/Y',strtotime($value->created_at));
+        }
+
+        $doc_details = array(
+            "title" => "Designation",
+            "author" => 'IT-Scient',
+            "topMarginValue" => 10,
+            "mode" => 'P'
+        );
+
+        $pdfbuilder = new \PdfBuilder($doc_details);
+
+        $content = "<table cellspacing=\"0\" cellpadding=\"4\" border=\"1\" ><tr>";
+        $content .= "<th style='border: solid 1px #000000;' colspan=\"4\" align=\"left\" ><b>Designation</b></th></tr>";
+        
+
+         /* ========================================================================= */
+        /*             Total width of the pdf table is 1017px lanscape               */
+        /*             Total width of the pdf table is 709px portrait                */
+        /* ========================================================================= */
+        $content .= "<thead>";
+        $content .= "<tr>";
+        $content .= "<th style=\"border: solid 1px #000000;width: 50px;\" align=\"center\"><b>Sl.No.</b></th>";
+        $content .= "<th style=\"border: solid 1px #000000;width: 429px;\" align=\"center\"><b>Name</b></th>";
+        $content .= "<th style=\"border: solid 1px #000000;width: 140px;\" align=\"center\"><b>Organisation Name</b></th>";
+        $content .= "<th style=\"border: solid 1px #000000;width: 90px;\" align=\"center\"><b>Date</b></th>";
+        $content .= "</tr>";
+        $content .= "</thead>";
+        $content .= "<tbody>";
+        foreach ($Designationdata as $key => $row) {            $index = $key+1;
+            $content .= "<tr>";
+            $content .= "<td style=\"border: solid 1px #000000;width: 50px;\" align=\"right\">" . $index . "</td>";
+            $content .= "<td style=\"border: solid 1px #000000;width: 429px;\" align=\"left\">" . $row->name . "</td>";
+            $content .= "<td style=\"border: solid 1px #000000;width: 140px;\" align=\"left\">" . $row->org_name . "</td>";
+            $content .= "<td style=\"border: solid 1px #000000;width: 90px;\" align=\"center\">" . $row->createdDate. "</td>";
+            $content .= "</tr>";
+        }
+        $content .= "</tbody></table>";
+        $pdfbuilder->table($content, array('border' => '1', 'align' => ''));
+        $pdfbuilder->output('Designation.pdf');
+        exit;
+
+
     }
 }

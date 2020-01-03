@@ -123,9 +123,54 @@ class YearController extends Controller
     public function exportpdfFunctiuonforyear()
     {
         $year =  Year::orderBy('year_id','desc')->get();
-        date_default_timezone_set('Asia/Kolkata');
-        $yeardateTime = date('d-m-Y H:i A');
-        $pdf = PDF::loadView('department/Createpdfs',compact('year','yeardateTime'));
-        return $pdf->download('Year.pdf');
+        foreach ($year as $key => $value) {
+            $value->createdDate = date('d/m/Y',strtotime($value->created_at));
+            if($value->status == 1){
+                $value->status= "Active";
+            }
+            else 
+            {
+                $value->status= "Inactive";
+            }
+        }
+
+        $doc_details = array(
+            "title" => "Year",
+            "author" => 'IT-Scient',
+            "topMarginValue" => 10,
+            "mode" => 'P'
+        );
+
+        $pdfbuilder = new \PdfBuilder($doc_details);
+        $content = "<table cellspacing=\"0\" cellpadding=\"4\" border=\"1\" ><tr>";
+        $content .= "<th style='border: solid 1px #000000;' colspan=\"4\" align=\"left\" ><b>Year Details</b></th></tr>";
+        
+
+        /* ========================================================================= */
+        /*             Total width of the pdf table is 1017px lanscape               */
+        /*             Total width of the pdf table is 709px portrait                */
+        /* ========================================================================= */
+        $content .= "<thead>";
+        $content .= "<tr>";
+        $content .= "<th style=\"border: solid 1px #000000;width: 50px;\" align=\"center\"><b>Sl.No.</b></th>";
+        $content .= "<th style=\"border: solid 1px #000000;width: 429px;\" align=\"center\"><b>Year</b></th>";
+        $content .= "<th style=\"border: solid 1px #000000;width: 140px;\" align=\"center\"><b>Status</b></th>";
+        $content .= "<th style=\"border: solid 1px #000000;width: 90px;\" align=\"center\"><b>Date</b></th>";
+        $content .= "</tr>";
+        $content .= "</thead>";
+        $content .= "<tbody>";
+        foreach ($year as $key => $row) {
+            $index = $key+1;
+            $content .= "<tr>";
+            $content .= "<td style=\"border: solid 1px #000000;width: 50px;\" align=\"right\">" . $index . "</td>";
+            $content .= "<td style=\"border: solid 1px #000000;width: 429px;\" align=\"left\">" . $row->year_value . "</td>";
+            $content .= "<td style=\"border: solid 1px #000000;width: 140px;\" align=\"left\">" . $row->status . "</td>";
+            $content .= "<td style=\"border: solid 1px #000000;width: 90px;\" align=\"right\">" . $row->createdDate. "</td>";
+            $content .= "</tr>";
+        }
+        $content .= "</tbody></table>";
+        $pdfbuilder->table($content, array('border' => '1', 'align' => ''));
+        $pdfbuilder->output('Year.pdf');
+        exit;
     }
 }
