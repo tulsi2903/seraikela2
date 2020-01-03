@@ -299,7 +299,7 @@
                 swal({
                     title: 'Are you sure?',
                     // text: "You won't be able to revert this!",
-                    type: 'warning',
+                    icon: 'warning',
                     buttons:{
                         cancel: {
                             visible: true,
