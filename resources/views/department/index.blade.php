@@ -53,7 +53,7 @@
                         <a id="toggle1" class="btn btn-secondary department-add-button" href="javascript:void();" role="button"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;Add</a>
                     </div><br><br> -->
                     <div id="show-toggle1">
-                        <form action="{{url('department/store')}}" method="POST" id="department-form">
+                        <form action="{{url('department/store')}}" method="POST" enctype="multipart/form-data" id="department-form">
                         @csrf
                             <div class="row">
                                 <div class="col-md-3">
@@ -65,8 +65,8 @@
                                 </div>
                                 <div class="col-md-3">
                                     <div class="form-group">
-                                        <label for="dept_icon">Icon Class</label>
-                                        <input type="text" name="dept_icon" id="dept_icon" class="form-control" placeholder="e.g. heartbeat">
+                                        <label for="dept_icon">Icon</label>
+                                        <input type="file" name="dept_icon" id="dept_icon" class="form-control" placeholder="">
                                         <div class="invalid-feedback" id="dept_icon_error_msg"></div>
                                     </div>
                                 </div>
@@ -92,7 +92,7 @@
                         </form>
                     </div>
                     <div class="table-responsive table-hover table-sales">
-                        <form action="{{url('department/store')}}" method="POST"> <!-- for for edit, if inline edit form append then this form action/method will triggered -->
+                        <form action="{{url('department/store')}}" method="POST" enctype="multipart/form-data"> <!-- for for edit, if inline edit form append then this form action/method will triggered -->
                         @csrf    
                             <table class="table table-datatable" id="printable-area">
                                 <thead style="background: #d6dcff;color: #000;">
@@ -111,7 +111,7 @@
                                         @foreach($datas as $data)
                                         <tr data-row-id="{{$data->dept_id}}" data-row-values="{{$data->dept_icon}},{{$data->dept_name}},{{$data->org_name}},{{$data->is_active}}">
                                             <td>{{$count}}</td>
-                                            <td><i class="fa fa-{{$data->dept_icon}}" style="font-size:25px; color: #03A9F4;"></i></td>
+                                            <td>@if($data->dept_icon) <img src="{{$data->dept_icon}}" style="height: 50px;"> @endif</td>
                                             <td>{{$data->dept_name}}</td>
                                             <td>{{$data->org_name}}</td>
                                             <td><?php if($data->is_active=='1'){
@@ -158,10 +158,12 @@
         var edit_values = $("tr[data-row-id='"+id+"']").data('row-values'); // getting datas
         edit_values = edit_values.split(','); // converting to array
 
+        // alert(id);
         var form_append = `<tr data-edit-id="`+id+`">
+        
             <td></td>
             <td>
-                <input value="`+edit_values[0]+`" class="form-control" name="dept_icon" id="edit_dept_icon">
+                <input type="file" class="form-control" name="dept_icon" id="edit_dept_icon">
                 <div class="invalid-feedback" id="edit_dept_icon_error_msg"></div>
             </td>
             <td>
@@ -254,12 +256,12 @@
     // edit dept_icon validation
     function edit_dept_icon_validate(){
         var edit_dept_icon_val = $("#edit_dept_icon").val();
-        var regAlphaNumericSpace = new RegExp('^[a-zA-Z-]+$');
-        if(edit_dept_icon_val!=""){
-            if(!regAlphaNumericSpace.test(edit_dept_icon_val)){
+        var ext = edit_dept_icon_val.substring(edit_dept_icon_val.lastIndexOf('.') + 1);
+        if(ext){
+            if(ext !="jpg" && ext!="jpeg" && ext!="png"){
                 edit_dept_icon_error=true;
                 $("#edit_dept_icon").addClass('is-invalid');
-                $("#edit_dept_icon_error_msg").html("Please enter valid icon class");
+                $("#edit_dept_icon_error_msg").html("Please select jpg/png image only");
             }
             else{
                 edit_dept_icon_error=false;
@@ -316,7 +318,6 @@
             is_active_validate();
         });
 
-
         // reset/initiate form
         $(".department-add-button").click(function(){
             initiateForm();
@@ -353,12 +354,12 @@
     // dept_icon validation
     function dept_icon_validate(){
         var dept_icon_val = $("#dept_icon").val();
-        var regAlphaNumericSpace = new RegExp('^[a-zA-Z-]+$');
-        if(dept_icon_val!=""){
-            if(!regAlphaNumericSpace.test(dept_icon_val)){
+        var ext = dept_icon_val.substring(dept_icon_val.lastIndexOf('.') + 1);
+        if(ext){
+            if(ext !="jpg" && ext!="jpeg" && ext!="png"){
                 dept_icon_error=true;
                 $("#dept_icon").addClass('is-invalid');
-                $("#dept_icon_error_msg").html("Please enter valid icon class");
+                $("#dept_icon_error_msg").html("Please select jpg/png image only");
             }
             else{
                 dept_icon_error=false;

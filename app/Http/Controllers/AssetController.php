@@ -67,7 +67,6 @@ class AssetController extends Controller
         }
 
         $asset->asset_name = $request->asset_name;
-        
         if($request->hasFile('asset_icon')){
             $upload_directory = "public/uploaded_documents/assets/";
             $file = $request->file('asset_icon');
@@ -104,7 +103,6 @@ class AssetController extends Controller
         $asset->org_id = '1';
         $asset->category_id = $request->category;
         $asset->subcategory_id = $request->subcategory;
-        
         $asset->created_by = '1';
         $asset->updated_by = '1';
 
@@ -381,7 +379,6 @@ public function exportpdfFunctiuonforasset()
             $value->createdDate = date('d/m/Y',strtotime($value->created_at));
             if($value->movable == 1){
                 $value->movable ="Movable";
-
             }
             else{
                 $value->movable ="Immovable";

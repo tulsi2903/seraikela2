@@ -37,7 +37,6 @@ class DepartmentController extends Controller
             $hidden_input_id=$request->id;
             $data = $data->find($request->id);
         }
-
         return view('department.add')->with(compact('hidden_input_purpose','hidden_input_id','data','organisation_datas'));
     }
 
@@ -53,9 +52,25 @@ class DepartmentController extends Controller
             }
         }
 
+        if($request->hasFile('dept_icon')){
+            $upload_directory = "public/uploaded_documents/department/";
+            $file = $request->file('dept_icon');
+            $dept_icon_tmp_name = "department-".time().rand(1000,5000).'.'.strtolower($file->getClientOriginalExtension());
+            $file->move($upload_directory, $dept_icon_tmp_name);   // move the file to desired folder
+
+            // deleteprevious icon
+            if(isset($request->edit_id))
+            {
+                if(file_exists($dept->dept_icon)){
+                    unlink($dept->dept_icon);
+                }
+            }
+            $dept->dept_icon = $upload_directory.$dept_icon_tmp_name;    // assign the location of folder to the model
+        }
+
+
         $dept->dept_name= $request->dept_name;
         $dept->is_active = $request->is_active;
-        $dept->dept_icon = $request->dept_icon;
         $dept->org_id = '1';
         $dept->created_by = '1';
         $dept->updated_by = '1';
@@ -82,7 +97,6 @@ class DepartmentController extends Controller
             session()->put('alert-class','alert-success');
             session()->put('alert-content','Deleted successfully');
         }
-
         return redirect('department');
     }
 
