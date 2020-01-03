@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\SchemeStructure;
+use App\GeoStructure;
 use App\Department;
 use App\SchemeType;
 use App\Uom;
@@ -34,6 +35,9 @@ class SchemeStructureController extends Controller
 
         $scheme_type_datas = SchemeType::orderBy('sch_type_name','asc')->get();
         $department_datas = Department::orderBy('dept_name')->get();
+        $scheme_group_datas = Group::get();
+        $block_datas = GeoStructure::where('level_id', 3)->get();
+        $scheme_asset_datas = SchemeAsset::get();
        
         $data = new SchemeStructure;
 
@@ -43,7 +47,7 @@ class SchemeStructureController extends Controller
             $data = $data->find($request->id);
         }
 
-        return view('scheme-structure.add')->with(compact('hidden_input_purpose','hidden_input_id','data','department_datas','scheme_type_datas','departments'));
+        return view('scheme-structure.add')->with(compact('hidden_input_purpose','hidden_input_id','data','department_datas','scheme_type_datas','departments','scheme_group_datas','block_datas','scheme_asset_datas'));
     }
 
     public function view(Request $request){
@@ -54,6 +58,13 @@ class SchemeStructureController extends Controller
                                         ->first();
 
         return view('scheme-structure.view')->with(compact('data'));
+    }
+
+    public function get_panchayat_datas(Request $request){
+        $block_id = $request->block_id;
+
+        $panchayat_datas = GeoStructure::select('geo_id', 'geo_name')->where('bl_id', $block_id)->get();
+        return $panchayat_datas;
     }
 
     public function store(Request $request){

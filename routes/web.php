@@ -88,6 +88,7 @@ Route::get('scheme-structure/delete/{scheme_id}','SchemeStructureController@dele
 Route::get('scheme-structure/view/{scheme_id}','SchemeStructureController@view');
 Route::get('scheme-structure/export/excelURL','SchemeStructureController@exportExcel_Scheme_structure');
 Route::get('scheme-structure/pdf/pdfURL','SchemeStructureController@exportPDF_Scheme_structure');
+Route::get('scheme-structure/get-panchayat-datas', 'SchemeStructureController@get_panchayat_datas');
 
 
 /*Scheme Geo Target*/
@@ -208,6 +209,7 @@ Route::get("scheme-performance/get-scheme-performance-datas", "SchemePerformance
 
 Route::get('scheme-performance/mgnrega','MgnregaController@performance');
 Route::get('scheme-performance/mgnrega/get-panchayat-datas','MgnregaController@get_panchayat_datas');
+Route::post('scheme-performance/mgnrega/store','MgnregaController@store');
 
 //*Scheme Geo Target(PMAYG)*/
 Route::get('scheme-geo-target/pmayg','PMAYGTargetController@index');
