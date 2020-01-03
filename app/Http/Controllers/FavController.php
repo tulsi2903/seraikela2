@@ -362,8 +362,6 @@ class FavController extends Controller
         exit;
     }
 
-
-
     //Scheme_Excel  section rohit singh
     public function export_Scheme_Excel_Department()
     {
@@ -406,6 +404,8 @@ class FavController extends Controller
             });
         })->download('xls');
     }
+
+
     //Scheme pdf section rohit singh
     public function export_Scheme_PDF_Department()
     {
@@ -515,36 +515,17 @@ class FavController extends Controller
         
     //Block_pdf section  by rohit singh
     public function export_Block_PDF_Department()
-    {
-        
-        // for($i=0;$i<count($block_pdf);$i++)
-        // {
-            //     $fav_block_tmp = Fav_Block::select('favourite_block_id')->where('user_id',1)->where('block_id',$block_pdf[$i]->geo_id)->first();
-            //     if($fav_block_tmp){
-                //         $block_pdf[$i]->checked=1;
-                //     }
-                //     else{
-                    //         $block_pdf[$i]->checked=0;
-                    //     }
-                    // }
-                    
-                    // date_default_timezone_set('Asia/Kolkata');
-                    // $BlockTime = date('d-m-Y H:i A');
-                    // $pdf = PDF::loadView('department/Createpdfs',compact('block_pdf','BlockTime'));
-                    // return $pdf->download('favouriteBlock.pdf');
-                    
-        $block_pdf = GeoStructure::select('geo_id','geo_name')->where('level_id','3')->orderBy('geo_structure.geo_id','asc')->get();
-
+    {               
+        $block_pdf = GeoStructure::select('geo_id','geo_name','created_at as createdDate')->where('level_id','3')->orderBy('geo_structure.geo_id','asc')->get();
           foreach ($block_pdf as $key => $value) {
-            $value->createdDate = date('d/m/Y',strtotime($value->created_at));
+            $value->createdDate = date('d/m/Y',strtotime($value->createdDate));
             $fav_block_tmp = Fav_Block::select('favourite_block_id')->where('user_id',1)->where('block_id',$block_pdf[$key]->geo_id)->first();
                 if($fav_block_tmp){
                     $block_pdf[$key]->checked="Yes";
                 }
                 else{
                     $block_pdf[$key]->checked="No";
-                }
-            
+                }          
         }
 
         $doc_details = array(
@@ -565,25 +546,25 @@ class FavController extends Controller
         /* ========================================================================= */
         $content .= "<thead>";
         $content .= "<tr>";
-        $content .= "<th style=\"border: solid 1px #000000;width: 50px;\" align=\"center\"><b>Sl.No.</b></th>";
-        $content .= "<th style=\"border: solid 1px #000000;width: 140px;\" align=\"center\"><b>Check Favourite</b></th>";
-        $content .= "<th style=\"border: solid 1px #000000;width: 429px;\" align=\"center\"><b>Block Name</b></th>";
-        $content .= "<th style=\"border: solid 1px #000000;width: 90px;\" align=\"center\"><b>Date</b></th>";
+        $content .= "<th style=\"width: 50px;\" align=\"center\"><b>Sl.No.</b></th>";
+        $content .= "<th style=\"width: 140px;\" align=\"center\"><b>Check Favourite</b></th>";
+        $content .= "<th style=\"width: 429px;\" align=\"center\"><b>Block Name</b></th>";
+        $content .= "<th style=\"width: 90px;\" align=\"center\"><b>Date</b></th>";
         $content .= "</tr>";
         $content .= "</thead>";
         $content .= "<tbody>";
         foreach ($block_pdf as $key => $row) {
             $index = $key+1;
             $content .= "<tr>";
-            $content .= "<td style=\"border: solid 1px #000000;width: 50px;\" align=\"right\">" . $index . "</td>";
-            $content .= "<td style=\"border: solid 1px #000000;width: 140px;\" align=\"left\">" . $row->checked . "</td>";
-            $content .= "<td style=\"border: solid 1px #000000;width: 429px;\" align=\"left\">" . $row->dept_name . "</td>";
-            $content .= "<td style=\"border: solid 1px #000000;width: 90px;\" align=\"right\">" . $row->createdDate. "</td>";
+            $content .= "<td style=\"width: 50px;\" align=\"right\">" . $index . "</td>";
+            $content .= "<td style=\"width: 140px;\" align=\"left\">" . $row->checked . "</td>";
+            $content .= "<td style=\"width: 429px;\" align=\"left\">" . $row->geo_name . "</td>";
+            $content .= "<td style=\"width: 90px;\" align=\"right\">" . $row->createdDate. "</td>";
             $content .= "</tr>";
         }
         $content .= "</tbody></table>";
         $pdfbuilder->table($content, array('border' => '1', 'align' => ''));
-        $pdfbuilder->output('DepartmentFav.pdf');
+        $pdfbuilder->output('BlockFavourite.pdf');
         exit;
     }
 
@@ -631,28 +612,61 @@ class FavController extends Controller
             });
         })->download('xls');
     }
+
+
     //Panchayat_ pdf section  by rohit singh
     public function export_Panchayat_PDF_Department()
     {
-        $panchayat_pdf = GeoStructure::select('geo_id','geo_name')->where('level_id','4')
-                    ->orderBy('geo_structure.geo_id','asc')->get();
+        $panchayat_pdf = GeoStructure::select('geo_id','geo_name','created_at as createdDate')->where('level_id','4')->orderBy('geo_structure.geo_id','asc')->get();
+        foreach ($panchayat_pdf as $key => $value) {
+            $value->createdDate = date('d/m/Y',strtotime($value->createdDate));
+            $fav_panchayat_tmp = Fav_Panchayat::select('favourite_panchayat_id')->where('user_id',1)->where('panchayat_id',$panchayat_pdf[$key]->geo_id)->first();          
+              if($fav_panchayat_tmp){
+                  $panchayat_pdf[$key]->checked="Yes";
+              }
+              else{
+                  $panchayat_pdf[$key]->checked="No";
+              }          
+        }
 
-            for($i=0;$i<count($panchayat_pdf);$i++)
-            {
-                $fav_panchayat_tmp = Fav_Panchayat::select('favourite_panchayat_id')->where('user_id',1)->where('panchayat_id',$panchayat_pdf[$i]->geo_id)->first();
-                if($fav_panchayat_tmp){
-                    $panchayat_pdf[$i]->checked=1;
-                }
-                else{
-                    $panchayat_pdf[$i]->checked=0;
-                }
+      $doc_details = array(
+          "title" => "Favourite Panchayat",
+          "author" => 'IT-Scient',
+          "topMarginValue" => 10,
+          "mode" => 'P'
+      );
 
-            }
+      $pdfbuilder = new \PdfBuilder($doc_details);
+      $content = "<table cellspacing=\"0\" cellpadding=\"4\" border=\"1\" ><tr>";
+      $content .= "<th style='border: solid 1px #000000;' colspan=\"4\" align=\"left\" ><b>Favourite Panchayat Details</b></th></tr>";
+      
 
-        date_default_timezone_set('Asia/Kolkata');
-        $PanchayatTime = date('d-m-Y H:i A');
-        $pdf = PDF::loadView('department/Createpdfs',compact('panchayat_pdf','PanchayatTime'));
-        return $pdf->download('favouritePanchayat.pdf');
+      /* ========================================================================= */
+      /*             Total width of the pdf table is 1017px lanscape               */
+      /*             Total width of the pdf table is 709px portrait                */
+      /* ========================================================================= */
+      $content .= "<thead>";
+      $content .= "<tr>";
+      $content .= "<th style=\"width: 50px;\" align=\"center\"><b>Sl.No.</b></th>";
+      $content .= "<th style=\"width: 140px;\" align=\"center\"><b>Check Favourite</b></th>";
+      $content .= "<th style=\"width: 429px;\" align=\"center\"><b>Panchayat Name</b></th>";
+      $content .= "<th style=\"width: 90px;\" align=\"center\"><b>Date</b></th>";
+      $content .= "</tr>";
+      $content .= "</thead>";
+      $content .= "<tbody>";
+      foreach ($panchayat_pdf as $key => $row) {
+          $index = $key+1;
+          $content .= "<tr>";
+          $content .= "<td style=\"width: 50px;\" align=\"right\">" . $index . "</td>";
+          $content .= "<td style=\"width: 140px;\" align=\"left\">" . $row->checked . "</td>";
+          $content .= "<td style=\"width: 429px;\" align=\"left\">" . $row->geo_name . "</td>";
+          $content .= "<td style=\"width: 90px;\" align=\"right\">" . $row->createdDate. "</td>";
+          $content .= "</tr>";
+      }
+      $content .= "</tbody></table>";
+      $pdfbuilder->table($content, array('border' => '1', 'align' => ''));
+      $pdfbuilder->output('PanchayatFavourite.pdf');
+      exit;
     }
 
 
@@ -701,26 +715,65 @@ class FavController extends Controller
              });
          })->download('xls');
      }
+
+
+
      //DefineAsset_ pdf section  by rohit singh
     public function export_DefineAsset_PDF_Department()
     {
         $asset_pdf = Asset::leftJoin('department', 'asset.dept_id', '=', 'department.dept_id')
-                        ->select('asset.*','department.dept_name')->orderBy('asset.asset_id','asc')->get();
-                    
-        for($i=0;$i<count($asset_pdf);$i++){
-            $fav_define_tmp = Fav_Define_Assets::select('favourite_asset_id')->where('user_id',1)->where('asset_id',$asset_pdf[$i]->asset_id)->first();
-
+                    ->select('asset.*','department.dept_name')->orderBy('asset.asset_id','asc')->get();
+        foreach ($asset_pdf as $key => $value) {
+            $fav_define_tmp = Fav_Define_Assets::select('favourite_asset_id')->where('user_id',1)->where('asset_id',$asset_pdf[$key]->asset_id)->first();
             if($fav_define_tmp){
-                $asset_pdf[$i]->checked=1;
+                $asset_pdf[$key]->checked="Yes";
             }
             else{
-                $asset_pdf[$i]->checked=0;
+                $asset_pdf[$key]->checked="No";
             }
-        }      
-         date_default_timezone_set('Asia/Kolkata');
-         $AssetsTime = date('d-m-Y H:i A');
-         $pdf = PDF::loadView('department/Createpdfs',compact('asset_pdf','AssetsTime'));
-         return $pdf->download('favouriteAssets.pdf');
+            $value->createdDate = date('d/m/Y',strtotime($value->createdDate));
+        }
+
+        $doc_details = array(
+            "title" => "Assets Favourite",
+            "author" => 'IT-Scient',
+            "topMarginValue" => 10,
+            "mode" => 'P'
+        );
+
+        $pdfbuilder = new \PdfBuilder($doc_details);
+        $content = "<table cellspacing=\"0\" cellpadding=\"4\" border=\"1\" ><tr>";
+        $content .= "<th style='border: solid 1px #000000;' colspan=\"5\" align=\"left\" ><b>Assets Favourite Details</b></th></tr>";
+        
+
+        /* ========================================================================= */
+        /*             Total width of the pdf table is 1017px lanscape               */
+        /*             Total width of the pdf table is 709px portrait                */
+        /* ========================================================================= */
+        $content .= "<thead>";
+        $content .= "<tr>";
+        $content .= "<th style=\"border: solid 1px #000000;width: 50px;\" align=\"center\"><b>Sl.No.</b></th>";
+        $content .= "<th style=\"border: solid 1px #000000;width: 149px;\" align=\"center\"><b>Check Favourite</b></th>";
+        $content .= "<th style=\"border: solid 1px #000000;width: 220px;\" align=\"center\"><b>Asset Name</b></th>";
+        $content .= "<th style=\"border: solid 1px #000000;width: 200px;\" align=\"center\"><b>Department Name</b></th>";
+        $content .= "<th style=\"border: solid 1px #000000;width: 90px;\" align=\"center\"><b>Date</b></th>";
+        $content .= "</tr>";
+        $content .= "</thead>";
+        $content .= "<tbody>";
+        foreach ($asset_pdf as $key => $row) {
+            $index = $key+1;
+            $content .= "<tr>";
+            $content .= "<td style=\"border: solid 1px #000000;width: 50px;\" align=\"right\">" . $index . "</td>";
+            $content .= "<td style=\"border: solid 1px #000000;width: 149px;\" align=\"left\">" . $row->checked . "</td>";
+            $content .= "<td style=\"border: solid 1px #000000;width: 220px;\" align=\"left\">" . $row->asset_name . "</td>";
+            $content .= "<td style=\"border: solid 1px #000000;width: 200px;\" align=\"left\">" . $row->dept_name . "</td>";
+            $content .= "<td style=\"border: solid 1px #000000;width: 90px;\" align=\"right\">" . $row->createdDate. "</td>";
+            $content .= "</tr>";
+        }
+        $content .= "</tbody></table>";
+        $pdfbuilder->table($content, array('border' => '1', 'align' => ''));
+        $pdfbuilder->output('AssetsFavourite.pdf');
+        exit;
     }
     
 }

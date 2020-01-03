@@ -89,14 +89,49 @@ class MgnregaCategoryController extends Controller
         })->download('xls');
     }
 
-    public function export_PDF_Function(){
+    public function export_PDF_Function()
+    {
+        $mgnrega_pdf = MgnregaCategory::orderBy('mgnrega_category_id','desc','created_at')->get();
 
-        $mgnrega_pdf = MgnregaCategory::orderBy('mgnrega_category_id','desc')->get();
+        foreach ($mgnrega_pdf as $key => $value) {
+            $value->createdDate = date('d/m/Y',strtotime($value->created_at));        
+        }
 
-        date_default_timezone_set('Asia/Kolkata');
-        $mgnrega_Time = date('d-m-Y H:i A');
-        $pdf = PDF::loadView('department/Createpdfs',compact('mgnrega_pdf','mgnrega_Time'));
-        return $pdf->download('mgnrega.pdf');
+      $doc_details = array(
+          "title" => "MgnregaCategory",
+          "author" => 'IT-Scient',
+          "topMarginValue" => 10,
+          "mode" => 'P'
+      );
+
+      $pdfbuilder = new \PdfBuilder($doc_details);
+      $content = "<table cellspacing=\"0\" cellpadding=\"4\" border=\"1\" ><tr>";
+      $content .= "<th style='border: solid 1px #000000;' colspan=\"3\" align=\"left\" ><b>Mgnrega Category Details</b></th></tr>";
+    
+      /* ========================================================================= */
+      /*             Total width of the pdf table is 1017px lanscape               */
+      /*             Total width of the pdf table is 709px portrait                */
+      /* ========================================================================= */
+      $content .= "<thead>";
+      $content .= "<tr>";
+      $content .= "<th style=\"width: 50px;\" align=\"center\"><b>Sl.No.</b></th>";
+      $content .= "<th style=\"width: 559px;\" align=\"center\"><b>Mgnregs Name</b></th>";
+      $content .= "<th style=\"width: 100px;\" align=\"center\"><b>Date</b></th>";
+      $content .= "</tr>";
+      $content .= "</thead>";
+      $content .= "<tbody>";
+      foreach ($mgnrega_pdf as $key => $row) {
+          $index = $key+1;
+          $content .= "<tr>";
+          $content .= "<td style=\"width: 50px;\" align=\"right\">" . $index . "</td>";
+          $content .= "<td style=\"width: 559px;\" align=\"left\">" . $row->mgnrega_category_name . "</td>";
+          $content .= "<td style=\"width: 100px;\" align=\"right\">" . $row->createdDate. "</td>";
+          $content .= "</tr>";
+      }
+      $content .= "</tbody></table>";
+      $pdfbuilder->table($content, array('border' => '1', 'align' => ''));
+      $pdfbuilder->output('MgnregaCategory.pdf');
+      exit;
 
      
     }
