@@ -412,7 +412,7 @@
                         <div id="tabular-view">
                         </div>
                         <div class="no-data">
-                            <i class="fas fa-info-circle text-success"></i>&nbsp;&nbsp;No assets data to show
+                            <i class="fas fa-info-circle text-success"></i>&nbsp;&nbsp;No resources data to show
                         </div>
                     </div>
                     <!-- graphical-view -->
@@ -424,7 +424,7 @@
                             </div>
                         </div>
                         <div class="no-data">
-                            <i class="fas fa-info-circle text-success"></i>&nbsp;&nbsp;No assets data to show
+                            <i class="fas fa-info-circle text-success"></i>&nbsp;&nbsp;No resources data to show
                         </div>
                     </div>
                     <!-- map-view -->
@@ -445,7 +445,7 @@
                                         <select name="map-view-asset" id="map-view-asset" class="form-control">
                                             <option value="">-Select-</option>
                                         </select>
-                                        <div class="invalid-feedback">Please select asset</div>
+                                        <div class="invalid-feedback">Please select resource</div>
                                     </div>
                                     <div class="col-2">
                                         <div style="height: 30px;"></div>
