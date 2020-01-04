@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth;
+
 use Illuminate\Http\Request;
 use App\SchemeStructure;
 use App\GeoStructure;
@@ -9,6 +11,7 @@ use App\Department;
 use App\SchemeType;
 use App\Uom;
 use App\SchemeIndicator;
+use App\SchemePerformance;
 use App\SchemeAsset;
 use App\Group;
 use PDF;
@@ -67,11 +70,49 @@ class SchemeStructureController extends Controller
         return $panchayat_datas;
     }
 
+    public function get_attributes_details(Request $request){ // according to SchemeAsset selected
+        $scheme_asset_datas = SchemeAsset::where('scheme_asset_id', $request->scheme_asset_id)->first();
+        $to_send=""; // to send data/ tr/ td, entire table rows
+        $scheme_is = $request->scheme_is; // receiving data 1= independent, 2 = under a group
+        $attribute =  unserialize($scheme_asset_datas->attribute);
+        // replacing UOM name // [or unique identifier (later to be update)]
+        foreach ($attribute as $key => $value) {
+            $to_send .= "<tr><td>".$value['name']."</td>";
+            $uom = Uom::where('uom_id', $value)->first()->uom_name;
+
+            if($scheme_is=="1")
+            {
+                $to_send .= '<td>-</td></tr>';
+            }
+            else{
+                if($uom=="number")
+                {
+                    $to_send .= '<td><input type="text" class="form-control" name="'.strtolower(preg_replace('/\s+/', '', $key)).'"></td></tr>';
+                }
+                else if($uom=="boolean"){
+                    $to_send .= '<td>
+                            <select class="form-control" name="'.strtolower(preg_replace('/\s+/', '', $key)).'">
+                                <option value="">--Select--</option>
+                                <option value="1">Ongoing</option>
+                                <option value="2">Completed</option>
+                            </select>
+                            </td>
+                        </tr>';
+                }
+            }
+        }
+
+        return ["to_append"=>$to_send];
+    }
+
     public function store(Request $request){
         $upload_directory = "public/uploaded_documents/schemes/"; // directory to upload docs/icons etc related to scheme
 
         // return $request;
         $scheme_structure = new SchemeStructure;
+
+        // for performance data if sche,e comes under a group
+        $scheme_performance = new SchemePerformance;
 
         if($request->hidden_input_purpose=="edit"){
             $scheme_structure = $scheme_structure->find($request->hidden_input_id);
@@ -79,13 +120,51 @@ class SchemeStructureController extends Controller
         $scheme_structure->org_id = "1";
         $scheme_structure->scheme_name = $request->scheme_name;
         $scheme_structure->scheme_short_name = $request->scheme_short_name;
+        $scheme_structure->scheme_asset_id = $request->scheme_asset_id; // for attributes/ report generation etc
+
+        $scheme_structure->scheme_is = $request->scheme_is; // 1=independent, 2=under a group
+
+        // initialize values if scheme_as==2 (under a group) else saved as null
+        if($request->scheme_is=="2"){
+            $scheme_structure->subdivision_id = GeoStructure::where('geo_id',$request->block_id)->first()->parent_id;
+            $scheme_structure->block_id = $request->block_id;
+            $scheme_structure->panchayat_id = $request->panchayat_id;
+            $scheme_structure->scheme_group_id = $request->scheme_group_id;
+
+            // scheme performance datas
+            $scheme_performance->subdivision_id = GeoStructure::where('geo_id',$request->block_id)->first()->parent_id;
+            $scheme_performance->block_id = $request->block_id;
+            $scheme_performance->panchayat_id = $request->panchayat_id;
+            $scheme_performance->attribute = ""; // intialized as blank
+            $attribute = [];
+            $scheme_asset_data = SchemeAsset::where('scheme_asset_id', $request->scheme_asset_id)->first()->attribute;
+            $scheme_asset_data = unserialize($scheme_asset_data);
+            foreach ($scheme_asset_data as $key => $value) {
+                $key_2 = strtolower(preg_replace('/\s+/', '', $key));
+                if($request->$key_2){
+                    $attribute[$key] = $request->$key_2;
+                }
+                else{
+                    $attribute[$key] = "";
+                }
+            }
+            $scheme_performance->attribute = serialize($attribute);
+            $scheme_performance->created_by = Auth::user()->id;
+            $scheme_performance->updated_by = Auth::user()->id;
+        }
+
+        // echo "<pre>";
+        // print_r($request->toArray());
+        // print_r($attribute);
+        // exit;
+
         $scheme_structure->status = $request->status;
         $scheme_structure->dept_id = $request->dept_id;
         $scheme_structure->scheme_type_id = $request->scheme_type_id;
         $scheme_structure->description = $request->description;
-        $scheme_structure->created_by = "1";
-        $scheme_structure->updated_by = "1";
-      
+        $scheme_structure->created_by = Auth::user()->id;
+        $scheme_structure->updated_by = Auth::user()->id;
+
         // scheme attachment
         if($request->hasFile('attachment')){
             // delete previous attachment
@@ -187,6 +266,10 @@ class SchemeStructureController extends Controller
         else if($scheme_structure->save()){
             session()->put('alert-class','alert-success');
             session()->put('alert-content','Scheme details have been successfully submitted !');
+            if($request->scheme_is=="2")
+            {
+                $scheme_performance->save();
+            }
         }
         else{
             session()->put('alert-class','alert-danger');

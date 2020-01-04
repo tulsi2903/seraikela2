@@ -5,7 +5,7 @@
 @section('page-style')
 <style>
     .scheme-form-block{
-        display: none;
+        
     }
     .under-a-scheme-form-elements{
         display: none;
@@ -33,13 +33,13 @@
                 <div class="col-12">
                     <div class="form-group">
                         <div class="custom-control custom-radio custom-control-inline">
-                            <input type="radio" id="scheme_is_independent" name="scheme_is" value="1" class="custom-control-input">
+                            <input type="radio" id="scheme_is_independent" name="scheme_is" value="1" class="custom-control-input" checked>
                             <label class="custom-control-label" for="scheme_is_independent">Independent</label>
                         </div>
-                        <div class="custom-control custom-radio custom-control-inline">
+                        <!-- <div class="custom-control custom-radio custom-control-inline">
                             <input type="radio" id="scheme_is_under_a_group" name="scheme_is" value="2" class="custom-control-input">
                             <label class="custom-control-label" for="scheme_is_under_a_group">Under a group</label>
-                        </div>
+                        </div> -->
                         <hr/>
                     </div>
                 </div>
@@ -47,17 +47,6 @@
 
             <div class="scheme-form-block">
                 <div class="row">
-                    <div class="col-md-2 scheme-form-elements under-a-scheme-form-elements">
-                        <div class="form-group">
-                            <label for="scheme_group_id">Scheme Group</label>
-                            <select name="scheme_group_id" id="scheme_group_id" class="form-control">
-                                <option value="">--Select--</option>
-                                @foreach($scheme_group_datas as $scheme_group_data)
-                                    <option value="{{$scheme_group_data->scheme_group_id}}">{{$scheme_group_data->scheme_group_name}}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
                     <div class="col-md-4 scheme-form-elements">
                         <div class="form-group">
                             <label for="scheme_name">Scheme Name<span style="color:red;margin-left:5px;">*</span></label>
@@ -82,6 +71,17 @@
                                 @endforeach
                             </select>
                             <div class="invalid-feedback" id="scheme_type_id_error_msg"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-2 scheme-form-elements under-a-scheme-form-elements">
+                        <div class="form-group">
+                            <label for="scheme_group_id">Scheme Group</label>
+                            <select name="scheme_group_id" id="scheme_group_id" class="form-control">
+                                <option value="">--Select--</option>
+                                @foreach($scheme_group_datas as $scheme_group_data)
+                                    <option value="{{$scheme_group_data->scheme_group_id}}">{{$scheme_group_data->scheme_group_name}}</option>
+                                @endforeach
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -138,28 +138,30 @@
                 <div class="row">
                     <div class="col-6 scheme-form-elements">
                         <div class="form-group">
-                            <label for="">Attributes</label>
+                            <label for="">Scheme Asset</label>
                             <div class="card-body" style="background: white; min-height: 250px; border-radius: 3px; border: 1px solid #adadad;">
                                 <div class="row">
-                                    <div class="col-3">
-                                        <label for="scheme_asset_id">Scheme Asset<span style="color:red;margin-left:5px;">*</span></label>
+                                    <div class="col-4">
+                                        <label for="scheme_asset_id">Select Asset<span style="color:red;margin-left:5px;">*</span></label>
                                         <select name="scheme_asset_id" id="scheme_asset_id" class="form-control">
                                             <option value="">--Select--</option>
                                             @foreach($scheme_asset_datas as $scheme_asset_data)
-                                                <option value="{{$scheme_asset_data->scheme_asset_id}}">{{$scheme_asset_data->scheme_asset_name}}</option>
+                                                <option value="{{$scheme_asset_data->scheme_asset_id}}" <?php if ($data->scheme_asset_id == $scheme_asset_data->scheme_asset_id) { echo "selected"; } ?>>{{$scheme_asset_data->scheme_asset_name}}</option>
                                             @endforeach
                                         </select>
-                                        <div class="invalid-feedback" id="status_error_msg"></div>
+                                        <div class="invalid-feedback" id="scheme_asset_id_error_msg"></div>
                                     </div>
                                 </div>
+                                <br/>
+                                <label>Attributes</label>
                                 <table class="table order-list" style="margin-top: 10px;">
                                     <thead style="background: #cedcff">
                                         <tr>
                                             <th>Name</th>
-                                            <th>Value</th>
+                                            <th></th>
                                         </tr>
                                     </thead>
-                                    <tbody id="append-name-uom">
+                                    <tbody id="append-attributes">
                                     </tbody>
                                 </table>
                             </div>
@@ -269,19 +271,30 @@
 </script>
 
 <script>
+    // global variables to use
+    scheme_is = 1; // 1 = independent, 2 = under a group
+
+
+
     /* validation starts */
     // error variables as true = error occured
     var scheme_name_error = true;
     var scheme_short_name_error = true;
     var scheme_type_id_error = true;
+
     var block_id_error = true;
     var panchayat_id_error = true;
+    var scheme_group_id_error = true;
+
     var dept_id_error = true;
     var status_error = true;
+    var scheme_asset_id_error = true;
     var description_error = true;
     var attachment_error = true;
     var scheme_logo_error = true;
     var scheme_map_marker_error = true;
+
+
 
     $(document).ready(function() {
         $("#scheme_name").change(function() {
@@ -301,6 +314,10 @@
         });
         $("#status").change(function() {
             status_validate();
+        });
+        $("#scheme_asset_id").change(function() {
+            get_attributes_details();
+            scheme_asset_id_validate();
         });
         $("#description").change(function() {
             description_validate();
@@ -382,6 +399,20 @@
         }
     }
 
+    // scheme asset validation
+    function scheme_asset_id_validate() {
+        var scheme_asset_id_val = $("#scheme_asset_id").val();
+
+        if (scheme_asset_id_val == "") {
+            scheme_asset_id_error = true;
+            $("#scheme_asset_id").addClass('is-invalid');
+            $("#scheme_asset_id_error_msg").html("Please select scheme asset");
+        } else {
+            scheme_asset_id_error = false;
+            $("#scheme_asset_id").removeClass('is-invalid');
+        }
+    }
+
     //description validation
     function description_validate() {
         var description_val = $("#description").val();
@@ -450,7 +481,7 @@
 
 
     // getting panchayat data according to block selected
-    function get_panchayat_datas(type, bl_id) {
+    function get_panchayat_datas() {
         $("#panchayat_id").html("<option value=''>--Select--</option>");
 
         if($("#block_id").val()){
@@ -480,6 +511,34 @@
         }
     }
 
+    // getting attributes data according to schee asset selected
+    function get_attributes_details() {
+        $("#append-attributes").html("");
+
+        if($("#scheme_asset_id").val()){
+            $.ajax({
+                url: "{{url('scheme-structure/get-attributes-details')}}",
+                data: { 'scheme_asset_id': $("#scheme_asset_id").val(), 'scheme_is': scheme_is},
+                method: "GET",
+                contentType: 'application/json',
+                dataType: "json",
+                beforeSend: function(data) {
+                    $(".custom-loader").fadeIn(300);
+                },
+                error: function(xhr) {
+                    $(".custom-loader").fadeOut(300);
+                    alert("error" + xhr.status + "," + xhr.statusText);
+                },
+                success: function(data) {
+                    console.log(data);
+                    $("#append-attributes").append(data.to_append)
+
+                    $(".custom-loader").fadeOut(300);
+                }
+            });
+        }
+    }
+
     // final submission
     function submitForm() {
         scheme_name_validate();
@@ -487,12 +546,13 @@
         scheme_type_id_validate();
         dept_id_validate();
         status_validate();
+        scheme_asset_id_validate();
         description_validate();
         attachment_validate();
         scheme_logo_validate();
         scheme_map_marker_validate();
 
-        if (scheme_name_error || scheme_short_name_error || scheme_type_id_error || dept_id_error || status_error || description_error || attachment_error || scheme_logo_error || scheme_map_marker_error) {
+        if (scheme_name_error || scheme_short_name_error || scheme_type_id_error || dept_id_error || status_error || scheme_asset_id_error || description_error || attachment_error || scheme_logo_error || scheme_map_marker_error) {
             return false;
         } // error occured
         else {
@@ -503,13 +563,12 @@
     function resetForm(){
         $("#block_id").val("");
         $("#panchayat_id").html("<option value=''>--Select--</option>");
+        $("#append-attributes").html("");
     }
-</script>
 
 
-<script>
+
     /******** indpendent/ under a group changes *****/
-    scheme_is = false; // 1 = independent, 2 = under a group
     $(document).ready(function(){
         $("input[name='scheme_is']").click(function(){
             scheme_is = $("input[name='scheme_is']:checked").val();
@@ -518,8 +577,11 @@
     });
 
     function changeFormContents(){
-        // resetting all show/hide contents
-        resetForm();
+        /**** resetting all show/hide contents ***/
+        resetForm(); // resetting form
+        get_attributes_details(); // getting attributes details
+
+
         $(".scheme-form-block").fadeOut(0);
         $(".scheme-form-elements").css("display","none"); // for all
 
@@ -533,6 +595,8 @@
             $(".scheme-form-block").fadeIn(500);
         }
     }
+
+    get_attributes_details(); // get attributes when page load (edit)
 </script>
 
 @endsection

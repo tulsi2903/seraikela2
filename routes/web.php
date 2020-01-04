@@ -90,6 +90,7 @@ Route::get('scheme-structure/view/{scheme_id}','SchemeStructureController@view')
 Route::get('scheme-structure/export/excelURL','SchemeStructureController@exportExcel_Scheme_structure');
 Route::get('scheme-structure/pdf/pdfURL','SchemeStructureController@exportPDF_Scheme_structure');
 Route::get('scheme-structure/get-panchayat-datas', 'SchemeStructureController@get_panchayat_datas');
+Route::get('scheme-structure/get-attributes-details', 'SchemeStructureController@get_attributes_details');
 
 
 /*Scheme Geo Target*/

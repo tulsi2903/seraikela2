@@ -69,11 +69,11 @@ class Scheme_Asset_Controller extends Controller
         for($i=0;$i<count($request->attribute_name);$i++)
         {
             $tmp = ["name"=>$request->attribute_name[$i], "uom"=>$request->attribute_uom[$i]];
-            if($request->attribute_mendatory[$i]){
-                $tmp["mendatory"] = $request->attribute_mendatory[$i];
+            if($request->attribute_mandatory[$i]){
+                $tmp["mandatory"] = $request->attribute_mandatory[$i];
             }
             else{
-                $tmp["mendatory"] = '0';
+                $tmp["mandatory"] = '0';
             }
             // $tmp = [uniqid()=>["name"=>$request->attribute_name[$i], "uom"=>$request->attribute_uom[$i]]];
             $attribute = array_merge($attribute, [uniqid()=>$tmp]);

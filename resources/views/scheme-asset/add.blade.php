@@ -83,7 +83,7 @@
                             <tr>
                                 <th>Name</th>
                                 <th>UoM</th>
-                                <th>Mendatory</th>
+                                <th>Mandatory</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -140,7 +140,7 @@
                                 </select>
                                 <div class="invalid-feedback">UoM should not be blank</div>
                                 </td> 
-                                <td><input type="checkbox" name="attribute_mendatory[`+append_i+`]" value="1"></td>
+                                <td><input type="checkbox" name="attribute_mandatory[`+append_i+`]" value="1"></td>
                                 <td><button type="button" class="btn btn-danger btn-xs delete-button-row"><i class="fas fa-trash-alt"></i></button></td></tr>`;
             $("#append-name-uom").append(data);
             append_i++;
