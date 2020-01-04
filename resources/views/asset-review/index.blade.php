@@ -1,6 +1,6 @@
 @extends('layout.layout')
 
-@section('title', 'Asset Review')
+@section('title', 'Resources Review')
 
 @section('page-style')
 <style>
@@ -441,7 +441,7 @@
                                         <div class="invalid-feedback">Please select block</div>
                                     </div>
                                     <div class="col-3">
-                                        <label for="map-view-asset">Select Asset<span style="color:red;margin-left:5px;">*</span></label>
+                                        <label for="map-view-asset">Select Resource<span style="color:red;margin-left:5px;">*</span></label>
                                         <select name="map-view-asset" id="map-view-asset" class="form-control">
                                             <option value="">-Select-</option>
                                         </select>
