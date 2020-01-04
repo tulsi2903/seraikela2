@@ -49,12 +49,11 @@
                                 <tr>
                                     <th>#</th>
                                     <th>Scheme</th>
-                                    <th>Indicator</th>
-                                    <th>Block Name</th>
-                                    <th>Panchayat</th>                                   
-                                    <th>Asset Group Name</th>
-                                    <th>Target</th>
                                     <th>Year</th>
+                                    <th>Subdivision</th>
+                                    <th>Block</th>
+                                    <th>Panchayat</th>                                   
+                                    <th>Target</th>
                                     <th class="action-buttons">Actions</th>
                                 </tr>
                             </thead>
@@ -64,16 +63,16 @@
                                     @if($data->level_id=='4')
                                         <tr>
                                             <td width="40px;">{{$count++}}</td>
-                                            <td>{{$data->scheme_name}}({{$data->scheme_short_name}})</td>
-                                            <td>{{$data->indicator_name}}</td>
-                                            <td>{{$data->bl_name}}</td>
-                                            <td>{{$data->geo_name}}</td>                                             
-                                            <td>{{$data->asset_group_name}}</td>
-                                            <td>{{$data->target}}</td>
-                                            <td>{{$data->year_value}}</td>                                           
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>                                             
+                                           
+                                            <td></td>
+                                            <td></td>                                           
                                             <td class="action-buttons" style="display: contents;">
                                                 <a href="{{url('scheme-geo-target/delete')}}/{{$data->scheme_geo_target_id}}" class="btn btn-danger btn-sm delete-button"><i class="fas fa-trash-alt"></i></a>
-                                                &nbsp;&nbsp;<a href="{{url('scheme-geo-target/add')}}?purpose=edit&id={{$data->scheme_geo_target_id}}" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></a>
+                                               
                                             </td>
                                         </tr>
                                     @endif
@@ -81,7 +80,7 @@
                             @endif
                             @if($count==1)
                                 <tr>
-                                    <td colspan="7"><center>No data to shown</center></td>
+                                    <td colspan="8"><center>No data to shown</center></td>
                                 </tr>
                             @endif
                         </table>

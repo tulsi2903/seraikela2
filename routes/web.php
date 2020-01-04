@@ -108,6 +108,12 @@ Route::get('scheme-geo-target/delete/{scheme_geo_target_id}','SchemeGeoTargetCon
 Route::get('scheme-geo-target/export/excelURL','SchemeGeoTargetController@exportExcel_Scheme_Geo_structure');
 Route::get('scheme-geo-target/pdf/pdfURL','SchemeGeoTargetController@exportPDF_Scheme_Geo_structure');
 
+// Route::get('scheme-geo-target/get-block-datas','SchemeGeoTargetController@get_block_name');
+Route::get('scheme-geo-target/get-panchayat-datas','SchemeGeoTargetController@get_panchayat_name');
+Route::get('scheme-geo-target/get-updated-datas','SchemeGeoTargetController@get_updated_datas');
+
+
+
 /*Indicator*/
 // Route::get('scheme-indicator','SchemeIndicatorController@index');
 // Route::get('scheme-indicator/add','SchemeIndicatorController@add');
