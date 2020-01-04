@@ -1,6 +1,6 @@
 @extends('layout.layout')
 
-@section('title', 'Scheme Asset')
+@section('title', 'Scheme Resource')
 
 @section('page-style')
     <style>
@@ -14,7 +14,7 @@
          
                 <div class="card-header">
                     <div class="card-head-row card-tools-still-right" style="background:#fff;">
-                        <h4 class="card-title">Scheme Asset</h4>
+                        <h4 class="card-title">Scheme Resource</h4>
                         <div class="card-tools">
                         <a href="{{url('scheme-asset')}}" class="btn btn-sm btn-secondary" style="float:right;"><i class="fas fa-arrow-left"></i>&nbsp;&nbsp;Back</a>
                         </div>

@@ -1,6 +1,6 @@
 @extends('layout.layout')
 
-@section('title', 'Asset Category ')
+@section('title', 'Resource Category ')
 
 @section('page-style')
 <style>
@@ -27,7 +27,7 @@
            
                 <div class="card-header">
                     <div class="card-head-row card-tools-still-right" style="background:#fff;">
-                        <h4 class="card-title">Asset Category</h4>
+                        <h4 class="card-title">Resource Category</h4>
                         <div class="card-tools">
                             <a href="#" data-toggle="tooltip" title="Send Mail"><button type="button" class="btn btn-icon btn-round btn-success" data-target="#create-email" data-toggle="modal" ><i class="fa fa-envelope" aria-hidden="true"></i></button></a>
                             <a href="#" data-toggle="tooltip" title="Print"><button type="button" class="btn btn-icon btn-round btn-default" id="print-button" onclick="printView();"><i class="fa fa-print" aria-hidden="true"></i></button></a>

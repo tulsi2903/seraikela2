@@ -1,6 +1,6 @@
 @extends('layout.layout')
 
-@section('title', 'Asset Sub Category')
+@section('title', 'Resource Sub Category')
 
 @section('page-style')
 <style>
