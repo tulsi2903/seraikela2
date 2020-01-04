@@ -1,6 +1,6 @@
 @extends('layout.layout')
 
-@section('title', 'Asset Numbers')
+@section('title', 'Resources Number')
 
 @section('page-content')
 <div class="card">
@@ -8,7 +8,7 @@
          
                 <div class="card-header">
                     <div class="card-head-row card-tools-still-right" style="background:#fff;">
-                        <h4 class="card-title">Asset Numbers</h4>
+                        <h4 class="card-title">Resources Number</h4>
                         <div class="card-tools">
                         <a href="{{url('asset-numbers')}}" class="btn btn-sm btn-secondary" style="float:right;"><i class="fas fa-arrow-left"></i>&nbsp;&nbsp;Back</a>
                         </div>
@@ -34,7 +34,7 @@
                 </div>
                 <div class="col-md-3">
                     <div class="form-group">
-                        <label for="asset_id">Asset<span style="color:red;margin-left:5px;">*</span></label>
+                        <label for="asset_id">Resource<span style="color:red;margin-left:5px;">*</span></label>
                         <select name="asset_id" id="asset_id" class="form-control">
                             <option value="">---Select---</option>
                             @foreach( $assets as $asset )
@@ -79,7 +79,7 @@
                     </div>
                     
                     <div class="form-group" style="display:none;" id="append-location">
-                        <label>Asset Locations</label>
+                        <label>Resource Locations</label>
                         <div class="table-responsive table-hover table-sales">
                             <table class="table">
                             <thead style="background: #d6dcff;color: #000;">

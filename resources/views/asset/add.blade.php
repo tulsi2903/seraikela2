@@ -1,13 +1,13 @@
 @extends('layout.layout')
 
-@section('title', 'Asset')
+@section('title', 'Define Resources')
 
 @section('page-content')
 <div class="card">
     <div class="col-md-12">
             <div class="card-header">
                 <div class="card-head-row card-tools-still-right" style="background:#fff;">
-                    <h4 class="card-title">Asset</h4>
+                    <h4 class="card-title">Define Resources</h4>
                     <div class="card-tools">
                         <a href="{{url('asset')}}" class="btn btn-sm btn-secondary" style="float:right;"><i
                                 class="fas fa-arrow-left"></i>&nbsp;&nbsp;Back</a>
@@ -21,7 +21,7 @@
             <div class="row">
                 <div class="col-md-4">
                     <div class="form-group">
-                        <label for="asset_name">Asset Name<span style="color:red;margin-left:5px;">*</span></label>
+                        <label for="asset_name">Resource Name<span style="color:red;margin-left:5px;">*</span></label>
                         <input type="text" name="asset_name" id="asset_name" class="form-control"
                             value="{{$data->asset_name}}" autocomplete="off">
                         <div class="invalid-feedback" id="asset_name_error_msg"></div>
@@ -30,7 +30,7 @@
 
                 <div class="col-md-4">
                     <div class="form-group">
-                        <label for="asset_icon">Asset Icon</label>
+                        <label for="asset_icon">Resource Icon</label>
                         <input type="file" name="asset_icon" id="asset_icon" class="form-control">
                         @if($hidden_input_purpose=="edit"&&$data->asset_icon)
                             <div id="asset_icon_delete_div" style="padding:5px 0;">

@@ -53,13 +53,13 @@
 				<li class="nav-item">
 					<a data-toggle="collapse" href="#asset" class="collapsed" aria-expanded="false">
 						<i class="fas fa-layer-group"></i>
-						<p>Asset</p>
+						<p>Resources</p>
 						<span class="caret"></span>
 					</a>
 					<div class="collapse" id="asset">
 						<ul class="nav nav-collapse">
-							<li class="nav-item"><a href="{{url('asset')}}"><i class="fas fa-list"></i><p>Define Asset</p></a></li>
-							<li class="nav-item"><a href="{{url('asset-numbers')}}"><i class="fas fa-list-ol"></i><p>Asset Numbers</p></a></li>
+							<li class="nav-item"><a href="{{url('asset')}}"><i class="fas fa-list"></i><p>Define Resources</p></a></li>
+							<li class="nav-item"><a href="{{url('asset-numbers')}}"><i class="fas fa-list-ol"></i><p>Resources Number</p></a></li>
 						</ul>
 					</div>
 				</li>
@@ -102,7 +102,7 @@
 					</div>
 				</li>
 				<li class="nav-item"><a href="{{url('favourites')}}"><i class="fa fa-bookmark" aria-hidden="true"></i><p>Favourite</p></a></li>
-				<li class="nav-item"><a href="{{url('mgnrega')}}"><i class="fa fa-bookmark" aria-hidden="true"></i><p>Mgnrega</p></a></li>
+				<!-- <li class="nav-item"><a href="{{url('mgnrega')}}"><i class="fa fa-bookmark" aria-hidden="true"></i><p>Mgnrega</p></a></li> -->
 			</ul>
 		</div>
 	</div>

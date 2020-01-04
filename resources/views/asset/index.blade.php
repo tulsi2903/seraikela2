@@ -1,6 +1,6 @@
 @extends('layout.layout')
 
-@section('title', 'Asset')
+@section('title', 'Resources')
 
 @section('page-style')
 <style>
@@ -27,7 +27,7 @@
     <div class="col-md-12">
         <div class="card-header">
             <div class="card-head-row card-tools-still-right" style="background:#fff;">
-                <h4 class="card-title">Asset</h4>
+                <h4 class="card-title">Resources</h4>
                 <div class="card-tools">
                     <a href="#" data-toggle="tooltip" title="Send Mail"><button type="button" class="btn btn-icon btn-round btn-success" data-target="#create-email" data-toggle="modal"><i class="fa fa-envelope" aria-hidden="true"></i></button></a>
                     <a href="#" data-toggle="tooltip" title="Print"><button type="button" class="btn btn-icon btn-round btn-default" id="print-button" onclick="printView();"><i class="fa fa-print" aria-hidden="true"></i></button></a>
@@ -47,7 +47,7 @@
                 <div class="row">
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label for="asset_name">Asset Name<span style="color:red;margin-left:5px;">*</span></label>
+                            <label for="asset_name">Resource Name<span style="color:red;margin-left:5px;">*</span></label>
                             <input type="text" name="asset_name" id="asset_name" class="form-control" value="{{$data->asset_name}}" autocomplete="off">
                             <div class="invalid-feedback" id="asset_name_error_msg"></div>
                         </div>
@@ -109,7 +109,7 @@
                 <div class="row">
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label for="asset_icon">Asset Icon</label>
+                            <label for="asset_icon">Resource Icon</label>
                             <input type="file" name="asset_icon" id="asset_icon" class="form-control">
                             <div id="asset_icon_delete_div" style="padding:5px 0; display: none;">
                                 <div>Previous Icon</div>

@@ -1,6 +1,6 @@
 @extends('layout.layout')
 
-@section('title', 'Asset Numbers Details')
+@section('title', 'Resource Number Details')
 
 @section('page-style')
 <style>
@@ -29,14 +29,14 @@
        
             <div class="row row-card-no-pd" style="border-top: 3px solid #5c76b7;">
                 <div class="col-md-12">   
-                    <div class="card-title" style="float:left; margin-top: 11px;">Asset Numbers Details</div><br><br>
+                    <div class="card-title" style="float:left; margin-top: 11px;">Resource Number Details</div><br><br>
                     <hr class="new2">
                     <div class="card-body" style="margin-top: -35px;"> 
                         <table class="table table-striped mt-3">
                             <tbody>
                                 <tr>
                                     <th>Year</th>
-                                    <th>Asset</th>
+                                    <th>Resource</th>
                                     <th>Block</th>
                                     <th>Panchayat</th>
                                     <th>Current Value</th>
@@ -52,7 +52,7 @@
                         </table>
                         @if(count($asset_locations)!=0)
                             <div class="col-md-12">
-                                <button class="btn"  style="margin-left:1.5%;background: #0f85e2!important;color:#fff;"><i class="fas fa-location-arrow"></i>&nbsp;&nbsp;Asset Locations</button>
+                                <button class="btn"  style="margin-left:1.5%;background: #0f85e2!important;color:#fff;"><i class="fas fa-location-arrow"></i>&nbsp;&nbsp;Resource Locations</button>
                                     <div class="card-body" style="background: #f2f6ff; border: 1px solid #a5bbf6;margin-top: -18px;">
                                     <table id="basic-datatables" class=" table order-list" style="margin-top: 10px;">
                                         <thead style="background: #cedcff">                                              
