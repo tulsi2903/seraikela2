@@ -35,10 +35,10 @@
 								<li class="nav-item"><a href="{{url('scheme-group')}}"><i class="fas fa-receipt"></i><p>Scheme Group</p></a></li>
 							@endif
 							@if(array_key_exists("asset category", $desig_permissions))
-								<li class="nav-item"><a href="{{url('assetcat')}}"><i class="fas fa-receipt"></i><p> Asset Category</p></a></li>
+								<li class="nav-item"><a href="{{url('assetcat')}}"><i class="fas fa-receipt"></i><p> Resource Category</p></a></li>
 							@endif
 							@if(array_key_exists("asset subcategory", $desig_permissions))
-								<li class="nav-item"><a href="{{url('asset_subcat')}}"><i class="fas fa-receipt"></i><p> Asset Sub Category</p></a></li>
+								<li class="nav-item"><a href="{{url('asset_subcat')}}"><i class="fas fa-receipt"></i><p> Resource Sub Category</p></a></li>
 							@endif
 							@if(session()->get('user_designation')=="1")
 								<li class="nav-item"><a href="{{url('module')}}"><i class="fas fa-indent"></i><p>Module</p></a></li>
@@ -76,7 +76,7 @@
 								<li class="nav-item"><a href="{{url('scheme-structure')}}"><i class="fas fa-receipt"></i><p>Define Scheme</p></a></li>
 							@endif
 			                <!-- <li class="nav-item"><a href="{{url('scheme-indicator')}}"><i class="fas fa-receipt"></i><p>Scheme Indicator</p></a></li> -->
-							<li class="nav-item"><a href="{{url('scheme-asset')}}"><i class="fas fa-users-cog"></i><p>Scheme Asset</p></a></li>
+							<li class="nav-item"><a href="{{url('scheme-asset')}}"><i class="fas fa-users-cog"></i><p>Scheme Resource</p></a></li>
 
 			                <li class="nav-item"><a href="{{url('scheme-geo-target')}}"><i class="fas fa-receipt"></i><p>Scheme Geo Target</p></a></li>
 							<!-- <li class="nav-item"><a href="{{url('scheme-geo-target/pmayg')}}"><i class="fas fa-receipt"></i><p>PMAYG Target</p></a></li> -->
