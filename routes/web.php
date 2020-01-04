@@ -220,6 +220,18 @@ Route::post('scheme-geo-target/pmayg/store','PMAYGTargetController@store');
 Route::get('scheme-geo-target/pmayg/delete/{pmayg_target_id}','PMAYGTargetController@delete');
 Route::get('scheme-geo-target/pmayg/get-updated-datas','PMAYGTargetController@get_updated_datas');
 
+///*Scheme Performance PMAYG*/
+Route::get('scheme-performance/pmayg','PMAYGPerformanceController@index');
+Route::get('scheme-performance/pmayg/add','PMAYGPerformanceController@add');
+Route::get('scheme-performance/pmayg/get-block-datas','PMAYGPerformanceController@get_block_name');
+Route::get('scheme-performance/pmayg/get-panchayat-datas','PMAYGPerformanceController@get_panchayat_name');
+Route::get('scheme-performance/pmayg/get-updated-datas','PMAYGPerformanceController@get_updated_datas');
+Route::post('scheme-performance/pmayg/store','PMAYGPerformanceController@store');
+Route::get('scheme-performance/pmayg/delete/{pmayg_performance_id}','PMAYGPerformanceController@delete');
+Route::get('scheme-performance/pmayg/view/{scheme_performance_id}','PMAYGPerformanceController@view');
+
+
+
 /* scheme review */
 Route::get('review/{review_type}', 'SchemeReviewController@index');
 Route::get('scheme-review/get-datas', 'SchemeReviewController@get_datas');
