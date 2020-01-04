@@ -204,6 +204,13 @@
             </div>
         </div>
  
+ 
+ <script>
+    var temp="rohit kumar singh";
+    // document.write("Hello " + "<br>"+ temp);
+    // alert("hello " + temp);
+ </script>
+
 <script>
     $(document).ready(function(){
     $('.table table-datatable').dataTable( {
