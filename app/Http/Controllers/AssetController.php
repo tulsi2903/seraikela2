@@ -124,8 +124,6 @@ class AssetController extends Controller
             // session()->put('alert-content','Something went wrong while adding new details !');
             $toReturn["response"] = "Something went wrong while adding new asset!";
         }
-        
-
         // return redirect('asset');
         return $toReturn;
     }

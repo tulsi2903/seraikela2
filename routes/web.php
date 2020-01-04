@@ -46,6 +46,7 @@ Route::get('user','UserAdd_Controller@adduser');
 Route::post('user/store','UserAdd_Controller@store');
 Route::get('user/export/excelURL','UserAdd_Controller@exportExcelFunctiuonforusers');
 Route::get('user/pdf/pdfURL','UserAdd_Controller@exportpdfFunctiuonforusers');
+Route::get('user/getuser-details/{id}','UserAdd_Controller@get_user_details');
 
 
 /* department */

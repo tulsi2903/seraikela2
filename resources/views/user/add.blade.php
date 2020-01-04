@@ -18,7 +18,7 @@
                     <div class="card-title" style="float:left;"><i class="fa fa-user" aria-hidden="true"></i> &nbsp;User Detail</div>
                     @if($desig_permissions["user"]["add"])
                         <div id="toggle1">
-                            <div  style="float:right;margin-bottom: 1em;"><button class="btn btn-secondary"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;Add Users</button></div>
+                            <div  style="float:right;margin-bottom: 1em;"><button class="btn btn-secondary" onclick="resetUserForm()"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;Add Users</button></div>
                         </div>
                     @endif
                 </div>
@@ -27,7 +27,7 @@
                     <div class="row">
                         <div class="col-md-12"><br>
                             <div class="card" style="min-height: unset !important;border-top: 1px solid #5c76b7;">
-                            <form action="{{url('user/store')}}" method="POST">
+                            <form action="{{url('user/store')}}" method="POST" id="user-form">
                             @csrf      
                                 <div class="card-body">
                                     <div class="row">
@@ -117,18 +117,18 @@
                                         <div class="col-md-3">
                                             <div class="form-group">
                                                 <label for="username">Username<span style="color:red;">*</span></label>
-                                                <input type="text" name="username" id="username" class="form-control" placeholder="Username" maxlength="20">
+                                                <input type="text" name="username" id="username" class="form-control" placeholder="Username" maxlength="20" autocomplete="off">
                                                 <div class="invalid-feedback" id="username_error_msg"></div>
                                             </div>
                                         </div>
-                                        <div class="col-md-3">
+                                        <div class="col-md-3 edit-form-elements">
                                             <div class="form-group">
                                                 <label for="password">Password<span style="color:red;">*</span></label>
                                                 <input type="password" name="password" id="password" class="form-control" placeholder="Password" maxlength="15">
                                                 <div class="invalid-feedback" id="password_error_msg"></div class="invalid-feedback">
                                             </div>
                                         </div>
-                                        <div class="col-md-3">
+                                        <div class="col-md-3 edit-form-elements">
                                             <div class="form-group">
                                                 <label for="confirm_password">Confirm Password<span style="color:red;">*</span></label>
                                                 <input type="text" name="confirm_password" id="confirm_password" class="form-control" placeholder="Re-type Password" maxlength="15">
@@ -164,7 +164,10 @@
                                         </div>
                                     </div>
                                     <div class="card-action">
+                                        <input type="text" name="hidden_input_purpose" id="hidden_input_purpose" value="add" hidden >
+                                        <input type="text" name="hidden_input_id" id="hidden_input_id" value="NA" hidden>
                                         <button type="submit" onclick="return submitForm()" class="btn btn-secondary">Submit</button>
+                                        &nbsp;&nbsp;<button type="button" class="btn btn-dark" onclick="hideForm()">Cancel&nbsp;&nbsp;<i class="fas fa-times"></i></button>
                                     </div>
                                 </div>
                             </form>    
@@ -199,8 +202,10 @@
                                 <td>
                                     @if($val->status==1)
                                     <span style="padding:5px 10px; border: 2px solid #00b100;">Active</span>
+                                    <a href="javascirpt:void();" onclick="editUser('{{$val->id}}')" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></a>
                                     @else
                                     <span style="padding:5px 10px; border: 2px solid #ff1c1c;">Inactive</span>
+                                    <a href="javascirpt:void();" onclick="editUser('{{$val->id}}')" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></a>
                                     @endif
                                 </td>
                             </tr>
@@ -442,23 +447,30 @@
             }
         }
 
-        function password_validate(){
+        function password_validate()
+        {
             var password_val = $("#password").val();
             var regEx = new RegExp('^[a-zA-Z0-9_-]+$');
-            if(password_val==""){
-                password_error = true;
-                $("#password").addClass("is-invalid");
-                $("#password_error_msg").html("Please enter password");
-            }
-            else if(!regEx.test(password_val)){
-                password_error = true;
-                $("#password").addClass("is-invalid");
-                $("#password_error_msg").html("Only alphabets, numbers and characters (_-) allowed");
-            }
-            else if(password_val.length<4){
-                password_error = true;
-                $("#password").addClass("is-invalid");
-                $("#password_error_msg").html("Password should be greater than 4 digit");
+            if($("#hidden_input_purpose").val()=="add"){
+                if(password_val==""){
+                    password_error = true;
+                    $("#password").addClass("is-invalid");
+                    $("#password_error_msg").html("Please enter password");
+                }
+                else if(!regEx.test(password_val)){
+                    password_error = true;
+                    $("#password").addClass("is-invalid");
+                    $("#password_error_msg").html("Only alphabets, numbers and characters (_-) allowed");
+                }
+                else if(password_val.length<4){
+                    password_error = true;
+                    $("#password").addClass("is-invalid");
+                    $("#password_error_msg").html("Password should be greater than 4 digit");
+                }
+                else{
+                    password_error = false;
+                    $("#password").removeClass("is-invalid");
+                }
             }
             else{
                 password_error = false;
@@ -466,42 +478,47 @@
             }
         }
         
-        
         function confirm_password_validate(){
             var confirm_password_val = $("#confirm_password").val();
             var regEx = new RegExp('^[a-zA-Z0-9_-]+$');
-            if(confirm_password_val==""){
-                confirm_password_error = true;
-                $("#confirm_password").addClass("is-invalid");
-                $("#confirm_password_error_msg").html("Please re-type password");
-            }
-            else if(!regEx.test(confirm_password_val)){
-                confirm_password_error = true;
-                $("#confirm_password").addClass("is-invalid");
-                $("#confirm_password_error_msg").html("Only alphabets, numbers and characters (_-) allowed");
-            }
-            else if(confirm_password_val.length<4){
-                confirm_password_error = true;
-                $("#confirm_password").addClass("is-invalid");
-                $("#confirm_password_error_msg").html("Password should be greater than 4 digit");
-            }
-            else{
-                if($("#password").val())
-                {
-                    if($("#confirm_password").val()==$("#password").val()){
+            if($("#hidden_input_purpose").val()=="add"){
+                if(confirm_password_val==""){
+                    confirm_password_error = true;
+                    $("#confirm_password").addClass("is-invalid");
+                    $("#confirm_password_error_msg").html("Please re-type password");
+                }
+                else if(!regEx.test(confirm_password_val)){
+                    confirm_password_error = true;
+                    $("#confirm_password").addClass("is-invalid");
+                    $("#confirm_password_error_msg").html("Only alphabets, numbers and characters (_-) allowed");
+                }
+                else if(confirm_password_val.length<4){
+                    confirm_password_error = true;
+                    $("#confirm_password").addClass("is-invalid");
+                    $("#confirm_password_error_msg").html("Password should be greater than 4 digit");
+                }
+                else{
+                    if($("#password").val())
+                    {
+                        if($("#confirm_password").val()==$("#password").val()){
+                            confirm_password_error = false;
+                            $("#confirm_password").removeClass("is-invalid");
+                        }
+                        else{
+                            confirm_password_error = true;
+                            $("#confirm_password").addClass("is-invalid");
+                            $("#confirm_password_error_msg").html("Password did not matched");
+                        }
+                    }
+                    else{
                         confirm_password_error = false;
                         $("#confirm_password").removeClass("is-invalid");
                     }
-                    else{
-                        confirm_password_error = true;
-                        $("#confirm_password").addClass("is-invalid");
-                        $("#confirm_password_error_msg").html("Password did not matched");
-                    }
                 }
-                else{
-                    confirm_password_error = false;
-                    $("#confirm_password").removeClass("is-invalid");
-                }
+            }
+            else{
+                confirm_password_error = false;
+                $("#confirm_password").removeClass("is-invalid");
             }
         }
 
@@ -579,6 +596,60 @@
         }
     </script>
 
+<script>
+    function editUser(id){    
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        $.ajax({
+            url: "{{ url('user/getuser-details/') }}" + '/' + id,
+            method: "GET",
+            contentType: 'application/json',
+            // alert(id);
+            success: function (data) {
+                console.log(data);
+                resetUserForm();
+                $('.edit-form-elements').hide();
+                $("#hidden_input_purpose").val("edit"); // assigning as edit
+                $("#hidden_input_id").val(id); // assigning as edit id
+                $("#show-toggle1").slideDown(300);
+                // appending datas
+                $("#title").val(data.title);
+                $("#first_name").val(data.first_name);
+                $("#middle_name").val(data.middle_name);
+                $("#last_name").val(data.last_name);
+                $("#org_id").val(data.org_id);
+                $("#desig_id").val(data.desig_id);
+                $("#start_date").val(data.start_date);
+                $("#end_date").val(data.end_date);
+                $("#email").val(data.email);
+                $("#username").val(data.username);
+                // $("#password").val(data.password);
+                $("#mobile").val(data.mobile);
+                $("#address").val(data.address);
+                $("#status").val(data.status);
 
-</div>
+            }
+            
+        });
+    }
+
+
+    function resetUserForm(){
+        document.getElementById("user-form").reset();
+        $('.edit-form-elements').show();
+        $("#hidden_input_purpose").val("add"); // resetting hidden input purpose to add
+        $("#hidden_input_id").val("NA"); // restting hidden input id to NA
+    }
+
+    function hideForm(){
+        // resetUserForm(); // resetting form
+        // document.getElementById("user-form").reset();
+        $("#show-toggle1").slideUp(150); // opening form div
+    }
+</script>
+
+// <!-- </div> -->
 @endsection

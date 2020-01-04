@@ -15,6 +15,7 @@ use App\CheakLogout;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\UsersSectionExport;
 use PDF;
+use Response;
 
 
 class UserAdd_Controller extends Controller
@@ -34,35 +35,38 @@ class UserAdd_Controller extends Controller
     public function store(Request $request){  
         $new_user= new User();
 
+        if($request->hidden_input_purpose=="edit"){
+            $new_user = $new_user->find($request->hidden_input_id);          
+        }
+
         $new_user->title=$request->title;
         $new_user->first_name=$request->first_name;    
         $new_user->middle_name=$request->middle_name;    
         $new_user->last_name=$request->last_name; 
-
         $new_user->org_id = $request->org_id;
         $new_user->userRole=$request->desig_id;
         $new_user->desig_id=$request->desig_id;
         $new_user->start_date=$request->start_date;    
         $new_user->end_date=$request->end_date;
-
         $new_user->email=$request->email;
         $new_user->username=$request->username;
-
         $new_user->mobile =$request->mobile;
         $new_user->address=$request->address; 
         $new_user->status=$request->status;
         
-        if($request->password == $request->confirm_password){
-             $new_user->password = Hash::make($request->password);
-        }
-        else{
-            session()->put('alert-class','alert-danger');
-            session()->put('alert-content','Password did not matched');
-            return redirect('user');
+        if($request->hidden_input_purpose=="add"){           
+            if($request->password == $request->confirm_password){
+                $new_user->password = Hash::make($request->password);
+            }
+            else{
+                session()->put('alert-class','alert-danger');
+                session()->put('alert-content','Password did not matched');
+                return redirect('user');
+            }
         }
 
         // duplicate entry
-        if(User::where('email',$request->email)->exists()||User::where('username',$request->username)->exists()){
+        if((User::where('email',$request->email)->exists()||User::where('username',$request->username)->exists()) && $request->hidden_input_purpose=="add"){
             session()->put('alert-class','alert-danger');
             session()->put('alert-content','This email '.$request->email.' OR username '.$request->username.'is already exists!');
             return redirect('user');
@@ -88,4 +92,22 @@ class UserAdd_Controller extends Controller
         $pdf = PDF::loadView('department/Createpdfs',compact('Usersdata','UsersdateTime'));
         return $pdf->download('Users.pdf');
     }
+
+    public function get_user_details($id){
+        $results  = DB::table('users')
+        ->leftjoin('organisation', 'organisation.org_id', '=', 'users.org_id')
+        ->leftjoin('designation', 'designation.desig_id', '=', 'users.desig_id')
+        ->where('id', $id)->select('users.*','organisation.org_name','designation.name')->first();
+ 
+        // echo "<pre>";
+        // print_r ($results); 
+        // exit;
+  
+      if ($results) {
+        return Response::json($results);
+      }
+
+    }
+
+
 }
