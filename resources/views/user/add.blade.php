@@ -630,9 +630,7 @@
                 $("#mobile").val(data.mobile);
                 $("#address").val(data.address);
                 $("#status").val(data.status);
-
-            }
-            
+            }            
         });
     }
 

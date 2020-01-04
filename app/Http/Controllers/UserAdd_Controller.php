@@ -98,10 +98,7 @@ class UserAdd_Controller extends Controller
         ->leftjoin('organisation', 'organisation.org_id', '=', 'users.org_id')
         ->leftjoin('designation', 'designation.desig_id', '=', 'users.desig_id')
         ->where('id', $id)->select('users.*','organisation.org_name','designation.name')->first();
- 
-        // echo "<pre>";
-        // print_r ($results); 
-        // exit;
+
   
       if ($results) {
         return Response::json($results);

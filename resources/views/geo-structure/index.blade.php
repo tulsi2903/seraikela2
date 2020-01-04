@@ -10,8 +10,7 @@
 
 @section('page-content')
 <div class="card">
-        <div class="col-md-12">
-          
+        <div class="col-md-12">         
                 <div class="card-header">
                     <div class="card-head-row card-tools-still-right" style="background:#fff;">
                         <h4 class="card-title">Geo Structure</h4>
@@ -28,71 +27,189 @@
             </div><br>
         <div class="card-body">
             <div class="row">
-                <div class="col-12" style="margin-top: -20px;">                  
-                    <!-- <div class="col-md-6 form-group">
-                        <label for="block">Block</label>
-                        <div style="display: flex;">
-                            <select name="block" id="block" class="form-control">
-                                <option value="">---Select---</option>
-                                @foreach($get_blocks as $get_block)
-                                    <option value="">{{$get_block->geo_name}}</option>
-                                @endforeach 
-                            </select> &nbsp;&nbsp;&nbsp;
-                            <button type="button" class="btn btn-primary" onclick="block_search();">Search</button>
-                        </div>
-                    </div> -->
-                   
-                    <!-- <div style="display: -webkit-box; float:right;margin-top: -22px;">
-                        <a class="btn btn-secondary" href="{{url('geo-structure/add')}}" role="button"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;Add</a>
-                    </div>-->
-                    <div class="table-responsive table-hover table-sales">
-                        <table class="table table-datatable" id="printable-area">
-                            <thead style="background: #d6dcff;color: #000;">
-                                <tr>
-                                    <th>#</th>
-                                    <th>Name</th>
-                                    <th>Level</th>
-                                    <th>Villages</th>
-                                    <th>Parent</th>
-                                    <th>Organisation</th>
-                                    <th class="action-buttons">Action</th>
-                                </tr>
-                            </thead>
-                            <?php $count=1; ?>
-                            @if(isset($datas))
-                                @foreach($datas as $data)
+                <div class="col-md-12">
+                    <ul class="nav nav-pills nav-secondary nav-pills-no-bd" id="pills-tab-without-border" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="pills-home-tab-nobd" data-toggle="pill" href="#pills-home-nobd" role="tab" aria-controls="pills-home-nobd" aria-orientation="true">District</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="pills-profile-tab-nobd" data-toggle="pill" href="#pills-profile-nobd" role="tab" aria-controls="pills-profile-nobd" aria-selected="false">Sub Division</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="pills-contact-tab-nobd" data-toggle="pill" href="#pills-contact-nobd" role="tab" aria-controls="pills-contact-nobd" aria-selected="false">Block</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="pills-panchayat-tab-nobd" data-toggle="pill" href="#pills-panchayat-nobd" role="tab" aria-controls="pills-panchayat-nobd" aria-selected="false">Panchayat</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content mt-2 mb-3" id="pills-without-border-tabContent">
+                        <div class="tab-pane fade show active" id="pills-home-nobd" role="tabpanel" aria-labelledby="pills-home-tab-nobd">
+                            <table class="table table-datatable" id="printable-area">
+                                <thead style="background: #d6dcff;color: #000;">
                                     <tr>
-                                        <td width="40px;">{{$count++}}</td>
-                                        <td>{{$data->geo_name}}</td>
-                                        <td>{{$data->level_name}}</td>
-                                        <td>{{$data->no_of_villages}}</td>
-                                        <td>{{$data->parent_name}} <small>{{$data->parent_level_name}}</small></td>
-                                        <td>{{$data->org_name}}</td>
-                                        <td class="action-buttons">
-                                            <a href="{{url('geo-structure/delete')}}/{{$data->geo_id}}" class="btn btn-danger btn-sm delete-button"><i class="fas fa-trash-alt"></i></a>
-                                            &nbsp;&nbsp;<a href="{{url('geo-structure/add')}}?purpose=edit&id={{$data->geo_id}}" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></a>
-                                        </td>
+                                        <th>#</th>
+                                        <th>Name</th>
+                                        <th>Level</th>
+                                        <th>Villages</th>
+                                        <th>Parent</th>
+                                        <th>Organisation</th>
+                                        <th class="action-buttons">Action</th>
                                     </tr>
-                                @endforeach
-                            @endif
-                            @if($count==1)
-                                <tr>
-                                    <td colspan="4"><center>No data shown</center></td>
-                                </tr>
-                            @endif
-                        </table>
-                    </div>
+                                </thead>
+                                <?php $count=1; ?>
+                                @if(isset($datas))
+                                    @foreach($datas as $data)
+                                        @if($data->level_id=="1")
+                                            <tr>
+                                                <td width="40px;">{{$count++}}</td>
+                                                <td>{{$data->geo_name}}</td>
+                                                <td>{{$data->level_name}}</td>
+                                                <td>{{$data->no_of_villages}}</td>
+                                                <td>{{$data->parent_name}} <small>{{$data->parent_level_name}}</small></td>
+                                                <td>{{$data->org_name}}</td>
+                                                <td class="action-buttons">
+                                                    <a href="{{url('geo-structure/delete')}}/{{$data->geo_id}}" class="btn btn-danger btn-sm delete-button"><i class="fas fa-trash-alt"></i></a>
+                                                    &nbsp;&nbsp;<a href="{{url('geo-structure/add')}}?purpose=edit&id={{$data->geo_id}}" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></a>
+                                                </td>
+                                            </tr>
+                                        @endif
+                                    @endforeach
+                                @endif
+                                @if($count==1)
+                                    <tr>
+                                        <td colspan="4"><center>No data shown</center></td>
+                                    </tr>
+                                @endif
+                            </table>
+                        </div>
+                        <div class="tab-pane fade" id="pills-profile-nobd" role="tabpanel" aria-labelledby="pills-profile-tab-nobd">
+                            <table class="table table-datatable" id="printable-area">
+                                <thead style="background: #d6dcff;color: #000;">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Name</th>
+                                        <th>Level</th>
+                                        <th>Villages</th>
+                                        <th>Parent</th>
+                                        <th>Organisation</th>
+                                        <th class="action-buttons">Action</th>
+                                    </tr>
+                                </thead>
+                                <?php $count=1; ?>
+                                @if(isset($datas))
+                                    @foreach($datas as $data)
+                                        @if($data->level_id=="2")
+                                            <tr>
+                                                <td width="40px;">{{$count++}}</td>
+                                                <td>{{$data->geo_name}}</td>
+                                                <td>{{$data->level_name}}</td>
+                                                <td>{{$data->no_of_villages}}</td>
+                                                <td>{{$data->parent_name}} <small>{{$data->parent_level_name}}</small></td>
+                                                <td>{{$data->org_name}}</td>
+                                                <td class="action-buttons">
+                                                    <a href="{{url('geo-structure/delete')}}/{{$data->geo_id}}" class="btn btn-danger btn-sm delete-button"><i class="fas fa-trash-alt"></i></a>
+                                                    &nbsp;&nbsp;<a href="{{url('geo-structure/add')}}?purpose=edit&id={{$data->geo_id}}" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></a>
+                                                </td>
+                                            </tr>
+                                        @endif
+                                    @endforeach
+                                @endif
+                                @if($count==1)
+                                    <tr>
+                                        <td colspan="4"><center>No data shown</center></td>
+                                    </tr>
+                                @endif
+                            </table>
+                        </div>
+                        <div class="tab-pane fade" id="pills-contact-nobd" role="tabpanel" aria-labelledby="pills-contact-tab-nobd">
+                            <table class="table table-datatable" id="printable-area">
+                                <thead style="background: #d6dcff;color: #000;">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Name</th>
+                                        <th>Level</th>
+                                        <th>Villages</th>
+                                        <th>Parent</th>
+                                        <th>Organisation</th>
+                                        <th class="action-buttons">Action</th>
+                                    </tr>
+                                </thead>
+                                <?php $count=1; ?>
+                                @if(isset($datas))
+                                    @foreach($datas as $data)
+                                        @if($data->level_id=="3")
+                                            <tr>
+                                                <td width="40px;">{{$count++}}</td>
+                                                <td>{{$data->geo_name}}</td>
+                                                <td>{{$data->level_name}}</td>
+                                                <td>{{$data->no_of_villages}}</td>
+                                                <td>{{$data->parent_name}} <small>{{$data->parent_level_name}}</small></td>
+                                                <td>{{$data->org_name}}</td>
+                                                <td class="action-buttons">
+                                                    <a href="{{url('geo-structure/delete')}}/{{$data->geo_id}}" class="btn btn-danger btn-sm delete-button"><i class="fas fa-trash-alt"></i></a>
+                                                    &nbsp;&nbsp;<a href="{{url('geo-structure/add')}}?purpose=edit&id={{$data->geo_id}}" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></a>
+                                                </td>
+                                            </tr>
+                                        @endif
+                                    @endforeach
+                                @endif
+                                @if($count==1)
+                                    <tr>
+                                        <td colspan="4"><center>No data shown</center></td>
+                                    </tr>
+                                @endif
+                            </table>                                   
+                        </div>
+                        <div class="tab-pane fade" id="pills-panchayat-nobd" role="tabpanel" aria-labelledby="pills-panchayat-tab-nobd">
+                            <table class="table table-datatable" id="printable-area">
+                                <thead style="background: #d6dcff;color: #000;">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Name</th>
+                                        <th>Level</th>
+                                        <th>Villages</th>
+                                        <th>Parent</th>
+                                        <th>Organisation</th>
+                                        <th class="action-buttons">Action</th>
+                                    </tr>
+                                </thead>
+                                <?php $count=1; ?>
+                                @if(isset($datas))
+                                    @foreach($datas as $data)
+                                        @if($data->level_id=="4")
+                                            <tr>
+                                                <td width="40px;">{{$count++}}</td>
+                                                <td>{{$data->geo_name}}</td>
+                                                <td>{{$data->level_name}}</td>
+                                                <td>{{$data->no_of_villages}}</td>
+                                                <td>{{$data->parent_name}} <small>{{$data->parent_level_name}}</small></td>
+                                                <td>{{$data->org_name}}</td>
+                                                <td class="action-buttons">
+                                                    <a href="{{url('geo-structure/delete')}}/{{$data->geo_id}}" class="btn btn-danger btn-sm delete-button"><i class="fas fa-trash-alt"></i></a>
+                                                    &nbsp;&nbsp;<a href="{{url('geo-structure/add')}}?purpose=edit&id={{$data->geo_id}}" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></a>
+                                                </td>
+                                            </tr>
+                                        @endif
+                                    @endforeach
+                                @endif
+                                @if($count==1)
+                                    <tr>
+                                        <td colspan="4"><center>No data shown</center></td>
+                                    </tr>
+                                @endif
+                            </table>
+                        </div>
+                    </div> <!-- end tab-content -->
                 </div>
             </div>
         </div>
  
-
-   <script>
-$(document).ready(function(){
-$('.table table-datatable').dataTable( {
-  "pageLength": 15
-} );
-});
+<script>
+    $(document).ready(function(){
+    $('.table table-datatable').dataTable( {
+    "pageLength": 15
+    } );
+    });
 </script>
    
 

@@ -23,8 +23,6 @@ class GeoStructureController extends Controller
 
         $get_blocks = GeoStructure::where('level_id','3')->get();
 
-                               
-
         // find parent details
         for($i=0;$i<count($datas);$i++){
             $parent_details = new GeoStructure;

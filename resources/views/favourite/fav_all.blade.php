@@ -1,6 +1,6 @@
 @extends('layout.layout')
 
-@section('title', 'Department')
+@section('title', 'Favourites')
 
 @section('page-style')
     <style>
@@ -18,9 +18,7 @@
                         <div class="card-head-row card-tools-still-right" style="background:#fff;">
                             <h4 class="card-title">Add Favourites Details</h4>
                             <div class="card-tools">
-                                <!-- <button type="button" class="btn btn-icon btn-round btn-success" data-target="#create-email" data-toggle="modal" ><i class="fa fa-envelope" aria-hidden="true"></i></button> -->
-                                <!-- <button type="button" class="btn btn-icon btn-round btn-default" id="print-button" onclick="printView();"><i class="fa fa-print" aria-hidden="true"></i></button> -->
-                                <!-- <a id="toggle1" class="btn btn-secondary department-add-button" href="javascript:void();" role="button"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;Add</a> -->
+                               
                             </div>
                         </div>
                     </div>
