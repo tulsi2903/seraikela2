@@ -83,6 +83,7 @@
                             <tr>
                                 <th>Name</th>
                                 <th>UoM</th>
+                                <th>Mendatory</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -110,7 +111,7 @@
                                 @endforeach
                         </tbody>
                         <tbody>
-                            <td style="text-align:right;" colspan="3"><i class="fa fa-plus-circle" aria-hidden="true" style="color:green;" onclick="append_table_data();"></i></tr>
+                            <td style="text-align:right;" colspan="4"><i class="fa fa-plus-circle" aria-hidden="true" style="color:green;" onclick="append_table_data();"></i></tr>
                         </tbody>
 
                     </table>
@@ -128,7 +129,8 @@
     </div>
 
     <script>
-        function append_table_data() {
+        var append_i = 0;
+        function append_table_data(){
             var data = `<tr><td><input type="text" class="form-control" name="attribute_name[]" id="attribute_name" autocomplete="off" onchange="attribute_name_validate();"><div class="invalid-feedback">Name should not be blank</div></td>
                                     <td> <select name="attribute_uom[]" id="attribute_uom" class="form-control" onchange="attribute_uom_validate();">
                                     <option value="">---Select---</option>
@@ -137,8 +139,11 @@
                                     @endforeach
                                 </select>
                                 <div class="invalid-feedback">UoM should not be blank</div>
-                                </td> <td><button type="button" class="btn btn-danger delete-button-row">Remove</button></td></tr>`;
+                                </td> 
+                                <td><input type="checkbox" name="attribute_mendatory[`+append_i+`]" value="1"></td>
+                                <td><button type="button" class="btn btn-danger btn-xs delete-button-row"><i class="fas fa-trash-alt"></i></button></td></tr>`;
             $("#append-name-uom").append(data);
+            append_i++;
         }
 
         $(document).ready(function() {

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth;
+
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\SchemeAsset;
@@ -41,7 +43,6 @@ class Scheme_Asset_Controller extends Controller
    
     public function store(Request $request)
     {
-       
         $scheme_asset = new SchemeAsset;
 
         if($request->hidden_input_purpose=="edit"){
@@ -49,10 +50,8 @@ class Scheme_Asset_Controller extends Controller
         }
 
         $scheme_asset->scheme_asset_name = $request->scheme_asset_name;
-        
         $scheme_asset->geo_related = $request->geo_related;
         
-
         if($request->geo_related!="")
         {
             $scheme_asset->multiple_geo_tags = $request->multiple_geo_tags;
@@ -63,20 +62,28 @@ class Scheme_Asset_Controller extends Controller
             $scheme_asset->no_of_tags = null;
         }
        
-       
-       
-        
-        $scheme_asset->created_by = '1';
-        $scheme_asset->updated_by = '1';
+        $scheme_asset->created_by = Auth::user()->id;
+        $scheme_asset->updated_by = Auth::user()->id;
 
         $attribute = [];
         for($i=0;$i<count($request->attribute_name);$i++)
         {
-            $tmp = [$request->attribute_name[$i]=>$request->attribute_uom[$i]];
-            $attribute = array_merge($attribute, $tmp);
+            $tmp = ["name"=>$request->attribute_name[$i], "uom"=>$request->attribute_uom[$i]];
+            if($request->attribute_mendatory[$i]){
+                $tmp["mendatory"] = $request->attribute_mendatory[$i];
+            }
+            else{
+                $tmp["mendatory"] = '0';
+            }
+            // $tmp = [uniqid()=>["name"=>$request->attribute_name[$i], "uom"=>$request->attribute_uom[$i]]];
+            $attribute = array_merge($attribute, [uniqid()=>$tmp]);
         }
         $scheme_asset->attribute=serialize($attribute);
       
+        // echo "<pre>";
+        // print_r($request->toArray());
+        // print_r($attribute);
+        // exit;
 
         if(SchemeAsset::where('scheme_asset_name',$request->scheme_asset_name)->first() && $request->hidden_input_purpose!="edit"){
             session()->put('alert-class','alert-danger');
