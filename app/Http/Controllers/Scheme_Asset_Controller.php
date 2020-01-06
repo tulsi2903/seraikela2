@@ -29,15 +29,14 @@ class Scheme_Asset_Controller extends Controller
         $uom_datas = Uom::select('uom_id','uom_name')->get();
 
         if(isset($request->purpose)&&isset($request->id)){
-            $hidden_input_purpose=$request->purpose;
-            $hidden_input_id=$request->id;
             $data = $data->find($request->id);
             if($data){
-                $scheme_asset = SchemeAsset::where('scheme_asset_id',$data->scheme_asset_id)->get();
+                $hidden_input_purpose=$request->purpose;
+                $hidden_input_id=$request->id;
             }
         }
        
-        return view('scheme-asset.add')->with(compact('uom_datas','hidden_input_purpose','hidden_input_id','scheme_asset','data'));
+        return view('scheme-asset.add')->with(compact('uom_datas','hidden_input_purpose','hidden_input_id','data'));
     }
 
    
@@ -55,7 +54,14 @@ class Scheme_Asset_Controller extends Controller
         if($request->geo_related!="")
         {
             $scheme_asset->multiple_geo_tags = $request->multiple_geo_tags;
-            $scheme_asset->no_of_tags = $request->no_of_tags;
+            if($request->multiple_geo_tags!="")
+            {   
+                $scheme_asset->no_of_tags = $request->no_of_tags;
+            }
+            else
+            {   
+                $scheme_asset->no_of_tags = null;
+            }
         }
         else{
             $scheme_asset->multiple_geo_tags = null;
@@ -68,7 +74,7 @@ class Scheme_Asset_Controller extends Controller
         $attribute = [];
         for($i=0;$i<count($request->attribute_name);$i++)
         {
-            $tmp = ["name"=>$request->attribute_name[$i], "uom"=>$request->attribute_uom[$i]];
+            $tmp = ["id"=>uniqid(), "name"=>$request->attribute_name[$i], "uom"=>$request->attribute_uom[$i]];
             if($request->attribute_mandatory[$i]){
                 $tmp["mandatory"] = $request->attribute_mandatory[$i];
             }
@@ -76,7 +82,7 @@ class Scheme_Asset_Controller extends Controller
                 $tmp["mandatory"] = '0';
             }
             // $tmp = [uniqid()=>["name"=>$request->attribute_name[$i], "uom"=>$request->attribute_uom[$i]]];
-            $attribute = array_merge($attribute, [uniqid()=>$tmp]);
+            array_push($attribute, $tmp);
         }
         $scheme_asset->attribute=serialize($attribute);
       
@@ -106,9 +112,14 @@ class Scheme_Asset_Controller extends Controller
         if(SchemeAsset::find($request->scheme_asset_id)){
             $data =  SchemeAsset::where('scheme_asset_id',$request->scheme_asset_id)->first();
         }
+        else{
+            session()->put('alert-class','alert-danger');
+            session()->put('alert-content','No such scheme asset exists!');
+            return redirect('scheme-asset');
+        }
         $uom_datas = Uom::select('uom_id','uom_name')->get();
        
-         return view('scheme-asset.view')->with(compact('scheme_asset_id','data','uom_datas'));
+        return view('scheme-asset.view')->with(compact('data','uom_datas'));
     }
 
 

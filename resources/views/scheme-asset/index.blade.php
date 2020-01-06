@@ -1,6 +1,6 @@
 @extends('layout.layout')
 
-@section('title', 'Scheme-Resource')
+@section('title', 'Scheme Asset')
 
 @section('page-style')
     <style>
@@ -11,20 +11,20 @@
 @section('page-content')
 <div class="card">
         <div class="col-md-12">
-                <div class="card-header">
-                    <div class="card-head-row card-tools-still-right" style="background:#fff;">
-                        <h4 class="card-title">Scheme Resource</h4>
-                        <div class="card-tools">
-                            <a href="#" data-toggle="tooltip" title="Send Mail"><button type="button" class="btn btn-icon btn-round btn-success" data-target="#create-email" data-toggle="modal" ><i class="fa fa-envelope" aria-hidden="true"></i></button></a>
-                            <a href="#" data-toggle="tooltip" title="Print"><button type="button" class="btn btn-icon btn-round btn-default" id="print-button" onclick="printView();"><i class="fa fa-print" aria-hidden="true"></i></button></a>
-                            <a href="#" data-toggle="tooltip" title="Export to PDF"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button></a>
-                            <a href="#" data-toggle="tooltip" title="Export to Excel"><button type="button" class="btn btn-icon btn-round btn-primary" ><i class="fas fa-file-excel"></i></button></a>
-                            <a class="btn btn-secondary" href="{{url('scheme-asset/add')}}" role="button"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;Add</a>
+            <div class="card-header">
+                <div class="card-head-row card-tools-still-right" style="background:#fff;">
+                    <h4 class="card-title">Scheme Assets</h4>
+                    <div class="card-tools">
+                        <a href="#" data-toggle="tooltip" title="Send Mail"><button type="button" class="btn btn-icon btn-round btn-success" data-target="#create-email" data-toggle="modal" ><i class="fa fa-envelope" aria-hidden="true"></i></button></a>
+                        <a href="#" data-toggle="tooltip" title="Print"><button type="button" class="btn btn-icon btn-round btn-default" id="print-button" onclick="printView();"><i class="fa fa-print" aria-hidden="true"></i></button></a>
+                        <a href="#" data-toggle="tooltip" title="Export to PDF"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button></a>
+                        <a href="#" data-toggle="tooltip" title="Export to Excel"><button type="button" class="btn btn-icon btn-round btn-primary" ><i class="fas fa-file-excel"></i></button></a>
+                        <a class="btn btn-secondary" href="{{url('scheme-asset/add')}}" role="button"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;Add</a>
 
-                        </div>
                     </div>
                 </div>
             </div>
+        </div>
     
         <div class="card-body">
             <div class="row">
@@ -38,7 +38,7 @@
                                      <th>Geo Related</th>
                                     <th>Multiple Geo Tags</th>
                                     <th>Number of Tags</th>
-                                    <th class="action-buttons">Actions</th>
+                                    <th>Actions</th>
                                 </tr>
                             </thead>
                             <?php $count=1; ?>
@@ -48,23 +48,26 @@
                                         <tr>
                                             <td width="40px;">{{$count++}}</td>
                                             <td>{{$data->scheme_asset_name}}</td>
-                                            @if($data->geo_related == 1)
-                                            <td>Yes</td>
-                                            @else
-                                            <td>No</td>
-                                            @endif
-                                            @if($data->multiple_geo_tags == 1)
-                                            <td>Yes</td>
-                                            @else
-                                            <td>No</td>
-                                            @endif
-                                             <td>{{$data->no_of_tags}}</td>
-                                            
-                    
-                                            
-                                            <td class="action-buttons">
-                                            <a href="{{url('scheme-asset/view')}}/{{$data->scheme_asset_id}}" class="btn btn-secondary btn-sm"><i class="fas fa-eye"></i></a>
-                                            &nbsp;&nbsp;<a href="{{url('scheme-asset/add')}}?purpose=edit&id={{$data->scheme_asset_id}}" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></a>
+                                            <td>
+                                                @if($data->geo_related == 1)
+                                                Yes
+                                                @else
+                                                No
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @if($data->multiple_geo_tags == 1)
+                                                Yes
+                                                @else
+                                                No
+                                                @endif
+                                            </td>
+                                            <td>
+                                                <?php echo $data->no_of_tags ?: '-'; ?>
+                                            </td>
+                                            <td>
+                                                <a href="{{url('scheme-asset/view')}}/{{$data->scheme_asset_id}}" class="btn btn-secondary btn-sm"><i class="fas fa-eye"></i></a>
+                                                &nbsp;&nbsp;<a href="{{url('scheme-asset/add')}}?purpose=edit&id={{$data->scheme_asset_id}}" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></a>
                                                 &nbsp;&nbsp;<a href="{{url('scheme-asset/delete')}}/{{$data->scheme_asset_id}}" class="btn btn-danger btn-sm delete-button"><i class="fas fa-trash-alt"></i></a>
                                             </td>
                                         </tr>

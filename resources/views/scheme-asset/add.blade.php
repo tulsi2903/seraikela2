@@ -1,13 +1,19 @@
-@extends('layout.layout') @section('title', 'Scheme Resource') @section('page-style')
+@extends('layout.layout')
+
+@section('title', 'Scheme Asset') 
+
+@section('page-style')
 <style>
 
 </style>
-@endsection @section('page-content')
+@endsection
+
+@section('page-content')
 <div class="card">
     <div class="col-md-12">
         <div class="card-header">
             <div class="card-head-row card-tools-still-right" style="background:#fff;">
-                <h4 class="card-title">Scheme Resource</h4>
+                <h4 class="card-title">Scheme Asset</h4>
                 <div class="card-tools">
                     <a href="{{url('scheme-asset')}}" class="btn btn-sm btn-secondary" style="float:right;"><i class="fas fa-arrow-left"></i>&nbsp;&nbsp;Back</a>
                 </div>
@@ -30,35 +36,15 @@
 
                     <div class="col-md-2">
                         <div class="form-group">
-                            <br>
-                            <br>
+                            <div style="height:30px;"></div>
                             <label for="geo_related">Geo Related</label>&nbsp;&nbsp;
                             <input type="checkbox" name="geo_related" id="geo_related" value="1" <?php echo ($data[ 'geo_related']==1 ? 'checked' : '');?>>
-
                         </div>
                     </div>
 
-                    <!-- @if($hidden_input_purpose=="edit" && $data['geo_related']==1)
-
-                            <div class="form-group" id="multiple_geo_tag">
-                                <br><br>
-                                <label for="multiple_geo_tags">Multiple Geo Tags</label>&nbsp;&nbsp;
-                                <input type="checkbox" name="multiple_geo_tags" id="multiple_geo_tags" value="1"<?php echo ($data['multiple_geo_tags']==1 ? 'checked' : '');?>>
-
-                            </div>
-
-                            <div class="form-group" id="no_of_tag">
-                            <label for="no_of_tags">Number of Tags<span style="color:red;margin-left:5px;">*</span></label>
-                            <input name="no_of_tags" id="no_of_tags" class="form-control" autocomplete="off" value="{{$data->no_of_tags}}">
-                                <div class="invalid-feedback" id="no_of_tags_error_msg"></div>
-                            </div>
-
-                        @endif -->
-
                     <div class="col-md-2">
                         <div class="form-group" id="multiple_geo_tag">
-                            <br>
-                            <br>
+                            <div style="height:30px;"></div>
                             <label for="multiple_geo_tags">Multiple Geo Tags</label>&nbsp;&nbsp;
                             <input type="checkbox" name="multiple_geo_tags" id="multiple_geo_tags" value="1" <?php echo ($data[ 'multiple_geo_tags']==1 ? 'checked' : '');?>>
                         </div>
@@ -66,7 +52,7 @@
 
                     <div class="col-md-3">
                         <div class="form-group" id="no_of_tag">
-                            <label for="no_of_tags">Number of Tags<span style="color:red;margin-left:5px;">*</span></label>
+                            <label for="no_of_tags">Number of Tags</label>
                             <input name="no_of_tags" id="no_of_tags" class="form-control" autocomplete="off" value="{{$data->no_of_tags}}">
                             <div class="invalid-feedback" id="no_of_tags_error_msg"></div>
                         </div>
@@ -81,180 +67,155 @@
                     <table class="table order-list" style="margin-top: 10px;">
                         <thead style="background: #cedcff">
                             <tr>
-                                <th>Name</th>
-                                <th>UoM</th>
-                                <th>Mandatory</th>
-                                <th>Action</th>
+                                <th>Name<span style="color:red;margin-left:5px;">*</span></th>
+                                <th>UoM<span style="color:red;margin-left:5px;">*</span></th>
+                                <th width="130px;">Mandatory</th>
+                                <th width="130px;">Action</th>
                             </tr>
                         </thead>
                         <tbody id="append-name-uom">
-                            <?php $attributes = unserialize($data->attribute); ?>
-
-                                @foreach($attributes as $key=>$attribute)
-                                <tr>
-                                    <td>
-                                        <input type="text" class="form-control" name="attribute_name[]" id="attribute_name" autocomplete="off" value="{{$key}}">
-                                    </td>
-                                    <td>
-                                        <select name="attribute_uom[]" id="attribute_uom" class="form-control" onchange="attribute_uom_validate();">
-
-                                            @foreach($uom_datas as $uom_data )
-                                            <option value="{{ $uom_data->uom_id }}" <?php if ($uom_data->uom_id == $attribute) { echo "selected"; } ?>> {{ $uom_data->uom_name }}</option>
-                                            @endforeach
-                                        </select>
-                                        <div class="invalid-feedback">UoM should not be blank</div>
-                                    </td>
-                                    <td>
-                                        <button type="button" class="btn btn-danger delete-button-row">Remove</button>
-                                    </td>
-                                </tr>
-                                @endforeach
+                            <!-- append attributes -->
+                            @if($data->attribute)
+                                <?php 
+                                    $attributes  = unserialize($data->attribute);
+                                    foreach($attributes as $attribute)
+                                    { 
+                                        ?>
+                                            <tr>
+                                                <td>
+                                                    <input type="text" class="form-control" name="attribute_name[]" autocomplete="off" value="{{$attribute['name']}}">
+                                                    <div class="invalid-feedback">Please enter valid name</div>
+                                                </td>
+                                                <td>
+                                                    <select name="attribute_uom[]" class="form-control">
+                                                        <option value="">---Select---</option>
+                                                        @foreach($uom_datas as $uom_data )
+                                                            <option value="{{ $uom_data->uom_id }}" <?php if($uom_data->uom_id==$attribute['uom']){ echo "selected"; } ?> >{{ $uom_data->uom_name }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                    <div class="invalid-feedback">UoM should not be blank</div>
+                                                </td> 
+                                                <td>
+                                                    <input type="checkbox" name="attribute_mandatory[<?php echo $i; ?>]" value="1" <?php if($attribute['mandatory']==1){ echo "checked"; } ?>>
+                                                </td>
+                                                <td>
+                                                    <button type="button" class="btn btn-danger btn-xs delete-button-row"><i class="fas fa-trash-alt"></i></button>
+                                                </td>
+                                            </tr>
+                                        <?php
+                                    $i++;
+                                    }
+                                ?>
+                            @endif
                         </tbody>
                         <tbody>
-                            <td style="text-align:right;" colspan="4"><i class="fa fa-plus-circle" aria-hidden="true" style="color:green;" onclick="append_table_data();"></i></tr>
+                            <tr>
+                                <td colspan="3"></td>
+                                <td><button type="button" onclick="append_table_data('add',null);" class="btn btn-secondary btn-sm btn-circle">Add <i class="fa fa-plus-circle" aria-hidden="true"></i></button></td>
+                            </tr>
                         </tbody>
-
                     </table>
                 </div>
+
                 <br>
+
                 <div class="form-group">
                     <input type="text" name="hidden_input_purpose" value="{{$hidden_input_purpose}}" hidden>
                     <input type="text" name="hidden_input_id" value="{{$hidden_input_id}}" hidden>
-
                     <button type="submit" class="btn btn-primary" style="float:right;" onclick="return submitForm();">Save&nbsp;&nbsp;<i class="fas fa-check"></i></button>
                 </div>
             </form>
         </div>
+        
         <!--end of card body-->
     </div>
 
     <script>
         var append_i = 0;
-        function append_table_data(){
-            var data = `<tr><td><input type="text" class="form-control" name="attribute_name[]" id="attribute_name" autocomplete="off" onchange="attribute_name_validate();"><div class="invalid-feedback">Name should not be blank</div></td>
-                                    <td> <select name="attribute_uom[]" id="attribute_uom" class="form-control" onchange="attribute_uom_validate();">
+        function append_table_data(type, data){
+            var to_append = `<tr>
+                            <td>
+                                <input type="text" class="form-control" name="attribute_name[]" autocomplete="off">
+                                <div class="invalid-feedback">Please enter valid name</div>
+                            </td>
+                            <td>
+                                <select name="attribute_uom[]" class="form-control">
                                     <option value="">---Select---</option>
                                     @foreach($uom_datas as $uom_data )
                                         <option value="{{ $uom_data->uom_id }}">{{ $uom_data->uom_name }}</option>
                                     @endforeach
                                 </select>
                                 <div class="invalid-feedback">UoM should not be blank</div>
-                                </td> 
-                                <td><input type="checkbox" name="attribute_mandatory[`+append_i+`]" value="1"></td>
-                                <td><button type="button" class="btn btn-danger btn-xs delete-button-row"><i class="fas fa-trash-alt"></i></button></td></tr>`;
-            $("#append-name-uom").append(data);
+                            </td> 
+                            <td>
+                                <input type="checkbox" name="attribute_mandatory[`+append_i+`]" value="1">
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-danger btn-xs delete-button-row"><i class="fas fa-trash-alt"></i></button>
+                            </td>
+                        </tr>`;
+            $("#append-name-uom").append(to_append);
             append_i++;
         }
-
         $(document).ready(function() {
             $("#append-name-uom").delegate(".delete-button-row", "click", function() {
-                $(this).closest("tr").remove();
+                swal({
+                    title: 'Are you sure?',
+                    // text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    buttons:{
+                        cancel: {
+                            visible: true,
+                            text : 'No, cancel!',
+                            className: 'btn btn-danger'
+                        },
+                        confirm: {
+                            text : 'Yes, delete it!',
+                            className : 'btn btn-success'
+                        }
+                    }
+                }).then((willDelete) => {
+                    if (willDelete) {
+                        $(this).closest("tr").remove();
+                    }
+                });
             });
         });
     </script>
-
-    <script>
-        $(document).ready(function() {
-            var chkbox = $('#multiple_geo_tags');
-            $('#multiple_geo_tags').on('click', function() {
-                if (chkbox.is(':checked')) {
-
-                } else {
-                    $('#no_of_tags').val("");
-
-                }
-            });
-            // if(chkbox="" && tags_val!="")
-            // {
-            //     $('.multiple_geo_tags').attr('checked', true);
-            // }
-        });
-    </script>
-    <!-- <script>
-$(document).ready(function(){
-   $("#multiple_geo_tag").hide();
-   $("#no_of_tag").hide();
-
-});
-$(document).ready(function () {
-    var ckbox = $('#geo_related');
-    $('#geo_related').on('click',function () {
-        if (ckbox.is(':checked')) {
-            $("#multiple_geo_tag").show();
-        } 
-        else{
-            $("#multiple_geo_tag").hide();
-            $("#no_of_tag").hide();
-        }
-    });
-});
-$(document).ready(function () {
-    var chkbox = $('#multiple_geo_tags');
-    $('#multiple_geo_tags').on('click',function () {
-        if (chkbox.is(':checked')) {
-            $("#no_of_tag").show();
-        } 
-        else{
-            $("#no_of_tag").hide();
-        }
-    });
-});
-</script> -->
 
     <!-- for validation -->
     <script>
+        // resetting
+        $(document).ready(function() {
+            $("#scheme-asset-form").delegate("input, select, texarea", "keydown change", function(){
+                $(this).removeClass("is-invalid");
+            });
+        });
+
         var scheme_asset_name_error = true;
-        var no_of_tags_error = true;
         var attribute_name_error = true;
         var attribute_uom_error = true;
 
         $(document).ready(function() {
-
             $("#scheme_asset_name").change(function() {
                 scheme_asset_name_validate();
             });
-            $("#no_of_tags").change(function() {
-                var tags_val = $('#no_of_tags').val();
-                if (tags_val) {
-                    $('#multiple_geo_tags').attr('checked', true);
-                    $('#geo_related').attr('checked', true);
-                }
-                no_of_tags_validate();
-
-            });
-
         });
-
-        function no_of_tags_validate() {
-
-            var no_of_tags_val = $("#no_of_tags").val();
-            var regNumericSpace = new RegExp('^[0-9 ]+$');
-            if (no_of_tags_val == "") {
-                no_of_tags_error = false;
-                // $("#no_of_tags").addClass('is-invalid');
-                // $("#no_of_tags_error_msg").html("Number of tags should not be blank");
-            } else if (!regNumericSpace.test(no_of_tags_val)) {
-                no_of_tags_error = true;
-                $("#no_of_tags").addClass('is-invalid');
-                $("#no_of_tags_error_msg").html("Please enter valid number");
-            } else {
-                no_of_tags_error = false;
-                $("#no_of_tags").removeClass('is-invalid');
-            }
-        }
 
         function scheme_asset_name_validate() {
             var scheme_asset_name_val = $("#scheme_asset_name").val();
-            var regAlphaNumericSpace = new RegExp('^[a-zA-Z0-9/_ ]+$');
+            var regAlphaNumericSpace = new RegExp('^[a-zA-Z0-9/_ -]+$');
             if (scheme_asset_name_val == "") {
                 scheme_asset_name_error = true;
                 $("#scheme_asset_name").addClass('is-invalid');
                 $("#scheme_asset_name_error_msg").html("Scheme Asset Name should not be blank");
-            } else if (!regAlphaNumericSpace.test(scheme_asset_name_val)) {
+            }
+            else if (!regAlphaNumericSpace.test(scheme_asset_name_val)) {
                 scheme_asset_name_error = true;
                 $("#scheme_asset_name").addClass('is-invalid');
                 $("#scheme_asset_name_error_msg").html("Please enter valid name");
-            } else {
+            }
+            else {
                 scheme_asset_name_error = false;
                 $("#scheme_asset_name").removeClass('is-invalid');
             }
@@ -262,13 +223,19 @@ $(document).ready(function () {
 
         function attribute_name_validate() {
             var attribute_name_val = $("input[name='attribute_name[]']");
+            var regExp = new RegExp('^[a-zA-Z0-9/_ -]+$');
 
             console.log(attribute_name_val.length);
-            for (i = 0; i < attribute_name_val.length; i++) {
-                if (attribute_name_val[i].value == "") {
+            for(i = 0;i < attribute_name_val.length;i++) {
+                if(attribute_name_val[i].value == "") {
                     attribute_name_error = true;
                     $(attribute_name_val[i]).addClass('is-invalid');
-                } else {
+                }
+                else if(!regExp.test(attribute_name_val[i].value)){
+                    attribute_name_error = true;
+                    $(attribute_name_val[i]).addClass('is-invalid');
+                }
+                else {
                     attribute_name_error = false;
                     $(attribute_name_val[i]).removeClass('is-invalid');
                 }
@@ -285,7 +252,8 @@ $(document).ready(function () {
                 if (attribute_uom_val[i].value == "") {
                     attribute_uom_error = true;
                     $(attribute_uom_val[i]).addClass('is-invalid');
-                } else {
+                }
+                else {
                     attribute_uom_error = false;
                     $(attribute_uom_val[i]).removeClass('is-invalid');
                 }
@@ -298,18 +266,14 @@ $(document).ready(function () {
 
         function submitForm() {
             scheme_asset_name_validate();
-            no_of_tags_validate();
             attribute_name_validate();
             attribute_uom_validate();
 
-            if (scheme_asset_name_error || no_of_tags_error || attribute_name_error || attribute_uom_error) {
+            if (scheme_asset_name_error || attribute_name_error || attribute_uom_error) {
                 return false;
-
             } // error occured
             else {
-
                 return true;
-
             } // proceed to submit form data
 
         }
