@@ -2,10 +2,12 @@
 
 @section('title', 'Scheme Geo Target')
 
-@section('page_style')
-    <style>
-
-    </style>
+@section('page-style')
+<style>
+    td{
+        padding:10px 0 !important;
+    }
+</style>
 @endsection
 
 @section('page-content')
@@ -24,16 +26,16 @@
 
     <div class="col-md-12">
         <div class="card-body">
-            <form action="{{url('scheme-geo-target/store')}}" method="POST" id="scheme-pmay-target-form">
+            <form action="{{url('scheme-geo-target/store')}}" method="POST" id="scheme-pmay-target-form" onsubmit="return false;">
                 @csrf
                 <div class="row">
-                <div class="col-md-2">
+                    <div class="col-md-2">
                         <div class="form-group">
                             <label for="scheme_id">Scheme<span style="color:red;margin-left:5px;">*</span></label>
-                            <select name="scheme_id" id="scheme_id" class="form-control" onchange="get_updated_datas(this)">
+                            <select name="scheme_id" id="scheme_id" class="form-control">
                                 <option value="">---Select---</option>
                                 @foreach($scheme_datas as $scheme )
-                                <option value="{{ $scheme->scheme_id }}">{{ $scheme->scheme_name }}({{$scheme->scheme_short_name}})</option>
+                                <option value="{{ $scheme->scheme_id }}">({{$scheme->scheme_short_name}}) {{ $scheme->scheme_name }}</option>
                                 @endforeach
                             </select>
                             <div class="invalid-feedback" id="scheme_id_error_msg"></div>
@@ -43,34 +45,22 @@
                     <div class="col-md-2">
                         <div class="form-group">
                             <label for="year_id">Year<span style="color:red;margin-left:5px;">*</span></label>
-                            <select name="year_id" id="year_id" class="form-control" onchange="get_updated_datas(this)">
+                            <select name="year_id" id="year_id" class="form-control">
                                 <option value="">---Select---</option>
                                 @foreach($year_datas as $year_data )
-                                <option value="{{ $year_data->year_id }}"<?php if($data->year_id == $year_data->year_id) echo"selected"; ?>>{{ $year_data->year_value }}</option>
+                                <option value="{{ $year_data->year_id }}" <?php if($data->year_id == $year_data->year_id) echo"selected"; ?>>{{ $year_data->year_value }}</option>
                                 @endforeach
                             </select>
                             <div class="invalid-feedback" id="year_id_error_msg"></div>
                         </div>
                     </div>
-                    <!-- <div class="col-md-2">
-                        <div class="form-group">
-                            <label for="subdivision_id">Subdivision<span style="color:red;margin-left:5px;">*</span></label>
-                            <select name="subdivision_id" id="subdivision_id" class="form-control">
-                                <option value="">---Select---</option>
-                                @foreach( $subdivision_datas as $subdivision_data )
-                                <option value="{{ $subdivision_data->geo_id }}"<?php if($data->subdivision_id == $subdivision_data->geo_id) echo"selected"?>>{{ $subdivision_data->geo_name }}</option>
-                                @endforeach
-                            </select>
-                            <div class="invalid-feedback" id="subdivision_id_error_msg"></div>
-                        </div>
-                    </div> -->
                     <div class="col-md-2">
                         <div class="form-group">
                             <label for="block_id">Block<span style="color:red;margin-left:5px;">*</span></label>
                             <select name="block_id" id="block_id" class="form-control">
                                 <option value="">---Select---</option>
                                 @foreach( $block_datas as $block_data )
-                                <option value="{{ $block_data->geo_id }}"<?php if($data->block_id == $block_data->geo_id ) echo"selected" ?>>{{ $block_data->geo_name }}</option>
+                                <option value="{{ $block_data->geo_id }}" <?php if($data->block_id == $block_data->geo_id ) echo"selected" ?>>{{ $block_data->geo_name }}</option>
                                 @endforeach
                             </select>
                             <div class="invalid-feedback" id="block_id_error_msg"></div>
@@ -78,248 +68,128 @@
                     </div>
                     <div class="col-md-2">
                         <div class="form-group">
-                            <label for="panchayat_id">Panchayat<span style="color:red;margin-left:5px;">*</span></label>
-                            <select name="panchayat_id" id="panchayat_id" class="form-control" onchange="get_updated_datas(this)">
-                                <option value="">---Select---</option>
-                                @foreach( $panchayat_datas as $panchayat_data )
-                                <option value="{{ $panchayat_data->geo_id }}"<?php if($data->panchayat_id == $panchayat_data->geo_id ) echo"selected"?>>{{ $panchayat_data->geo_name }}</option>
-                                @endforeach
+                            <label for="panchayat_id">Panchayat</label>
+                            <select name="panchayat_id" id="panchayat_id" class="form-control">
+                                <option value="">All Panchayats</option>
                             </select>
                             <div class="invalid-feedback" id="panchayat_id_error_msg"></div>
                         </div>
                     </div>
-                        
-                    <div class="col-md-2">
+                    <!-- <div class="col-md-2">
                         <div class="form-group">
                             <div style="height:30px;"></div>
-                            <button type="button" class="btn btn-primary go-button" onclick="return goForm();">Go&nbsp;&nbsp;<i class="fas fa-check"></i></button>
+                            <button type="button" class="btn btn-secondary go-button" onclick="return next();">Search&nbsp;&nbsp;<i class="fas fa-search"></i></button>
                         </div>
-                    </div>
-                    </div>
+                    </div> -->
+                </div>
                 <!--end of row-->
-
-                <div class="row" id="target" style="display:none;">
-                    <div class="col-md-2">
-                        <div class="form-group">
-                            <label for="prev_target">Previous Target</label>
-                            <input type="text" class="form-control" name="prev_target" id="prev_target" autocomplete="off" value="{{$data->target}}" disabled>
-                        </div>
-                    </div>
-
-                    <div class="col-md-2">
-                        <div class="form-group">
-                            <label for="current_target">Current Target<span style="color:red;margin-left:5px;">*</span></label>
-                            <input type="text" class="form-control" name="current_target" id="current_target" autocomplete="off" value="">
-                            <div class="invalid-feedback" id="current_target_error_msg"></div>
-                        </div>
-                    </div>
-
-                    
-
-                </div>
                 <hr/>
-                <button type="button" class="btn" style="margin-left:1.5%;background: #0f85e2!important;color:#fff;"><i class="fas fa-location-arrow"></i>&nbsp;&nbsp;Based on Scheme Asset</button>
-                <div class="card-body" style="background: #f2f6ff; border: 1px solid #a5bbf6;margin-top: -18px;">
-                    <table class="table order-list" style="margin-top: 10px;">
-                        <thead style="background: #cedcff">
-                            <tr>
-                                
-                                <th>Sanction No.</th>
-                                <th>Registration No.</th>
-                                <th>Landmark</th>
-                                <th>Latitude</th>
-                                <th>Longitude</th>
-                                <th>Gallery</th>
-                                <th>Status</th>
-                                <th>Comments</th>
-                                
-                            </tr>
-                        </thead>
-                        <tbody id="append-datas">
-                            <!-- Appending Registration Details -->
-                        </tbody>
-
-                        <tbody>
-                            <td style="text-align:right;" colspan="9"><i class="fa fa-plus-circle" aria-hidden="true" style="color:green;" onclick="append_table_data();"></i></tr>
-                        </tbody>
-                       
-
-                    </table>
-                </div>
-                <div class="form-group">
-                   
-                    <input type="text" name="hidden_input_purpose" value="{{$hidden_input_purpose}}" hidden>
-                    <input type="text" name="hidden_input_id" value="{{$hidden_input_id}}" hidden>
-                    <div style="height:30px;"></div>
-                    <button type="submit" class="btn btn-primary" style="float:right;">Save&nbsp;&nbsp;<i class="fas fa-check"></i></button>
+                <br/>
+                <div class="row">
+                    <div class="col-md-10">
+                        <div id="target-div-block" style="display: none;">
+                            <button type="button" class="btn" style="margin-left:1.5%;background: #0f85e2!important;color:#fff;"><i class="fas fa-location-arrow"></i>&nbsp;&nbsp;Targets</button>
+                            <div class="card-body" style="background: #f2f6ff; border: 1px solid #a5bbf6;margin-top: -18px;">
+                                <table class="table order-list" style="margin-top: 10px;">
+                                    <thead style="background: #cedcff">
+                                        <tr>
+                                            <th>Panchayat</th>
+                                            <th width="150px">Target</th>
+                                            <th width="200px">Change Target</th>
+                                            <th width="150px"></th>
+                                            <th width="140px"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="append-target">
+                                        <!-- append target panchayat wise (depends on block/ panchayat selection) -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </form>
-          
+
         </div>
         <!--end of card body-->
     </div>
 </div>
+
 <script>
-     function append_table_data()
-     {
-        var data = ` <tr>
-                    <td>
-                        <input type="text" class="form-control" name="sanction_no" id="sanction_no" autocomplete="off">
-                    </td>
-                    <td>
-                        <input type="text" class="form-control" name="registration_no" id="registration_no" autocomplete="off">
-                        
-                    </td>
-                    <td>
-                        <input type="text" class="form-control" name="landmark" id="landmark" autocomplete="off">
-                    </td>
-                    <td>
-                        <input type="text" class="form-control" name="latitude" id="latitude" autocomplete="off">
-                        
-                    </td>
-                    <td>
-                        <input type="text" class="form-control" name="longitude" id="longitude" autocomplete="off">
-                    </td>
-                    <td>
-                        <input type="text" class="form-control" name="gallery" id="gallery" autocomplete="off">
-                        
-                    </td>
-                    <td>
-                    <select name="status" id="status" class="form-control">
-                                <option value="">-Select-</option>
-                                <option value="">0-25</option>
-                                <option value="">26-50</option>
-                                <option value="">51-75</option>
-                                <option value="">76-100</option>
-                              
-                            </select>
-                    </td>
-                    <td>
-                        <input type="text" class="form-control" name="comments" id="comments" autocomplete="off">
-                        
-                    </td>
-                    
-                    </tr>`;
-                  
-        $("#append-datas").append(data);
-      
-            
-     }
-</script>
- 
-<script>
+    // defining error = true as default
+    var scheme_id_error = true;
+    var year_id_error = true;
+    var block_id_error = true;
+    var panchayat_id_error = true;
 
-var scheme_error = true;
-var year_error = true;
-var subdivision_error = true;
-var block_error = true;
-var panchayat_error = true;
-var current_target_error = true;
-
-$(document).ready(function(){
-  
-    $("#scheme_id").change(function(){
-        scheme_validate();
-    })
-    $("#year_id").change(function(){
-        year_validate();
-    });
-    $("#subdivision_id").change(function(){
-        get_block_datas();
-       
-    });
-    $("#block_id").change(function(){
-        get_panchayat_datas();
-        
-    });
-    $("#panchayat_id").change(function(){
-        panchayat_validate();
-    });
-    // $("#current_target").change(function(){
-    //     current_target_validate();
-    // });
-    // $("#current_target").change(function(){
-    //     $("#append-datas").html("");
-    //     var data = ` <tr>
-    //                 <td>
-    //                     <input type="text" class="form-control" autocomplete="off" value="{{$key}}">
-    //                 </td>
-    //                 <td>
-    //                     <input type="text" class="form-control" autocomplete="off">
-                        
-    //                 </td>
-    //                 <td>
-    //                     <input type="text" class="form-control" autocomplete="off" value="{{$key}}">
-    //                 </td>
-    //                 <td>
-    //                     <input type="text" class="form-control" autocomplete="off">
-                        
-    //                 </td>
-    //                 <td>
-    //                     <input type="text" class="form-control" autocomplete="off" value="{{$key}}">
-    //                 </td>
-    //                 <td>
-    //                     <input type="text" class="form-control" autocomplete="off">
-                        
-    //                 </td>
-    //                 <td>
-    //                     <input type="text" class="form-control" autocomplete="off" value="{{$key}}">
-    //                 </td>
-    //                 <td>
-    //                     <input type="text" class="form-control" autocomplete="off">
-                        
-    //                 </td>
-                    
-    //                 </tr>`;
-    //     var current_val_tmp = $("#current_target").val();
-    //     // alert("hi");
-
-    //    for(i=0;i<Number(current_val_tmp);i++)
-    //    {
-    //     $("#append-datas").append(data);
-    //    }
-    //     // current_target_validate();
-       
-    // });
     
-});
+    $(document).ready(function(){
+        $("#scheme_id").change(function(){
+            scheme_id_validate();
+        })
+        $("#year_id").change(function(){
+            year_id_validate();
+        });
+        $("#block_id").change(function(){
+            block_id_validate();
+            get_panchayat_datas();
+            next();
+        });
+        $("#panchayat_id").change(function(){
+            panchayat_id_validate();
+            next();
+        });
+    });
 
-// function get_block_datas(){
-//     subdivision_validate();
-//     var subdivision_id_tmp = $("#subdivision_id").val();
-//     $.ajaxSetup({
-//         headers:{
-//             'X-CSRF-TOKEN' : $('meta[name="csrf-token"]').attr('content')
-//         }
-//     });
-//     $.ajax({
-//         url:"{{url('scheme-geo-target/get-block-datas')}}",
-//         data: {'subdivision_id':subdivision_id_tmp},
-//         method:"GET",
-//         contentType:'application/json',
-//         dataType:"json",
-//         beforeSend:function(data){
-//             $(".custom-loader").fadeIn(300);
-//         },
-//         error:function(xhr){
-//             alert("error"+xhr.status+","+xhr.statusText);
-//             $(".custom-loader").fadeOut(300);
-//         },
-//         success:function(data){
-//             console.log(data);
-//             $("#block_id").html('<option value="">-Select-</option>');
-//             for(var i=0;i<data.length;i++){
-//                 $("#block_id").append('<option value="'+data[i].geo_id+'">'+data[i].geo_name+'</option>');
-//             }
-//             $(".custom-loader").fadeOut(300);
-//         }
-//     });
-   
-// }
+    function scheme_id_validate(){
+        var scheme_id_val = $("#scheme_id").val();
+        if(scheme_id_val==""){
+            scheme_id_error = true;
+            $("#scheme_id").addClass('is-invalid');
+            $("#scheme_id_error_msg").html("Please select a scheme");
+        }
+        else{
+            scheme_id_error = false;
+            $("#scheme_id").removeClass('is-invalid');
+        }
+    }
 
-function get_panchayat_datas(){
-    block_validate();
-            var block_id_tmp = $("#block_id").val();
+    function year_id_validate(){
+        var year_id_val = $("#year_id").val();
+        if(year_id_val==""){
+            year_id_error = true;
+            $("#year_id").addClass('is-invalid');
+            $("#year_id_error_msg").html("Please select a year");
+        }
+        else{
+            year_id_error = false;
+            $("#year_id").removeClass('is-invalid');
+        }
+    }
+
+    function block_id_validate(){
+        var block_id_val = $("#block_id").val();
+        if(block_id_val==""){
+            block_id_error = true;
+            $("#block_id").addClass('is-invalid');
+            $("#block_id_error_msg").html("Please select block");
+        }
+        else{
+            block_id_error = false;
+            $("#block_id").removeClass('is-invalid');
+        }
+    }
+
+    function panchayat_id_validate(){
+        panchayat_id_error = false;
+        $("#panchayat_id").removeClass('is-invalid');
+    }
+
+    function get_panchayat_datas(){
+        var block_id_tmp = $("#block_id").val();
+        $("#panchayat_id").html('<option value="">All Panchayats</option>');
+        if(block_id_tmp)
+        {
             $.ajaxSetup({
                 headers:{
                     'X-CSRF-TOKEN' : $('meta[name="csrf-token"]').attr('content')
@@ -339,35 +209,60 @@ function get_panchayat_datas(){
                     $(".custom-loader").fadeOut(300);
                 },
                 success:function(data){
-                    console.log(data);
-                    $("#panchayat_id").html('<option value="">-Select-</option>');
+                    $("#panchayat_id").html('<option value="">All Panchayats</option>');
                     for(var i=0;i<data.length;i++){
                         $("#panchayat_id").append('<option value="'+data[i].geo_id+'">'+data[i].geo_name+'</option>');
                     }
                     $(".custom-loader").fadeOut(300);
                 }
             });
-        
+        }
     }
 
-    function get_updated_datas(e){
-      
-        var scheme_id_tmp = $("#scheme_id").val();
-        var year_id_tmp = $("#year_id").val();
-        var panchayat_id_tmp = $("#panchayat_id").val();
+    function next(){
+        scheme_id_validate();
+        year_id_validate();
+        block_id_validate();
+        panchayat_id_validate();
 
-        $.ajaxSetup({
+        if(scheme_id_error || year_id_error || block_id_error || panchayat_id_error){
+            return false;
+        }
+        else{
+            get_target_details();
+            return false;
+        }
+    }
+
+    // send data [scheme, year, block, panchayat(if selected)] and get target of each panchayat/ only panchayat (depend on block selected on panchayat selected)
+    // the show/ append in table
+    function get_target_details(){
+        if(scheme_id_error || year_id_error || block_id_error || panchayat_id_error){
+            // error occured
+        }
+        else{ // no error
+            // gathering data before send to backend
+            scheme_id_tmp = $("#scheme_id").val();
+            year_id_tmp = $("#year_id").val();
+            block_id_tmp = $("#block_id").val();
+            panchayat_id_tmp = $("#panchayat_id").val();
+
+
+            $.ajaxSetup({
                 headers:{
                     'X-CSRF-TOKEN' : $('meta[name="csrf-token"]').attr('content')
                 }
             });
             $.ajax({
-                url:"{{url('scheme-geo-target/get-updated-datas')}}",
-                data: {'scheme_id':scheme_id_tmp,'year_id':year_id_tmp,'panchayat_id':panchayat_id_tmp},
+                url:"{{url('scheme-geo-target/get-target-details')}}",
+                data: {"scheme_id":scheme_id_tmp, "year_id":year_id_tmp, "block_id":block_id_tmp, "panchayat_id":panchayat_id_tmp},
                 method:"GET",
                 contentType:'application/json',
                 dataType:"json",
                 beforeSend: function(data){
+                    // resetting append-table/block before getting target datas
+                    $("#append-target").html("");
+                    $("#target-div-block").fadeOut(0);
                     $(".custom-loader").fadeIn(300);
                 },
                 error:function(xhr){
@@ -375,138 +270,195 @@ function get_panchayat_datas(){
                     $(".custom-loader").fadeOut(300);
                 },
                 success:function(data){
-                    console.log(data);
-                    if(data.target)
-                    {
-                        $("#prev_target").val(data.target);
+                    // console.log(data);
+                    if(data.response=="success"){
+                        data.target_datas.forEach(function(target_data){
+                            // appedning data in target form for user input (target)
+                            $("#append-target").append(`
+                                <tr data-panchayat-id='`+target_data.geo_id+`' data-target='`+(target_data.target || 0)+`'>
+                                    <td>`+target_data.geo_name+` `+target_data.geo_id+`</td>
+                                    <td>`+(target_data.target || 'No Target Set')+`</td>
+                                    <td><input type="text" class="form-control change-target-input" value="`+(target_data.target || 0)+`"></td>
+                                    <td><button type="button" class="btn btn-secondary btn-sm data-entry-save-button" onclick="saveTarget(`+target_data.scheme_geo_target_id+`, this)" disabled><i class="fas fa-check"></i>&nbsp;&nbsp;Save</button></td>
+                                    <td><a href="javascript:void();" class="data-entry-link">Data Entry <i class="fas fa-arrow-right"></i></a></td>
+                                </tr>
+                            `);
+                        })
+
+                        // caluculating total target
+                        $("#append-target").append(`
+                                <tr id="append-target-last-row" style="background: #b7b7b7; font-weight: bold;">
+                                    <td>Total</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            `);
+                        calcTotalTarget(); // caluculating total target
+
+                        $("#target-div-block").fadeIn(300); // show target table block for user input
                     }
-                    else
-                    {
-                        $("#prev_target").val(0);
+                    else{ // data.response=="no_data"
+
                     }
                     $(".custom-loader").fadeOut(300);
                 }
             });
-
+        }
     }
 
-    function scheme_validate(){
-        var scheme_val = $("#scheme_id").val();
+    $(document).ready(function(){
+        // get new target value and check if previous target value is different or not, if changed then enable save button or disable save button
+        $("#append-target").delegate(".change-target-input","keyup", function(){
+            calcTotalTarget(); // to calculate total
+            var tr = $(this).closest("tr");
 
-        if(scheme_val==""){
-            scheme_error = true;
-            $("#scheme_id").addClass('is-invalid');
-            $("#scheme_id_error_msg").html("Scheme should not be blank");
-         }
-         else{
-             scheme_error = false;
-             $("#scheme_id").removeClass('is-invalid');
-         }
+            $(this).val($(this).val().replace(/\D+/g, "")); // removing other than number
 
+            // for save button
+            if($(tr).data("target")==$(this).val()){
+                $(tr).find(".data-entry-save-button").attr("disabled",true);
+            }
+            else{
+                $(tr).find(".data-entry-save-button").attr("disabled",false);
+            }
+        });
+        $("#append-target").delegate(".change-target-input","change", function(){
+            var tr = $(this).closest("tr");
+            if(!$(this).val()){
+                $(this).val($(tr).data("target"));
+            }
+        });
+    });
+
+    // calculate total target for entire block OR selected panchayat
+    function calcTotalTarget(){
+        var target_fields = $("#append-target .change-target-input");
+        var total_pre_target = 0;
+        var total_target = 0;
+
+        // for pre target
+        for(var i=0; i<target_fields.length; i++){
+            total_pre_target+=Number($(target_fields[i]).closest('tr').data("target"));
+        }
+
+        // for current target
+        for(var i=0; i<target_fields.length; i++){
+            total_target+=Number($(target_fields[i]).val());
+        }
+
+        $("#append-target #append-target-last-row").html(`
+                                    <td>Total</td>
+                                    <td>`+total_pre_target+`</td>
+                                    <td>`+total_target+`</td>
+                                    <td></td>
+                                    <td></td>
+                            `);
     }
 
-    function year_validate() {
-   
-   var year_val = $("#year_id").val();
-   
-   if (year_val == "") {
-    year_error = true;
-       $("#year_id").addClass('is-invalid');
-       $("#year_id_error_msg").html("Year should not be blank");
-   }  else {
-    year_error = false;
-       $("#year_id").removeClass('is-invalid');
-   }
-}
+    // to save individual target
+    function saveTarget(id, e){
+        /**
+        id = scheme_geo_target_id/null, e=this 
+        first get panchayat_id from tr(data), target from input field, scheme_id, year_id etc and proceed to save
+        **/
+        var tr = $(e).closest("tr");
+        scheme_id = $("#scheme_id").val();
+        year_id = $("#year_id").val();
+        block_id = $("#block_id").val();
+        panchayat_id = $(tr).data("panchayat-id");
+        target = $(tr).find(".change-target-input").val();
+        
+        // assigning purpose
+        purpose = 'add';
+        if(id){ purpose="edit"; }
 
-function subdivision_validate() {
-   
-   var subdivision_val = $("#subdivision_id").val();
-  
-   if (subdivision_val == "") {
-    subdivision_error = true;
-       $("#subdivision_id").addClass('is-invalid');
-       $("#subdivision_id_error_msg").html("Subdivision should not be blank");
-   }  else {
-    subdivision_error = false;
-       $("#subdivision_id").removeClass('is-invalid');
-   }
-}
+        // confirm box, if they want to save or not
+        swal({
+            title: 'Save target data?',
+            // text: "You won't be able to revert this!",
+            icon: 'info',
+            buttons:{
+                cancel: {
+                    visible: true,
+                    text : 'No, cancel!',
+                    className: 'btn btn-danger'
+                },
+                confirm: {
+                    text : 'Yes, Save!',
+                    className : 'btn btn-success'
+                }
+            }
+        }).then((willDelete) => {
+            if (willDelete) {
+                var formData = new FormData();
+                formData.append('scheme_id', scheme_id);
+                formData.append('year_id', year_id);
+                formData.append('block_id', block_id);
+                formData.append('panchayat_id', panchayat_id);
+                formData.append('scheme_geo_target_id', id);
+                formData.append('target', target);
+                formData.append('purpose', purpose);
 
-function block_validate(){
-    var block_val = $("#block_id").val();
-    if(block_val==""){
-        block_error = true;
-        $("#block_id").addClass('is-invalid');
-        $("#block_id_error_msg").html("Block should not be blank");
-    }else{
-        block_error = false;
-        $("#block_id").removeClass('is-invalid');
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                $.ajax({
+                    url: "{{url('scheme-geo-target/save-target')}}",
+                    data: formData,
+                    method: "POST",
+                    dataType: 'json',
+                    processData: false,
+                    contentType: false,
+                    beforeSend: function (data) {
+                        $(".custom-loader").fadeIn(300);
+                    },
+                    error: function (xhr) {
+                        alert("error" + xhr.status + ", " + xhr.statusText);
+                        $(".custom-loader").fadeOut(300);
+                    },
+                    success: function (data) {
+                        console.log(data);
+                        if(data.response=="success"){
+
+                            get_target_details(); // to refresh targets again
+
+                            swal("Success!", "New target has been saved.", {
+                                icon : "success",
+                                buttons: {
+                                    confirm: {
+                                        className : 'btn btn-success'
+                                    }
+                                },
+                            }).then((ok) => {
+                                if (ok) {
+                                    // to do something after Okay clicked
+                                }
+                            });
+                        }
+                        else{
+                            // error occured
+                            swal("Error Occured!", data.response, {
+                                icon : "error",
+                                buttons: {
+                                    confirm: {
+                                        className : 'btn btn-danger'
+                                    }
+                                },
+                            });
+                        }
+                        $(".custom-loader").fadeOut(300);
+                    }
+                });
+            }
+            else{
+                // reject to save
+            }
+        });
     }
-}
-
-function panchayat_validate(){
-    var panchayat_val = $("#panchayat_id").val();
-    if(panchayat_val==""){
-        panchayat_error = true;
-        $("#panchayat_id").addClass('is-invalid');
-        $("#panchayat_id_error_msg").html("Panchayat should not be blank");
-    }else{
-        panchayat_error = false;
-        $("#panchayat_id").removeClass('is-invalid');
-    }
-}
-
-
-
-function current_target_validate() {
-   
-   var current_target_val = $("#current_target").val();
-   var regNumericSpace = new RegExp('^[0-9 ]+$');
-   if (current_target_val == "") {
-    current_target_error = true;
-       $("#current_target").addClass('is-invalid');
-       $("#current_target_error_msg").html("Current Target should not be blank");
-   } else if (!regNumericSpace.test(target_val)) {
-    current_target_error = true;
-       $("#current_target").addClass('is-invalid');
-       $("#current_target_error_msg").html("Please enter valid number");
-   } else {
-    current_target_error = false;
-       $("#current_target").removeClass('is-invalid');
-   }
-}
-
-function goForm() {
-
-    scheme_validate();
-    year_validate();
-    subdivision_validate();
-    block_validate();
-    panchayat_validate();
-   
-     if (scheme_error ||year_error || subdivision_error || block_error || panchayat_error ) {
-            return false;
-           
-        } // error occured
-        else {
-            $("#target").show();
-            return true;
-           
-        } // proceed to submit form data
-       
-    }
-
-// function submitForm(){
-//     current_validate();
-
-//     if(current_error){
-//         return false;
-//     }
-//     else{
-//         return true;
-//     }
-// }
 </script>
 
 @endsection

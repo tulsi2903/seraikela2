@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth;
+
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\SchemeGeoTarget;
@@ -15,7 +17,6 @@ use App\SchemePerformance2;
 use App\Exports\SchemeGeoTargetExport;
 use Maatwebsite\Excel\Facades\Excel;
 use PDF;
-use Illuminate\Support\Facades\Auth;
 use SchemeAsset;
 
 
@@ -29,27 +30,27 @@ class SchemeGeoTargetController extends Controller
                                     ->orderBy('scheme_geo_target_id','desc')
                                     ->get();
 
-foreach($datas as $data)
-{
-    // block data
-    $tmp = GeoStructure::select('geo_name')->where('geo_id','=',$data->block_id)->first();
-    $data->block_name = $tmp->geo_name;
+        foreach($datas as $data)
+        {
+            // block data
+            $tmp = GeoStructure::select('geo_name')->where('geo_id','=',$data->block_id)->first();
+            $data->block_name = $tmp->geo_name;
 
-    //panchayat data
-    $tmp = GeoStructure::select('geo_name')->where('geo_id','=',$data->panchayat_id)->first();
-    $data->panchayat_name = $tmp->geo_name;
+            //panchayat data
+            $tmp = GeoStructure::select('geo_name')->where('geo_id','=',$data->panchayat_id)->first();
+            $data->panchayat_name = $tmp->geo_name;
 
-    //subdivision data
-    $tmp = GeoStructure::select('geo_name')->where('geo_id','=',$data->subdivision_id)->first();
-    $data->subdivision_name = $tmp->geo_name;
-}
+            //subdivision data
+            $tmp = GeoStructure::select('geo_name')->where('geo_id','=',$data->subdivision_id)->first();
+            $data->subdivision_name = $tmp->geo_name;
+        }
 
-      return view('scheme-geo-target.index')->with('datas',$datas);
+        return view('scheme-geo-target.index')->with('datas',$datas);
     }
 
     public function add(Request $request){
 
-        $scheme_datas = SchemeStructure::select('scheme_id','scheme_name','scheme_short_name')->where('scheme_is','=','1')->get();
+        $scheme_datas = SchemeStructure::select('scheme_id','scheme_name','scheme_short_name')->where('scheme_is','=','1')->get(); // only independent scheme (scheme_is == 1)
         $subdivision_datas = GeoStructure::select('geo_id','geo_name')->orderBy('geo_name','asc')->where('level_id','=','2')->get();
         $year_datas = Year::select('year_id','year_value')->orderBy('year_value','asc')->get();
         $group_datas = Group::select('scheme_group_id','scheme_group_name')->orderBy('scheme_group_name','asc')->get();
@@ -59,18 +60,6 @@ foreach($datas as $data)
        
         return view('scheme-geo-target.add')->with(compact('scheme_datas','subdivision_datas','year_datas','group_datas','block_datas','panchayat_datas'));
     }
-
-    public function get_panchayat_name(Request $request)
-    {
-          $data = GeoStructure::where('bl_id', $request->block_id)->where('level_id','4')->get();
-          return $data;
-    }
-    
-    // public function get_block_name(Request $request)
-    // {
-    // 	$data = GeoStructure::where('sd_id',$request->subdivision_id)->where('level_id','3')->get();
-    // 	return $data;
-    // }
 
     public function get_updated_datas(Request $request)
     {
@@ -139,8 +128,6 @@ foreach($datas as $data)
 
     }
 
-    
-    
 
     // public function store(Request $request){
     //     // received_data
@@ -296,247 +283,323 @@ foreach($datas as $data)
     //     return ["response"=>"success","request"=>$request,"to_delete"=>explode(",",$request->to_delete_scheme_performance_id)];
     // }
 
-    // public function get_indicator_name(Request $request)
-    // {
-    //     // $request->scheme_id;
-    //     $data = SchemeIndicator::where('scheme_id',$request->scheme_id)->get();
-       
-    //     $independent = SchemeStructure::select('independent')->where('scheme_id',$request->scheme_id)->first();
-    //     $independent = $independent->independent;
-    //     return ["scheme_indicator_data"=>$data,"independent"=>$independent];
-    // }
+
+    public function get_panchayat_datas(Request $request)
+    {
+        $datas = GeoStructure::where('bl_id', $request->block_id)->get();
+        return $datas;
+    }
+
+    public function get_target_details(Request $request){
+        // getting datas from frontend (scheme_id, year_id, block_id, panchayat_id) and send target details according to panchayats/panchayat (acccording to block/panchayat selected)
+        
+        // received datas
+        $scheme_id = $request->scheme_id;
+        $year_id = $request->year_id;
+        $block_id = $request->block_id;
+        $panchayat_id = $request->panchayat_id;
+        if($panchayat_id){
+            $level = "panchayat"; // block/ panchayat
+        }
+        else{
+            $level = "block"; // block/ panchayat
+        }
+
+        // to send datas
+        $to_return = null;
+
+        if($level=="block"){
+            $geo_datas = GeoStructure::select("geo_name","geo_id")->where("bl_id", $block_id)->get(); // getting panchayat data form geo structure (all panchayat from selected block)
+        }
+        else{ // level=="panchayat"
+            $geo_datas = GeoStructure::select("geo_name","geo_id")->where("geo_id", $panchayat_id)->get(); // getting panchayat data form geo structure fro selected panchayat
+        }
+
+        // getiing target datas
+        foreach($geo_datas as $geo_data){
+            $target_data = SchemeGeoTarget::select('scheme_geo_target_id','target')
+                                        ->where('scheme_id', $scheme_id)
+                                        ->where('year_id', $year_id)
+                                        ->where('panchayat_id', $geo_data->geo_id) // panchayat
+                                        ->first(); // it will get all panchayat target data in respective block
+
+            // appending datas to send
+            if($target_data){
+                $geo_data->scheme_geo_target_id = $target_data->scheme_geo_target_id;
+                $geo_data->target = $target_data->target;
+            }
+            else{
+                $geo_data->scheme_geo_target_id = null;
+                $geo_data->target = null;
+            }
+        }
+        $to_return = $geo_datas; // assigning datas to a varible which is used to return datas
 
 
-    // public function get_panchayat_datas(Request $request)
-    // {
-    //     $datas = GeoStructure::where('bl_id', $request->block_id)->get();
-    //     return $datas;
-    // }
 
-    // public function get_scheme_sanction_id(Request $request){
-    //     // received datas
-    //     $year_id = $request->year_id;
-    //     $scheme_id = $request->scheme_id;
-    //     $panchayat_id = $request->panchayat_id;
-    //     $group_id = $request->group_id;
-    //     $independent = $request->independent;
+        // for response varibale
+        if($to_return){
+            $response = "success";
+        }
+        else{
+            $response = "no_data";
+        }
 
-    //     if($independent=="0"){ // under group
-    //         $data = SchemeGeoTarget2::select("scheme_sanction_id")
-    //                                 ->where("year_id", $year_id)
-    //                                 ->where("scheme_id", $scheme_id)
-    //                                 ->where("geo_id", $panchayat_id)
-    //                                 ->where("group_id", $group_id)
-    //                                 ->distinct()
-    //                                 ->get();
-    //     }
-    //     else{ // independent==1 (under govt)
-    //         $data = SchemeGeoTarget2::select("scheme_sanction_id")
-    //                                 ->where("year_id", $year_id)
-    //                                 ->where("scheme_id", $scheme_id)
-    //                                 ->where("geo_id", $panchayat_id)
-    //                                 ->distinct()
-    //                                 ->get();
-    //     }
+        return ["response"=>$response, "target_datas"=>$to_return];
+    }
 
-    //     if(count($data)!=0){
-    //         $response = "success";
-    //     }
-    //     else{
-    //         $response = "no_data";
-    //     }
+    public function save_target(Request $request){
+        // recieved datas
+        $scheme_geo_target = new SchemeGeoTarget;
 
-    //     return ["response"=>$response,"scheme_sanction_id"=>$data];
-    // }
+        if($request->purpose=="add"){
+            $scheme_geo_target->scheme_id = $request->scheme_id;
+            $scheme_geo_target->year_id = $request->year_id;
+            $scheme_geo_target->subdivision_id = GeoStructure::find($request->block_id)->sd_id;
+            $scheme_geo_target->block_id = $request->block_id;
+            $scheme_geo_target->panchayat_id = $request->panchayat_id;
+        }
+        else{ //$request->purpose == "edit" i.e. $request->scheme_geo_target_id is set
+            $scheme_geo_target = $scheme_geo_target->find($request->scheme_geo_target_id);
+        }
 
-    // public function get_all_datas(Request $request){
-    //     /*
-    //     use to send all datas related to geo_target
-    //     */
-    //     // to send
-    //     $to_return = [];
+        $scheme_geo_target->target = $request->target;
+        $scheme_geo_target->created_by = Auth::user()->id;
+        $scheme_geo_target->updated_by = Auth::user()->id;
+        if($scheme_geo_target->save()){
+            return ["response"=>"success"];
+        }
+        else{
+            return ["response"=>"failed"];
+        }
+    }
 
-    //     // received datas
-    //     $year_id = $request->year_id;
-    //     $scheme_id = $request->scheme_id;
-    //     $panchayat_id = $request->panchayat_id;
-    //     $group_id = $request->group_id;
-    //     $independent = $request->independent;
-    //     $scheme_sanction_id = $request->scheme_sanction_id;
-    //     $new_scheme_sanction_id = $request->new_scheme_sanction_id;
-    //     $new_scheme_sanction_id_entered = $request->new_scheme_sanction_id_entered;
+    public function get_scheme_sanction_id(Request $request){
+        // received datas
+        $year_id = $request->year_id;
+        $scheme_id = $request->scheme_id;
+        $panchayat_id = $request->panchayat_id;
+        $group_id = $request->group_id;
+        $independent = $request->independent;
 
-    //     $scheme_geo_target_datas = SchemeGeoTarget2::where('scheme_sanction_id', $scheme_sanction_id)->get();
-    //     $unique_scheme_geo_target_ids = [];
-    //     foreach($scheme_geo_target_datas as $scheme_geo_target_data){
-    //         if(!in_array($scheme_geo_target_data->scheme_geo_target_id, $unique_scheme_geo_target_ids)){
-    //             array_push($unique_scheme_geo_target_ids, $scheme_geo_target_data->scheme_geo_target_id);
-    //         }
-    //     }
+        if($independent=="0"){ // under group
+            $data = SchemeGeoTarget2::select("scheme_sanction_id")
+                                    ->where("year_id", $year_id)
+                                    ->where("scheme_id", $scheme_id)
+                                    ->where("geo_id", $panchayat_id)
+                                    ->where("group_id", $group_id)
+                                    ->distinct()
+                                    ->get();
+        }
+        else{ // independent==1 (under govt)
+            $data = SchemeGeoTarget2::select("scheme_sanction_id")
+                                    ->where("year_id", $year_id)
+                                    ->where("scheme_id", $scheme_id)
+                                    ->where("geo_id", $panchayat_id)
+                                    ->distinct()
+                                    ->get();
+        }
 
-    //     $indicator_datas = SchemeIndicator::where('scheme_id', $scheme_id)->get();
+        if(count($data)!=0){
+            $response = "success";
+        }
+        else{
+            $response = "no_data";
+        }
 
-    //     // getting all rows/columns
-    //     foreach($indicator_datas as $indicator_data)
-    //     {
-    //         $to_return_tmp = [];
-    //         $found = false; //data found in geo target i.e. already assigned targets
-    //         foreach($scheme_geo_target_datas as $scheme_geo_target_data){
-    //             if($indicator_data->indicator_id==$scheme_geo_target_data->indicator_id)
-    //             {
-    //                 $to_return_tmp["indicator_id"] = $indicator_data->indicator_id;
-    //                 $to_return_tmp["indicator_name"] = $indicator_data->indicator_name;
-    //                 $to_return_tmp["geo_related"] = $scheme_geo_target_data->geo_related;
-    //                 $to_return_tmp["target"] = $scheme_geo_target_data->target;
-    //                 $to_return_tmp["indicator_datas"] = [];
+        return ["response"=>$response,"scheme_sanction_id"=>$data];
+    }
 
-    //                 // scheme_performance datas in ["indicator_datas] starts
-    //                 $to_return_indicator_datas_tmp = [];
-    //                 $scheme_performance_datas = SchemePerformance2::where('scheme_geo_target_id', $scheme_geo_target_data->scheme_geo_target_id)->get();
-    //                 foreach($scheme_performance_datas as $scheme_performance_data){
-    //                     $tmp_to_push["scheme_performance_id"] = $scheme_performance_data->scheme_performance_id;
-    //                     $tmp_to_push["indicator_sanction_id"] = $scheme_performance_data->indicator_sanction_id;
-    //                     $tmp_to_push["latitude"] = $scheme_performance_data->latitude;
-    //                     $tmp_to_push["longitude"] = $scheme_performance_data->longitude;
-    //                     $tmp_to_push["comments"] = $scheme_performance_data->comments;
-    //                     array_push($to_return_indicator_datas_tmp, $tmp_to_push);
-    //                 }
-    //                 if($to_return_indicator_datas_tmp){
-    //                     $to_return_tmp["indicator_datas"] = $to_return_indicator_datas_tmp;
-    //                 }
-    //                 // scheme_performance_datas ends
+    public function get_all_datas(Request $request){
+        /*
+        use to send all datas related to geo_target
+        */
+        // to send
+        $to_return = [];
 
-    //                 $found = true; // if data found in geo target i.e. already assigned targets
-    //                 array_push($to_return, $to_return_tmp);
-    //             }
-    //         }
+        // received datas
+        $year_id = $request->year_id;
+        $scheme_id = $request->scheme_id;
+        $panchayat_id = $request->panchayat_id;
+        $group_id = $request->group_id;
+        $independent = $request->independent;
+        $scheme_sanction_id = $request->scheme_sanction_id;
+        $new_scheme_sanction_id = $request->new_scheme_sanction_id;
+        $new_scheme_sanction_id_entered = $request->new_scheme_sanction_id_entered;
 
-    //         // no data data found in geo target i.e. already assigned targets
-    //         if(!$found){
-    //             $to_return_tmp["indicator_id"] = $indicator_data->indicator_id;
-    //             $to_return_tmp["indicator_name"] = $indicator_data->indicator_name;
-    //             $to_return_tmp["geo_related"] = '0';
-    //             $to_return_tmp["target"] = '0';
-    //             $to_return_tmp["indicator_datas"] = [];
-    //             array_push($to_return, $to_return_tmp);
-    //         }
-    //     }
+        $scheme_geo_target_datas = SchemeGeoTarget2::where('scheme_sanction_id', $scheme_sanction_id)->get();
+        $unique_scheme_geo_target_ids = [];
+        foreach($scheme_geo_target_datas as $scheme_geo_target_data){
+            if(!in_array($scheme_geo_target_data->scheme_geo_target_id, $unique_scheme_geo_target_ids)){
+                array_push($unique_scheme_geo_target_ids, $scheme_geo_target_data->scheme_geo_target_id);
+            }
+        }
 
-    //     if(count($to_return)!=0){
-    //         $response = "success";
-    //     }
-    //     else{
-    //         $response = "no_data";
-    //     }
+        $indicator_datas = SchemeIndicator::where('scheme_id', $scheme_id)->get();
 
-    //     return ["response"=>$response, "data"=>$to_return];
-    // }
-    // public function delete(Request $request)
-    // {
-    //      if(SchemeGeoTarget::find($request->scheme_geo_target_id)){
-    //         SchemeGeoTarget::where('scheme_geo_target_id',$request->scheme_geo_target_id)->delete();
-    //         session()->put('alert-class','alert-success');
-    //         session()->put('alert-content','Deleted successfully !');
-    //     }
+        // getting all rows/columns
+        foreach($indicator_datas as $indicator_data)
+        {
+            $to_return_tmp = [];
+            $found = false; //data found in geo target i.e. already assigned targets
+            foreach($scheme_geo_target_datas as $scheme_geo_target_data){
+                if($indicator_data->indicator_id==$scheme_geo_target_data->indicator_id)
+                {
+                    $to_return_tmp["indicator_id"] = $indicator_data->indicator_id;
+                    $to_return_tmp["indicator_name"] = $indicator_data->indicator_name;
+                    $to_return_tmp["geo_related"] = $scheme_geo_target_data->geo_related;
+                    $to_return_tmp["target"] = $scheme_geo_target_data->target;
+                    $to_return_tmp["indicator_datas"] = [];
 
-    //     return redirect('scheme-geo-target');
-    // }
+                    // scheme_performance datas in ["indicator_datas] starts
+                    $to_return_indicator_datas_tmp = [];
+                    $scheme_performance_datas = SchemePerformance2::where('scheme_geo_target_id', $scheme_geo_target_data->scheme_geo_target_id)->get();
+                    foreach($scheme_performance_datas as $scheme_performance_data){
+                        $tmp_to_push["scheme_performance_id"] = $scheme_performance_data->scheme_performance_id;
+                        $tmp_to_push["indicator_sanction_id"] = $scheme_performance_data->indicator_sanction_id;
+                        $tmp_to_push["latitude"] = $scheme_performance_data->latitude;
+                        $tmp_to_push["longitude"] = $scheme_performance_data->longitude;
+                        $tmp_to_push["comments"] = $scheme_performance_data->comments;
+                        array_push($to_return_indicator_datas_tmp, $tmp_to_push);
+                    }
+                    if($to_return_indicator_datas_tmp){
+                        $to_return_tmp["indicator_datas"] = $to_return_indicator_datas_tmp;
+                    }
+                    // scheme_performance_datas ends
 
+                    $found = true; // if data found in geo target i.e. already assigned targets
+                    array_push($to_return, $to_return_tmp);
+                }
+            }
 
-    // public function exportExcel_Scheme_Geo_structure()
-    // {
-    //    # code...
-    //    $data = array(1 => array("Scheme Geo target Sheet"));
-    //    $data[] = array('Sl. No.', 'Scheme', 'Block Name', 'Panchayat', 'Target', 'Year');
+            // no data data found in geo target i.e. already assigned targets
+            if(!$found){
+                $to_return_tmp["indicator_id"] = $indicator_data->indicator_id;
+                $to_return_tmp["indicator_name"] = $indicator_data->indicator_name;
+                $to_return_tmp["geo_related"] = '0';
+                $to_return_tmp["target"] = '0';
+                $to_return_tmp["indicator_datas"] = [];
+                array_push($to_return, $to_return_tmp);
+            }
+        }
 
+        if(count($to_return)!=0){
+            $response = "success";
+        }
+        else{
+            $response = "no_data";
+        }
 
-    //    $datas = SchemeGeoTarget::
-    //          leftJoin('scheme_structure', 'scheme_geo_target.scheme_id', '=', 'scheme_structure.scheme_id')
-    //        ->leftJoin('geo_structure', 'scheme_geo_target.geo_id', '=', 'geo_structure.geo_id')
-    //        ->leftJoin('scheme_indicator', 'scheme_geo_target.indicator_id', '=', 'scheme_indicator.indicator_id')
-    //        ->leftJoin('year', 'scheme_geo_target.year_id', '=', 'year.year_id')
-    //        ->leftJoin('scheme_group', 'scheme_geo_target.group_id', '=', 'scheme_group.scheme_group_id')
-    //        ->select('scheme_geo_target.*', 'scheme_structure.scheme_name', 'scheme_structure.scheme_short_name', 'geo_structure.geo_name', 'geo_structure.level_id', 'geo_structure.parent_id', 'scheme_indicator.indicator_name', 'year.year_value', 'scheme_group.scheme_group_name')
-    //        ->orderBy('scheme_geo_target.scheme_geo_target_id', 'desc')
-    //        ->get();
-
-    //    foreach ($datas as $key => $value) {
-    //        if ($data->level_id == 4) {
-    //            $tmp = GeoStructure::find($value->parent_id);
-    //            if ($tmp->geo_name) {
-    //                $value->bl_name = $tmp->geo_name;
-    //            } else {
-    //                $value->bl_name = "NA";
-    //            }
-    //        } else {
-    //            $value->bl_name = "NA";
-    //        }
-    //        $data[] = array(
-    //            $key + 1,
-    //            $value->scheme_name,
-    //            $value->bl_name,
-    //            $value->geo_name,
-    //            $value->target,
-    //            $value->year_value,
-    //        );
-    //    }
+        return ["response"=>$response, "data"=>$to_return];
+    }
 
 
-    //    \Excel::create('Scheme-Geo-target-Sheet', function ($excel) use ($data) {
+    public function delete(Request $request)
+    {
+         if(SchemeGeoTarget::find($request->scheme_geo_target_id)){
+            SchemeGeoTarget::where('scheme_geo_target_id',$request->scheme_geo_target_id)->delete();
+            session()->put('alert-class','alert-success');
+            session()->put('alert-content','Deleted successfully !');
+        }
 
-    //        // Set the title
-    //        $excel->setTitle('Scheme-Geo-target-Sheet');
+        return redirect('scheme-geo-target');
+    }
 
-    //        // Chain the setters
-    //        $excel->setCreator('Paatham')->setCompany('Paatham');
 
-    //        $excel->sheet('Fees', function ($sheet) use ($data) {
-    //            $sheet->freezePane('A3');
-    //            $sheet->mergeCells('A1:I1');
-    //            $sheet->fromArray($data, null, 'A1', true, false);
-    //            $sheet->setColumnFormat(array('I1' => '@'));
-    //        });
-    //    })->download('xls');
+    public function exportExcel_Scheme_Geo_structure()
+    {
+       # code...
+       $data = array(1 => array("Scheme Geo target Sheet"));
+       $data[] = array('Sl. No.', 'Scheme', 'Block Name', 'Panchayat', 'Target', 'Year');
 
-    // }
-    // public function exportPDF_Scheme_Geo_structure(){
-    //     $SchemeGeoTarget_pdf = SchemeGeoTarget::leftJoin('scheme_structure', 'scheme_geo_target.scheme_id', '=', 'scheme_structure.scheme_id')
-    //                 ->leftJoin('geo_structure', 'scheme_geo_target.geo_id', '=', 'geo_structure.geo_id')
-    //                 ->leftJoin('scheme_indicator','scheme_geo_target.indicator_id','=','scheme_indicator.indicator_id')
-    //                 ->leftJoin('year','scheme_geo_target.year_id','=','year.year_id')
-    //                 ->leftJoin('scheme_group','scheme_geo_target.group_id','=','scheme_group.scheme_group_id')
-    //                 ->select('scheme_geo_target.*','scheme_structure.scheme_name','scheme_structure.scheme_short_name','geo_structure.geo_name','geo_structure.level_id','geo_structure.parent_id','scheme_indicator.indicator_name','year.year_value','scheme_group.scheme_group_name')
-    //                 ->orderBy('scheme_geo_target.scheme_geo_target_id','desc')
-    //                 ->get();
 
-    //                 $i=0;
-    //                 foreach($SchemeGeoTarget_pdf as $data){
-    //                     if($data->level_id==4){
-    //                         $tmp = GeoStructure::find($data->parent_id);
-    //                         if($tmp->geo_name)
-    //                         { 
-    //                             $SchemeGeoTarget_pdf[$i]->bl_name = $tmp->geo_name; 
-    //                         }
-    //                         else{
-    //                         $SchemeGeoTarget_pdf[$i]->bl_name = "NA";
-    //                         }
-    //                         }
-    //                         else{
-    //                             $SchemeGeoTarget_pdf[$i]->bl_name = "NA";
-    //                         }
-    //                         $i++;
-    //                 }
+       $datas = SchemeGeoTarget::
+             leftJoin('scheme_structure', 'scheme_geo_target.scheme_id', '=', 'scheme_structure.scheme_id')
+           ->leftJoin('geo_structure', 'scheme_geo_target.geo_id', '=', 'geo_structure.geo_id')
+           ->leftJoin('scheme_indicator', 'scheme_geo_target.indicator_id', '=', 'scheme_indicator.indicator_id')
+           ->leftJoin('year', 'scheme_geo_target.year_id', '=', 'year.year_id')
+           ->leftJoin('scheme_group', 'scheme_geo_target.group_id', '=', 'scheme_group.scheme_group_id')
+           ->select('scheme_geo_target.*', 'scheme_structure.scheme_name', 'scheme_structure.scheme_short_name', 'geo_structure.geo_name', 'geo_structure.level_id', 'geo_structure.parent_id', 'scheme_indicator.indicator_name', 'year.year_value', 'scheme_group.scheme_group_name')
+           ->orderBy('scheme_geo_target.scheme_geo_target_id', 'desc')
+           ->get();
+
+       foreach ($datas as $key => $value) {
+           if ($data->level_id == 4) {
+               $tmp = GeoStructure::find($value->parent_id);
+               if ($tmp->geo_name) {
+                   $value->bl_name = $tmp->geo_name;
+               } else {
+                   $value->bl_name = "NA";
+               }
+           } else {
+               $value->bl_name = "NA";
+           }
+           $data[] = array(
+               $key + 1,
+               $value->scheme_name,
+               $value->bl_name,
+               $value->geo_name,
+               $value->target,
+               $value->year_value,
+           );
+       }
+
+
+       \Excel::create('Scheme-Geo-target-Sheet', function ($excel) use ($data) {
+
+           // Set the title
+           $excel->setTitle('Scheme-Geo-target-Sheet');
+
+           // Chain the setters
+           $excel->setCreator('Paatham')->setCompany('Paatham');
+
+           $excel->sheet('Fees', function ($sheet) use ($data) {
+               $sheet->freezePane('A3');
+               $sheet->mergeCells('A1:I1');
+               $sheet->fromArray($data, null, 'A1', true, false);
+               $sheet->setColumnFormat(array('I1' => '@'));
+           });
+       })->download('xls');
+
+    }
+    public function exportPDF_Scheme_Geo_structure(){
+        $SchemeGeoTarget_pdf = SchemeGeoTarget::leftJoin('scheme_structure', 'scheme_geo_target.scheme_id', '=', 'scheme_structure.scheme_id')
+                    ->leftJoin('geo_structure', 'scheme_geo_target.geo_id', '=', 'geo_structure.geo_id')
+                    ->leftJoin('scheme_indicator','scheme_geo_target.indicator_id','=','scheme_indicator.indicator_id')
+                    ->leftJoin('year','scheme_geo_target.year_id','=','year.year_id')
+                    ->leftJoin('scheme_group','scheme_geo_target.group_id','=','scheme_group.scheme_group_id')
+                    ->select('scheme_geo_target.*','scheme_structure.scheme_name','scheme_structure.scheme_short_name','geo_structure.geo_name','geo_structure.level_id','geo_structure.parent_id','scheme_indicator.indicator_name','year.year_value','scheme_group.scheme_group_name')
+                    ->orderBy('scheme_geo_target.scheme_geo_target_id','desc')
+                    ->get();
+
+                    $i=0;
+                    foreach($SchemeGeoTarget_pdf as $data){
+                        if($data->level_id==4){
+                            $tmp = GeoStructure::find($data->parent_id);
+                            if($tmp->geo_name)
+                            { 
+                                $SchemeGeoTarget_pdf[$i]->bl_name = $tmp->geo_name; 
+                            }
+                            else{
+                            $SchemeGeoTarget_pdf[$i]->bl_name = "NA";
+                            }
+                            }
+                            else{
+                                $SchemeGeoTarget_pdf[$i]->bl_name = "NA";
+                            }
+                            $i++;
+                    }
              
-    //     date_default_timezone_set('Asia/Kolkata');
-    //     $SchemeGeoTarget = date('d-m-Y H:i A');
-    //     // echo "<pre>";
-    //     // print_r($SchemeGeoTarget_pdf->toArray());
-    //     // exit;
+        date_default_timezone_set('Asia/Kolkata');
+        $SchemeGeoTarget = date('d-m-Y H:i A');
+        // echo "<pre>";
+        // print_r($SchemeGeoTarget_pdf->toArray());
+        // exit;
 
 
-    //     $pdf = PDF::loadView('department/Createpdfs',compact('SchemeGeoTarget_pdf','SchemeGeoTarget'));
-    //     return $pdf->download('SchemeGeoTarget.pdf');
+        $pdf = PDF::loadView('department/Createpdfs',compact('SchemeGeoTarget_pdf','SchemeGeoTarget'));
+        return $pdf->download('SchemeGeoTarget.pdf');
 
-    // }
+    }
 
 }
