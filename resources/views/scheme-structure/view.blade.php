@@ -49,6 +49,7 @@ hr.new2 {
                     <p>
                         <b>Scheme Type:</b> {{$data->sch_type_name}}
                         <br/><b>Department:</b> {{$data->dept_name}}
+                        <br/><b>Asset:</b> {{$data->scheme_asset_name}}
                         <br/><b>Status:</b> <?php if($data->status=="1"){
                             ?><i class="fas fa-check-circle text-success"></i>&nbsp;&nbsp;Active<?php
                         } else{

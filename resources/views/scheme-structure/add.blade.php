@@ -153,17 +153,9 @@
                                     </div>
                                 </div>
                                 <br/>
-                                <label>Attributes</label>
-                                <table class="table order-list" style="margin-top: 10px;">
-                                    <thead style="background: #cedcff">
-                                        <tr>
-                                            <th>Name</th>
-                                            <th></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="append-attributes">
-                                    </tbody>
-                                </table>
+                                <div id="append-attributes">
+                                    <!-- attributes appedn from backend -->
+                                </div>
                             </div>
                         </div>
                     </div>

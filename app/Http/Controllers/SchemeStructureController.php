@@ -23,6 +23,7 @@ use Maatwebsite\Excel\Facades\Excel;
 class SchemeStructureController extends Controller
 {
     public function index(){
+
         $datas = SchemeStructure::leftJoin('department', 'scheme_structure.dept_id', '=', 'department.dept_id')
                     ->select('scheme_structure.*','department.dept_name')
                     ->orderBy('scheme_structure.scheme_id','desc')
@@ -56,7 +57,8 @@ class SchemeStructureController extends Controller
     public function view(Request $request){
         $data = SchemeStructure::leftJoin('department','scheme_structure.dept_id','=','department.dept_id')
                                         ->leftJoin('scheme_type','scheme_type.sch_type_id','=','scheme_structure.scheme_type_id')
-                                        ->select('scheme_structure.*','department.dept_name',"scheme_type.sch_type_name")
+                                        ->leftJoin('scheme_assets','scheme_assets.scheme_asset_id','=','scheme_structure.scheme_asset_id')
+                                        ->select('scheme_structure.*','department.dept_name',"scheme_type.sch_type_name", "scheme_assets.scheme_asset_name")
                                         ->where('scheme_id',$request->scheme_id)
                                         ->first();
 
@@ -72,19 +74,36 @@ class SchemeStructureController extends Controller
 
     public function get_attributes_details(Request $request){ // according to SchemeAsset selected
         $scheme_asset_datas = SchemeAsset::where('scheme_asset_id', $request->scheme_asset_id)->first();
-        $to_send=""; // to send data/ tr/ td, entire table rows
+        $to_send='<label>Attributes</label><table class="table" style="margin-top: 10px;">'; // to send data/ tr/ td, entire table rows
         $scheme_is = $request->scheme_is; // receiving data 1= independent, 2 = under a group
         $attribute =  unserialize($scheme_asset_datas->attribute);
-        // replacing UOM name // [or unique identifier (later to be update)]
-        foreach ($attribute as $key => $value) {
-            $to_send .= "<tr><td>".$value['name']."</td>";
-            $uom = Uom::where('uom_id', $value)->first()->uom_name;
 
-            if($scheme_is=="1")
+        // defining thead
+        if($scheme_is=="1"){ // independent, only one "th" needed
+            $to_send.='<thead style="background: #cedcff">
+                <tr>
+                    <th>Name</th>
+                </tr>
+            </thead>';
+        }
+        else{ // two "th" needed
+            $to_send.='<thead style="background: #cedcff">
+                <tr>
+                    <th>Name</th>
+                    <th>Enter Details</th>
+                </tr>
+            </thead>';
+        }
+
+
+        // replacing UOM name, id, etc for attrbutes]
+        $to_send.='<tbody>';
+        foreach ($attribute as $value) {
+            $to_send .= '<tr><td>'.$value['name'].'</td>';
+            $uom = Uom::where('uom_id', $value['uom'])->first()->uom_name;
+
+            if($scheme_is=="2") // if group, else no need of second "td"
             {
-                $to_send .= '<td>-</td></tr>';
-            }
-            else{
                 if($uom=="number")
                 {
                     $to_send .= '<td><input type="text" class="form-control" name="'.strtolower(preg_replace('/\s+/', '', $key)).'"></td></tr>';
@@ -101,6 +120,7 @@ class SchemeStructureController extends Controller
                 }
             }
         }
+        $to_send.='</tbody></table>';
 
         return ["to_append"=>$to_send];
     }
@@ -152,11 +172,6 @@ class SchemeStructureController extends Controller
             $scheme_performance->created_by = Auth::user()->id;
             $scheme_performance->updated_by = Auth::user()->id;
         }
-
-        // echo "<pre>";
-        // print_r($request->toArray());
-        // print_r($attribute);
-        // exit;
 
         $scheme_structure->status = $request->status;
         $scheme_structure->dept_id = $request->dept_id;
@@ -299,24 +314,24 @@ class SchemeStructureController extends Controller
         return redirect('scheme-structure');
     }
 
-        // export to pdf and excel
-        public function exportExcel_Scheme_structure()
-        {
-    
-            return Excel::download(new DefineSchemes, 'Define_Schemes-Sheet.xls');
-    
-        }
-        public function exportPDF_Scheme_structure()
-        {
-            $SchemeStructure_pdf = SchemeStructure::leftJoin('department', 'scheme_structure.dept_id', '=', 'department.dept_id')
-                        ->select('scheme_structure.*','department.dept_name')
-                        ->orderBy('scheme_structure.scheme_id','desc')->get();
-          
-             date_default_timezone_set('Asia/Kolkata');
-             $SchemeStructureTime = date('d-m-Y H:i A');
-             $pdf = PDF::loadView('department/Createpdfs',compact('SchemeStructure_pdf','SchemeStructureTime'));
-             return $pdf->download('SchemeStructure.pdf');
-    
-        }
+    // export to pdf and excel
+    public function exportExcel_Scheme_structure()
+    {
+
+        return Excel::download(new DefineSchemes, 'Define_Schemes-Sheet.xls');
+
+    }
+    public function exportPDF_Scheme_structure()
+    {
+        $SchemeStructure_pdf = SchemeStructure::leftJoin('department', 'scheme_structure.dept_id', '=', 'department.dept_id')
+                    ->select('scheme_structure.*','department.dept_name')
+                    ->orderBy('scheme_structure.scheme_id','desc')->get();
+        
+            date_default_timezone_set('Asia/Kolkata');
+            $SchemeStructureTime = date('d-m-Y H:i A');
+            $pdf = PDF::loadView('department/Createpdfs',compact('SchemeStructure_pdf','SchemeStructureTime'));
+            return $pdf->download('SchemeStructure.pdf');
+
+    }
     
 }
