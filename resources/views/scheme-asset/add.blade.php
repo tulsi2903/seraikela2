@@ -111,7 +111,7 @@
                         <tbody>
                             <tr>
                                 <td colspan="3"></td>
-                                <td><button type="button" onclick="append_table_data('add',null);" class="btn btn-secondary"><i class="fa fa-plus-circle" aria-hidden="true"></i></button></td>
+                                <td><button type="button" onclick="append_table_data('add',null);" class="btn btn-secondary btn-sm btn-circle">Add <i class="fa fa-plus-circle" aria-hidden="true"></i></button></td>
                             </tr>
                         </tbody>
                     </table>
