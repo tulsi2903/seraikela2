@@ -95,16 +95,16 @@ Route::get('scheme-structure/get-attributes-details', 'SchemeStructureController
 
 /*Scheme Geo Target*/
 Route::get('scheme-geo-target','SchemeGeoTargetController@index');
+Route::get('scheme-geo-target','SchemeGeoTargetController@add'); // add and index both add.blade.php, u can change later if needed
 Route::get('scheme-geo-target/add','SchemeGeoTargetController@add');
-Route::post('scheme-geo-target/store','SchemeGeoTargetController@store');
-Route::get('scheme-geo-target/store','SchemeGeoTargetController@store');
+// Route::post('scheme-geo-target/store','SchemeGeoTargetController@store');
+// Route::get('scheme-geo-target/store','SchemeGeoTargetController@store');
 Route::get('scheme-geo-target/get-panchayat-datas','SchemeGeoTargetController@get_panchayat_datas');
 Route::get('scheme-geo-target/get-target-details','SchemeGeoTargetController@get_target_details');
 Route::post('scheme-geo-target/save-target','SchemeGeoTargetController@save_target'); // individual panchayat wise
-
-Route::get('scheme-geo-target/get-all-datas','SchemeGeoTargetController@get_all_datas');
-Route::get('scheme-geo-target/get-scheme-sanction-id','SchemeGeoTargetController@get_scheme_sanction_id');
-Route::get('scheme-geo-target/delete/{scheme_geo_target_id}','SchemeGeoTargetController@delete');
+// Route::get('scheme-geo-target/get-all-datas','SchemeGeoTargetController@get_all_datas');
+// Route::get('scheme-geo-target/get-scheme-sanction-id','SchemeGeoTargetController@get_scheme_sanction_id');
+// Route::get('scheme-geo-target/delete/{scheme_geo_target_id}','SchemeGeoTargetController@delete');
 Route::get('scheme-geo-target/export/excelURL','SchemeGeoTargetController@exportExcel_Scheme_Geo_structure');
 Route::get('scheme-geo-target/pdf/pdfURL','SchemeGeoTargetController@exportPDF_Scheme_Geo_structure');
 

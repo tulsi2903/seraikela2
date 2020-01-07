@@ -45,7 +45,7 @@ class SchemeGeoTargetController extends Controller
             $data->subdivision_name = $tmp->geo_name;
         }
 
-        return view('scheme-geo-target.index')->with('datas',$datas);
+        return view('scheme-geo-target.add')->with('datas',$datas);
     }
 
     public function add(Request $request){
@@ -61,72 +61,72 @@ class SchemeGeoTargetController extends Controller
         return view('scheme-geo-target.add')->with(compact('scheme_datas','subdivision_datas','year_datas','group_datas','block_datas','panchayat_datas'));
     }
 
-    public function get_updated_datas(Request $request)
-    {
-        $data =array();
-        $data = SchemeGeoTarget::where('scheme_id',$request->scheme_id)->where('year_id',$request->year_id)->where('panchayat_id',$request->panchayat_id)->first();
-        if($data)
-        {
-           return $data;
-        }
-        else
-        {
-            $temp_array=array();
-            $temp_array['target']="";
-            return $temp_array;
+    // public function get_updated_datas(Request $request)
+    // {
+    //     $data =array();
+    //     $data = SchemeGeoTarget::where('scheme_id',$request->scheme_id)->where('year_id',$request->year_id)->where('panchayat_id',$request->panchayat_id)->first();
+    //     if($data)
+    //     {
+    //        return $data;
+    //     }
+    //     else
+    //     {
+    //         $temp_array=array();
+    //         $temp_array['target']="";
+    //         return $temp_array;
           
-        }
-    }
+    //     }
+    // }
 
-    public function store(Request $request)
-    {
-        $scheme_geo_target = new SchemeGeoTarget;
+    // public function store(Request $request)
+    // {
+    //     $scheme_geo_target = new SchemeGeoTarget;
 
-        if(SchemeGeoTarget::where('scheme_id',$request->scheme_id)->where('year_id',$request->year_id)->where('panchayat_id',$request->panchayat_id)->exists()){
-            $scheme_geo_target = SchemeGeoTarget::where('scheme_id',$request->scheme_id)->where('year_id',$request->year_id)->where('panchayat_id',$request->panchayat_id)->first();
-        }
+    //     if(SchemeGeoTarget::where('scheme_id',$request->scheme_id)->where('year_id',$request->year_id)->where('panchayat_id',$request->panchayat_id)->exists()){
+    //         $scheme_geo_target = SchemeGeoTarget::where('scheme_id',$request->scheme_id)->where('year_id',$request->year_id)->where('panchayat_id',$request->panchayat_id)->first();
+    //     }
 
-        if(isset($request->registration_no)){
-            $registration_no = $request->registration_no;
-            for($i=0;i<count($registration_no);$i++){
-                $scheme_geo_target = new SchemeGeoTarget;
-                $scheme_geo_target->scheme_id = $request->scheme_id;
-                $scheme_geo_target->year_id = $request->year_id;
-                $scheme_geo_target->subdivision_id = $request->subdivision_id;
-                $scheme_geo_target->block_id = $request->block_id;
-                $scheme_geo_target->panchayat_id = $request->panchayat_id;
-                $scheme_geo_target->target = $request->current_target;
+    //     if(isset($request->registration_no)){
+    //         $registration_no = $request->registration_no;
+    //         for($i=0;i<count($registration_no);$i++){
+    //             $scheme_geo_target = new SchemeGeoTarget;
+    //             $scheme_geo_target->scheme_id = $request->scheme_id;
+    //             $scheme_geo_target->year_id = $request->year_id;
+    //             $scheme_geo_target->subdivision_id = $request->subdivision_id;
+    //             $scheme_geo_target->block_id = $request->block_id;
+    //             $scheme_geo_target->panchayat_id = $request->panchayat_id;
+    //             $scheme_geo_target->target = $request->current_target;
 
-                $scheme_geo_target->registration_no = $request->registartion_no[$i];
-                $scheme_geo_target->sanction_no = $request->sanction_no[$i];
-                $scheme_geo_target->landmark = $request->landmark[$i];
-                $scheme_geo_target->latitude = $request->latitude[$i];
-                $scheme_geo_target->gallery = $request->gallery[$i];
-                $scheme_geo_target->status = $request->status[$i];
-                $scheme_geo_target->comments = $request->comments[$i];
+    //             $scheme_geo_target->registration_no = $request->registartion_no[$i];
+    //             $scheme_geo_target->sanction_no = $request->sanction_no[$i];
+    //             $scheme_geo_target->landmark = $request->landmark[$i];
+    //             $scheme_geo_target->latitude = $request->latitude[$i];
+    //             $scheme_geo_target->gallery = $request->gallery[$i];
+    //             $scheme_geo_target->status = $request->status[$i];
+    //             $scheme_geo_target->comments = $request->comments[$i];
 
-                $scheme_geo_target->created_by = Auth::user()->id;
-                $scheme_geo_target->updated_by = Auth::user()->id;
-            }
-        }
+    //             $scheme_geo_target->created_by = Auth::user()->id;
+    //             $scheme_geo_target->updated_by = Auth::user()->id;
+    //         }
+    //     }
 
         
         
 
        
 
-        if($scheme_geo_target->save()){
-            session()->put('alert-class','alert-success');
-            session()->put('alert-content','Scheme Geo Target have been successfully submitted !');
-        }
-        else{
-            session()->put('alert-class','alert-danger');
-            session()->put('alert-content','Something went wrong while adding new details !');
-        }
+    //     if($scheme_geo_target->save()){
+    //         session()->put('alert-class','alert-success');
+    //         session()->put('alert-content','Scheme Geo Target have been successfully submitted !');
+    //     }
+    //     else{
+    //         session()->put('alert-class','alert-danger');
+    //         session()->put('alert-content','Something went wrong while adding new details !');
+    //     }
 
-        return redirect('scheme-geo-target');
+    //     return redirect('scheme-geo-target');
 
-    }
+    // }
 
 
     // public function store(Request $request){
@@ -336,7 +336,6 @@ class SchemeGeoTargetController extends Controller
         $to_return = $geo_datas; // assigning datas to a varible which is used to return datas
 
 
-
         // for response varibale
         if($to_return){
             $response = "success";
@@ -344,11 +343,10 @@ class SchemeGeoTargetController extends Controller
         else{
             $response = "no_data";
         }
-
         return ["response"=>$response, "target_datas"=>$to_return];
     }
 
-    public function save_target(Request $request){
+    public function save_target(Request $request){ // save functiuon to save target data of individual panchayat
         // recieved datas
         $scheme_geo_target = new SchemeGeoTarget;
 
@@ -374,136 +372,136 @@ class SchemeGeoTargetController extends Controller
         }
     }
 
-    public function get_scheme_sanction_id(Request $request){
-        // received datas
-        $year_id = $request->year_id;
-        $scheme_id = $request->scheme_id;
-        $panchayat_id = $request->panchayat_id;
-        $group_id = $request->group_id;
-        $independent = $request->independent;
+    // public function get_scheme_sanction_id(Request $request){
+    //     // received datas
+    //     $year_id = $request->year_id;
+    //     $scheme_id = $request->scheme_id;
+    //     $panchayat_id = $request->panchayat_id;
+    //     $group_id = $request->group_id;
+    //     $independent = $request->independent;
 
-        if($independent=="0"){ // under group
-            $data = SchemeGeoTarget2::select("scheme_sanction_id")
-                                    ->where("year_id", $year_id)
-                                    ->where("scheme_id", $scheme_id)
-                                    ->where("geo_id", $panchayat_id)
-                                    ->where("group_id", $group_id)
-                                    ->distinct()
-                                    ->get();
-        }
-        else{ // independent==1 (under govt)
-            $data = SchemeGeoTarget2::select("scheme_sanction_id")
-                                    ->where("year_id", $year_id)
-                                    ->where("scheme_id", $scheme_id)
-                                    ->where("geo_id", $panchayat_id)
-                                    ->distinct()
-                                    ->get();
-        }
+    //     if($independent=="0"){ // under group
+    //         $data = SchemeGeoTarget2::select("scheme_sanction_id")
+    //                                 ->where("year_id", $year_id)
+    //                                 ->where("scheme_id", $scheme_id)
+    //                                 ->where("geo_id", $panchayat_id)
+    //                                 ->where("group_id", $group_id)
+    //                                 ->distinct()
+    //                                 ->get();
+    //     }
+    //     else{ // independent==1 (under govt)
+    //         $data = SchemeGeoTarget2::select("scheme_sanction_id")
+    //                                 ->where("year_id", $year_id)
+    //                                 ->where("scheme_id", $scheme_id)
+    //                                 ->where("geo_id", $panchayat_id)
+    //                                 ->distinct()
+    //                                 ->get();
+    //     }
 
-        if(count($data)!=0){
-            $response = "success";
-        }
-        else{
-            $response = "no_data";
-        }
+    //     if(count($data)!=0){
+    //         $response = "success";
+    //     }
+    //     else{
+    //         $response = "no_data";
+    //     }
 
-        return ["response"=>$response,"scheme_sanction_id"=>$data];
-    }
+    //     return ["response"=>$response,"scheme_sanction_id"=>$data];
+    // }
 
-    public function get_all_datas(Request $request){
-        /*
-        use to send all datas related to geo_target
-        */
-        // to send
-        $to_return = [];
+    // public function get_all_datas(Request $request){
+    //     /*
+    //     use to send all datas related to geo_target
+    //     */
+    //     // to send
+    //     $to_return = [];
 
-        // received datas
-        $year_id = $request->year_id;
-        $scheme_id = $request->scheme_id;
-        $panchayat_id = $request->panchayat_id;
-        $group_id = $request->group_id;
-        $independent = $request->independent;
-        $scheme_sanction_id = $request->scheme_sanction_id;
-        $new_scheme_sanction_id = $request->new_scheme_sanction_id;
-        $new_scheme_sanction_id_entered = $request->new_scheme_sanction_id_entered;
+    //     // received datas
+    //     $year_id = $request->year_id;
+    //     $scheme_id = $request->scheme_id;
+    //     $panchayat_id = $request->panchayat_id;
+    //     $group_id = $request->group_id;
+    //     $independent = $request->independent;
+    //     $scheme_sanction_id = $request->scheme_sanction_id;
+    //     $new_scheme_sanction_id = $request->new_scheme_sanction_id;
+    //     $new_scheme_sanction_id_entered = $request->new_scheme_sanction_id_entered;
 
-        $scheme_geo_target_datas = SchemeGeoTarget2::where('scheme_sanction_id', $scheme_sanction_id)->get();
-        $unique_scheme_geo_target_ids = [];
-        foreach($scheme_geo_target_datas as $scheme_geo_target_data){
-            if(!in_array($scheme_geo_target_data->scheme_geo_target_id, $unique_scheme_geo_target_ids)){
-                array_push($unique_scheme_geo_target_ids, $scheme_geo_target_data->scheme_geo_target_id);
-            }
-        }
+    //     $scheme_geo_target_datas = SchemeGeoTarget2::where('scheme_sanction_id', $scheme_sanction_id)->get();
+    //     $unique_scheme_geo_target_ids = [];
+    //     foreach($scheme_geo_target_datas as $scheme_geo_target_data){
+    //         if(!in_array($scheme_geo_target_data->scheme_geo_target_id, $unique_scheme_geo_target_ids)){
+    //             array_push($unique_scheme_geo_target_ids, $scheme_geo_target_data->scheme_geo_target_id);
+    //         }
+    //     }
 
-        $indicator_datas = SchemeIndicator::where('scheme_id', $scheme_id)->get();
+    //     $indicator_datas = SchemeIndicator::where('scheme_id', $scheme_id)->get();
 
-        // getting all rows/columns
-        foreach($indicator_datas as $indicator_data)
-        {
-            $to_return_tmp = [];
-            $found = false; //data found in geo target i.e. already assigned targets
-            foreach($scheme_geo_target_datas as $scheme_geo_target_data){
-                if($indicator_data->indicator_id==$scheme_geo_target_data->indicator_id)
-                {
-                    $to_return_tmp["indicator_id"] = $indicator_data->indicator_id;
-                    $to_return_tmp["indicator_name"] = $indicator_data->indicator_name;
-                    $to_return_tmp["geo_related"] = $scheme_geo_target_data->geo_related;
-                    $to_return_tmp["target"] = $scheme_geo_target_data->target;
-                    $to_return_tmp["indicator_datas"] = [];
+    //     // getting all rows/columns
+    //     foreach($indicator_datas as $indicator_data)
+    //     {
+    //         $to_return_tmp = [];
+    //         $found = false; //data found in geo target i.e. already assigned targets
+    //         foreach($scheme_geo_target_datas as $scheme_geo_target_data){
+    //             if($indicator_data->indicator_id==$scheme_geo_target_data->indicator_id)
+    //             {
+    //                 $to_return_tmp["indicator_id"] = $indicator_data->indicator_id;
+    //                 $to_return_tmp["indicator_name"] = $indicator_data->indicator_name;
+    //                 $to_return_tmp["geo_related"] = $scheme_geo_target_data->geo_related;
+    //                 $to_return_tmp["target"] = $scheme_geo_target_data->target;
+    //                 $to_return_tmp["indicator_datas"] = [];
 
-                    // scheme_performance datas in ["indicator_datas] starts
-                    $to_return_indicator_datas_tmp = [];
-                    $scheme_performance_datas = SchemePerformance2::where('scheme_geo_target_id', $scheme_geo_target_data->scheme_geo_target_id)->get();
-                    foreach($scheme_performance_datas as $scheme_performance_data){
-                        $tmp_to_push["scheme_performance_id"] = $scheme_performance_data->scheme_performance_id;
-                        $tmp_to_push["indicator_sanction_id"] = $scheme_performance_data->indicator_sanction_id;
-                        $tmp_to_push["latitude"] = $scheme_performance_data->latitude;
-                        $tmp_to_push["longitude"] = $scheme_performance_data->longitude;
-                        $tmp_to_push["comments"] = $scheme_performance_data->comments;
-                        array_push($to_return_indicator_datas_tmp, $tmp_to_push);
-                    }
-                    if($to_return_indicator_datas_tmp){
-                        $to_return_tmp["indicator_datas"] = $to_return_indicator_datas_tmp;
-                    }
-                    // scheme_performance_datas ends
+    //                 // scheme_performance datas in ["indicator_datas] starts
+    //                 $to_return_indicator_datas_tmp = [];
+    //                 $scheme_performance_datas = SchemePerformance2::where('scheme_geo_target_id', $scheme_geo_target_data->scheme_geo_target_id)->get();
+    //                 foreach($scheme_performance_datas as $scheme_performance_data){
+    //                     $tmp_to_push["scheme_performance_id"] = $scheme_performance_data->scheme_performance_id;
+    //                     $tmp_to_push["indicator_sanction_id"] = $scheme_performance_data->indicator_sanction_id;
+    //                     $tmp_to_push["latitude"] = $scheme_performance_data->latitude;
+    //                     $tmp_to_push["longitude"] = $scheme_performance_data->longitude;
+    //                     $tmp_to_push["comments"] = $scheme_performance_data->comments;
+    //                     array_push($to_return_indicator_datas_tmp, $tmp_to_push);
+    //                 }
+    //                 if($to_return_indicator_datas_tmp){
+    //                     $to_return_tmp["indicator_datas"] = $to_return_indicator_datas_tmp;
+    //                 }
+    //                 // scheme_performance_datas ends
 
-                    $found = true; // if data found in geo target i.e. already assigned targets
-                    array_push($to_return, $to_return_tmp);
-                }
-            }
+    //                 $found = true; // if data found in geo target i.e. already assigned targets
+    //                 array_push($to_return, $to_return_tmp);
+    //             }
+    //         }
 
-            // no data data found in geo target i.e. already assigned targets
-            if(!$found){
-                $to_return_tmp["indicator_id"] = $indicator_data->indicator_id;
-                $to_return_tmp["indicator_name"] = $indicator_data->indicator_name;
-                $to_return_tmp["geo_related"] = '0';
-                $to_return_tmp["target"] = '0';
-                $to_return_tmp["indicator_datas"] = [];
-                array_push($to_return, $to_return_tmp);
-            }
-        }
+    //         // no data data found in geo target i.e. already assigned targets
+    //         if(!$found){
+    //             $to_return_tmp["indicator_id"] = $indicator_data->indicator_id;
+    //             $to_return_tmp["indicator_name"] = $indicator_data->indicator_name;
+    //             $to_return_tmp["geo_related"] = '0';
+    //             $to_return_tmp["target"] = '0';
+    //             $to_return_tmp["indicator_datas"] = [];
+    //             array_push($to_return, $to_return_tmp);
+    //         }
+    //     }
 
-        if(count($to_return)!=0){
-            $response = "success";
-        }
-        else{
-            $response = "no_data";
-        }
+    //     if(count($to_return)!=0){
+    //         $response = "success";
+    //     }
+    //     else{
+    //         $response = "no_data";
+    //     }
 
-        return ["response"=>$response, "data"=>$to_return];
-    }
+    //     return ["response"=>$response, "data"=>$to_return];
+    // }
 
 
-    public function delete(Request $request)
-    {
-         if(SchemeGeoTarget::find($request->scheme_geo_target_id)){
-            SchemeGeoTarget::where('scheme_geo_target_id',$request->scheme_geo_target_id)->delete();
-            session()->put('alert-class','alert-success');
-            session()->put('alert-content','Deleted successfully !');
-        }
+    // public function delete(Request $request)
+    // {
+    //      if(SchemeGeoTarget::find($request->scheme_geo_target_id)){
+    //         SchemeGeoTarget::where('scheme_geo_target_id',$request->scheme_geo_target_id)->delete();
+    //         session()->put('alert-class','alert-success');
+    //         session()->put('alert-content','Deleted successfully !');
+    //     }
 
-        return redirect('scheme-geo-target');
-    }
+    //     return redirect('scheme-geo-target');
+    // }
 
 
     public function exportExcel_Scheme_Geo_structure()

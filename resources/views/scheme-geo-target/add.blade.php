@@ -87,12 +87,16 @@
                 <br/>
                 <div class="row">
                     <div class="col-md-10">
-                        <div id="target-div-block" style="display: none;">
+                        <div id="target-div-block">
                             <button type="button" class="btn" style="margin-left:1.5%;background: #0f85e2!important;color:#fff;"><i class="fas fa-location-arrow"></i>&nbsp;&nbsp;Targets</button>
                             <div class="card-body" style="background: #f2f6ff; border: 1px solid #a5bbf6;margin-top: -18px;">
-                                <table class="table order-list" style="margin-top: 10px;">
+                                <div id="target-no-data" style="font-size:16px;padding-top:25px;">
+                                    No target data to show, Please select scheme, year & block!
+                                </div>
+                                <table id="target-table" class="table order-list" style="margin-top: 10px; display: none;">
                                     <thead style="background: #cedcff">
                                         <tr>
+                                            <th width="50px">Sl.No</th>
                                             <th>Panchayat</th>
                                             <th width="150px">Target</th>
                                             <th width="200px">Change Target</th>
@@ -133,10 +137,12 @@
         $("#block_id").change(function(){
             block_id_validate();
             get_panchayat_datas();
-            next();
         });
         $("#panchayat_id").change(function(){
             panchayat_id_validate();
+        });
+
+        $("#scheme_id, #year_id, #block_id, #panchayat_id").change(function(){
             next();
         });
     });
@@ -220,23 +226,23 @@
     }
 
     function next(){
-        scheme_id_validate();
-        year_id_validate();
-        block_id_validate();
-        panchayat_id_validate();
-
-        if(scheme_id_error || year_id_error || block_id_error || panchayat_id_error){
-            return false;
+        if($("#scheme_id").val()&&$("#year_id").val()&&$("#block_id").val()){
+            get_target_details();
         }
         else{
-            get_target_details();
-            return false;
+            resetAppendTargetBlock(); // if mendatory fields are not selcted then no data to show
         }
     }
 
     // send data [scheme, year, block, panchayat(if selected)] and get target of each panchayat/ only panchayat (depend on block selected on panchayat selected)
     // the show/ append in table
     function get_target_details(){
+        // validate first
+        scheme_id_validate();
+        year_id_validate();
+        block_id_validate();
+        panchayat_id_validate();
+
         if(scheme_id_error || year_id_error || block_id_error || panchayat_id_error){
             // error occured
         }
@@ -260,9 +266,7 @@
                 contentType:'application/json',
                 dataType:"json",
                 beforeSend: function(data){
-                    // resetting append-table/block before getting target datas
-                    $("#append-target").html("");
-                    $("#target-div-block").fadeOut(0);
+                    resetAppendTargetBlock(); // resetting append-table/block before getting target datas
                     $(".custom-loader").fadeIn(300);
                 },
                 error:function(xhr){
@@ -270,12 +274,13 @@
                     $(".custom-loader").fadeOut(300);
                 },
                 success:function(data){
-                    // console.log(data);
+                    console.log(data);
                     if(data.response=="success"){
-                        data.target_datas.forEach(function(target_data){
+                        data.target_datas.forEach(function(target_data, index){
                             // appedning data in target form for user input (target)
                             $("#append-target").append(`
                                 <tr data-panchayat-id='`+target_data.geo_id+`' data-target='`+(target_data.target || 0)+`'>
+                                    <td>`+(index+1)+`</td>
                                     <td>`+target_data.geo_name+` `+target_data.geo_id+`</td>
                                     <td>`+(target_data.target || 'No Target Set')+`</td>
                                     <td><input type="text" class="form-control change-target-input" value="`+(target_data.target || 0)+`"></td>
@@ -288,6 +293,7 @@
                         // caluculating total target
                         $("#append-target").append(`
                                 <tr id="append-target-last-row" style="background: #b7b7b7; font-weight: bold;">
+                                    <td></td>
                                     <td>Total</td>
                                     <td></td>
                                     <td></td>
@@ -297,7 +303,8 @@
                             `);
                         calcTotalTarget(); // caluculating total target
 
-                        $("#target-div-block").fadeIn(300); // show target table block for user input
+                        $("#target-table").fadeIn(300);
+                        $("#target-no-data").fadeOut(0); // show target table block for user input
                     }
                     else{ // data.response=="no_data"
 
@@ -349,6 +356,7 @@
         }
 
         $("#append-target #append-target-last-row").html(`
+                                    <td></td>
                                     <td>Total</td>
                                     <td>`+total_pre_target+`</td>
                                     <td>`+total_target+`</td>
@@ -458,6 +466,13 @@
                 // reject to save
             }
         });
+    }
+
+    // reset target block to no data, if user changes any mandatory fields
+    function resetAppendTargetBlock(){
+        $("#append-target").html("");
+        $("#target-table").fadeOut(0);
+        $("#target-no-data").fadeIn(300);
     }
 </script>
 
