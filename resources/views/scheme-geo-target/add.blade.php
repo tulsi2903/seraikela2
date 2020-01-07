@@ -84,12 +84,23 @@
                 </div>
                 <!--end of row-->
                 <hr/>
+                <div class="row">
+                    <div class="col-12"">
+                        
+                    </div>
+                </div>
                 <br/>
                 <div class="row">
                     <div class="col-md-10">
                         <div id="target-div-block">
                             <button type="button" class="btn" style="margin-left:1.5%;background: #0f85e2!important;color:#fff;"><i class="fas fa-location-arrow"></i>&nbsp;&nbsp;Targets</button>
                             <div class="card-body" style="background: #f2f6ff; border: 1px solid #a5bbf6;margin-top: -18px;">
+                                <div id="block-target-details" style="color: black; text-align: right; margin-bottom: 15px; display: none;">
+                                    <b>Block:</b> -
+                                    &nbsp;&nbsp;&bull;&nbsp;&nbsp;<b>Current Block Target:</b> -
+                                    &nbsp;&nbsp;&bull;&nbsp;&nbsp;<b>New Block Target:</b> -
+                                </div>
+                                <hr/>
                                 <div id="target-no-data" style="font-size:16px;padding-top:25px;">
                                     No target data to show, Please select scheme, year & block!
                                 </div>
@@ -253,7 +264,6 @@
             block_id_tmp = $("#block_id").val();
             panchayat_id_tmp = $("#panchayat_id").val();
 
-
             $.ajaxSetup({
                 headers:{
                     'X-CSRF-TOKEN' : $('meta[name="csrf-token"]').attr('content')
@@ -261,7 +271,7 @@
             });
             $.ajax({
                 url:"{{url('scheme-geo-target/get-target-details')}}",
-                data: {"scheme_id":scheme_id_tmp, "year_id":year_id_tmp, "block_id":block_id_tmp, "panchayat_id":panchayat_id_tmp},
+                data: {"scheme_id":scheme_id_tmp, "year_id":year_id_tmp, "block_id":block_id_tmp, "panchayat_id":null}, // sending nul to get all target datas of block selcted, filter in success so we can count total target of entrire block
                 method:"GET",
                 contentType:'application/json',
                 dataType:"json",
@@ -274,36 +284,36 @@
                     $(".custom-loader").fadeOut(300);
                 },
                 success:function(data){
-                    console.log(data);
+                    // console.log(data);
                     if(data.response=="success"){
-                        data.target_datas.forEach(function(target_data, index){
+                        to_append = ``;
+                        i = 0;
+                        data.target_datas.forEach(function(target_data){
                             // appedning data in target form for user input (target)
-                            $("#append-target").append(`
-                                <tr data-panchayat-id='`+target_data.geo_id+`' data-target='`+(target_data.target || 0)+`'>
-                                    <td>`+(index+1)+`</td>
-                                    <td>`+target_data.geo_name+` `+target_data.geo_id+`</td>
+                            to_append += `<tr data-panchayat-id='`+target_data.geo_id+`' data-target='`+(target_data.target || 0)+`'`;
+
+                            if((panchayat_id_tmp)&&(target_data.geo_id!=panchayat_id_tmp))
+                            {
+                                to_append += ` style='display:none;' `; // if panchayat selected then only show that panchayat data
+                            }
+                            else{
+                                i++; // sl no
+                            }
+
+                            to_append+=`>
+                                    <td>`+(i)+`</td>
+                                    <td>`+target_data.geo_name+`</td>
                                     <td>`+(target_data.target || 'No Target Set')+`</td>
                                     <td><input type="text" class="form-control change-target-input" value="`+(target_data.target || 0)+`"></td>
                                     <td><button type="button" class="btn btn-secondary btn-sm data-entry-save-button" onclick="saveTarget(`+target_data.scheme_geo_target_id+`, this)" disabled><i class="fas fa-check"></i>&nbsp;&nbsp;Save</button></td>
                                     <td><a href="javascript:void();" class="data-entry-link">Data Entry <i class="fas fa-arrow-right"></i></a></td>
-                                </tr>
-                            `);
+                                </tr>`;
                         })
-
-                        // caluculating total target
-                        $("#append-target").append(`
-                                <tr id="append-target-last-row" style="background: #b7b7b7; font-weight: bold;">
-                                    <td></td>
-                                    <td>Total</td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                            `);
+                        $("#append-target").html(to_append);
                         calcTotalTarget(); // caluculating total target
 
                         $("#target-table").fadeIn(300);
+                        $("#block-target-details").fadeIn(300);
                         $("#target-no-data").fadeOut(0); // show target table block for user input
                     }
                     else{ // data.response=="no_data"
@@ -355,13 +365,10 @@
             total_target+=Number($(target_fields[i]).val());
         }
 
-        $("#append-target #append-target-last-row").html(`
-                                    <td></td>
-                                    <td>Total</td>
-                                    <td>`+total_pre_target+`</td>
-                                    <td>`+total_target+`</td>
-                                    <td></td>
-                                    <td></td>
+        $("#block-target-details").html(`
+                            <b>Block:</b> `+($("#block_id :selected").text())+`
+                            &nbsp;&nbsp;&bull;&nbsp;&nbsp;<b>Current Block Target:</b> `+total_pre_target+`
+                            &nbsp;&nbsp;&bull;&nbsp;&nbsp;<b>New Block Target:</b>  `+total_target+`
                             `);
     }
 
@@ -429,7 +436,7 @@
                         $(".custom-loader").fadeOut(300);
                     },
                     success: function (data) {
-                        console.log(data);
+                        // console.log(data);
                         if(data.response=="success"){
 
                             get_target_details(); // to refresh targets again
@@ -472,6 +479,7 @@
     function resetAppendTargetBlock(){
         $("#append-target").html("");
         $("#target-table").fadeOut(0);
+        $("#block-target-details").fadeOut(0);
         $("#target-no-data").fadeIn(300);
     }
 </script>
