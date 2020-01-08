@@ -34,8 +34,8 @@
                     <a href="{{url('asset/pdf/pdfURL')}}" target="_BLANK" data-toggle="tooltip" title="Export to PDF"><button type="button" class="btn btn-icon btn-round btn-warning"><i class="fas fa-file-export"></i></button></a>
                     <a href="{{url('asset/export/excelURL')}}" data-toggle="tooltip" title="Export to Excel"><button type="button" class="btn btn-icon btn-round btn-primary"><i class="fas fa-file-excel"></i></button></a>
                     @if($desig_permissions["asset"]["add"])
-                        <a id="toggle1" onclick="resetAssetForm()" class="btn btn-secondary" href="javascript:void();" role="button"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;Add</a>
-                    @endif    
+                    <a id="toggle1" onclick="resetAssetForm()" class="btn btn-secondary" href="javascript:void();" role="button"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;Add</a>
+                    @endif
                 </div>
             </div>
         </div>
@@ -122,13 +122,51 @@
                             <div class="invalid-feedback" id="asset_icon_error_msg"></div>
                         </div>
                     </div>
+                    <div class="col-md-8">
+                        <div class="form-group">
+                            <label for="asset_icon">Child Resources</label>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Icon</th>
+                                        <!-- <th>Pic</th> -->
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="append-name-child">
+                                    <!-- <tr>
+                                        <td><input type="text" class="form-control" name="child_name[]" id="child_name" autocomplete="off" value="{{$rowdata['asset_name']}}"></td>
+                                        <td><input type="file" name="child_asset_icon[]" class="form-control"></td>
+                                            <td><div id="asset_icon_delete_child_div" style="padding:5px 0; display: none;">
+                                                <div>Previous Icon</div>
+                                                <div style="display: inline-block;position:relative;padding:3px;border:1px solid #c4c4c4; border-radius:3px;">
+                                                    <img src="" style="height:120px;">
+                                                    <span style="position:absolute;top:0;right:0; background: rgba(0,0,0,0.5); font-size: 18px; cursor: pointer; padding: 5px 10px;" class="text-white" onclick=""><i class="fas fa-trash"></i></span>
+                                                </div>
+                                            </div>
+                                            <input type="text" name="asset_icon_child_delete" id="asset_icon_child_delete" value="" hidden>
+                                        </td>
+                                        <td><button type="button" class="btn btn-danger btn-xs delete-button-row"><i class="fas fa-trash-alt"></i></button></td>
+                                    </tr> -->
+                                </tbody>
+                                <tbody>
+                                    <tr>
+                                        <td colspan="3"></td>
+                                        <td><button type="button" onclick="append_table_data('add',null);" class="btn btn-secondary btn-sm btn-circle">Add <i class="fa fa-plus-circle" aria-hidden="true"></i></button></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
                 <div class="row">
                     <div class="col-md-4">
                         <div class="form-group">
-                            <hr/>
+                            <hr />
                             <input type="text" name="hidden_input_purpose" id="hidden_input_purpose" value="add" hidden>
                             <input type="text" name="hidden_input_id" id="hidden_input_id" value="NA" hidden>
+                            <input type="text" name="deleted_asset_child_id" id="deleted_asset_child_id" value="" >
                             <button type="button" class="btn btn-secondary" onclick="return submitForm()">Save&nbsp;&nbsp;<i class="fas fa-check"></i></button>
                             &nbsp;&nbsp;<button type="button" class="btn btn-dark" onclick="hideForm()">Cancel&nbsp;&nbsp;<i class="fas fa-times"></i></button>
                         </div>
@@ -274,7 +312,7 @@
 
     //category validation
     function category_validate() {
-       category_error = false;
+        category_error = false;
     }
 
     //subcategory validation
@@ -305,7 +343,7 @@
     }
 
     // fetching category according to type i.e. movable/inmovable
-    function get_category(){
+    function get_category() {
         // resetting related fields fields
         $("#category").html('<option value="">--Select--</option>');
         $("#subcategory").html('<option value="">--Select--</option>');
@@ -373,20 +411,20 @@
         });
     }
 
-    function to_delete(image_path, e){
+    function to_delete(image_path, e) {
         swal({
             title: 'Are you sure?',
             // text: "You won't be able to revert this!",
             icon: 'warning',
-            buttons:{
+            buttons: {
                 cancel: {
                     visible: true,
-                    text : 'No, cancel!',
+                    text: 'No, cancel!',
                     className: 'btn btn-danger'
                 },
                 confirm: {
-                    text : 'Yes, delete it!',
-                    className : 'btn btn-success'
+                    text: 'Yes, delete it!',
+                    className: 'btn btn-success'
                 }
             }
         }).then((willDelete) => {
@@ -396,7 +434,30 @@
             }
         });
     }
-
+    //child icon image delete
+    function to_delete_child(image_path, e) {
+        swal({
+            title: 'Are you sure?',
+            // text: "You won't be able to revert this!",
+            icon: 'warning',
+            buttons: {
+                cancel: {
+                    visible: true,
+                    text: 'No, cancel!',
+                    className: 'btn btn-danger'
+                },
+                confirm: {
+                    text: 'Yes, delete it!',
+                    className: 'btn btn-success'
+                }
+            }
+        }).then((willDelete) => {
+            if (willDelete) {
+                $("#asset_icon_child_delete").val(image_path);
+                $(e).closest("#asset_icon_delete_child_div").hide(200);
+            }
+        });
+    }
     // final submission
     function submitForm() {
         asset_name_validate();
@@ -408,15 +469,17 @@
 
         if (asset_name_error || asset_icon_error || movable_error || department_error || category_error || subcategory_error) {
             return false; // error occured
-        } 
+        }
         else {
             submitAssetAjax();
             return false; // proceed to submit form data
-        } 
+        }
     }
 
-    function resetAssetForm(){
+    function resetAssetForm() {
         document.getElementById("asset-form").reset();
+        // document.getElementById("append-name-child").reset();
+        $("#append-name-child").html("");
         $("#asset_icon_delete_div").hide(); // previous icon div
         $("#category").html("<option value=''>--Select--</option>"); //resetting category to null
         $("#subcategory").html("<option value=''>--Select--</option>"); // resetting subactegory to null
@@ -424,14 +487,14 @@
         $("#hidden_input_id").val("NA"); // restting hidden input id to NA
     }
 
-    function hideForm(){
+    function hideForm() {
         resetAssetForm(); // resetting form
         $("#show-toggle1").slideUp(150); // opening form div
     }
 </script>
 
 <script>
-    function submitAssetAjax(){
+    function submitAssetAjax() {
         var formElement = $('#asset-form')[0];
         var form_data = new FormData(formElement);
 
@@ -451,19 +514,20 @@
                 $(".custom-loader").fadeIn(300);
             },
             error: function (xhr) {
+                // console.log(xhr);
                 alert("error" + xhr.status + ", " + xhr.statusText);
                 $(".custom-loader").fadeOut(300);
             },
             success: function (data) {
                 console.log(data);
-                if(data.response=="success"){
+                if (data.response == "success") {
                     resetAssetForm(); // resetting form
                     $("#toggle1").click(); // closing form div
                     swal("Success!", "New asset has been added successfully.", {
-                        icon : "success",
+                        icon: "success",
                         buttons: {
                             confirm: {
-                                className : 'btn btn-success'
+                                className: 'btn btn-success'
                             }
                         },
                     }).then((ok) => {
@@ -471,23 +535,23 @@
                             document.location.reload();
                         }
                     });
-                    setTimeout(function() { // reloading after successfully data saved
-                            document.location.reload()
+                    setTimeout(function () { // reloading after successfully data saved
+                        document.location.reload()
                     }, 3000);
                 }
-                else{
+                else {
                     // error occured
                     swal("Error Occured!", data.response, {
-                        icon : "error",
+                        icon: "error",
                         buttons: {
                             confirm: {
-                                className : 'btn btn-danger'
+                                className: 'btn btn-danger'
                             }
                         },
                     });
 
                     // show individual error messages
-                    if(data.asset_name_error){
+                    if (data.asset_name_error) {
                         asset_name_error = true;
                         $("#asset_name").addClass('is-invalid');
                         $("#asset_name_error_msg").html(data.asset_name_error);
@@ -498,7 +562,7 @@
         });
     }
 
-    function editAssetAjax(id){
+    function editAssetAjax(id) {
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -519,8 +583,10 @@
             },
             success: function (data) {
                 console.log(data);
+                // console.log(data.childs_parent[0].asset_name);
+                // console.log(data.childs_parent[1].asset_name);
 
-                if(data.response=="success"){
+                if (data.response == "success") {
                     resetAssetForm(); // resetting form
                     $("#show-toggle1").slideDown(150); // opening form div
                     $("#hidden_input_purpose").val("edit"); // assigning as edit
@@ -531,44 +597,73 @@
                     $("#asset_name").val(data.asset_data.asset_name);
                     $("#dept_id").val(data.asset_data.dept_id);
                     $("#movable").val(data.asset_data.movable);
-                    if(data.category_datas){
+                    if (data.category_datas) {
                         $("#category").html('<option value="">--Select--</option>');
                         for (var i = 0; i < data.category_datas.length; i++) {
                             $("#category").append('<option value="' + data.category_datas[i].asset_cat_id + '">' + data.category_datas[i].asset_cat_name + '</option>');
                         }
                         $("#category").val(data.asset_data.category_id || "");
                     }
-                    else{
+                    else {
                         get_category(); // getting category data if no data from DB and type selected
                     }
                     // for subcategory
-                    if(data.subcategory_datas){
+                    if (data.subcategory_datas) {
                         $("#subcategory").html('<option value="">--Select--</option>');
                         for (var i = 0; i < data.subcategory_datas.length; i++) {
                             $("#subcategory").append('<option value="' + data.subcategory_datas[i].asset_sub_id + '">' + data.subcategory_datas[i].asset_sub_cat_name + '</option>');
                         }
                         $("#subcategory").val(data.asset_data.subcategory_id || "");
                     }
-                    else{
+                    else {
                         get_subcategory(); // getting sub category data according to if no data from backend a category selected
                     }
-                    if(data.asset_data.asset_icon){ // previous icon
-                        $("#asset_icon_delete_div img").prop("src", '{{url("")}}/'+data.asset_data.asset_icon);
-                        $("#asset_icon_delete_div span").attr("onclick", "to_delete('"+data.asset_data.asset_icon+"',this)");
+                    if (data.asset_data.asset_icon) { // previous icon
+                        $("#asset_icon_delete_div img").prop("src", '{{url("")}}/' + data.asset_data.asset_icon);
+                        $("#asset_icon_delete_div span").attr("onclick", "to_delete('" + data.asset_data.asset_icon + "',this)");
                         $("#asset_icon_delete_div").show();
                     }
 
+                    //for Child assets
+                    $("#append-name-child").html("");//To remove the previous content
+                    if (data.childs_parent.length != 0) {
+                        for(var i=0; i< data.childs_parent.length;i++)
+                        {
+                            var to_append = `<tr>
+                            <td><input type="text" class="form-control" name="child_name[]" value=\"`+ data.childs_parent[i].asset_name +`\" autocomplete="off"></td>
+                            <td><input type="file" name="child_asset_icon[]" class="form-control"></td> 
+                            <td><div id="asset_icon_delete_child_div" style="padding:5px 0; ">
+                                    <div>Previous Icon</div>
+                                    <div style="display: inline-block;position:relative;padding:3px;border:1px solid #c4c4c4; border-radius:3px;">
+                                        <img src=`+'{{url("")}}/' + data.childs_parent[i].asset_icon+` style="height:120px;">
+                                        <span onclick="to_delete_child('`+ data.childs_parent[i].asset_icon +`',this)" style="position:absolute;top:0;right:0; background: rgba(0,0,0,0.5); font-size: 18px; cursor: pointer; padding: 5px 10px;" class="text-white" onclick=""><i class="fas fa-trash"></i></span>
+                                    </div>
+                                </div>
+                                <input type="text" name="asset_icon_child_delete" id="asset_icon_child_delete" value="" hidden>
+                            </td>
+                            <td><button type="button" class="btn btn-danger btn-xs delete-button-row-child" onclick="delete_child(`+ data.childs_parent[i].asset_id +`);"><i class="fas fa-trash-alt"></i></button></td>
+                            <td><input type="text" name="asset_child_name_id[]" id="asset_child_name_id" value=\"`+ data.childs_parent[i].asset_id +`\" hidden></td>
+                            </tr>`;
+                            
+                            $("#append-name-child").append(to_append);
+                            //onclick="to_delete('public/uploaded_documents/assets/assets-15783888493615.png',this)"
+                            //onclick="to_delete('public/uploaded_documents/assets/assets-15783888493513.png)"
+                            // $("#asset_icon_delete_child_div img").prop("src", '{{url("")}}/' + data.childs_parent[i].asset_icon);
+                            // $("#asset_icon_delete_child_div span").attr("onclick", "to_delete('" + data.childs_parent[i].asset_icon + "',this)");
+                            // $("#asset_icon_delete_child_div").show();
+                        }
+                    }
                     // scrolling to edit form
                     $('html, body').animate({
                         scrollTop: $("#show-toggle1").offset().top - 170
                     }, 500);
                 }
-                else{ // data.response == "no_data"
+                else { // data.response == "no_data"
                     swal("Error Occured!", "No such asset found!", {
-                        icon : "error",
+                        icon: "error",
                         buttons: {
                             confirm: {
-                                className : 'btn btn-danger'
+                                className: 'btn btn-danger'
                             }
                         },
                     });
@@ -600,23 +695,23 @@
                                 <input type="hidden" name="asset" value="asset">
                                 <input type="hidden" name="data" value="{{$datas}}">
                                 <!-- <input type="text" name="from" class="form-control" placeholder="From" required=""> -->
-                            </div> 
-                            <div class="form-group">  
+                            </div>
+                            <div class="form-group">
                                 <input type="text" name="to" class="form-control" placeholder="To" required="">
                             </div>
-                            <div class="form-group">                           
+                            <div class="form-group">
                                 <input type="text" name="cc" class="form-control" placeholder="CC" required="">
                             </div>
-                           
+
                             <div class="form-group">
                                 <label for="subject" class="control-label">Subject <font color="red">*</font></label>
-                                <input type="text" class="form-control" id="subject" name="subject" placeholder="Subject"  required=""  aria-required="true">
+                                <input type="text" class="form-control" id="subject" name="subject" placeholder="Subject" required="" aria-required="true">
                             </div>
                             <!-- <div class="form-group">
                                 <label for="field-2" class="control-label">Message <font color="red">*</font></label>
                                 <textarea class="wysihtml5 form-control article-ckeditor" required id="article-ckeditor"  placeholder="Message body" style="height: 100px" name="message" ></textarea>
                             </div> -->
-                           
+
                         </div>
                     </div>
                 </div>
@@ -629,3 +724,57 @@
         </div>
     </div>
 </div>
+
+<script>
+    var append_i = 0;
+        function append_table_data(type, data){
+            var to_append = `<tr>
+                            <td><input type="text" class="form-control" name="child_name[]" autocomplete="off"></td>
+                            <td><input type="file" name="child_asset_icon[]" class="form-control"></td> 
+                            <td><button type="button" class="btn btn-danger btn-xs delete-button-row-child" onclick="delete_child();"><i class="fas fa-trash-alt"></i></button></td>
+                        </tr>`;
+            $("#append-name-child").append(to_append);
+            append_i++;
+        }
+        
+</script>
+<script>
+// $(document).ready(function() {
+    function delete_child(child_id) {
+            // alert(child_id);
+        $("#append-name-child").delegate(".delete-button-row-child", "click", function () {
+            swal({
+                title: 'Are you sure?',
+                // text: "You won't be able to revert this!",
+                icon: 'warning',
+                buttons: {
+                    cancel: {
+                        visible: true,
+                        text: 'No, cancel!',
+                        className: 'btn btn-danger'
+                    },
+                    confirm: {
+                        text: 'Yes, delete it!',
+                        className: 'btn btn-success'
+                    }
+                }
+            }).then((willDelete) => {
+                if (willDelete) {
+                    // alert(child_id);
+                    if (child_id == null || child_id == 'undefined') {
+                        $(this).closest("tr").remove();
+                    }
+                    else{
+                        $("#deleted_asset_child_id").val($("#deleted_asset_child_id").val()+child_id+",");
+                        $(this).closest("tr").remove();
+                    }
+                    
+                }
+            });
+        });
+
+    }
+        
+
+
+</script>
