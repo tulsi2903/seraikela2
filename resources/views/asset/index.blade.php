@@ -129,8 +129,8 @@
                                 <thead>
                                     <tr>
                                         <th>Name</th>
+                                        <th>Type</th>
                                         <th>Icon</th>
-                                        <!-- <th>Pic</th> -->
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -166,7 +166,7 @@
                             <hr />
                             <input type="text" name="hidden_input_purpose" id="hidden_input_purpose" value="add" hidden>
                             <input type="text" name="hidden_input_id" id="hidden_input_id" value="NA" hidden>
-                            <input type="text" name="deleted_asset_child_id" id="deleted_asset_child_id" value="" >
+                            <input type="text" name="deleted_asset_child_id" id="deleted_asset_child_id" value="" hidden>
                             <button type="button" class="btn btn-secondary" onclick="return submitForm()">Save&nbsp;&nbsp;<i class="fas fa-check"></i></button>
                             &nbsp;&nbsp;<button type="button" class="btn btn-dark" onclick="hideForm()">Cancel&nbsp;&nbsp;<i class="fas fa-times"></i></button>
                         </div>
@@ -631,6 +631,21 @@
                         {
                             var to_append = `<tr>
                             <td><input type="text" class="form-control" name="child_name[]" value=\"`+ data.childs_parent[i].asset_name +`\" autocomplete="off"></td>
+                            <td>
+                                <select name="movable_child[]" id="movable_child" class="form-control" value=\"`+ data.childs_parent[i].movable +`\">
+                                `
+                                    if(data.childs_parent[i].movable == 1)
+                                    {
+                                        to_append +=` <option value="1">Movable</option>
+                                        <option value="0">Immovable</option> `
+                                    }
+                                    else
+                                    {
+                                        to_append +=` <option value="0">Immovable</option>
+                                        <option value="1">Movable</option> `
+                                    }
+                                    to_append +=` </select>
+                            </td>
                             <td><input type="file" name="child_asset_icon[]" class="form-control"></td> 
                             <td><div id="asset_icon_delete_child_div" style="padding:5px 0; ">
                                     <div>Previous Icon</div>
@@ -730,6 +745,13 @@
         function append_table_data(type, data){
             var to_append = `<tr>
                             <td><input type="text" class="form-control" name="child_name[]" autocomplete="off"></td>
+                            <td>
+                                <select name="movable_child[]" id="movable_child" class="form-control">
+                                    <option value="">--Select--</option>
+                                    <option value="1">Movable</option>
+                                    <option value="0">Immovable</option>
+                                </select>
+                            </td>
                             <td><input type="file" name="child_asset_icon[]" class="form-control"></td> 
                             <td><button type="button" class="btn btn-danger btn-xs delete-button-row-child" onclick="delete_child();"><i class="fas fa-trash-alt"></i></button></td>
                         </tr>`;

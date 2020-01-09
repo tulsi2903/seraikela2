@@ -98,7 +98,18 @@
                 </div>
             </div>
         </div>
-   
+                @if(@session()->get('message')!="")
+                    <?php 
+                        $message=session()->get('message');
+                        echo "<script>
+                            var redirectedit =  confirm('If You Want To Enter Further Resources Details');
+                            if (redirectedit == true) {
+                            window.location = 'asset-numbers/add?purpose=edit&id='+$message;
+                            }
+                        </script>";
+                        session()->forget('message');
+                    ?>
+                @endif
 @endsection
 
 <!-- email model -->

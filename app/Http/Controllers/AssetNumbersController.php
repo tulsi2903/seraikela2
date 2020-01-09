@@ -50,10 +50,11 @@ class AssetNumbersController extends Controller
     }
     public function add(Request $request)
     {
+        // return $request;
         $hidden_input_purpose = "add";
         $hidden_input_id = "NA";
 
-        $assets = Asset::orderBy('asset_id')->get();
+        $assets = Asset::orderBy('asset_id')->where('parent_id',-1)->get();
         $panchayats = GeoStructure::where('level_id', '4')->orderBy('geo_name')->get();
         $years = Year::orderBy('year_id')->get();
 
@@ -127,7 +128,7 @@ class AssetNumbersController extends Controller
         }
 
         // getting previus asset_location
-        $asset_location = AssetGeoLocation::select('asset_geo_loc_id', 'location_name', 'latitude', 'longitude')->where('geo_id', $request->geo_id)
+        $asset_location = AssetGeoLocation::select('asset_geo_loc_id', 'location_name', 'latitude', 'longitude','asset_id')->where('geo_id', $request->geo_id)
             ->where('asset_id', $request->asset_id)
             ->where('year', $request->year)
             ->orderBy('asset_geo_loc_id', 'desc')
@@ -144,7 +145,7 @@ class AssetNumbersController extends Controller
 
     public function store(Request $request)
     {
-
+        // return $request;
         $asset_number = new AssetNumbers;
 
         if ($request->hidden_input_purpose == "edit") {
@@ -259,6 +260,12 @@ class AssetNumbersController extends Controller
         if ($asset_number->save()) {
             session()->put('alert-class', 'alert-success');
             session()->put('alert-content', 'Asset details have been successfully submitted !');
+            if ($request->hidden_input_purpose == "add") {
+                session()->put('message',$asset_number->asset_numbers_id);
+                
+                // session()->put('alert-class', 'alert-success');
+                // session()->put('alert-content', 'Asset details have been successfully submitted !');
+            }
         } else {
             session()->put('alert-class', 'alert-danger');
             session()->put('alert-content', 'Something went wrong while adding new details !');
@@ -295,7 +302,8 @@ class AssetNumbersController extends Controller
             $update_block_count->save();
         }
 
-
+        
+        
         return redirect('asset-numbers');
     }
 
@@ -465,5 +473,63 @@ class AssetNumbersController extends Controller
         $pdfbuilder->table($content, array('border' => '1', 'align' => ''));
         $pdfbuilder->output('AssetNumber.pdf');
         exit;
+    }
+
+    public function list_of_childs($child_id,$geo_child_id,$year_child_id,$hidden_input_id)
+    {
+        # code...
+        $childdatas = Asset::leftJoin('asset_numbers', 'asset.asset_id', '=', 'asset_numbers.asset_id')
+        ->where('asset.parent_id',$child_id)
+        ->select('asset.asset_id','asset.asset_name',
+        'asset.movable',
+        'asset.parent_id',
+        'asset.dept_id',
+        'asset.org_id',
+        'asset_numbers.asset_numbers_id',
+        'asset_numbers.geo_id',
+        'asset_numbers.pre_value',
+        'asset_numbers.current_value',
+        'asset_numbers.year'
+        )->get();
+
+        // echo $hidden_input_id;
+        // echo "<pre>";
+        // print_r($childdatas);exit;
+        return view('asset-numbers.child_resources_number')->with(compact('childdatas','geo_child_id','year_child_id','hidden_input_id'));
+    }
+
+    public function saveChilddata(Request $request)
+    {
+        // return $request;
+        # code...
+        // echo $request;exit;
+        foreach ($request->child_asset_id as $key => $value) {
+            # code...
+            if($request->asset_numbers_child_id[$key] != null)
+            {
+                $AssetNumbers = AssetNumbers::find($request->asset_numbers_child_id[$key]);
+                $AssetNumbers->pre_value = $request->current_value_child[$key];
+                $AssetNumbers->current_value = ( $request->current_value_child[$key] != null) ? $request->current_value_child[$key] : 0;
+                $AssetNumbers->save();
+            }
+            else
+            {
+                $asset_number = new AssetNumbers;
+                $asset_number->year = $request->year_child_id;
+                $asset_number->asset_id = $value;
+                $asset_number->geo_id = $request->geo_child_id;
+                $asset_number->pre_value = $request->previous_value_child[$key];
+                $asset_number->current_value = ( $request->current_value_child[$key] != null) ? $request->current_value_child[$key] : 0;
+        
+                $asset_number->created_by = '1';
+                $asset_number->updated_by = '1';
+                $asset_number->save();
+
+            }
+        }
+        // {"purpose":"edit","id":"24"}
+        session()->put('alert-class', 'alert-success');
+        session()->put('alert-content', 'Child Resources details have been successfully submitted !');
+        return redirect('asset-numbers/add?purpose=edit&id='.$request->main_asset_id);
     }
 }

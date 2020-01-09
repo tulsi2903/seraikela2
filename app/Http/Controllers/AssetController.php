@@ -20,7 +20,6 @@ class AssetController extends Controller
 {
     public function index()
     {
-
         $datas = Asset::leftJoin('department', 'asset.dept_id', '=', 'department.dept_id')
             ->leftJoin('asset_cat', 'asset.category_id', '=', 'asset_cat.asset_cat_id')
             ->leftJoin('asset_subcat', 'asset.subcategory_id', '=', 'asset_subcat.asset_sub_id')
@@ -65,6 +64,7 @@ class AssetController extends Controller
     {
         // $toReturn = array();
         // $toReturn['check'] = $request->child_name;
+        // $toReturn['type'] = $request->movable_child;
         // $toReturn['checkicon2'] = $request->file('asset_icon');
         // foreach ($request->child_name as $key => $value) {
         //     # code...
@@ -75,7 +75,7 @@ class AssetController extends Controller
         // $toReturn['count'] = count($request->child_name);
         // // $toReturn['checkfile1'] = $request->hasFile('child_asset_icon.0');
         // $toReturn['sub'] = $request;
-        // return $toReturn;
+        // return $request;
         $toReturn["response"] = "Something went wrong! Please try again"; // response pre defined as error
         $asset = new Asset;
 
@@ -157,7 +157,7 @@ class AssetController extends Controller
                         else{
                             $childasset->asset_icon = "";
                         }
-                        $childasset->movable = $request->movable;
+                        $childasset->movable = $request->movable_child[$key];
                         $childasset->parent_id = $asset->asset_id;
                         $childasset->dept_id = $request->dept_id;
                         $childasset->org_id = '1';
@@ -186,6 +186,7 @@ class AssetController extends Controller
                     
                                 $editchildasset->asset_icon = $upload_directory_chid1 . $asset_icon_tmp_name_child1;    // assign the location of folder to the mode
                             }
+                            $editchildasset->movable = $request->movable_child[$keyy];
                             $editchildasset->save();
                         }
                         else{ //edit time new entry of child asset
@@ -202,7 +203,7 @@ class AssetController extends Controller
                             else{
                                 $editnewchildasset->asset_icon = "";
                             }
-                            $editnewchildasset->movable = $request->movable;
+                            $editnewchildasset->movable = $request->movable_child[$keyy];
                             $editnewchildasset->parent_id = $request->hidden_input_id;
                             $editnewchildasset->dept_id = $request->dept_id;
                             $editnewchildasset->org_id = '1';
