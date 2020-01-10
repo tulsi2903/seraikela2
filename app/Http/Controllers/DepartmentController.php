@@ -252,37 +252,39 @@ class DepartmentController extends Controller
         foreach ($totalLength as $key => $value) {
             $Department = Department::where('dept_name',$request->department_name[$key])->first();
             // echo"<pre>";print_r($Department);exit;
-            if($Department->dept_name == $request->department_name[$key])
-            {
-                $Department_edit = Department::find($Department->dept_id);
-                if($request->status[$key] == "Active")
+            if ($request->department_name[$key] != null || $request->status[$key] != null) {
+                if($Department->dept_name == $request->department_name[$key])
                 {
-                    $Department_edit->is_active = 1;
+                    $Department_edit = Department::find($Department->dept_id);
+                    if($request->status[$key] == "Active")
+                    {
+                        $Department_edit->is_active = 1;
+                    }
+                    else
+                    {
+                        $Department_edit->is_active = 0;
+                    }
+                    $Department_edit->updated_by = Session::get('user_id');
+                    $Department_edit->org_id = 1;
+                    $Department_edit->save();
                 }
                 else
                 {
-                    $Department_edit->is_active = 0;
+                    $Department1 = new Department;
+                    $Department1->dept_name = $request->department_name[$key];
+                    if($request->status[$key] == "Active")
+                    {
+                        $Department1->is_active = 1;
+                    }
+                    else
+                    {
+                        $Department1->is_active = 0;
+                    }
+                    // $Department->created_at = date('Y-m-d');
+                    $Department1->created_by = Session::get('user_id');
+                    $Department1->org_id = 1;
+                    $Department1->save();
                 }
-                $Department_edit->updated_by = Session::get('user_id');
-                $Department_edit->org_id = 1;
-                $Department_edit->save();
-            }
-            else
-            {
-                $Department = new Department;
-                $Department->dept_name = $request->department_name[$key];
-                if($request->status[$key] == "Active")
-                {
-                    $Department->is_active = 1;
-                }
-                else
-                {
-                    $Department->is_active = 0;
-                }
-                // $Department->created_at = date('Y-m-d');
-                $Department->created_by = Session::get('user_id');
-                $Department->org_id = 1;
-                $Department->save();
             }
         }
         session()->put('alert-class','alert-success');

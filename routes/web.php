@@ -60,9 +60,9 @@ Route::get('pdfview',array('as'=>'pdfview','uses'=>'DepartmentController@pdfview
 Route::get('export','DepartmentController@export');
 Route::get('department/export/excelURL','DepartmentController@exportExcelFunctiuon');
 Route::get('department/pdf/pdfURL','DepartmentController@export_PDF_Function');
-Route::get('department/changeView','DepartmentController@changeView');
-Route::post('department/importFromExcel','DepartmentController@importFromExcel');
-Route::post('department/ImportreviewSave','DepartmentController@ImportreviewSave');
+Route::get('department/changeView','DepartmentController@changeView'); //view for import
+Route::post('department/importFromExcel','DepartmentController@importFromExcel'); //list of import
+Route::post('department/ImportreviewSave','DepartmentController@ImportreviewSave'); //import in db
 
 /* designation */
 Route::get('designation','DesignationController@index');
