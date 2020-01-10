@@ -145,6 +145,10 @@
         }
     }
 
+    #tabular-view .tab-content{
+        overflow: auto;
+    }
+
     .gallery-view-image-thumb {
         margin-right: 5px;
         display: inline-block;
@@ -188,7 +192,6 @@
     .gallery-view-image-thumb:hover .gallery-view-image-thumb-labels {
         padding-top: 15px;
         padding-bottom: 15px;
-        ;
     }
 
     #search-results-block{
@@ -207,7 +210,8 @@
         width: 500px;
         z-index: +100;
         background: white;
-        min-height: 100%;
+        height: 812px;
+        overflow: auto;
         transition: all 0.5s ease;
     }
     #search-results-block.active-search #search-block{
@@ -274,6 +278,15 @@
                                 @foreach($department_datas as $department_data)
                                 <option value="{{$department_data->dept_id}}">{{$department_data->dept_name}}</option>
                                 @endforeach
+                            </select>
+                            <div class="invalid-feedback">Please select department</div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label for="asset_id">Resources<span style="color:red;margin-left:5px;">*</span></label>
+                            <select name="asset_id" id="asset_id" class="form-control">
+                                <option value="">All Resources</option>
                             </select>
                             <div class="invalid-feedback">Please select department</div>
                         </div>
@@ -381,20 +394,26 @@
         <!-- map results starts -->
         <div id="results-block">
             <div class="card-body" id="tab-height">
-                <div style="overflow: hidden;">
-                    <div style="">
-                        <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <div style="overflow: hidden; border-bottom: 1px solid #dee2e6;padding-top:5px;">
+                    <div style="display: iniline-block; width: 50%; float: left;">
+                        <ul class="nav nav-tabs" id="myTab" role="tablist" style="border: none;">
                             <li class="nav-item">
-                            <a class="nav-link active" id="tabular-tab" data-toggle="tab" href="#tabular-view-tab" role="tab" aria-selected="true">Home</a>
+                                <a class="nav-link active" id="tabular-tab" data-toggle="tab" href="#tabular-view-tab" role="tab" aria-selected="true"><i class="fas fa-table"></i>&nbsp;Tabular View</a>
                             </li>
                             <li class="nav-item">
-                            <a class="nav-link" id="map-tab" data-toggle="tab" href="#map-view-tab" role="tab" aria-selected="false">Profile</a>
+                                <a class="nav-link" id="map-tab" data-toggle="tab" href="#map-view-tab" role="tab" aria-selected="false"><i class="fas fa-map-marked-alt"></i>&nbsp;Map View</a>
                             </li>
                         </ul>
                     </div>
+                    <div style="display: inline-block; width: 50%; float: right; text-align: right; margin-top: -5px;">
+                        <a href="#" data-toggle="tooltip" title="Send Mail"><button type="button" class="btn btn-icon btn-round btn-success"><i class="fa fa-envelope" aria-hidden="true"></i></button></a>
+                        <a href="#" data-toggle="tooltip" title="Print"><button type="button" class="btn btn-icon btn-round btn-default" id="print-button" onclick="printView();"><i class="fa fa-print" aria-hidden="true"></i></button></a>
+                        <a href="{{url('asset-review/pdf/pdfURL')}}" class="asset-review-export-as" data-toggle="tooltip" title="Export as PDF"><button type="button" class="btn btn-icon btn-round btn-warning"><i class="fas fa-file-export"></i></button></a>
+                        <a href="{{url('asset-review/export/excelURL')}}" class="asset-review-export-as" data-toggle="tooltip" title="Export as Excel"><button type="button" class="btn btn-icon btn-round btn-success"><i class="fas fa-file-excel"></i></button></a>
+                    </div>
                 </div>
-                <ul class="nav nav-pills nav-secondary nav-pills-no-bd" id="pills-tab-without-border" role="tablist">
-                    <!-- <li class="nav-item">
+                <!-- <ul class="nav nav-pills nav-secondary nav-pills-no-bd" id="pills-tab-without-border" role="tablist">
+                    <li class="nav-item">
                         <a class="nav-link active" id="tabular-tab" data-toggle="pill" href="#tabular-view-tab" role="tab" aria-selected="true">Tabular View</a>
                     </li>
                     <li class="nav-item">
@@ -405,15 +424,9 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" id="gallery-tab" data-toggle="pill" href="#gallery-view-tab" role="tab" aria-selected="false">Gallery View</a>
-                    </li> -->
-                    <div style="margin-top: 4px; margin-left: auto; order: 2; display:inline-block;">
-                        <a href="#" data-toggle="tooltip" title="Send Mail"><button type="button" class="btn btn-icon btn-round btn-success"><i class="fa fa-envelope" aria-hidden="true"></i></button></a>
-                        <a href="#" data-toggle="tooltip" title="Print"><button type="button" class="btn btn-icon btn-round btn-default" id="print-button" onclick="printView();"><i class="fa fa-print" aria-hidden="true"></i></button></a>
-                        <a href="{{url('asset-review/pdf/pdfURL')}}" class="asset-review-export-as" data-toggle="tooltip" title="Export as PDF"><button type="button" class="btn btn-icon btn-round btn-warning"><i class="fas fa-file-export"></i></button></a>
-                        <a href="{{url('asset-review/export/excelURL')}}" class="asset-review-export-as" data-toggle="tooltip" title="Export as Excel"><button type="button" class="btn btn-icon btn-round btn-success"><i class="fas fa-file-excel"></i></button></a>
-                    </div>
-                </ul>
-                <hr>
+                    </li>
+                </ul> -->
+                <br/>
                 <div id="all-view-details-filter" class="printable-area" style="overflow: hidden; background: #e8eeff; padding: 10px 10px; border-radius: 5px; border: 1px solid #95b1ff; color: black;">
                     <div id="all-view-details">
                     </div>
@@ -588,8 +601,20 @@
     // removing is-invalid on change
     $(document).ready(function () {
         $("#dept_id").change(function () {
+            get_assets_datas();
+
             if ($("#dept_id").val()) {
                 $("#dept_id").removeClass('is-invalid');
+                resetTabularView();
+                resetGraphicalView();
+                resetMapView();
+                resetGalleryView();
+                resetCommon(); // to reset common things among all views
+            }
+        });
+        $("#asset_id").change(function () {
+            if ($("#asset_id").val()) {
+                $("#asset_id").removeClass('is-invalid');
                 resetTabularView();
                 resetGraphicalView();
                 resetMapView();
@@ -627,6 +652,42 @@
     }
     function closeSearch(){
         $("#search-results-block").removeClass("active-search");
+    }
+
+    // getting resourcse/assets datas according to department selected
+    function get_assets_datas(){
+        var dept_id_tmp = $("#dept_id").val();
+        $("#asset_id").html('<option value="">All Resources</option>');
+        if(dept_id_tmp)
+        {
+            $.ajaxSetup({
+                headers:{
+                    'X-CSRF-TOKEN' : $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                url:"{{url('asset-review/get-assets-datas')}}",
+                data: {'dept_id':dept_id_tmp},
+                method:"GET",
+                contentType:'application/json',
+                dataType:"json",
+                beforeSend: function(data){
+                    $(".custom-loader").fadeIn(300);
+                },
+                error:function(xhr){
+                    alert("error"+xhr.status+","+xhr.statusText);
+                    $(".custom-loader").fadeOut(300);
+                },
+                success:function(data){
+                    console.log(data);
+                    $("#asset_id").html('<option value="">All Resources</option>');
+                    for(var i=0;i<data.length;i++){
+                        $("#asset_id").append('<option value="'+data[i].asset_id+'">'+data[i].asset_name+'</option>');
+                    }
+                    $(".custom-loader").fadeOut(300);
+                }
+            });
+        }
     }
 
     // next after search button pressed
@@ -685,6 +746,7 @@
         dept_id = $("#dept_id").val();
         year_id = $("#year_id").val();
         geo_id = $("#geo_id").val(); // string, have convert to array in controller// block ids
+        asset_id = $("#asset_id").val();
 
         $.ajaxSetup({
             headers: {
@@ -693,7 +755,7 @@
         });
         $.ajax({
             url: "{{url('asset-review/get-tabular-view-datas')}}",
-            data: { 'review_for': review_for, 'geo_id': geo_id, 'dept_id': dept_id, 'year_id': year_id },
+            data: { 'review_for': review_for, 'geo_id': geo_id, 'dept_id': dept_id, 'year_id': year_id, 'asset_id': asset_id },
             method: "GET",
             contentType: 'application/json',
             dataType: "json",
@@ -782,7 +844,7 @@
                             // console.log(data[i].count_datas[j][k]);
                             if (j == 0) {  // for first row i.e th
                                 if (data[i].count_datas[j][k] == "") { // for first row of first index name by raj
-                                    toShowTabularForm+=`<th> Name </th>`;
+                                    toShowTabularForm+=`<th></th>`;
                                 } else {
                                     toShowTabularForm+=`<th>` + data[i].count_datas[j][k] + `</th>`;
                                 }

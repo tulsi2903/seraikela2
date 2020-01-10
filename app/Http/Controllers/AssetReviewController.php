@@ -23,7 +23,7 @@ class AssetReviewController extends Controller
        $block_datas = GeoStructure::where('level_id','3')->get();
        $department_datas = Department::orderBy('dept_name')->get();
        $year_datas = Year::select('year_id','year_value')->get();
-    //    return view('asset-review.index')->with(compact('block_datas','department_datas','year_datas'));
+       // return view('asset-review.index')->with(compact('block_datas','department_datas','year_datas'));
        return view('asset-review.index-new')->with(compact('block_datas','department_datas','year_datas'));
     }
 
@@ -221,6 +221,13 @@ class AssetReviewController extends Controller
         return ['review_for'=>$review_for, 'datas'=>$datas, 'response'=>$response, 'tabular_view'=>$tabular_view, 'chart_labels'=>$chart_labels, 'chart_datasets'=>$chart_datasets, 'map_view_blocks'=>$map_view_blocks, 'map_view_assets'=>$map_view_assets, 'gallery_images'=>$gallery_images];
     }
 
+
+    public function get_assets_datas(Request $request){
+        $dept_id = $request->dept_id;
+        $asset_datas = Asset::select('asset_id','asset_name')->where('dept_id', $dept_id)->get();
+        return $asset_datas;
+    }
+
     public function get_tabular_view_datas(Request $request){
         /*
         tabluar view data to be send
@@ -256,6 +263,7 @@ class AssetReviewController extends Controller
             }
             else{ // review_for panchayat
                 // $panchayat_ids = select only those panchayat which are selected in map
+                $panchayat_datas = GeoStructure::whereIn('geo_id', $geo_id)->where('bl_id', $block_data->block_id)->get();
             }
             $panchayat_ids = $panchayat_datas->pluck('geo_id'); // getting only ids
             // for panchayat names (for <th> i.e. heading)
@@ -297,7 +305,7 @@ class AssetReviewController extends Controller
                 array_push($tabular_view_block_wise, $tabular_view_tmp);
             }
 
-            array_push($tabular_view, ["block_name"=>$block_data->block_name, "count_datas"=>$tabular_view_block_wise]);
+            array_push($tabular_view, ["block_name"=>$block_data->block_name, "count_datas"=>$tabular_view_block_wise, "asset_id"=>$request->asset_id]);
 
         }
 

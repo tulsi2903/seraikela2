@@ -186,6 +186,7 @@ Route::get('asset-review/pdf/pdfURL','AssetReviewController@export_pdf');
 
 Route::get('new-asset-review', 'AssetReviewController@index'); // for new changes, old asset review is still on server and index.blade.php
 Route::get('asset-review/get-tabular-view-datas', 'AssetReviewController@get_tabular_view_datas'); // for new changes, old asset review is still on server and index.blade.php
+Route::get('asset-review/get-assets-datas','AssetReviewController@get_assets_datas');
 
 /*Scheme Type*/
 Route::get('scheme-type','SchemeTypeController@index');
