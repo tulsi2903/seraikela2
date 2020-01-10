@@ -44,7 +44,7 @@ hr.new2 {
                 <div style="display: inline-block; width: 150px; float: left; ">
                     <img src="{{url($data->scheme_logo)}}" style="max-width: 100%;">
                 </div>
-                <div style="display: inline-block; padding-left: 20px;;">
+                <div style="display: inline-block; padding-left: 20px;">
                     <h2 style="color: black;">{{$data->scheme_name}} ({{$data->scheme_short_name}})</h2>
                     <p>
                         <b>Scheme Type:</b> {{$data->sch_type_name}}

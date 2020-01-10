@@ -42,7 +42,7 @@
                         </div>
                     </div>
 
-                    <div class="col-md-2">
+                    <!-- <div class="col-md-2">
                         <div class="form-group" id="multiple_geo_tag">
                             <div style="height:30px;"></div>
                             <label for="multiple_geo_tags">Multiple Geo Tags</label>&nbsp;&nbsp;
@@ -56,65 +56,68 @@
                             <input name="no_of_tags" id="no_of_tags" class="form-control" autocomplete="off" value="{{$data->no_of_tags}}">
                             <div class="invalid-feedback" id="no_of_tags_error_msg"></div>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
                 <!--end of row-->
 
                 <hr/>
 
-                <button type="button" class="btn" style="margin-left:1.5%;background: #0f85e2!important;color:#fff;"><i class="fas fa-location-arrow"></i>&nbsp;&nbsp;Attributes</button>
-                <div class="card-body" style="background: #f2f6ff; border: 1px solid #a5bbf6;margin-top: -18px;">
-                    <table class="table order-list" style="margin-top: 10px;">
-                        <thead style="background: #cedcff">
-                            <tr>
-                                <th>Name<span style="color:red;margin-left:5px;">*</span></th>
-                                <th>UoM<span style="color:red;margin-left:5px;">*</span></th>
-                                <th width="130px;">Mandatory</th>
-                                <th width="130px;">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="append-name-uom">
-                            <!-- append attributes -->
-                            @if($data->attribute)
-                                <?php 
-                                    $attributes  = unserialize($data->attribute);
-                                    foreach($attributes as $attribute)
-                                    { 
+                <div class="row">
+                    <div class="col-12">
+                        <button type="button" class="btn" style="margin-left:1.5%;background: #0f85e2!important;color:#fff;"><i class="fas fa-location-arrow"></i>&nbsp;&nbsp;Attributes</button>
+                        <div class="card-body" style="background: #f2f6ff; border: 1px solid #a5bbf6;margin-top: -18px;">
+                            <table class="table order-list" style="margin-top: 10px;">
+                                <thead style="background: #cedcff">
+                                    <tr>
+                                        <th>Name<span style="color:red;margin-left:5px;">*</span></th>
+                                        <!-- <th>UoM<span style="color:red;margin-left:5px;">*</span></th> -->
+                                        <th width="130px;">Mandatory</th>
+                                        <th width="130px;">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="append-name-uom">
+                                    <!-- append attributes -->
+                                    @if($data->attribute)
+                                        <?php 
+                                            $attributes  = unserialize($data->attribute);
+                                            foreach($attributes as $attribute)
+                                            { 
+                                                ?>
+                                                    <tr>
+                                                        <td>
+                                                            <input type="text" class="form-control" name="attribute_name[]" autocomplete="off" value="{{$attribute['name']}}">
+                                                            <div class="invalid-feedback">Please enter valid name</div>
+                                                        
+                                                            <select name="attribute_uom[]" class="form-control" style="display: none;">
+                                                                <option value="16" selected>---Select---</option>
+                                                                @foreach($uom_datas as $uom_data )
+                                                                    <option value="{{ $uom_data->uom_id }}" <?php if($uom_data->uom_id==$attribute['uom']){ echo "selected"; } ?> >{{ $uom_data->uom_name }}</option>
+                                                                @endforeach
+                                                            </select>
+                                                            <div class="invalid-feedback">UoM should not be blank</div>
+                                                        </td> 
+                                                        <td>
+                                                            <input type="checkbox" name="attribute_mandatory[<?php echo $i; ?>]" value="1" <?php if($attribute['mandatory']==1){ echo "checked"; } ?>>
+                                                        </td>
+                                                        <td>
+                                                            <button type="button" class="btn btn-danger btn-xs delete-button-row"><i class="fas fa-trash-alt"></i></button>
+                                                        </td>
+                                                    </tr>
+                                                <?php
+                                            $i++;
+                                            }
                                         ?>
-                                            <tr>
-                                                <td>
-                                                    <input type="text" class="form-control" name="attribute_name[]" autocomplete="off" value="{{$attribute['name']}}">
-                                                    <div class="invalid-feedback">Please enter valid name</div>
-                                                </td>
-                                                <td>
-                                                    <select name="attribute_uom[]" class="form-control">
-                                                        <option value="">---Select---</option>
-                                                        @foreach($uom_datas as $uom_data )
-                                                            <option value="{{ $uom_data->uom_id }}" <?php if($uom_data->uom_id==$attribute['uom']){ echo "selected"; } ?> >{{ $uom_data->uom_name }}</option>
-                                                        @endforeach
-                                                    </select>
-                                                    <div class="invalid-feedback">UoM should not be blank</div>
-                                                </td> 
-                                                <td>
-                                                    <input type="checkbox" name="attribute_mandatory[<?php echo $i; ?>]" value="1" <?php if($attribute['mandatory']==1){ echo "checked"; } ?>>
-                                                </td>
-                                                <td>
-                                                    <button type="button" class="btn btn-danger btn-xs delete-button-row"><i class="fas fa-trash-alt"></i></button>
-                                                </td>
-                                            </tr>
-                                        <?php
-                                    $i++;
-                                    }
-                                ?>
-                            @endif
-                        </tbody>
-                        <tbody>
-                            <tr>
-                                <td colspan="3"></td>
-                                <td><button type="button" onclick="append_table_data('add',null);" class="btn btn-secondary btn-sm btn-circle">Add <i class="fa fa-plus-circle" aria-hidden="true"></i></button></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                                    @endif
+                                </tbody>
+                                <tbody>
+                                    <tr>
+                                        <td colspan="2"></td>
+                                        <td><button type="button" onclick="append_table_data('add',null);" class="btn btn-secondary btn-sm btn-circle">Add <i class="fa fa-plus-circle" aria-hidden="true"></i></button></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
 
                 <br>
@@ -137,10 +140,9 @@
                             <td>
                                 <input type="text" class="form-control" name="attribute_name[]" autocomplete="off">
                                 <div class="invalid-feedback">Please enter valid name</div>
-                            </td>
-                            <td>
-                                <select name="attribute_uom[]" class="form-control">
-                                    <option value="">---Select---</option>
+                            
+                                <select name="attribute_uom[]" class="form-control" style="display: none;">
+                                    <option value="16" selected>---Select---</option>
                                     @foreach($uom_datas as $uom_data )
                                         <option value="{{ $uom_data->uom_id }}">{{ $uom_data->uom_name }}</option>
                                     @endforeach

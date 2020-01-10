@@ -80,6 +80,8 @@ class DashboardController extends Controller
         $panchayat_count =GeoStructure::where('level_id','4')->where('org_id','1')->count();
         $villages_count = GeoStructure::where('level_id','4')->where('org_id','1')->sum('no_of_villages');
 
+        $scheme_count = SchemeStructure::count();
+
         $asset_count = Asset::where('org_id','1')->count();
         $get_schemes = SchemeStructure::where('org_id','1')->get();
         $departments = Department::where('org_id','1')->get();
@@ -94,7 +96,7 @@ class DashboardController extends Controller
         $drinking_water_and_sanitation_count = SchemeStructure::where('dept_id','9')->count();
         $social_security_scheme_count = SchemeStructure::where('dept_id','10')->count();
 
-        return view('dashboard.dc_dashboard')->with(compact('subdivision_count','block_count','panchayat_count','asset_count','villages_count','get_schemes','departments','health_scheme_count','land_revenue_count','welfare_count','education_count','land_acquisition_count','election_count','agriculture_count','social_welfare_count','drinking_water_and_sanitation_count','social_security_scheme_count'));
+        return view('dashboard.dc_dashboard')->with(compact('subdivision_count','block_count','panchayat_count','asset_count','scheme_count','villages_count','get_schemes','departments','health_scheme_count','land_revenue_count','welfare_count','education_count','land_acquisition_count','election_count','agriculture_count','social_welfare_count','drinking_water_and_sanitation_count','social_security_scheme_count'));
     }
 
     public function get_department_wise_asset_data(){

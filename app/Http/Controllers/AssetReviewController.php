@@ -23,7 +23,8 @@ class AssetReviewController extends Controller
        $block_datas = GeoStructure::where('level_id','3')->get();
        $department_datas = Department::orderBy('dept_name')->get();
        $year_datas = Year::select('year_id','year_value')->get();
-       return view('asset-review.index')->with(compact('block_datas','department_datas','year_datas'));
+    //    return view('asset-review.index')->with(compact('block_datas','department_datas','year_datas'));
+       return view('asset-review.index-new')->with(compact('block_datas','department_datas','year_datas'));
     }
 
     public function show(Request $request){
@@ -218,6 +219,97 @@ class AssetReviewController extends Controller
         // print_r($gallery_images);
         // exit;
         return ['review_for'=>$review_for, 'datas'=>$datas, 'response'=>$response, 'tabular_view'=>$tabular_view, 'chart_labels'=>$chart_labels, 'chart_datasets'=>$chart_datasets, 'map_view_blocks'=>$map_view_blocks, 'map_view_assets'=>$map_view_assets, 'gallery_images'=>$gallery_images];
+    }
+
+    public function get_tabular_view_datas(Request $request){
+        /*
+        tabluar view data to be send
+        */
+        $tabular_view = [];
+
+        // received datas
+        $review_for = $request->review_for;
+        $geo_id = explode(",", $request->geo_id); // geo_id/block_id/panchayat_id received as
+        $dept_id = $request->dept_id;
+        $year = $request->year_id;
+
+        // varible needed
+        $block_datas; // block_id, block_name
+
+        // assigning block datas
+        if($review_for=="block"){
+            $block_datas = GeoStructure::select('geo_id as block_id','geo_name as block_name')->whereIn('geo_id', $geo_id)->get();
+        }
+        if($review_for=="panchayat"){
+            $bl_id_tmp = GeoStructure::select('bl_id')->whereIn('geo_id', $geo_id)->distinct()->get()->pluck('bl_id');
+            // return $bl_id_tmp;
+            $block_datas = GeoStructure::select('geo_id as block_id','geo_name as block_name')->whereIn('geo_id', $bl_id_tmp)->get();
+        }
+
+        $asset_unique_ids = Asset::where('dept_id', $dept_id)->get()->pluck('asset_id');
+
+        foreach($block_datas as $block_data){
+            $tabular_view_block_wise = [];
+            
+            if($review_for=="block"){
+                $panchayat_datas = GeoStructure::where('bl_id',$block_data->block_id)->get();
+            }
+            else{ // review_for panchayat
+                // $panchayat_ids = select only those panchayat which are selected in map
+            }
+            $panchayat_ids = $panchayat_datas->pluck('geo_id'); // getting only ids
+            // for panchayat names (for <th> i.e. heading)
+            $tmp = $panchayat_datas->pluck('geo_name')->toArray();
+            array_unshift($tmp, "");
+            array_push($tabular_view_block_wise, $tmp);
+
+            $get_asset_numbers_id_tmp = AssetNumbers::select('geo_id', 'asset_id', 'year', DB::raw('MAX(updated_at) AS max_updated'), DB::raw('MAX(asset_numbers_id) as asset_numbers_id'))
+                ->whereIn('asset_id', Asset::select('asset_id')->where('dept_id',$dept_id)->get())
+                ->whereIn('geo_id', $panchayat_ids)
+                ->where('year', $year)
+                ->groupBy('year','asset_id','geo_id')
+                ->get();
+            $datas = AssetNumbers::whereIn('asset_numbers_id', $get_asset_numbers_id_tmp->pluck('asset_numbers_id'))
+                ->get();
+
+            foreach($asset_unique_ids as $asset_unique_id){
+                $asset_name = Asset::select('asset_name')->where('asset_id',$asset_unique_id)->first();
+                $tabular_view_tmp = [$asset_name->asset_name];
+
+                for($i=0;$i<count($panchayat_ids);$i++){
+                    $found = 0;
+                    foreach($datas as $data)
+                    {
+                        if($data->asset_id==$asset_unique_id)
+                        {
+                            if($data->geo_id==$panchayat_ids[$i]){
+                                array_push($tabular_view_tmp, $data->current_value);
+                                array_push($chart_datasets_tmp['data'], $data->current_value);
+                                $found=1;
+                            }
+                        }
+                    }
+
+                    if($found==0){
+                        array_push($tabular_view_tmp, '0');
+                    }
+                }
+                array_push($tabular_view_block_wise, $tabular_view_tmp);
+            }
+
+            array_push($tabular_view, ["block_name"=>$block_data->block_name, "count_datas"=>$tabular_view_block_wise]);
+
+        }
+
+
+        if(count($asset_unique_ids)!=0){
+            $response = "success"; // if no records found
+        }
+        else{
+            $response = "no_data";
+        }
+
+        return ['review_for'=>$review_for, 'response'=>$response, 'tabular_view'=>$tabular_view];
     }
 
     public function get_panchayat_data(Request $request){

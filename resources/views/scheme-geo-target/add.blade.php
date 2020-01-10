@@ -4,8 +4,16 @@
 
 @section('page-style')
 <style>
-    td{
-        padding:10px 0 !important;
+    .data-entry-link i{
+        padding-left: 2px;
+        transition: padding 0.3s;
+    }
+    .data-entry-link:hover{
+        text-decoration: none;
+        font-weight: bold;;
+    }
+    .data-entry-link:hover i{
+        padding-left: 6px;
     }
 </style>
 @endsection
@@ -17,9 +25,9 @@
         <div class="card-header">
             <div class="card-head-row card-tools-still-right" style="background:#fff;">
                 <h4 class="card-title">Scheme Geo Target</h4>
-                <div class="card-tools">
+                <!-- <div class="card-tools">
                     <a href="{{url('scheme-geo-target')}}" class="btn btn-sm btn-secondary" style="float:right;"><i class="fas fa-arrow-left"></i>&nbsp;&nbsp;Back</a>
-                </div>
+                </div> -->
             </div>
         </div>
     </div>
@@ -91,7 +99,7 @@
                 </div>
                 <br/>
                 <div class="row">
-                    <div class="col-md-10">
+                    <div class="col-12">
                         <div id="target-div-block">
                             <button type="button" class="btn" style="margin-left:1.5%;background: #0f85e2!important;color:#fff;"><i class="fas fa-location-arrow"></i>&nbsp;&nbsp;Targets</button>
                             <div class="card-body" style="background: #f2f6ff; border: 1px solid #a5bbf6;margin-top: -18px;">
@@ -112,11 +120,17 @@
                                             <th width="150px">Target</th>
                                             <th width="200px">Change Target</th>
                                             <th width="150px"></th>
-                                            <th width="140px"></th>
                                         </tr>
                                     </thead>
                                     <tbody id="append-target">
                                         <!-- append target panchayat wise (depends on block/ panchayat selection) -->
+                                    </tbody>
+                                    <tbody>
+                                        <tr>
+                                            <td colspan="3"></td>
+                                            <td><button class="btn btn-secondary btn-block btn-sm" id="data-save-button" onclick="saveTarget()" disabled="true"><i class="fas fa-check"></i>&nbsp;&nbsp;Save</button></td>
+                                            <td></td>
+                                        </tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -290,7 +304,7 @@
                         i = 0;
                         data.target_datas.forEach(function(target_data){
                             // appedning data in target form for user input (target)
-                            to_append += `<tr data-panchayat-id='`+target_data.geo_id+`' data-target='`+(target_data.target || 0)+`'`;
+                            to_append += `<tr data-panchayat-id='`+target_data.geo_id+`' data-target='`+(target_data.target || 0)+`' data-scheme-geo-target-id='`+target_data.scheme_geo_target_id+`' `;
 
                             if((panchayat_id_tmp)&&(target_data.geo_id!=panchayat_id_tmp))
                             {
@@ -300,16 +314,27 @@
                                 i++; // sl no
                             }
 
+                            // to_append+=`>
+                            //         <td>`+(i)+`</td>
+                            //         <td>`+target_data.geo_name+`</td>
+                            //         <td>`+(target_data.target || 'No Target Set')+`</td>
+                            //         <td><input type="text" class="form-control change-target-input" value="`+(target_data.target || 0)+`"></td>
+                            //         <td>
+                            //             <button type="button" class="btn btn-secondary btn-sm data-entry-save-button" onclick="saveTarget(`+target_data.scheme_geo_target_id+`, this)" disabled><i class="fas fa-check"></i>&nbsp;&nbsp;Save</button>
+                            //         </td>
+                            //         <td><a href="javascript:void();" class="data-entry-link">Data Entry<i class="fas fa-arrow-right"></i></a></td>
+                            //     </tr>`;
+
                             to_append+=`>
                                     <td>`+(i)+`</td>
                                     <td>`+target_data.geo_name+`</td>
                                     <td>`+(target_data.target || 'No Target Set')+`</td>
                                     <td><input type="text" class="form-control change-target-input" value="`+(target_data.target || 0)+`"></td>
-                                    <td><button type="button" class="btn btn-secondary btn-sm data-entry-save-button" onclick="saveTarget(`+target_data.scheme_geo_target_id+`, this)" disabled><i class="fas fa-check"></i>&nbsp;&nbsp;Save</button></td>
-                                    <td><a href="javascript:void();" class="data-entry-link">Data Entry <i class="fas fa-arrow-right"></i></a></td>
+                                    <td><a href="javascript:void();" class="data-entry-link">Enter Details<i class="fas fa-arrow-right"></i></a></td>
                                 </tr>`;
                         })
                         $("#append-target").html(to_append);
+                        $("#data-save-button").attr("disabled", true);
                         calcTotalTarget(); // caluculating total target
 
                         $("#target-table").fadeIn(300);
@@ -327,21 +352,31 @@
 
     $(document).ready(function(){
         // get new target value and check if previous target value is different or not, if changed then enable save button or disable save button
-        $("#append-target").delegate(".change-target-input","keyup", function(){
+        $("#append-target").on("keyup change", ".change-target-input", function(){
             calcTotalTarget(); // to calculate total
-            var tr = $(this).closest("tr");
-
             $(this).val($(this).val().replace(/\D+/g, "")); // removing other than number
 
-            // for save button
-            if($(tr).data("target")==$(this).val()){
-                $(tr).find(".data-entry-save-button").attr("disabled",true);
+            var target_fields = $("#append-target .change-target-input");
+            var total_pre_target = 0;
+            var total_target = 0; // current target after entries
+
+            // for pre target
+            for(var i=0; i<target_fields.length; i++){
+                total_pre_target+=Number($(target_fields[i]).closest('tr').data("target"));
+            }
+            // for current target
+            for(var i=0; i<target_fields.length; i++){
+                total_target+=Number($(target_fields[i]).val());
+            }
+
+            if(total_pre_target!=total_target){
+                $("#data-save-button").attr("disabled", false);
             }
             else{
-                $(tr).find(".data-entry-save-button").attr("disabled",false);
+                $("#data-save-button").attr("disabled", true);
             }
         });
-        $("#append-target").delegate(".change-target-input","change", function(){
+        $("#append-target").on("change",".change-target-input", function(){
             var tr = $(this).closest("tr");
             if(!$(this).val()){
                 $(this).val($(tr).data("target"));
@@ -353,7 +388,7 @@
     function calcTotalTarget(){
         var target_fields = $("#append-target .change-target-input");
         var total_pre_target = 0;
-        var total_target = 0;
+        var total_target = 0; // current target after entries
 
         // for pre target
         for(var i=0; i<target_fields.length; i++){
@@ -372,22 +407,35 @@
                             `);
     }
 
-    // to save individual target
-    function saveTarget(id, e){
+    // to save individual target, whene save button clicked
+    function saveTarget(){
         /**
-        id = scheme_geo_target_id/null, e=this 
-        first get panchayat_id from tr(data), target from input field, scheme_id, year_id etc and proceed to save
+        first get panchayat_id, target from input field, scheme_id, year_id etc and proceed to save
         **/
-        var tr = $(e).closest("tr");
-        scheme_id = $("#scheme_id").val();
-        year_id = $("#year_id").val();
-        block_id = $("#block_id").val();
-        panchayat_id = $(tr).data("panchayat-id");
-        target = $(tr).find(".change-target-input").val();
-        
-        // assigning purpose
-        purpose = 'add';
-        if(id){ purpose="edit"; }
+        var datas = []; // to send backend
+        // var tr = $(e).closest("tr");
+
+        var scheme_id = $("#scheme_id").val();
+        var year_id = $("#year_id").val();
+        var block_id = $("#block_id").val();
+
+        var tr = $("#append-target tr");
+        for(i=0;i<tr.length;i++){
+            var panchayat_id = $(tr[i]).data("panchayat-id");
+            var scheme_geo_target_id = $(tr[i]).data("scheme-geo-target-id");
+            var target = $(tr[i]).find(".change-target-input").val();
+
+            var tmp = {
+                scheme_id: scheme_id,
+                year_id: year_id,
+                block_id: block_id,
+                panchayat_id: panchayat_id,
+                scheme_geo_target_id: scheme_geo_target_id,
+                target: target
+            }
+
+            datas.push(tmp);
+        }
 
         // confirm box, if they want to save or not
         swal({
@@ -408,13 +456,7 @@
         }).then((willDelete) => {
             if (willDelete) {
                 var formData = new FormData();
-                formData.append('scheme_id', scheme_id);
-                formData.append('year_id', year_id);
-                formData.append('block_id', block_id);
-                formData.append('panchayat_id', panchayat_id);
-                formData.append('scheme_geo_target_id', id);
-                formData.append('target', target);
-                formData.append('purpose', purpose);
+                formData.append('datas', JSON.stringify(datas));
 
                 $.ajaxSetup({
                     headers: {
@@ -482,6 +524,55 @@
         $("#block-target-details").fadeOut(0);
         $("#target-no-data").fadeIn(300);
     }
+
+
+    /** data entry link/button **/
+    $("#append-target").on("click", ".data-entry-link", function(){
+        var tr = $(this).closest("tr");
+
+        // assigning has_saved_data as true/false, false=> if any changes are not saved yet
+        var has_unsaved_data = $("#data-save-button").attr("disabled");
+
+        // first check data saved of not first
+        if(has_unsaved_data) // there is nothing to save, all changes are saved
+        {
+            if($(tr).data("target")!=0)
+            {
+                // forward to enter data for the same
+                $(".custom-loader").fadeIn(300);
+                scheme_geo_target_id = $(tr).data("scheme-geo-target-id");
+                window.open("{{url('scheme-performance')}}?id="+scheme_geo_target_id+"","_self");
+            }
+            else{
+                swal("Error Occured!", "Sorry no target found!", {
+                    icon : "info",
+                    buttons: {
+                        confirm: {
+                            className : 'btn btn-secondary'
+                        }
+                    },
+                });
+            }
+        }
+        else{ // some changed are not saved yet
+            swal("Changes not saved!", "Some changes might not be saved yet. Please save target data first!", {
+                icon : "info",
+                buttons: {
+                    confirm: {
+                        className : 'btn btn-secondary'
+                    }
+                },
+            });
+        }
+    });
+
+
+    // if back button is pressed, and all mendatory fields are selected
+    $(document).ready(function(){
+        if($("#scheme_id").val()&&$("#year_id").val()&&$("#block_id").val()){
+            get_target_details();
+        }
+    });
 </script>
 
 @endsection

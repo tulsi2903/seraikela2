@@ -19,11 +19,12 @@
 							@if(array_key_exists("department", $desig_permissions))
 								<li class="nav-item"><a href="{{url('department')}}"><i class="fas fa-sitemap"></i><p>Department</p></a></li>
 							@endif
+							<li class="nav-item"><a href="{{url('geo-structure')}}"><i class="fas fa-map-marker-alt"></i><p>Geo Structure</p></a></li>
 							@if(array_key_exists("year", $desig_permissions))
 								<li class="nav-item"><a href="{{url('year')}}"><i class="fas fa-calendar-alt"></i><p>Year</p></a></li>
 							@endif
 							@if(array_key_exists("uom", $desig_permissions))
-								<li class="nav-item"><a href="{{url('uom')}}"><i class="fas fa-list-ol"></i><p>UoM</p></a></li>
+								<!-- <li class="nav-item"><a href="{{url('uom')}}"><i class="fas fa-list-ol"></i><p>UoM</p></a></li> -->
 							@endif
 							@if(array_key_exists("designation", $desig_permissions))
 								<li class="nav-item"><a href="{{url('designation')}}"><i class="fas fa-user-check"></i><p>Designation</p></a></li>
@@ -47,8 +48,6 @@
 						</ul>
 					</div>
 				</li>
-
-				<li class="nav-item"><a href="{{url('geo-structure')}}"><i class="fas fa-map-marker-alt"></i><p>Geo Structure</p></a></li>
 
 				<li class="nav-item">
 					<a data-toggle="collapse" href="#asset" class="collapsed" aria-expanded="false">
@@ -75,14 +74,9 @@
 							@if(array_key_exists("scheme", $desig_permissions))
 								<li class="nav-item"><a href="{{url('scheme-structure')}}"><i class="fas fa-receipt"></i><p>Define Scheme</p></a></li>
 							@endif
-			                <!-- <li class="nav-item"><a href="{{url('scheme-indicator')}}"><i class="fas fa-receipt"></i><p>Scheme Indicator</p></a></li> -->
 							<li class="nav-item"><a href="{{url('scheme-asset')}}"><i class="fas fa-users-cog"></i><p>Scheme Assets</p></a></li>
-
 			                <li class="nav-item"><a href="{{url('scheme-geo-target')}}"><i class="fas fa-receipt"></i><p>Scheme Geo Target</p></a></li>
-							<!-- <li class="nav-item"><a href="{{url('scheme-geo-target/pmayg')}}"><i class="fas fa-receipt"></i><p>PMAYG Target</p></a></li> -->
-			                <li class="nav-item"><a href="{{url('scheme-performance/add')}}"><i class="fas fa-receipt"></i><p>Scheme Performance</p></a></li>
-							<!-- <li class="nav-item"><a href="{{url('scheme-performance/pmayg')}}"><i class="fas fa-receipt"></i><p>PMAYG Performance</p></a></li> -->
-
+			                <!-- <li class="nav-item"><a href="{{url('scheme-performance')}}"><i class="fas fa-receipt"></i><p>Scheme Performance</p></a></li> -->
 						</ul>
 					</div>
 				</li>

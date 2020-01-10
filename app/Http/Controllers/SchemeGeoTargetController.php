@@ -348,28 +348,56 @@ class SchemeGeoTargetController extends Controller
 
     public function save_target(Request $request){ // save functiuon to save target data of individual panchayat
         // recieved datas
-        $scheme_geo_target = new SchemeGeoTarget;
+        $datas = json_decode($request->datas);
 
-        if($request->purpose=="add"){
-            $scheme_geo_target->scheme_id = $request->scheme_id;
-            $scheme_geo_target->year_id = $request->year_id;
-            $scheme_geo_target->subdivision_id = GeoStructure::find($request->block_id)->sd_id;
-            $scheme_geo_target->block_id = $request->block_id;
-            $scheme_geo_target->panchayat_id = $request->panchayat_id;
-        }
-        else{ //$request->purpose == "edit" i.e. $request->scheme_geo_target_id is set
-            $scheme_geo_target = $scheme_geo_target->find($request->scheme_geo_target_id);
+        foreach($datas as $data){
+            if($data->scheme_geo_target_id){ // edit existing row
+                if($data->target==0){
+                    $to_delete = SchemeGeoTarget::find($data->scheme_geo_target_id)->delete();
+                }
+                else{
+                    $scheme_geo_target= SchemeGeoTarget::find($data->scheme_geo_target_id);
+                    $scheme_geo_target->target = $data->target;
+                    $scheme_geo_target->created_by = Auth::user()->id;
+                    $scheme_geo_target->updated_by = Auth::user()->id;
+                    $scheme_geo_target->save();
+                }
+            }
+            else if($data->target!=0){ // add new rows (if target is not 0)
+                $scheme_geo_target = new SchemeGeoTarget;
+                $scheme_geo_target->scheme_id = $data->scheme_id;
+                $scheme_geo_target->year_id = $data->year_id;
+                $scheme_geo_target->subdivision_id = GeoStructure::find($data->block_id)->sd_id;
+                $scheme_geo_target->block_id = $data->block_id;
+                $scheme_geo_target->panchayat_id = $data->panchayat_id;
+                $scheme_geo_target->target = $data->target;
+                $scheme_geo_target->created_by = Auth::user()->id;
+                $scheme_geo_target->updated_by = Auth::user()->id;
+                $scheme_geo_target->save();
+            }
         }
 
-        $scheme_geo_target->target = $request->target;
-        $scheme_geo_target->created_by = Auth::user()->id;
-        $scheme_geo_target->updated_by = Auth::user()->id;
-        if($scheme_geo_target->save()){
-            return ["response"=>"success"];
-        }
-        else{
-            return ["response"=>"failed"];
-        }
+        // if($request->purpose=="add"){
+        //     $scheme_geo_target->scheme_id = $request->scheme_id;
+        //     $scheme_geo_target->year_id = $request->year_id;
+        //     $scheme_geo_target->subdivision_id = GeoStructure::find($request->block_id)->sd_id;
+        //     $scheme_geo_target->block_id = $request->block_id;
+        //     $scheme_geo_target->panchayat_id = $request->panchayat_id;
+        // }
+        // else{ //$request->purpose == "edit" i.e. $request->scheme_geo_target_id is set
+        //     $scheme_geo_target = $scheme_geo_target->find($request->scheme_geo_target_id);
+        // }
+
+        // $scheme_geo_target->target = $request->target;
+        // $scheme_geo_target->created_by = Auth::user()->id;
+        // $scheme_geo_target->updated_by = Auth::user()->id;
+        // if($scheme_geo_target->save()){
+        //     return ["response"=>"success"];
+        // }
+        // else{
+        //     return ["response"=>"failed"];
+        // }
+        return ["response"=>"success"];
     }
 
     // public function get_scheme_sanction_id(Request $request){

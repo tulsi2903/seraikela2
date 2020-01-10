@@ -256,7 +256,7 @@
                     </div>
                     <div class="col-7 col-stats">
                         <div class="numbers">
-                            <p class="card-category">Asset</p>
+                            <p class="card-category">Resources</p>
                             <h4 class="card-title">{{$asset_count}}</h4>
                         </div>
                     </div>
@@ -265,15 +265,20 @@
         </div>
     </div>
     <div class="col-sm-2">
-        <div class="card card-stats card card-round" style="width: 93%;height: 89px; min-height:0px; border-top: 0px solid;">
+        <div class="card card-stats card card-round" style="min-height:0px; border-top: 0px solid">
             <div class="card-body ">
                 <div class="row">
-                    <ul class="pricing-content" style="color: #fff;margin-top: -2px;list-style-type: none;margin-left: -25px;font-size: 14px;">
-                        <li><button class="btn btn-icon btn-success btn-round btn-xs"></button> &nbsp;&nbsp;Upto 70 to 100%</li>
-                        <li><button class="btn btn-icon btn-warning btn-round btn-xs"></button> &nbsp;&nbsp;Upto 50 to 70%</li>
-                        <li> <button class="btn btn-icon btn-danger btn-round btn-xs"></button> &nbsp;&nbsp;Upto 30 to 50%</li>
-
-                    </ul>
+                    <div class="col-5">
+                        <div class="icon-big text-center">
+                            <i class="fas fa-layer-group" style="color: aliceblue;font-size: 25px;"></i>
+                        </div>
+                    </div>
+                    <div class="col-7 col-stats">
+                        <div class="numbers">
+                            <p class="card-category">Schemes</p>
+                            <h4 class="card-title">{{$scheme_count}}</h4>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -331,7 +336,7 @@
                     </div>
                     @endforeach
                 </div> -->
-                <h2><strong>Under Construction</strong></h2>
+                <h2><strong><span style="color: #09c521;"><i class="fas fa-wrench"></i></span>&nbsp;&nbsp;Under Development</strong></h2>
             </div>
         </div>
     </div>
@@ -351,7 +356,7 @@
                     </div>
                     @endforeach
                 </div> -->
-                <h2><strong>Under Construction</strong></h2>
+                <h2><strong><span style="color: #09c521;"><i class="fas fa-wrench"></i></span>&nbsp;&nbsp;Under Development</strong></h2>
             </div> 
         </div>
     </div>
@@ -580,7 +585,7 @@ margin-left: 1em;">
     <div class="col-md-6">
         <div class="card" style="min-height: 600px;">
             <div class="card-head-row card-tools-still-right" style="background:#fff;">
-                <h4 style="color: #000;font-size: 1.2em;float: left;padding: 1em;">No. of Asset Assigned</h4>
+                <h4 style="color: #000;font-size: 1.2em;float: left;padding: 1em;">No. of Resources</h4>
                 <hr style="margin-top: 4em;border-top: 1px dashed #717070;">
 
             </div>
@@ -693,7 +698,7 @@ margin-left: 1em;">
             options: {
                 title: {
                     display: true,
-                    text: 'No of Assets Assigned'
+                    text: 'Resources'
                 }
             }
         });

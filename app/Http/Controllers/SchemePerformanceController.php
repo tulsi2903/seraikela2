@@ -12,44 +12,62 @@ use App\Group;
 use App\SchemePerformance;
 use App\SchemeGeoTarget2;
 use App\SchemePerformance2;
+use App\SchemeAsset;
 
 class SchemePerformanceController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
 
-    	 $datas = SchemePerformance::leftJoin('scheme_structure', 'scheme_geo_target.scheme_id', '=', 'scheme_structure.scheme_id')
-                    ->leftJoin('scheme_geo_target','scheme-performance.scheme_geo_target_id','=','scheme_geo_target.scheme_geo_target_id')
-                    ->leftJoin('geo_structure', 'scheme_geo_target.geo_id', '=', 'geo_structure.geo_id')
-                    ->leftJoin('scheme_indicator','scheme_geo_target.indicator_id','=','scheme_indicator.indicator_id')
-                    ->leftJoin('year','scheme_geo_target.year_id','=','year.year_id')
-                    ->leftJoin('scheme_group','scheme_geo_target.group_id','=','scheme_group.scheme_group_id')
-                    ->select('scheme_geo_target.*','scheme_structure.scheme_name','scheme_structure.scheme_short_name','geo_structure.geo_name','geo_structure.level_id','geo_structure.parent_id','scheme_indicator.indicator_name','year.year_value','scheme_group.scheme_group_name')
-                    ->orderBy('scheme_geo_target.scheme_geo_target_id','desc')
-                    ->get();
+    	// $datas = SchemePerformance::leftJoin('scheme_structure', 'scheme_geo_target.scheme_id', '=', 'scheme_structure.scheme_id')
+        //             ->leftJoin('scheme_geo_target','scheme-performance.scheme_geo_target_id','=','scheme_geo_target.scheme_geo_target_id')
+        //             ->leftJoin('geo_structure', 'scheme_geo_target.geo_id', '=', 'geo_structure.geo_id')
+        //             ->leftJoin('scheme_indicator','scheme_geo_target.indicator_id','=','scheme_indicator.indicator_id')
+        //             ->leftJoin('year','scheme_geo_target.year_id','=','year.year_id')
+        //             ->leftJoin('scheme_group','scheme_geo_target.group_id','=','scheme_group.scheme_group_id')
+        //             ->select('scheme_geo_target.*','scheme_structure.scheme_name','scheme_structure.scheme_short_name','geo_structure.geo_name','geo_structure.level_id','geo_structure.parent_id','scheme_indicator.indicator_name','year.year_value','scheme_group.scheme_group_name')
+        //             ->orderBy('scheme_geo_target.scheme_geo_target_id','desc')
+        //             ->get();
 
-                     $i=0;
-        foreach($datas as $data){
-            if($data->level_id==4){
-                $tmp = GeoStructure::find($data->parent_id);
-                if($tmp->geo_name)
-                { 
-                    $datas[$i]->bl_name = $tmp->geo_name; 
-                }
-                else{
-                $datas[$i]->bl_name = "NA";
-                }
-                }
-                else{
-                    $datas[$i]->bl_name = "NA";
-                }
-                $i++;
+        //              $i=0;
+        // foreach($datas as $data){
+        //     if($data->level_id==4){
+        //         $tmp = GeoStructure::find($data->parent_id);
+        //         if($tmp->geo_name)
+        //         { 
+        //             $datas[$i]->bl_name = $tmp->geo_name; 
+        //         }
+        //         else{
+        //         $datas[$i]->bl_name = "NA";
+        //         }
+        //         }
+        //         else{
+        //             $datas[$i]->bl_name = "NA";
+        //         }
+        //         $i++;
+        // }
+
+        // recieving data
+        if($request->id)
+        {
+            $scheme_geo_target_data = SchemeGeoTarget::find($request->id);
+            $scheme_data = SchemeStructure::find($scheme_geo_target_data->scheme_id);
+            $scheme_asset_data = SchemeAsset::find($scheme_data->scheme_asset_id);
+            $panchayat_data = GeoStructure::find($scheme_geo_target_data->panchayat_id);
+            $block_data = GeoStructure::find($panchayat_data->bl_id);
+            $scheme_performance_datas = SchemePerformance::where('scheme_id',$scheme_geo_target_data->scheme_id)
+                                                            ->where('year_id',$scheme_geo_target_data->year_id)
+                                                            ->where('panchayat_id',$scheme_geo_target_data->panchayat_id)
+                                                            ->get();
+        }
+        else{
+            return redirect('scheme-geo-target');
         }
 
-    	return view('scheme-performance.index')->with('datas',$datas);
+    	return view('scheme-performance.index')->with(compact('scheme_geo_target_data','scheme_data','scheme_asset_data','panchayat_data','block_data','scheme_performance_datas'));
     }
 
-     public function add(Request $request){
+    public function add(Request $request){
         $hidden_input_purpose = "add";
         $hidden_input_id= "NA";
         $bl_id = "";

@@ -1,6 +1,6 @@
 @extends('layout.layout')
 
-@section('title', 'Resources Review')
+@section('title', 'New Resources Review')
 
 @section('page-style')
 <style>
@@ -517,11 +517,6 @@
     $(document).ready(function () {
         $(".block-map-content g").click(function () {
             if (review_for == "panchayat") {
-                /****** for panchayat selection ******/
-                // var clicked_block_position = $(this).offset();
-                // top_pos = clicked_block_position.top - $(this).closest('div').offset().top;
-                // left_pos = clicked_block_position.left - $(this).closest('div').offset().left;
-                // $(".panchayat-map-content").css({"top": top_pos-150, "left": left_pos-150});
                 panchayat_target = $(this).data("panchayat-target");
                 $(".panchayat-map-content svg").css("display", "none"); // hide all svg first
                 $(".panchayat-map-content #panchayat-" + panchayat_target).css("display", "inline-block"); // show respective svg
@@ -685,7 +680,7 @@
             }
         });
         $.ajax({
-            url: "{{url('asset-review/get-datas')}}",
+            url: "{{url('asset-review/get-tabular-view-datas')}}",
             data: { 'review_for': review_for, 'geo_id': geo_id, 'dept_id': dept_id, 'year_id': year_id },
             method: "GET",
             contentType: 'application/json',
@@ -717,9 +712,9 @@
                     // calling/initialiazing all views
                     to_export_datas = data.tabular_view;
                     initializeTabularView(data.tabular_view);
-                    intializeGraphicalView(data.chart_labels, data.chart_datasets);
-                    initializeMapView(data.map_view_blocks, data.map_view_assets);
-                    initializeGalleryView(data.gallery_images);
+                    // intializeGraphicalView(data.chart_labels, data.chart_datasets);
+                    // initializeMapView(data.map_view_blocks, data.map_view_assets);
+                    // initializeGalleryView(data.gallery_images);
 
                     // all-view-details
                     initialiteCommon();
@@ -737,33 +732,54 @@
 
 <!-- tabular view -->
 <script>
-    function initializeTabularView(data) {
-        // data is multidimensional array, each row for each table row
-        var toShowTabularForm = "<table class='table table-striped table-bordered table-datatable table-sm'>";
-        for (var i = 0; i < data.length; i++) {
-            if (i == 0) { // for first row
-                toShowTabularForm = toShowTabularForm + "<tr class='table-secondary'>";
-            }
-            else { // for others
-                toShowTabularForm = toShowTabularForm + "<tr>";
+    function initializeTabularView(data) { //received data.tabular_view
+        /*
+        data[i].block_name
+        data[i].count_datas ====> ["","p1","p2"]["50,"2","3"]["50,"2","3"]
+        */
+        var to_show_nav_pills = `<ul class="nav nav-pills nav-secondary nav-pills-no-bd" id="pills-tab-without-border" role="tablist">`;
+        var toShowTabularForm = '<div class="tab-content mt-2 mb-3" id="myTabContent">';
+        for(var i = 0; i < data.length; i++){
+
+            // for block names, make different tab-pane and button to show hide block wise tabular view contents
+            // data[i].block_name
+            to_show_nav_pills+=`<li class="nav-item">
+                                    <a class="nav-link" data-toggle="pill" href="#tabluar-view-table-`+i+`" role="tab" aria-selected="true">`+data[i].block_name+`</a>
+                                </li>`;
+
+           toShowTabularForm+=`<div class="tab-pane fade" href="#tabluar-view-table-`+i+`" role="tabpanel">`;
+
+            for(var j=0; j<data[i].count_datas.length; j++){
+                toShowTabularForm+=`<table id="target-table" class="table order-list" style="margin-top: 10px;">`;
+                    if (j == 0) { // for first row
+                        toShowTabularForm += `<tr style='background: #d6dcff;color: #000;'>`;
+                    }
+                    else { // for others
+                        toShowTabularForm += `<tr>`;
+                    }
+
+                    for(k=0;k<data[i].count_datas[j].length;k++){
+                        // console.log(data[i].count_datas[j][k]);
+                        if (j == 0) {  // for first row i.e th
+                            if (data[i].count_datas[j][k] == "") { // for first row of first index name by raj
+                                toShowTabularForm+=`<th> Name </th>`;
+                            } else {
+                                toShowTabularForm+=`<th>` + data[i].count_datas[j][k] + `</th>`;
+                            }
+                        }
+                        else { // for others
+                            toShowTabularForm+=`<td>` + data[i].count_datas[j][k]+ `</td>`;
+                        }
+                    }
+                toShowTabularForm+=`</tr>`;
             }
 
-            for (var j = 0; j < data[0].length; j++) {
-                if (i == 0) {  // for first row i.e th
-                    if (data[i][j] == "") { // for first row of first index name by raj
-                        toShowTabularForm = toShowTabularForm + "<th> Name </th>";
-                    } else {
-                        toShowTabularForm = toShowTabularForm + "<th>" + data[i][j] + "</th>";
-                    }
-                }
-                else { // for others
-                    toShowTabularForm = toShowTabularForm + "<td>" + data[i][j] + "</td>";
-                }
-            }
-            toShowTabularForm = toShowTabularForm + "</tr>";
+            toShowTabularForm+=`</div>`;
         }
-        toShowTabularForm = toShowTabularForm + "</table";
-        $("#tabular-view").append(toShowTabularForm);
+        toShowTabularForm+=`</table></div>`;
+        toShowTabularForm+=`</div>`;
+        to_show_nav_pills+=`</ul>`;
+        $("#tabular-view").append(to_show_nav_pills + toShowTabularForm);
         $("#tabular-view").show();
         $("#tabular-view + .no-data").hide();
     }

@@ -99,6 +99,14 @@
 
 @section('page-content')
 <div class="row row-card-no-pd" style="border-top: 3px solid #5c76b7; min-height: 812px;">
+    <div class="col-12">
+        <div class="card-body">
+            <br/><br/>
+            <h2 style="text-align: center; color: black;"><span style="color: #09c521;"><i class="fas fa-wrench"></i></span>&nbsp;&nbsp;Under Development</h2>
+        </div>
+    </div>
+</div>
+<div class="row row-card-no-pd" style="border-top: 3px solid #5c76b7; min-height: 812px; display: none;">
     <div class="col-md-4">
             <!-- <div class="card-header">
                 <h4 class="card-title" style="text-transform: capitalize;">{{$review_type}} review</h4>
