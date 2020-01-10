@@ -39,7 +39,7 @@
                             <a href="{{url('department/pdf/pdfURL')}}" target="_BLANK"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button></a>
                             <a href="{{url('department/changeView')}}" data-toggle="tooltip" title="Import From Excel"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fa fa-upload"></i></button></a>
 
-                            @if($desig_permissions["department"]["add"])
+                            @if($desig_permissions["mod1"]["add"])
                                 <a id="toggle1" class="btn btn-secondary department-add-button" href="javascript:void();" role="button"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;Add</a>
                             @endif
                         </div>
@@ -101,8 +101,10 @@
                                         <th>Icon</th>
                                         <th>Department Name</th>
                                         <th>Organisation</th>
-                                        <th>Status</th>  
+                                        <th>Status</th> 
+                                        @if($desig_permissions["mod2"]["del"] ||$desig_permissions["mod2"]["edit"] ) 
                                         <th class="action-buttons">Action</th>  
+                                        @endif
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -120,10 +122,12 @@
                                             else{
                                                 echo '<i class="fas fa-times text-danger"></i> Inactive';
                                             } ?></td>
+                                            @if($desig_permissions["mod2"]["del"] ||$desig_permissions["mod2"]["edit"] ) 
                                             <td class="action-buttons">
-                                                @if($desig_permissions["department"]["del"])<a href="{{url('department/delete')}}/{{$data->dept_id}}" class="btn btn-danger btn-sm delete-button"><i class="fas fa-trash-alt"></i></a>@endif
-                                                @if($desig_permissions["department"]["edit"])&nbsp;&nbsp;<button type="button" class="btn btn-sm btn-secondary" onclick="openInlineForm('{{$data->dept_id}}')"><i class="fas fa-edit"></i></button>@endif
+                                                @if($desig_permissions["mod2"]["del"])<a href="{{url('department/delete')}}/{{$data->dept_id}}" class="btn btn-danger btn-sm delete-button"><i class="fas fa-trash-alt"></i></a>@endif
+                                                @if($desig_permissions["mod2"]["edit"])&nbsp;&nbsp;<button type="button" class="btn btn-sm btn-secondary" onclick="openInlineForm('{{$data->dept_id}}')"><i class="fas fa-edit"></i></button>@endif
                                             </td>
+                                            @endif
                                         </tr>
                                         <?php $count++; ?>
                                         @endforeach

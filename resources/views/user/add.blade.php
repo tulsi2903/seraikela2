@@ -10,13 +10,12 @@
 @section('page-content')
 
 <?php  $desig_permissions = session()->get('desig_permission'); // assigning desig_permission so we can use ?>
-
     <div class="row">
         <div class="col-md-12">
             <div class="card" style="border-top: 3px solid #5c76b7;">
                 <div class="card-header">
                     <div class="card-title" style="float:left;"><i class="fa fa-user" aria-hidden="true"></i> &nbsp;User Detail</div>
-                    @if($desig_permissions["user"]["add"])
+                    @if(@$desig_permissions["mod1"]["add"])
                         <div id="toggle1">
                             <div  style="float:right;margin-bottom: 1em;"><button class="btn btn-secondary" onclick="resetUserForm()"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;Add Users</button></div>
                         </div>
@@ -190,7 +189,6 @@
                                 <th>Status</th>
                             </tr>
                         </thead>
-                        
                         <tbody>
                             @foreach($results as $key => $val)
                             <tr>
@@ -202,10 +200,14 @@
                                 <td>
                                     @if($val->status==1)
                                     <span style="padding:5px 10px; border: 2px solid #00b100;">Active</span>
-                                    <a href="javascirpt:void();" onclick="editUser('{{$val->id}}')" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></a>
+                                        @if(@$desig_permissions["mod1"]["edit"])
+                                        <a href="javascirpt:void();" onclick="editUser('{{$val->id}}')" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></a>
+                                        @endif
                                     @else
                                     <span style="padding:5px 10px; border: 2px solid #ff1c1c;">Inactive</span>
-                                    <a href="javascirpt:void();" onclick="editUser('{{$val->id}}')" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></a>
+                                        @if(@$desig_permissions["mod1"]["edit"])
+                                        <a href="javascirpt:void();" onclick="editUser('{{$val->id}}')" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></a>
+                                        @endif
                                     @endif
                                 </td>
                             </tr>

@@ -33,7 +33,7 @@
                             <a href="#" data-toggle="tooltip" title="Print"><button type="button" class="btn btn-icon btn-round btn-default" id="print-button" onclick="printView();"><i class="fa fa-print" aria-hidden="true"></i></button></a>
                             <a href="{{url('scheme-type/pdf/pdfURL')}}"  target="_BLANK"  data-toggle="tooltip" title="Export to PDF"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button></a>
                             <a href="{{url('scheme-type/export/excelURL')}}" data-toggle="tooltip" title="Export to Excel"><button type="button" class="btn btn-icon btn-round btn-primary" ><i class="fas fa-file-excel"></i></button></a>
-                            @if($desig_permissions["scheme type"]["add"])
+                            @if($desig_permissions["mod6"]["add"])
                                 <a class="btn btn-secondary" href="{{url('scheme-type/add')}}" role="button"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;Add</a>
                             @endif
                         </div>
@@ -53,7 +53,9 @@
                                 <tr>
                                     <th>#</th>
                                     <th>Name</th>
+                                    @if($desig_permissions["mod6"]["del"] || $desig_permissions["mod6"]["edit"])
                                     <th class="action-buttons">Actions</th>
+                                    @endif
                                 </tr>
                             </thead>
                             <?php $count=1; ?>
@@ -62,10 +64,12 @@
                                     <tr>
                                         <td width="40px;">{{$count++}}</td>
                                         <td>{{$data->sch_type_name}}</td>
+                                        @if($desig_permissions["mod6"]["del"] || $desig_permissions["mod6"]["edit"])
                                         <td class="action-buttons">
-                                            @if($desig_permissions["scheme type"]["del"])<a href="{{url('scheme-type/delete')}}/{{$data->sch_type_id}}" class="btn btn-danger btn-sm delete-button"><i class="fas fa-trash-alt"></i></a>@endif
-                                            @if($desig_permissions["scheme type"]["edit"])&nbsp;&nbsp;<a href="{{url('scheme-type/add')}}?purpose=edit&id={{$data->sch_type_id}}" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></a>@endif
+                                            @if($desig_permissions["mod6"]["del"])<a href="{{url('scheme-type/delete')}}/{{$data->sch_type_id}}" class="btn btn-danger btn-sm delete-button"><i class="fas fa-trash-alt"></i></a>@endif
+                                            @if($desig_permissions["mod6"]["edit"])&nbsp;&nbsp;<a href="{{url('scheme-type/add')}}?purpose=edit&id={{$data->sch_type_id}}" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></a>@endif
                                         </td>
+                                        @endif
                                     </tr>
                                 @endforeach
                             @endif

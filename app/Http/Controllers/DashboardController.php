@@ -48,10 +48,10 @@ class DashboardController extends Controller
             }
 
             // assigning designation permission
-            $desig_permission_datas = DesignationPermission::leftjoin("module","desig_permission.mod_id","=","module.mod_id")->select("module.mod_name","desig_permission.add","desig_permission.edit","desig_permission.view","desig_permission.del")->where("desig_id", session()->get('user_designation'))->get();
+            $desig_permission_datas = DesignationPermission::leftjoin("module","desig_permission.mod_id","=","module.mod_id")->select("module.mod_id","module.mod_name","desig_permission.add","desig_permission.edit","desig_permission.view","desig_permission.del")->where("desig_id", session()->get('user_designation'))->get();
             $desig_permission = Array(); // ['module_id'=>[add, edit, view, delete], "module_id"=>[add, edit, view, delete]]
             foreach($desig_permission_datas as $data){
-                $tmp = ["".$data->mod_name."" => ["add"=>$data->add, "edit"=>$data->edit, "view"=>$data->view, "del"=>$data->del]];
+                $tmp = ["mod".$data->mod_id."" => ["add"=>$data->add, "edit"=>$data->edit, "view"=>$data->view, "del"=>$data->del]];
                 $desig_permission = array_merge($desig_permission, $tmp);
             }
             // return $desig_permission["mod_1"];

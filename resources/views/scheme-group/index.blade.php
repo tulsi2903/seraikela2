@@ -32,7 +32,7 @@
                             <a href="#" data-toggle="tooltip" title="Print"><button type="button" class="btn btn-icon btn-round btn-default" id="print-button" onclick="printView();"><i class="fa fa-print" aria-hidden="true"></i></button></a>
                             <a href="{{url('scheme-group/pdf/pdfURL')}}" target="_BLANK" data-toggle="tooltip" title="Export to PDF"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button></a>
                             <a href="{{url('scheme-group/export/excelURL')}}" data-toggle="tooltip" title="Export to Excel"><button type="button" class="btn btn-icon btn-round btn-primary" ><i class="fas fa-file-excel"></i></button></a>
-                            @if($desig_permissions["scheme group"]["add"])
+                            @if($desig_permissions["mod7"]["add"])
                                 <a class="btn btn-secondary" href="{{url('scheme-group/add')}}" role="button"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;Add</a>
                             @endif
                         </div>
@@ -53,7 +53,9 @@
                                     <th>#</th>
                                     <th>Groups</th>
                                     <th>is Active</th>
+                                    @if($desig_permissions["mod7"]["del"] || $desig_permissions["mod7"]["edit"])
                                     <th class="action-buttons">Actions</th>
+                                    @endif
                                 </tr>
                             </thead>
                             <?php $count=1; ?>
@@ -68,10 +70,12 @@
                                         else{
                                             echo "Inactive";
                                         } ?></td>
+                                        @if($desig_permissions["mod7"]["del"] || $desig_permissions["mod7"]["edit"])
                                         <td class="action-buttons">
-                                            @if($desig_permissions["scheme group"]["del"])<a href="{{url('scheme-group/delete')}}/{{$result->scheme_group_id}}" class="btn btn-danger btn-sm delete-button"><i class="fas fa-trash-alt"></i></a>&nbsp;&nbsp;@endif
-                                            @if($desig_permissions["scheme group"]["edit"])<a href="{{url('scheme-group/add')}}?purpose=edit&id={{$result->scheme_group_id}}" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></a>@endif
+                                            @if($desig_permissions["mod7"]["del"])<a href="{{url('scheme-group/delete')}}/{{$result->scheme_group_id}}" class="btn btn-danger btn-sm delete-button"><i class="fas fa-trash-alt"></i></a>&nbsp;&nbsp;@endif
+                                            @if($desig_permissions["mod7"]["edit"])<a href="{{url('scheme-group/add')}}?purpose=edit&id={{$result->scheme_group_id}}" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></a>@endif
                                         </td>
+                                        @endif
                                     </tr>
                                 @endforeach
                             @endif

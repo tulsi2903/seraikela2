@@ -11,6 +11,7 @@
 						<p>Administrator</p>
 						<span class="caret"></span>
 					</a>
+				
 					<div class="collapse" id="administator">
 						<ul class="nav nav-collapse">
 							@if(array_key_exists("mod1", $desig_permissions))
@@ -19,12 +20,11 @@
 							@if(array_key_exists("mod2", $desig_permissions))
 								<li class="nav-item"><a href="{{url('department')}}"><i class="fas fa-sitemap"></i><p>Department</p></a></li>
 							@endif
-							<li class="nav-item"><a href="{{url('geo-structure')}}"><i class="fas fa-map-marker-alt"></i><p>Geo Structure</p></a></li>
 							@if(array_key_exists("mod3", $desig_permissions))
 								<li class="nav-item"><a href="{{url('year')}}"><i class="fas fa-calendar-alt"></i><p>Year</p></a></li>
 							@endif
 							@if(array_key_exists("mod4", $desig_permissions))
-								<!-- <li class="nav-item"><a href="{{url('uom')}}"><i class="fas fa-list-ol"></i><p>UoM</p></a></li> -->
+								<li class="nav-item"><a href="{{url('uom')}}"><i class="fas fa-list-ol"></i><p>UoM</p></a></li>
 							@endif
 							@if(array_key_exists("mod5", $desig_permissions))
 								<li class="nav-item"><a href="{{url('designation')}}"><i class="fas fa-user-check"></i><p>Designation</p></a></li>
@@ -44,6 +44,7 @@
 							@if(session()->get('user_designation')=="1")
 								<li class="nav-item"><a href="{{url('module')}}"><i class="fas fa-indent"></i><p>Module</p></a></li>
 								<li class="nav-item"><a href="{{url('designation-permission')}}"><i class="fas fa-users-cog"></i><p>Designation Permission</p></a></li>
+							
 							@endif
 						</ul>
 					</div>
@@ -64,7 +65,8 @@
 							@endif
 							@if(array_key_exists("mod14", $desig_permissions))
 							<li class="nav-item"><a href="{{url('asset-numbers')}}"><i class="fas fa-list-ol"></i><p>Resources Number</p></a></li>
-							@endif</ul>
+							@endif
+						</ul>
 					</div>
 				</li>
 
@@ -79,13 +81,19 @@
 							@if(array_key_exists("mod15", $desig_permissions))
 								<li class="nav-item"><a href="{{url('scheme-structure')}}"><i class="fas fa-receipt"></i><p>Define Scheme</p></a></li>
 							@endif
+			                <!-- <li class="nav-item"><a href="{{url('scheme-indicator')}}"><i class="fas fa-receipt"></i><p>Scheme Indicator</p></a></li> -->
 							@if(array_key_exists("mod16", $desig_permissions))
 							<li class="nav-item"><a href="{{url('scheme-asset')}}"><i class="fas fa-users-cog"></i><p>Scheme Assets</p></a></li>
 							@endif
 							@if(array_key_exists("mod17", $desig_permissions))
-							<!-- <li class="nav-item"><a href="{{url('scheme-geo-target')}}"><i class="fas fa-receipt"></i><p>Scheme Geo Target</p></a></li> -->
-			                <li class="nav-item"><a href="{{url('scheme-performance')}}"><i class="fas fa-receipt"></i><p>Scheme Performance</p></a></li>
+			                <li class="nav-item"><a href="{{url('scheme-geo-target')}}"><i class="fas fa-receipt"></i><p>Scheme Geo Target</p></a></li>
+							<!-- <li class="nav-item"><a href="{{url('scheme-geo-target/pmayg')}}"><i class="fas fa-receipt"></i><p>PMAYG Target</p></a></li> -->
 							@endif
+							@if(array_key_exists("mod18", $desig_permissions))
+							<li class="nav-item"><a href="{{url('scheme-performance/add')}}"><i class="fas fa-receipt"></i><p>Scheme Performance</p></a></li>
+							@endif
+							<!-- <li class="nav-item"><a href="{{url('scheme-performance/pmayg')}}"><i class="fas fa-receipt"></i><p>PMAYG Performance</p></a></li> -->
+
 						</ul>
 					</div>
 				</li>
@@ -106,12 +114,14 @@
 							@endif
 							@if(array_key_exists("mod21", $desig_permissions))
 							<li class="nav-item"><a href="{{url('review/group')}}"><i class="fas fa-receipt"></i><p>Group Review</p></a></li>
-							@endif</ul>
+							@endif
+						</ul>
 					</div>
 				</li>
 				@if(array_key_exists("mod22", $desig_permissions))
 				<li class="nav-item"><a href="{{url('favourites')}}"><i class="fa fa-bookmark" aria-hidden="true"></i><p>Favourite</p></a></li>
-				@endif<!-- <li class="nav-item"><a href="{{url('mgnrega')}}"><i class="fa fa-bookmark" aria-hidden="true"></i><p>Mgnrega</p></a></li> -->
+				@endif
+				<!-- <li class="nav-item"><a href="{{url('mgnrega')}}"><i class="fa fa-bookmark" aria-hidden="true"></i><p>Mgnrega</p></a></li> -->
 			</ul>
 		</div>
 	</div>

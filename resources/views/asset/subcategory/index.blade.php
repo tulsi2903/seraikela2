@@ -33,7 +33,7 @@
                             <a href="#" data-toggle="tooltip" title="Print"><button type="button" class="btn btn-icon btn-round btn-default" id="print-button" onclick="printView();"><i class="fa fa-print" aria-hidden="true"></i></button></a>
                             <a href="{{url('asset_subcat/pdf/pdfURL')}}" target="_BLANK" data-toggle="tooltip" title="Export to PDF"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button></a>
                             <a href="{{url('asset_subcat/export/excelURL')}}" data-toggle="tooltip" title="Export to Excel"><button type="button" class="btn btn-icon btn-round btn-primary" ><i class="fas fa-file-excel"></i></button></a>
-                            @if($desig_permissions["asset subcategory"]["add"])
+                            @if($desig_permissions["mod9"]["add"])
                                 <a class="btn btn-secondary" href="{{url('asset_subcat/add')}}" role="button"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;Add</a>
                             @endif    
                         </div>
@@ -56,9 +56,9 @@
                                     <th>Sub Category Description</th>
                                     <th> Category Name  </th>
                                     <!-- <th>Type</th> -->
-                                   
+                                    @if($desig_permissions["mod9"]["edit"] || $desig_permissions["mod9"]["del"])
                                     <th class="action-buttons">Action</th>
-
+                                    @endif
 
                                 </tr>
                             </thead>
@@ -83,10 +83,12 @@
                                             }
                                             ?>
                                         </td> -->
+                                        @if($desig_permissions["mod9"]["edit"] || $desig_permissions["mod9"]["del"])
                                         <td class="action-buttons">
-                                            @if($desig_permissions["asset subcategory"]["del"])<a href="{{url('asset_subcat/delete')}}/{{$data->asset_sub_id}}" class="btn btn-danger btn-sm delete-button"><i class="fas fa-trash-alt"></i></a>@endif
-                                            @if($desig_permissions["asset subcategory"]["edit"])&nbsp;&nbsp;<a href="{{url('asset_subcat/add')}}?purpose=edit&id={{$data->asset_sub_id}}" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></a>@endif
+                                            @if($desig_permissions["mod9"]["del"])<a href="{{url('asset_subcat/delete')}}/{{$data->asset_sub_id}}" class="btn btn-danger btn-sm delete-button"><i class="fas fa-trash-alt"></i></a>@endif
+                                            @if($desig_permissions["mod9"]["edit"])&nbsp;&nbsp;<a href="{{url('asset_subcat/add')}}?purpose=edit&id={{$data->asset_sub_id}}" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></a>@endif
                                         </td>
+                                        @endif
                                     </tr>
                                 @endforeach
                             @endif
