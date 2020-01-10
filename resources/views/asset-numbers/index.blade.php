@@ -100,14 +100,33 @@
         </div>
                 @if(@session()->get('message')!="")
                     <?php 
-                        $message=session()->get('message');
-                        echo "<script>
-                            var redirectedit =  confirm('If You Want To Enter Further Resources Details');
-                            if (redirectedit == true) {
-                            window.location = 'asset-numbers/add?purpose=edit&id='+$message;
-                            }
-                        </script>";
+                        $message = session()->get('message');
                         session()->forget('message');
+
+                        echo "<script>
+                            $(document).ready(function(){
+                                swal({
+                                    title: 'If You Want To Enter Further Sub Resources Details?',
+                                    // text: 'You won't be able to revert this!',
+                                    icon: 'warning',
+                                    buttons: {
+                                        cancel: {
+                                            visible: true,
+                                            text: 'No, cancel!',
+                                            className: 'btn btn-danger'
+                                        },
+                                        confirm: {
+                                            text: 'Yes, Sub Add',
+                                            className: 'btn btn-success'
+                                        }
+                                    }
+                                }).then((willDelete) => {
+                                    if (willDelete) {
+                                        window.location = 'asset-numbers/add?purpose=edit&id='+$message;
+                                    }
+                                });
+                            });
+                        </script>";
                     ?>
                 @endif
 @endsection

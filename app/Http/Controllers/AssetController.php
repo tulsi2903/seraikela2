@@ -270,6 +270,8 @@ class AssetController extends Controller
     public function delete(Request $request)
     {
         if (Asset::find($request->asset_id)) {
+
+            Asset::where('parent_id', $request->asset_id)->delete();
             Asset::where('asset_id', $request->asset_id)->delete();
             // Todo*: also delete its original icon/ already existed icon
             session()->put('alert-class', 'alert-success');

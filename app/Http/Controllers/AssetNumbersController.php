@@ -21,9 +21,11 @@ class AssetNumbersController extends Controller
     public function index()
     {
         // getting rows, last updated
+        $asset_ids = Asset::where('parent_id',-1)->get()->pluck('asset_id');
         $datas = AssetNumbers::select('geo_id', 'asset_id', 'year', DB::raw('MAX(updated_at) AS max_updated'), DB::raw('MAX(asset_numbers_id) as asset_numbers_id'))
-            ->groupBy('year', 'asset_id', 'geo_id')
-            ->get();
+                ->whereIn('asset_id', $asset_ids)
+                ->groupBy('year', 'asset_id', 'geo_id')
+                ->get();
 
         // assigning other values according to its id(asset_numbers_id (primary_key))
         foreach ($datas as $data) {
@@ -46,6 +48,8 @@ class AssetNumbersController extends Controller
                 $data->asset_numbers_id = $tmp->asset_numbers_id;
             }
         }
+        // echo "<pre>";
+        // print_r($datas);exit;
         return view('asset-numbers.index')->with('datas', $datas);
     }
     public function add(Request $request)
@@ -477,7 +481,7 @@ class AssetNumbersController extends Controller
 
     public function list_of_childs($child_id,$geo_child_id,$year_child_id,$hidden_input_id)
     {
-        # code...
+
         $childdatas = Asset::leftJoin('asset_numbers', 'asset.asset_id', '=', 'asset_numbers.asset_id')
         ->where('asset.parent_id',$child_id)
         ->select('asset.asset_id','asset.asset_name',
@@ -492,17 +496,15 @@ class AssetNumbersController extends Controller
         'asset_numbers.year'
         )->get();
 
-        // echo $hidden_input_id;
         // echo "<pre>";
         // print_r($childdatas);exit;
         return view('asset-numbers.child_resources_number')->with(compact('childdatas','geo_child_id','year_child_id','hidden_input_id'));
+
     }
 
     public function saveChilddata(Request $request)
     {
         // return $request;
-        # code...
-        // echo $request;exit;
         foreach ($request->child_asset_id as $key => $value) {
             # code...
             if($request->asset_numbers_child_id[$key] != null)
@@ -527,7 +529,6 @@ class AssetNumbersController extends Controller
 
             }
         }
-        // {"purpose":"edit","id":"24"}
         session()->put('alert-class', 'alert-success');
         session()->put('alert-content', 'Child Resources details have been successfully submitted !');
         return redirect('asset-numbers/add?purpose=edit&id='.$request->main_asset_id);
