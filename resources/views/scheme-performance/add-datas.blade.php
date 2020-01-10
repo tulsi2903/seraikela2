@@ -47,7 +47,7 @@
                             <div style="display: inline-block; float: left; font-size: 16px;">
                                 <b>Data Saved:</b> {{count($scheme_performance_datas)}}
                             </div>
-                            <a href="{{url('scheme-performance/import-datas')}}?scheme_id={{$scheme_data->scheme_id}}&year_id={{$year_data->year_id}}&block_id={{$block_data->geo_id}}" class="btn" style="float:right; background: #349601; color: white;"><i class="fas fa-file-import"></i>&nbsp;&nbsp;Import</a>
+                            <a href="{{url('scheme-performance/viewimport')}}?scheme_id={{$scheme_data->scheme_id}}&year_id={{$year_data->year_id}}&block_id={{$block_data->geo_id}}" class="btn" style="float:right; background: #349601; color: white;"><i class="fas fa-file-import"></i>&nbsp;&nbsp;Import</a>
                         </div>
                         <table class="table">
                             <thead style="background: #cedcff">

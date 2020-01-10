@@ -13,6 +13,8 @@ use App\SchemePerformance;
 use App\SchemeGeoTarget2;
 use App\SchemePerformance2;
 use App\SchemeAsset;
+use Maatwebsite\Excel\Facades\Excel;
+
 
 class SchemePerformanceController extends Controller
 {
@@ -89,9 +91,9 @@ class SchemePerformanceController extends Controller
         $panchayat_data = GeoStructure::find($panchayat_id);
         $block_data = GeoStructure::find($block_id);
         $scheme_performance_datas = SchemePerformance::where('scheme_id',$scheme_id)
-                                                            ->where('year_id',$year_id)
-                                                            ->where('panchayat_id',$panchayat_id)
-                                                            ->get();
+                                        ->where('year_id',$year_id)
+                                        ->where('panchayat_id',$panchayat_id)
+                                        ->get();
 
         // echo "<pre>";
         // print_r(unserialize($scheme_asset_data->attribute));
@@ -101,7 +103,14 @@ class SchemePerformanceController extends Controller
     }
 
 
-    public function import_datas(Request $request){
+    public function get_panchayat_datas(Request $request)
+    {
+        $datas = GeoStructure::where('bl_id', $request->block_id)->get();
+        return $datas;
+    }
+
+    public function viewimport(Request $request)
+    {
         if(!$request->scheme_id||!$request->year_id||!$request->block_id){
             return redirect("scheme-performance");
         }
@@ -111,14 +120,64 @@ class SchemePerformanceController extends Controller
         $year_id = $request->year_id;
         $block_id = $request->block_id;
 
-        return "yes";
+
+        return view('scheme-performance.importExcel')->with(compact('scheme_id','year_id','block_id'));
+
     }
 
+    public function Import_from_Excel(Request $request)  
+    {     
+        $block_array[] =array();
+        $panchayat_array[]=array();
+        $status_array[]=array();
+        $block_not_found[]=array();
+        $panchyat_not_found[]=array();
+        $block_id="";$block_name="";
+        $panchayat_id="";$panchayat_name="";
+        $sts_id="";$sts_name="";
+        $notepad_name="";
+        $is_notepad_create=false;
+        
+        if ( $_FILES['excelcsv']['tmp_name']){
+            $readExcel = \Excel::load($_FILES['excelcsv']['tmp_name'], function($reader) { })->get()->toArray();
+            try {
+                // echo '<pre>';
+                // print_r($readExcel);
+                // die;                  
+                foreach ($readExcel as $row) {
+                    
+                    $block_name = $row['0']['block_name'];
+                    if(array_key_exists($block_name, $block_array)) {
+                        // echo "yes"; 
+                        //to do later
+                    }  
+                    else{
+                        $block_name = $row['0']['block_name'];
+                        if(array_key_exists($block_name, $block_not_found)) {
+                           exit;
+                        }  
+                        else{
+                            $block_name_find =  GeoStructure::where('bl_id', $request->block_id)->get();
+                            echo $block_name_find;
 
-    public function get_panchayat_datas(Request $request)
-    {
-        $datas = GeoStructure::where('bl_id', $request->block_id)->get();
-        return $datas;
+
+
+                            
+                        }  
+                        
+                    }                 
+                    
+                  
+         
+                }
+               
+              
+    
+            } catch (Exception $e) {
+              report($e);
+              return false;
+            }
+          }
     }
 
 

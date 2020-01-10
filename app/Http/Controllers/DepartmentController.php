@@ -209,6 +209,7 @@ class DepartmentController extends Controller
         # code...
         return view('department.ImportExcel');
     }
+    
     public function importFromExcel(Request $request)
     {
         # code...
