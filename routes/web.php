@@ -214,6 +214,9 @@ Route::get('scheme-asset/delete/{scheme_asset_id}','Scheme_Asset_Controller@dele
 // Route::get('scheme-performance/get-target','SchemePerformanceController@get_target');
 // Route::get("scheme-performance/get-scheme-performance-datas", "SchemePerformanceController@get_scheme_performance_datas");
 Route::get('scheme-performance','SchemePerformanceController@index');
+Route::get('scheme-performance/get-panchayat-datas','SchemePerformanceController@get_panchayat_datas');
+Route::get('scheme-performance/add-datas','SchemePerformanceController@add_datas');
+Route::get('scheme-performance/import-datas','SchemePerformanceController@import_datas');
 
 
 

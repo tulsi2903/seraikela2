@@ -75,8 +75,8 @@
 								<li class="nav-item"><a href="{{url('scheme-structure')}}"><i class="fas fa-receipt"></i><p>Define Scheme</p></a></li>
 							@endif
 							<li class="nav-item"><a href="{{url('scheme-asset')}}"><i class="fas fa-users-cog"></i><p>Scheme Assets</p></a></li>
-			                <li class="nav-item"><a href="{{url('scheme-geo-target')}}"><i class="fas fa-receipt"></i><p>Scheme Geo Target</p></a></li>
-			                <!-- <li class="nav-item"><a href="{{url('scheme-performance')}}"><i class="fas fa-receipt"></i><p>Scheme Performance</p></a></li> -->
+			                <!-- <li class="nav-item"><a href="{{url('scheme-geo-target')}}"><i class="fas fa-receipt"></i><p>Scheme Geo Target</p></a></li> -->
+			                <li class="nav-item"><a href="{{url('scheme-performance')}}"><i class="fas fa-receipt"></i><p>Scheme Performance</p></a></li>
 						</ul>
 					</div>
 				</li>

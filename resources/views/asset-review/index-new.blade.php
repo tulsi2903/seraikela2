@@ -381,8 +381,20 @@
         <!-- map results starts -->
         <div id="results-block">
             <div class="card-body" id="tab-height">
+                <div style="overflow: hidden;">
+                    <div style="">
+                        <ul class="nav nav-tabs" id="myTab" role="tablist">
+                            <li class="nav-item">
+                            <a class="nav-link active" id="tabular-tab" data-toggle="tab" href="#tabular-view-tab" role="tab" aria-selected="true">Home</a>
+                            </li>
+                            <li class="nav-item">
+                            <a class="nav-link" id="map-tab" data-toggle="tab" href="#map-view-tab" role="tab" aria-selected="false">Profile</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
                 <ul class="nav nav-pills nav-secondary nav-pills-no-bd" id="pills-tab-without-border" role="tablist">
-                    <li class="nav-item">
+                    <!-- <li class="nav-item">
                         <a class="nav-link active" id="tabular-tab" data-toggle="pill" href="#tabular-view-tab" role="tab" aria-selected="true">Tabular View</a>
                     </li>
                     <li class="nav-item">
@@ -393,7 +405,7 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" id="gallery-tab" data-toggle="pill" href="#gallery-view-tab" role="tab" aria-selected="false">Gallery View</a>
-                    </li>
+                    </li> -->
                     <div style="margin-top: 4px; margin-left: auto; order: 2; display:inline-block;">
                         <a href="#" data-toggle="tooltip" title="Send Mail"><button type="button" class="btn btn-icon btn-round btn-success"><i class="fa fa-envelope" aria-hidden="true"></i></button></a>
                         <a href="#" data-toggle="tooltip" title="Print"><button type="button" class="btn btn-icon btn-round btn-default" id="print-button" onclick="printView();"><i class="fa fa-print" aria-hidden="true"></i></button></a>
@@ -744,39 +756,47 @@
             // for block names, make different tab-pane and button to show hide block wise tabular view contents
             // data[i].block_name
             to_show_nav_pills+=`<li class="nav-item">
-                                    <a class="nav-link" data-toggle="pill" href="#tabluar-view-table-`+i+`" role="tab" aria-selected="true">`+data[i].block_name+`</a>
+                                    <a class="nav-link`;
+                            if(i==0){
+                                to_show_nav_pills+=` active`;
+                            }
+            to_show_nav_pills+=`" data-toggle="pill" href="#tabluar-view-table-`+(i+1)+`" role="tab" aria-selected="true">`+data[i].block_name+`</a>
                                 </li>`;
 
-           toShowTabularForm+=`<div class="tab-pane fade" href="#tabluar-view-table-`+i+`" role="tabpanel">`;
-
-            for(var j=0; j<data[i].count_datas.length; j++){
-                toShowTabularForm+=`<table id="target-table" class="table order-list" style="margin-top: 10px;">`;
-                    if (j == 0) { // for first row
-                        toShowTabularForm += `<tr style='background: #d6dcff;color: #000;'>`;
-                    }
-                    else { // for others
-                        toShowTabularForm += `<tr>`;
-                    }
-
-                    for(k=0;k<data[i].count_datas[j].length;k++){
-                        // console.log(data[i].count_datas[j][k]);
-                        if (j == 0) {  // for first row i.e th
-                            if (data[i].count_datas[j][k] == "") { // for first row of first index name by raj
-                                toShowTabularForm+=`<th> Name </th>`;
-                            } else {
-                                toShowTabularForm+=`<th>` + data[i].count_datas[j][k] + `</th>`;
+            /** tab-pane-start, block wise **/
+            toShowTabularForm+=`<div class="tab-pane fade`;
+                            if(i==0){
+                                toShowTabularForm+=` active show`;
                             }
+            toShowTabularForm+=`" id="tabluar-view-table-`+(i+1)+`" role="tabpanel">`;
+                toShowTabularForm+=`<table id="target-table" class="table order-list" style="margin-top: 10px;">`;
+                    for(var j=0; j<data[i].count_datas.length; j++){
+                        if (j == 0) { // for first row
+                            toShowTabularForm += `<tr style='background: #d6dcff;color: #000;'>`;
                         }
                         else { // for others
-                            toShowTabularForm+=`<td>` + data[i].count_datas[j][k]+ `</td>`;
+                            toShowTabularForm += `<tr>`;
                         }
-                    }
-                toShowTabularForm+=`</tr>`;
-            }
 
+                        for(k=0;k<data[i].count_datas[j].length;k++){
+                            // console.log(data[i].count_datas[j][k]);
+                            if (j == 0) {  // for first row i.e th
+                                if (data[i].count_datas[j][k] == "") { // for first row of first index name by raj
+                                    toShowTabularForm+=`<th> Name </th>`;
+                                } else {
+                                    toShowTabularForm+=`<th>` + data[i].count_datas[j][k] + `</th>`;
+                                }
+                            }
+                            else { // for others
+                                toShowTabularForm+=`<td>` + data[i].count_datas[j][k]+ `</td>`;
+                            }
+                        }
+                        toShowTabularForm+=`</tr>`;
+                    }
+                toShowTabularForm+=`</table>`;
             toShowTabularForm+=`</div>`;
+            /** tab-pane, block wise ends **/
         }
-        toShowTabularForm+=`</table></div>`;
         toShowTabularForm+=`</div>`;
         to_show_nav_pills+=`</ul>`;
         $("#tabular-view").append(to_show_nav_pills + toShowTabularForm);
