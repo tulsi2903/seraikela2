@@ -184,6 +184,9 @@ Route::get('asset-review/get-panchayat-data', 'AssetReviewController@get_panchay
 Route::get('asset-review/export/excelURL','AssetReviewController@export_to_Excel');
 Route::get('asset-review/pdf/pdfURL','AssetReviewController@export_pdf');
 
+Route::get('new-asset-review', 'AssetReviewController@index'); // for new changes, old asset review is still on server and index.blade.php
+Route::get('asset-review/get-tabular-view-datas', 'AssetReviewController@get_tabular_view_datas'); // for new changes, old asset review is still on server and index.blade.php
+
 /*Scheme Type*/
 Route::get('scheme-type','SchemeTypeController@index');
 Route::get('scheme-type/add','SchemeTypeController@add');
@@ -200,40 +203,17 @@ Route::get('scheme-asset/view/{scheme_asset_id}','Scheme_Asset_Controller@view')
 Route::get('scheme-asset/delete/{scheme_asset_id}','Scheme_Asset_Controller@delete');
 
 /*Scheme Performance*/
-Route::get('scheme-performance/add','SchemePerformanceController@add');
-Route::post('scheme-performance/store','SchemePerformanceController@store');
-Route::get('scheme-performance/get-subdivision-name','SchemePerformanceController@get_subdivision_name');
-Route::get('scheme-performance/get-block-name','SchemePerformanceController@get_block_name');
-Route::get('scheme-performance/get-panchayat-name','SchemePerformanceController@get_panchayat_name');
-Route::get('scheme-performance/get-indicator-name','SchemePerformanceController@get_indicator_name');
-// Route::get('scheme-performance/get-indicator-table','SchemePerformanceController@get_indicator_table');
-Route::get('scheme-performance/get-targeGt','SchemePerformanceController@get_target');
-Route::get('scheme-performance/get-target','SchemePerformanceController@get_target');
-Route::get("scheme-performance/get-scheme-performance-datas", "SchemePerformanceController@get_scheme_performance_datas");
-
-
-Route::get('scheme-performance/mgnrega','MgnregaController@performance');
-Route::get('scheme-performance/mgnrega/get-panchayat-datas','MgnregaController@get_panchayat_datas');
-Route::post('scheme-performance/mgnrega/store','MgnregaController@store');
-
-//*Scheme Geo Target(PMAYG)*/
-Route::get('scheme-geo-target/pmayg','PMAYGTargetController@index');
-Route::get('scheme-geo-target/pmayg/add','PMAYGTargetController@add');
-Route::get('scheme-geo-target/pmayg/get-block-datas','PMAYGTargetController@get_block_name');
-Route::get('scheme-geo-target/pmayg/get-panchayat-datas','PMAYGTargetController@get_panchayat_name');
-Route::post('scheme-geo-target/pmayg/store','PMAYGTargetController@store');
-Route::get('scheme-geo-target/pmayg/delete/{pmayg_target_id}','PMAYGTargetController@delete');
-Route::get('scheme-geo-target/pmayg/get-updated-datas','PMAYGTargetController@get_updated_datas');
-
-///*Scheme Performance PMAYG*/
-Route::get('scheme-performance/pmayg','PMAYGPerformanceController@index');
-Route::get('scheme-performance/pmayg/add','PMAYGPerformanceController@add');
-Route::get('scheme-performance/pmayg/get-block-datas','PMAYGPerformanceController@get_block_name');
-Route::get('scheme-performance/pmayg/get-panchayat-datas','PMAYGPerformanceController@get_panchayat_name');
-Route::get('scheme-performance/pmayg/get-updated-datas','PMAYGPerformanceController@get_updated_datas');
-Route::post('scheme-performance/pmayg/store','PMAYGPerformanceController@store');
-Route::get('scheme-performance/pmayg/delete/{pmayg_performance_id}','PMAYGPerformanceController@delete');
-Route::get('scheme-performance/pmayg/view/{scheme_performance_id}','PMAYGPerformanceController@view');
+// Route::get('scheme-performance/add','SchemePerformanceController@add');
+// Route::post('scheme-performance/store','SchemePerformanceController@store');
+// Route::get('scheme-performance/get-subdivision-name','SchemePerformanceController@get_subdivision_name');
+// Route::get('scheme-performance/get-block-name','SchemePerformanceController@get_block_name');
+// Route::get('scheme-performance/get-panchayat-name','SchemePerformanceController@get_panchayat_name');
+// Route::get('scheme-performance/get-indicator-name','SchemePerformanceController@get_indicator_name');
+// // Route::get('scheme-performance/get-indicator-table','SchemePerformanceController@get_indicator_table');
+// Route::get('scheme-performance/get-targeGt','SchemePerformanceController@get_target');
+// Route::get('scheme-performance/get-target','SchemePerformanceController@get_target');
+// Route::get("scheme-performance/get-scheme-performance-datas", "SchemePerformanceController@get_scheme_performance_datas");
+Route::get('scheme-performance','SchemePerformanceController@index');
 
 
 
