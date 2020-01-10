@@ -124,7 +124,7 @@
                     </div>
                     <div class="col-md-8">
                         <div class="form-group">
-                            <label for="asset_icon">Child Resources</label>
+                            <label for="asset_icon">Sub Resources</label>
                             <table>
                                 <thead>
                                     <tr>
@@ -135,20 +135,7 @@
                                     </tr>
                                 </thead>
                                 <tbody id="append-name-child">
-                                    <!-- <tr>
-                                        <td><input type="text" class="form-control" name="child_name[]" id="child_name" autocomplete="off" value="{{$rowdata['asset_name']}}"></td>
-                                        <td><input type="file" name="child_asset_icon[]" class="form-control"></td>
-                                            <td><div id="asset_icon_delete_child_div" style="padding:5px 0; display: none;">
-                                                <div>Previous Icon</div>
-                                                <div style="display: inline-block;position:relative;padding:3px;border:1px solid #c4c4c4; border-radius:3px;">
-                                                    <img src="" style="height:120px;">
-                                                    <span style="position:absolute;top:0;right:0; background: rgba(0,0,0,0.5); font-size: 18px; cursor: pointer; padding: 5px 10px;" class="text-white" onclick=""><i class="fas fa-trash"></i></span>
-                                                </div>
-                                            </div>
-                                            <input type="text" name="asset_icon_child_delete" id="asset_icon_child_delete" value="" hidden>
-                                        </td>
-                                        <td><button type="button" class="btn btn-danger btn-xs delete-button-row"><i class="fas fa-trash-alt"></i></button></td>
-                                    </tr> -->
+                                   
                                 </tbody>
                                 <tbody>
                                     <tr>
@@ -602,7 +589,7 @@
                         for (var i = 0; i < data.category_datas.length; i++) {
                             $("#category").append('<option value="' + data.category_datas[i].asset_cat_id + '">' + data.category_datas[i].asset_cat_name + '</option>');
                         }
-                        $("#category").val(data.asset_data.category_id || "");
+                        setTimeout(function(){ $("#category").val(data.asset_data.category_id || ""); }, 50);
                     }
                     else {
                         get_category(); // getting category data if no data from DB and type selected
@@ -613,7 +600,7 @@
                         for (var i = 0; i < data.subcategory_datas.length; i++) {
                             $("#subcategory").append('<option value="' + data.subcategory_datas[i].asset_sub_id + '">' + data.subcategory_datas[i].asset_sub_cat_name + '</option>');
                         }
-                        $("#subcategory").val(data.asset_data.subcategory_id || "");
+                        setTimeout(function(){ $("#subcategory").val(data.asset_data.subcategory_id || ""); }, 50);
                     }
                     else {
                         get_subcategory(); // getting sub category data according to if no data from backend a category selected

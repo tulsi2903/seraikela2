@@ -27,10 +27,8 @@
     <div class="col-md-12">
         <div class="card-header">
             <div class="card-head-row card-tools-still-right" style="background:#fff;">
-                <h4 class="card-title">Child Resources Number</h4>
-                <div class="card-tools">
-                    <a href="{{url('asset-numbers/add')}}?purpose=edit&id={{$hidden_input_id}}" class="btn btn-sm btn-secondary" style="float:right;"><i class="fas fa-arrow-left"></i>&nbsp;&nbsp;Back</a>
-                </div>
+                <h4 class="card-title">Sub Resources Number</h4>
+                
             </div>
         </div>
     </div>
@@ -47,7 +45,6 @@
                                     <th>Name</th>
                                     <th>Previous Value</th>
                                     <th>Current Value</th>
-                                    <!-- <th class="action-buttons">Action</th> -->
                                 </tr>
                             </thead>
                             <?php $count=1; ?>
@@ -57,8 +54,8 @@
                                     <td>{{$count++}}</td>
                                     <td>{{$data->asset_name}}<input type="text" class="form-control" name="child_asset_id[]" value="{{$data->asset_id}}" hidden></td>
                                     <td><input type="text" class="form-control" name="previous_value_child[]" value="{{$data->current_value ?? 0}}" readonly></td>
-                                    <td><input type="text" class="form-control" name="current_value_child[]" value="{{$data->current_value}}"  autocomplete="off"></td>
-                                    <td><input type="text" class="form-control" name="asset_numbers_child_id[]" value="{{$data->asset_numbers_id}}" hidden></td>
+                                    <td><input type="text" class="form-control" name="current_value_child[]" id="current_value_child" value="{{$data->current_value}}"  autocomplete="off"></td>
+                                    <input type="text" class="form-control" name="asset_numbers_child_id[]" value="{{$data->asset_numbers_id}}" hidden>
                                 </tr>
                             @endforeach
                             @endif
@@ -74,11 +71,23 @@
                         <input type="text" class="form-control" name="year_child_id" value="{{$year_child_id}}" hidden>
                         <input type="text" class="form-control" name="main_asset_id" value="{{$hidden_input_id}}" hidden>
                     </div>
-                    <button type="submit" class="btn btn-secondary">Save&nbsp;&nbsp;<i class="fas fa-check"></i></button>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <hr />
+                                <button type="submit" class="btn btn-secondary">Save&nbsp;&nbsp;<i class="fas fa-check"></i></button>
+                                &nbsp;&nbsp;<a href="{{url('asset-numbers/add')}}?purpose=edit&id={{$hidden_input_id}}"><button type="button" class="btn btn-dark">Cancel&nbsp;&nbsp;<i class="fas fa-times"></i></button></a>
+                            </div>
+                        </div>
+                    </div>
+                   
                 </form>
             </div>
         </div>
     </div>
 </div>
+
+
+
 
 @endsection

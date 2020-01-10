@@ -88,7 +88,6 @@
                                         <th>Location/Landmark</th>
                                         <th>Latitude</th>
                                         <th>Longitude</th>
-                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody id="append-location-delete">
@@ -377,7 +376,7 @@
                 $("#append-location #append-location-delete").prepend("<tr><td colspan='4'><center>Select any <b>"+(Math.abs(diff))+"</b> location(s) to delete</center></td>");
             }
             else{
-                if(asset_location.length > 0){ $("#append-location #append-location-delete").prepend("<tr><td colspan='4'><center>Previous GPS locations</center></td><td><a href="+'{{url("asset_number/list_of_childs")}}/' +$asset_child_id+'/'+$geo_child_id+'/'+$year_child_id+'/'+$hidden_input_id +">Add<i class='fa fa-plus-circle'></i></a></td>"); }
+                if(asset_location.length > 0){ $("#append-location #append-location-delete").prepend("<tr><td></td><td colspan='2' style='text-align: center;'>Previous GPS locations</td><td style='text-align: center;'><a style='padding: 4px;' class='btn btn-secondary' role='button' href="+'{{url("asset_number/list_of_childs")}}/' +$asset_child_id+'/'+$geo_child_id+'/'+$year_child_id+'/'+$hidden_input_id +"><span class='btn-label'><i class='fa fa-plus'></i></span>&nbsp;Add Sub</a></td>"); }
                 else{ $("#append-location #append-location-delete").prepend("<tr><td colspan='4'><center>No Previous GPS found</center></td>");  }
             }
 
