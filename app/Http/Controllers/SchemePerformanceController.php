@@ -109,6 +109,88 @@ class SchemePerformanceController extends Controller
         return $datas;
     }
 
+    public function get_all_datas(Request $request){
+        // received datas
+        $scheme_id = $request->scheme_id;
+        $year_id = $request->year_id;
+        $panchayat_id = $request->panchayat_id;
+
+        /*
+        to send
+        scheme_data
+        scheme_asset_data
+        scheme_performance_data
+        add_new_input
+        */
+        $to_append_thead = '<tr>';
+        $to_append_tbody = ''; // to show previous datas
+        $to_append_row = '<tr>';
+
+        $scheme_data = SchemeStructure::find($scheme_id);
+        $scheme_asset_data = SchemeAsset::find($scheme_data->scheme_asset_id);
+
+        // for attributes
+        $attributes  = unserialize($scheme_asset_data->attribute);
+        foreach($attributes as $attribute)
+        {
+            $to_append_thead.='<th>'.$attribute["name"].'</th>';
+            $to_append_row.='<td><input type="text" name="'.$attribute['id'].'[]" class="form-control" placeholder="'.$attribute['name'].'"></td>';
+        }
+
+        // for gallery & coordinates
+        $to_append_thead.='<th>Others</th>';
+        $to_append_row.='<td><a href="javascript:void();"><i class="fas fa-plus"></i>Images</a>';
+        // for coordinates
+        if($scheme_asset_data->geo_related==1){
+            $to_append_row.='<br/><a href="javascript:void();"><i class="fas fa-plus"></i>Coordinates</a>';
+        }
+        $to_append_row.='</td>';
+
+        $to_append_thead.='<th>Status</th>';
+        $to_append_row.='<td>
+                            <select name="status[]" class="form-control">
+                                <option value="0">Ongoing</option>
+                                <option value="1">Completed</option>
+                            </select>
+                        </td>';
+
+        $to_append_thead.='<th>Comments</th>';
+        $to_append_row.='<td><input type="text" name="comments[]" class="form-control" placeholder="comments"></td>';
+
+        $to_append_thead.='<th>Actions</th>';
+        $to_append_row.='<td><button type="button" class="btn btn-danger btn-xs" onclick="delete_row(this)"><i class="fas fa-trash-alt"></i></button></td>';
+
+        $to_append_thead.='</tr>';
+        $to_append_row.='</tr>';
+
+        return ['to_append_thead'=>$to_append_thead,'to_append_row'=>$to_append_row];
+    }
+
+    public function store(Request $request){
+        // recieved datas
+        $scheme_id = $request->scheme_id;
+        $year_id = $request->year_id;
+        $panchayat_id = $request->panchayat_id;
+        $block_id = GeoStructure::where('geo_id',$panchayat_id)->first()->bl_id;
+        $subdivision_id = GeoStructure::where('geo_id', $panchayat_id)->first()->sd_id;
+
+        $scheme_data = SchemeStructure::where('scheme_id', $scheme_id)->first();
+        $scheme_asset_data = SchemeAsset::where('scheme_asset_id', $scheme_data->scheme_asset_id)->first();
+        $attributes = unserialize($scheme_asset_data->attribute);
+        $attributes_ids = 
+
+        // to save
+        $scheme_performance = new SchemePerformance;
+
+        // loop
+        for($i=0;$i<count($request->status);$i++){
+
+        }
+
+
+        return $request;
+    }
+
     public function viewimport(Request $request)
     {
         if(!$request->scheme_id||!$request->year_id||!$request->block_id){
