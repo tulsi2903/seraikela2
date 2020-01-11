@@ -229,15 +229,23 @@ class AssetReviewController extends Controller
     }
 
     public function get_tabular_view_datas(Request $request){
-        /*
-        tabluar view data to be send
-        */
+        // initializing what to send back
         $tabular_view = [];
+        $map_view_blocks = [];
+        $map_view_assets = [];
 
         // received datas
         $review_for = $request->review_for;
         $geo_id = explode(",", $request->geo_id); // geo_id/block_id/panchayat_id received as
         $dept_id = $request->dept_id;
+        if($request->asset_id){
+            $asset_id = [$request->asset_id];
+            $asset_unique_ids = [$request->asset_id];
+        }
+        else{
+            $asset_id = Asset::where('dept_id',$dept_id)->get()->pluck('asset_id');
+            $asset_unique_ids = Asset::where('dept_id', $dept_id)->get()->pluck('asset_id');
+        }
         $year = $request->year_id;
 
         // varible needed
@@ -253,8 +261,6 @@ class AssetReviewController extends Controller
             $block_datas = GeoStructure::select('geo_id as block_id','geo_name as block_name')->whereIn('geo_id', $bl_id_tmp)->get();
         }
 
-        $asset_unique_ids = Asset::where('dept_id', $dept_id)->get()->pluck('asset_id');
-
         foreach($block_datas as $block_data){
             $tabular_view_block_wise = [];
             
@@ -262,7 +268,7 @@ class AssetReviewController extends Controller
                 $panchayat_datas = GeoStructure::where('bl_id',$block_data->block_id)->get();
             }
             else{ // review_for panchayat
-                // $panchayat_ids = select only those panchayat which are selected in map
+                // select only those panchayat which are selected in map
                 $panchayat_datas = GeoStructure::whereIn('geo_id', $geo_id)->where('bl_id', $block_data->block_id)->get();
             }
             $panchayat_ids = $panchayat_datas->pluck('geo_id'); // getting only ids
@@ -272,7 +278,7 @@ class AssetReviewController extends Controller
             array_push($tabular_view_block_wise, $tmp);
 
             $get_asset_numbers_id_tmp = AssetNumbers::select('geo_id', 'asset_id', 'year', DB::raw('MAX(updated_at) AS max_updated'), DB::raw('MAX(asset_numbers_id) as asset_numbers_id'))
-                ->whereIn('asset_id', Asset::select('asset_id')->where('dept_id',$dept_id)->get())
+                ->whereIn('asset_id', $asset_id)
                 ->whereIn('geo_id', $panchayat_ids)
                 ->where('year', $year)
                 ->groupBy('year','asset_id','geo_id')
@@ -305,7 +311,7 @@ class AssetReviewController extends Controller
                 array_push($tabular_view_block_wise, $tabular_view_tmp);
             }
 
-            array_push($tabular_view, ["block_name"=>$block_data->block_name, "count_datas"=>$tabular_view_block_wise, "asset_id"=>$request->asset_id]);
+            array_push($tabular_view, ["block_name"=>$block_data->block_name, "count_datas"=>$tabular_view_block_wise]);
 
         }
 
@@ -317,7 +323,7 @@ class AssetReviewController extends Controller
             $response = "no_data";
         }
 
-        return ['review_for'=>$review_for, 'response'=>$response, 'tabular_view'=>$tabular_view];
+        return ['review_for'=>$review_for, 'response'=>$response, 'tabular_view'=>$tabular_view, "asset_id"=>$asset_id, "uniwue"=>$asset_unique_ids];
     }
 
     public function get_panchayat_data(Request $request){
