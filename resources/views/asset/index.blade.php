@@ -33,7 +33,7 @@
                     <a href="#" data-toggle="tooltip" title="Print"><button type="button" class="btn btn-icon btn-round btn-default" id="print-button" onclick="printView();"><i class="fa fa-print" aria-hidden="true"></i></button></a>
                     <a href="{{url('asset/pdf/pdfURL')}}" target="_BLANK" data-toggle="tooltip" title="Export to PDF"><button type="button" class="btn btn-icon btn-round btn-warning"><i class="fas fa-file-export"></i></button></a>
                     <a href="{{url('asset/export/excelURL')}}" data-toggle="tooltip" title="Export to Excel"><button type="button" class="btn btn-icon btn-round btn-primary"><i class="fas fa-file-excel"></i></button></a>
-                    @if($desig_permissions["mod13"]["add"])
+                    @if($desig_permissions["asset"]["add"])
                     <a id="toggle1" onclick="resetAssetForm()" class="btn btn-secondary" href="javascript:void();" role="button"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;Add</a>
                     @endif
                 </div>
@@ -131,11 +131,12 @@
                                         <th>Name</th>
                                         <th>Type</th>
                                         <th>Icon</th>
+                                        <th></th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody id="append-name-child">
-                                   
+
                                 </tbody>
                                 <tbody>
                                     <tr>
@@ -197,8 +198,8 @@
                             </td>
                             <td>{{$data->dept_name}}</td>
                             <td class="action-buttons">
-                                @if($desig_permissions["mod13"]["del"])<a href="{{url('asset/delete')}}/{{$data->asset_id}}" class="btn btn-danger btn-sm delete-button"><i class="fas fa-trash-alt"></i></a>@endif
-                                &nbsp;&nbsp;@if($desig_permissions["mod13"]["edit"])<a href="javascirpt:void();" onclick="editAssetAjax('{{$data->asset_id}}')" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></a>@endif
+                                @if($desig_permissions["asset"]["del"])<a href="{{url('asset/delete')}}/{{$data->asset_id}}" class="btn btn-danger btn-sm delete-button"><i class="fas fa-trash-alt"></i></a>@endif
+                                &nbsp;&nbsp;@if($desig_permissions["asset"]["edit"])<a href="javascirpt:void();" onclick="editAssetAjax('{{$data->asset_id}}')" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></a>@endif
                             </td>
                         </tr>
                         @endforeach
@@ -589,7 +590,7 @@
                         for (var i = 0; i < data.category_datas.length; i++) {
                             $("#category").append('<option value="' + data.category_datas[i].asset_cat_id + '">' + data.category_datas[i].asset_cat_name + '</option>');
                         }
-                        setTimeout(function(){ $("#category").val(data.asset_data.category_id || ""); }, 50);
+                        setTimeout(function () { $("#category").val(data.asset_data.category_id || ""); }, 50);
                     }
                     else {
                         get_category(); // getting category data if no data from DB and type selected
@@ -600,7 +601,7 @@
                         for (var i = 0; i < data.subcategory_datas.length; i++) {
                             $("#subcategory").append('<option value="' + data.subcategory_datas[i].asset_sub_id + '">' + data.subcategory_datas[i].asset_sub_cat_name + '</option>');
                         }
-                        setTimeout(function(){ $("#subcategory").val(data.asset_data.subcategory_id || ""); }, 50);
+                        setTimeout(function () { $("#subcategory").val(data.asset_data.subcategory_id || ""); }, 50);
                     }
                     else {
                         get_subcategory(); // getting sub category data according to if no data from backend a category selected
@@ -614,39 +615,40 @@
                     //for Child assets
                     $("#append-name-child").html("");//To remove the previous content
                     if (data.childs_parent.length != 0) {
-                        for(var i=0; i< data.childs_parent.length;i++)
-                        {
+                        for (var i = 0; i < data.childs_parent.length; i++) {
                             var to_append = `<tr>
-                            <td><input type="text" class="form-control" name="child_name[]" value=\"`+ data.childs_parent[i].asset_name +`\" autocomplete="off"></td>
+                            <td><input type="text" class="form-control" name="child_name[]" value=\"`+ data.childs_parent[i].asset_name + `\" autocomplete="off"></td>
                             <td>
-                                <select name="movable_child[]" id="movable_child" class="form-control" value=\"`+ data.childs_parent[i].movable +`\">
+                                <select name="movable_child[]" id="movable_child" class="form-control" value=\"`+ data.childs_parent[i].movable + `\">
                                 `
-                                    if(data.childs_parent[i].movable == 1)
-                                    {
-                                        to_append +=` <option value="1">Movable</option>
+                            if (data.childs_parent[i].movable == 1) {
+                                to_append += ` <option value="1">Movable</option>
                                         <option value="0">Immovable</option> `
-                                    }
-                                    else
-                                    {
-                                        to_append +=` <option value="0">Immovable</option>
+                            }
+                            else {
+                                to_append += ` <option value="0">Immovable</option>
                                         <option value="1">Movable</option> `
-                                    }
-                                    to_append +=` </select>
+                            }
+                            to_append += ` </select>
                             </td>
                             <td><input type="file" name="child_asset_icon[]" class="form-control"></td> 
-                            <td><div id="asset_icon_delete_child_div" style="padding:5px 0; ">
-                                    <div>Previous Icon</div>
+                            <td>`
+                            if (data.childs_parent[i].asset_icon != "") {
+
+                                to_append += `<div id="asset_icon_delete_child_div" style="padding:5px 0; ">
                                     <div style="display: inline-block;position:relative;padding:3px;border:1px solid #c4c4c4; border-radius:3px;">
-                                        <img src=`+'{{url("")}}/' + data.childs_parent[i].asset_icon+` style="height:120px;">
-                                        <span onclick="to_delete_child('`+ data.childs_parent[i].asset_icon +`',this)" style="position:absolute;top:0;right:0; background: rgba(0,0,0,0.5); font-size: 18px; cursor: pointer; padding: 5px 10px;" class="text-white" onclick=""><i class="fas fa-trash"></i></span>
+                                        <img src=`+ '{{url("")}}/' + data.childs_parent[i].asset_icon + ` style="height:55px;">
+                                        <span onclick="to_delete_child('`+ data.childs_parent[i].asset_icon + `',this)" style="position:absolute;top:0;right:0; background: rgba(0,0,0,0.5); cursor: pointer; padding: 3px 3px;" class="text-white" onclick=""><i class="fas fa-trash"></i></span>
                                     </div>
-                                </div>
-                                <input type="text" name="asset_icon_child_delete" id="asset_icon_child_delete" value="" hidden>
+                                </div>`
+                            }
+
+                            to_append += ` <input type="text" name="asset_icon_child_delete" id="asset_icon_child_delete" value="" hidden>
                             </td>
-                            <td><button type="button" class="btn btn-danger btn-xs delete-button-row-child" onclick="delete_child(`+ data.childs_parent[i].asset_id +`);"><i class="fas fa-trash-alt"></i></button></td>
-                            <td><input type="text" name="asset_child_name_id[]" id="asset_child_name_id" value=\"`+ data.childs_parent[i].asset_id +`\" hidden></td>
+                            <td><button type="button" class="btn btn-danger btn-xs delete-button-row-child" onclick="delete_child(`+ data.childs_parent[i].asset_id + `);"><i class="fas fa-trash-alt"></i></button></td>
+                            <td><input type="text" name="asset_child_name_id[]" id="asset_child_name_id" value=\"`+ data.childs_parent[i].asset_id + `\" hidden></td>
                             </tr>`;
-                            
+
                             $("#append-name-child").append(to_append);
                             //onclick="to_delete('public/uploaded_documents/assets/assets-15783888493615.png',this)"
                             //onclick="to_delete('public/uploaded_documents/assets/assets-15783888493513.png)"
@@ -729,8 +731,8 @@
 
 <script>
     var append_i = 0;
-        function append_table_data(type, data){
-            var to_append = `<tr>
+    function append_table_data(type, data) {
+        var to_append = `<tr>
                             <td><input type="text" class="form-control" name="child_name[]" autocomplete="off"></td>
                             <td>
                                 <select name="movable_child[]" id="movable_child" class="form-control">
@@ -742,15 +744,15 @@
                             <td><input type="file" name="child_asset_icon[]" class="form-control"></td> 
                             <td><button type="button" class="btn btn-danger btn-xs delete-button-row-child" onclick="delete_child();"><i class="fas fa-trash-alt"></i></button></td>
                         </tr>`;
-            $("#append-name-child").append(to_append);
-            append_i++;
-        }
-        
+        $("#append-name-child").append(to_append);
+        append_i++;
+    }
+
 </script>
 <script>
-// $(document).ready(function() {
+    // $(document).ready(function() {
     function delete_child(child_id) {
-            // alert(child_id);
+        // alert(child_id);
         $("#append-name-child").delegate(".delete-button-row-child", "click", function () {
             swal({
                 title: 'Are you sure?',
@@ -773,17 +775,17 @@
                     if (child_id == null || child_id == 'undefined') {
                         $(this).closest("tr").remove();
                     }
-                    else{
-                        $("#deleted_asset_child_id").val($("#deleted_asset_child_id").val()+child_id+",");
+                    else {
+                        $("#deleted_asset_child_id").val($("#deleted_asset_child_id").val() + child_id + ",");
                         $(this).closest("tr").remove();
                     }
-                    
+
                 }
             });
         });
 
     }
-        
+
 
 
 </script>

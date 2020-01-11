@@ -28,7 +28,7 @@
         <div class="card-header">
             <div class="card-head-row card-tools-still-right" style="background:#fff;">
                 <h4 class="card-title">Sub Resources Number</h4>
-                
+
             </div>
         </div>
     </div>
@@ -47,16 +47,18 @@
                                     <th>Current Value</th>
                                 </tr>
                             </thead>
+                            @if(count($childdatas) > 0)
                             <?php $count=1; ?>
                             @if(isset($childdatas))
                             @foreach($childdatas as $data)
-                                <tr>
-                                    <td>{{$count++}}</td>
-                                    <td>{{$data->asset_name}}<input type="text" class="form-control" name="child_asset_id[]" value="{{$data->asset_id}}" hidden></td>
-                                    <td><input type="text" class="form-control" name="previous_value_child[]" value="{{$data->current_value ?? 0}}" readonly></td>
-                                    <td><input type="text" class="form-control" name="current_value_child[]" id="current_value_child" value="{{$data->current_value}}"  autocomplete="off"></td>
-                                    <input type="text" class="form-control" name="asset_numbers_child_id[]" value="{{$data->asset_numbers_id}}" hidden>
-                                </tr>
+                            <tr>
+                                <td>{{$count++}}</td>
+                                <td>{{$data->asset_name}}<input type="text" class="form-control" name="child_asset_id[]" value="{{$data->asset_id}}" hidden></td>
+                                <td><input type="text" class="form-control" name="previous_value_child[]" value="{{$data->current_value ?? 0}}" readonly></td>
+                                <td><input type="text" class="form-control" name="current_value_child[]" id="current_value_child" value="{{$data->current_value}}" autocomplete="off"></td>
+
+                                <input type="text" class="form-control" name="asset_numbers_child_id[]" value="{{$data->asset_numbers_id}}" hidden>
+                            </tr>
                             @endforeach
                             @endif
                             @if($count==1)
@@ -66,10 +68,36 @@
                                 </td>
                             </tr>
                             @endif
+
+                            @else
+
+                            <?php $count=1; ?>
+                            @if(isset($childdatasValue))
+                            @foreach($childdatasValue as $datas)
+                            <tr>
+                                <td>{{$count++}}</td>
+                                <td>{{$datas->asset_name}}<input type="text" class="form-control" name="child_asset_id[]" value="{{$datas->asset_id}}" hidden></td>
+                                <td><input type="text" class="form-control" name="previous_value_child[]" value="{{$datas->current_value ?? 0}}" readonly></td>
+                                <td><input type="text" class="form-control" name="current_value_child[]" id="current_value_child" value="{{$datas->current_value ?? 0}}" autocomplete="off"></td>
+
+                                <input type="text" class="form-control" name="asset_numbers_child_id[]" value="" hidden>
+                            </tr>
+                            @endforeach
+                            @endif
+                            @if($count==1)
+                            <tr>
+                                <td colspan="8">
+                                    <center>No data to shown</center>
+                                </td>
+                            </tr>
+                            @endif
+
+                            @endif
                         </table>
                         <input type="text" class="form-control" name="geo_child_id" value="{{$geo_child_id}}" hidden>
                         <input type="text" class="form-control" name="year_child_id" value="{{$year_child_id}}" hidden>
                         <input type="text" class="form-control" name="main_asset_id" value="{{$hidden_input_id}}" hidden>
+                        <input type="text" class="form-control" name="geo_location_id" value="{{$geo_location_id}}" hidden>
                     </div>
                     <div class="row">
                         <div class="col-md-4">
@@ -80,7 +108,7 @@
                             </div>
                         </div>
                     </div>
-                   
+
                 </form>
             </div>
         </div>

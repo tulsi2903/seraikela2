@@ -172,8 +172,10 @@ Route::post('asset-numbers/store','AssetNumbersController@store');
 Route::get('asset-numbers/view/{asset_numbers_id}','AssetNumbersController@view');
 Route::get('asset_Numbers/export/excelURL','AssetNumbersController@exportExcelFunctiuonforasset_Numbers');
 Route::get('asset_Numbers/pdf/pdfURL','AssetNumbersController@exportpdfFunctiuonforasset_Numbers');
-Route::get('asset_number/list_of_childs/{child_id}/{geo_child_id}/{year_child_id}/{hidden_input_id}','AssetNumbersController@list_of_childs');
+Route::get('asset_number/list_of_childs/{child_id}/{geo_child_id}/{year_child_id}/{hidden_input_id}/{geo_location_id}','AssetNumbersController@list_of_childs');
 Route::post('asset-numbers/saveChilddata','AssetNumbersController@saveChilddata'); 
+Route::get('asset_number/list_of_imagedata/{loc_id}/{asset_id}/{year_id}/{geo_id}/{hidden_input_id}','AssetNumbersController@list_of_imagedata');
+Route::post('asset-numbers/saveImagesforLoacation','AssetNumbersController@saveImagesforLoacation'); 
 
 /* asset review */
 Route::get('asset-review', 'AssetReviewController@index');

@@ -21,11 +21,11 @@ class AssetNumbersController extends Controller
     public function index()
     {
         // getting rows, last updated
-        $asset_ids = Asset::where('parent_id',-1)->get()->pluck('asset_id');
+        $asset_ids = Asset::where('parent_id', -1)->get()->pluck('asset_id');
         $datas = AssetNumbers::select('geo_id', 'asset_id', 'year', DB::raw('MAX(updated_at) AS max_updated'), DB::raw('MAX(asset_numbers_id) as asset_numbers_id'))
-                ->whereIn('asset_id', $asset_ids)
-                ->groupBy('year', 'asset_id', 'geo_id')
-                ->get();
+            ->whereIn('asset_id', $asset_ids)
+            ->groupBy('year', 'asset_id', 'geo_id')
+            ->get();
 
         // assigning other values according to its id(asset_numbers_id (primary_key))
         foreach ($datas as $data) {
@@ -58,7 +58,7 @@ class AssetNumbersController extends Controller
         $hidden_input_purpose = "add";
         $hidden_input_id = "NA";
 
-        $assets = Asset::orderBy('asset_id')->where('parent_id',-1)->get();
+        $assets = Asset::orderBy('asset_id')->where('parent_id', -1)->get();
         $panchayats = GeoStructure::where('level_id', '4')->orderBy('geo_name')->get();
         $years = Year::orderBy('year_id')->get();
 
@@ -116,8 +116,10 @@ class AssetNumbersController extends Controller
             ->orderBy('asset_numbers_id', 'desc')
             ->first();
         $current_value = "";
+        // $pre_value = "";
         if ($current_value_data) {
             $current_value = $current_value_data->current_value;
+            // $pre_value = $current_value_data->pre_value;
         }
 
         $tmp = Asset::where('asset_id', $request->asset_id)->first();
@@ -132,7 +134,7 @@ class AssetNumbersController extends Controller
         }
 
         // getting previus asset_location
-        $asset_location = AssetGeoLocation::select('asset_geo_loc_id', 'location_name', 'latitude', 'longitude','asset_id')->where('geo_id', $request->geo_id)
+        $asset_location = AssetGeoLocation::select('asset_geo_loc_id', 'location_name', 'latitude', 'longitude', 'asset_id')->where('geo_id', $request->geo_id)
             ->where('asset_id', $request->asset_id)
             ->where('year', $request->year)
             ->orderBy('asset_geo_loc_id', 'desc')
@@ -159,11 +161,15 @@ class AssetNumbersController extends Controller
         $asset_number->year = $request->year;
         $asset_number->asset_id = $request->asset_id;
         $asset_number->geo_id = $request->geo_id;
-        $asset_number->pre_value = $request->previous_value;
+        if ($asset_number->current_value != 0) {
+            $asset_number->pre_value = $request->current_value;
+        } else {
+            $asset_number->pre_value = $request->previous_value;
+        }
         $asset_number->current_value = $request->current_value;
 
-        $asset_number->created_by = '1';
         $asset_number->updated_by = '1';
+        $asset_number->created_by = '1';
 
 
         if (isset($request->location_name)) {
@@ -262,11 +268,16 @@ class AssetNumbersController extends Controller
 
 
         if ($asset_number->save()) {
+
+            if ($request->hidden_input_purpose == "add") {
+                # code...
+                $checkStatus = Asset::where('asset_id', $request->asset_id)->value('movable');
+            }
             session()->put('alert-class', 'alert-success');
             session()->put('alert-content', 'Asset details have been successfully submitted !');
-            if ($request->hidden_input_purpose == "add") {
-                session()->put('message',$asset_number->asset_numbers_id);
-                
+            if ($request->hidden_input_purpose == "add" && $checkStatus == 0) {
+                session()->put('message', $asset_number->asset_numbers_id);
+
                 // session()->put('alert-class', 'alert-success');
                 // session()->put('alert-content', 'Asset details have been successfully submitted !');
             }
@@ -306,8 +317,8 @@ class AssetNumbersController extends Controller
             $update_block_count->save();
         }
 
-        
-        
+
+
         return redirect('asset-numbers');
     }
 
@@ -349,30 +360,33 @@ class AssetNumbersController extends Controller
 
 
         $data = array(1 => array("Asset Numbers Sheet"));
-        $data[] = array('Sl. No.','Year','Asset','Block','Panchyat','Current Value','Date');       
-     
-        $items = DB::table('asset_numbers')
-		->leftJoin('geo_structure', 'asset_numbers.geo_id', '=', 'geo_structure.geo_id')
-		->leftJoin('asset', 'asset_numbers.asset_id', '=', 'asset.asset_id')
-		->leftJoin('year', 'asset_numbers.year', '=', 'year.year_id')
-		->select('asset_numbers.asset_numbers_id as slNo', 
-                'year.year_value', 
-                'asset.asset_name', 
-                'geo_structure.bl_id as Block', 
-                'geo_structure.geo_name', 
-                'asset_numbers.current_value','asset_numbers.created_at as CreatedDate')
-        ->groupBy('asset_numbers.year', 'asset_numbers.asset_id', 'asset_numbers.geo_id')->get();
+        $data[] = array('Sl. No.', 'Year', 'Asset', 'Block', 'Panchyat', 'Current Value', 'Date');
 
-           //now changing back the strict ON
-           config()->set('database.connections.mysql.strict', true);
-           \DB::reconnect();
-         
+        $items = DB::table('asset_numbers')
+            ->leftJoin('geo_structure', 'asset_numbers.geo_id', '=', 'geo_structure.geo_id')
+            ->leftJoin('asset', 'asset_numbers.asset_id', '=', 'asset.asset_id')
+            ->leftJoin('year', 'asset_numbers.year', '=', 'year.year_id')
+            ->select(
+                'asset_numbers.asset_numbers_id as slNo',
+                'year.year_value',
+                'asset.asset_name',
+                'geo_structure.bl_id as Block',
+                'geo_structure.geo_name',
+                'asset_numbers.current_value',
+                'asset_numbers.created_at as CreatedDate'
+            )
+            ->groupBy('asset_numbers.year', 'asset_numbers.asset_id', 'asset_numbers.geo_id')->get();
+
+        //now changing back the strict ON
+        config()->set('database.connections.mysql.strict', true);
+        \DB::reconnect();
+
 
         foreach ($items as $key => $value) {
             $value->CreatedDate = date('d/m/Y', strtotime($value->CreatedDate));
             $block_data_tmp = GeoStructure::find($value->Block);
             $value->Block = $block_data_tmp->geo_name;
-            
+
             $data[] = array(
                 $key + 1,
                 $value->year_value,
@@ -382,8 +396,6 @@ class AssetNumbersController extends Controller
                 $value->current_value,
                 $value->CreatedDate
             );
-
-
         }
         \Excel::create('Asset_Numbers', function ($excel) use ($data) {
 
@@ -405,10 +417,10 @@ class AssetNumbersController extends Controller
 
     public function exportpdfFunctiuonforasset_Numbers()
     {
-        $AssetNumberdata = AssetNumbers::select('geo_id', 'asset_id', 'year','created_at as date', DB::raw('MAX(updated_at) AS max_updated'), DB::raw('MAX(asset_numbers_id) as asset_numbers_id'))
-                                ->groupBy('year', 'asset_id', 'geo_id','created_at')
-                                // ->format("Y-m-d")
-                                ->get();
+        $AssetNumberdata = AssetNumbers::select('geo_id', 'asset_id', 'year', 'created_at as date', DB::raw('MAX(updated_at) AS max_updated'), DB::raw('MAX(asset_numbers_id) as asset_numbers_id'))
+            ->groupBy('year', 'asset_id', 'geo_id', 'created_at')
+            // ->format("Y-m-d")
+            ->get();
 
         foreach ($AssetNumberdata as $key => $value) {
             if (Asset::find($value->asset_id)) {
@@ -431,7 +443,7 @@ class AssetNumbersController extends Controller
             }
             $value->date = date("d/m/Y", strtotime($value->date));
         }
-                
+
         $doc_details = array(
             "title" => "Asset Number Data",
             "author" => 'IT-Scient',
@@ -443,7 +455,7 @@ class AssetNumbersController extends Controller
 
         $content = "<table cellspacing=\"0\" cellpadding=\"4\" border=\"1\" ><tr>";
         $content .= "<th style='border: solid 1px #000000;' colspan=\"7\" align=\"left\" ><b>Asset Number</b></th></tr>";
-        
+
         /* ========================================================================= */
         /*                Total width of the pdf table is 1017px                     */
         /* ========================================================================= */
@@ -461,13 +473,13 @@ class AssetNumbersController extends Controller
 
         $content .= "<tbody>";
         foreach ($AssetNumberdata as $key => $row) {
-            $index = $key+1;
+            $index = $key + 1;
             $content .= "<tr>";
             $content .= "<td style=\"width: 50px;\" align=\"right\">" . $index . "</td>";
             $content .= "<td style=\"width: 250px;\" align=\"left\">" . $row->year_value . "</td>";
-            $content .= "<td style=\"width: 160px;\" align=\"left\">" . $row->asset_name. "</td>";
+            $content .= "<td style=\"width: 160px;\" align=\"left\">" . $row->asset_name . "</td>";
             $content .= "<td style=\"width: 160px;\" align=\"left\">" . $row->block_name . "</td>";
-            $content .= "<td style=\"width: 160px;\" align=\"left\">" . $row->panchayat_name."</td>";
+            $content .= "<td style=\"width: 160px;\" align=\"left\">" . $row->panchayat_name . "</td>";
             $content .= "<td style=\"width: 140px;\" align=\"right\">" . $row->current_value . "</td>";
             $content .= "<td style=\"width: 97px;\" align=\"right\">" . $row->date . "</td>";
             $content .= "</tr>";
@@ -479,27 +491,36 @@ class AssetNumbersController extends Controller
         exit;
     }
 
-    public function list_of_childs($child_id,$geo_child_id,$year_child_id,$hidden_input_id)
+    public function list_of_childs($child_id, $geo_child_id, $year_child_id, $hidden_input_id, $geo_location_id)
     {
 
         $childdatas = Asset::leftJoin('asset_numbers', 'asset.asset_id', '=', 'asset_numbers.asset_id')
-        ->where('asset.parent_id',$child_id)
-        ->select('asset.asset_id','asset.asset_name',
-        'asset.movable',
-        'asset.parent_id',
-        'asset.dept_id',
-        'asset.org_id',
-        'asset_numbers.asset_numbers_id',
-        'asset_numbers.geo_id',
-        'asset_numbers.pre_value',
-        'asset_numbers.current_value',
-        'asset_numbers.year'
-        )->get();
+            ->where('asset.parent_id', $child_id)
+            ->where('asset_numbers.asset_geo_loc_id', $geo_location_id)
+            ->select(
+                'asset.asset_id',
+                'asset.asset_name',
+                'asset.movable',
+                'asset.parent_id',
+                'asset.dept_id',
+                'asset.org_id',
+                'asset_numbers.asset_numbers_id',
+                'asset_numbers.asset_id as assetId',
+                'asset_numbers.geo_id',
+                'asset_numbers.pre_value',
+                'asset_numbers.current_value',
+                'asset_numbers.asset_geo_loc_id',
+                'asset_numbers.year'
+            )->get();
 
+        $childdatasValue = Asset::where('parent_id', $child_id)->get();
+
+        // // echo $geo_location_id;
         // echo "<pre>";
-        // print_r($childdatas);exit;
-        return view('asset-numbers.child_resources_number')->with(compact('childdatas','geo_child_id','year_child_id','hidden_input_id'));
-
+        // // print_r($childdatasValue);
+        // print_r($childdatas);
+        // exit;
+        return view('asset-numbers.child_resources_number')->with(compact('childdatas', 'geo_child_id', 'year_child_id', 'hidden_input_id', 'geo_location_id', 'childdatasValue'));
     }
 
     public function saveChilddata(Request $request)
@@ -507,30 +528,130 @@ class AssetNumbersController extends Controller
         // return $request;
         foreach ($request->child_asset_id as $key => $value) {
             # code...
-            if($request->asset_numbers_child_id[$key] != null)
-            {
+            $check = AssetNumbers::find($request->asset_numbers_child_id[$key])->asset_geo_loc_id;
+
+            // if(null != null $$ 28 == null)
+            // if(23 != null $$ 28 == 28)
+
+            if ($request->asset_numbers_child_id[$key] != null && $request->geo_location_id == $check) {
                 $AssetNumbers = AssetNumbers::find($request->asset_numbers_child_id[$key]);
-                $AssetNumbers->pre_value = $request->current_value_child[$key];
-                $AssetNumbers->current_value = ( $request->current_value_child[$key] != null) ? $request->current_value_child[$key] : 0;
+                // $AssetNumbers->pre_value = $request->current_value_child[$key];
+                // $AssetNumbers->current_value = ( $request->current_value_child[$key] != null) ? $request->current_value_child[$key] : 0;
+
+                if ($request->current_value_child[$key] != 0) {
+                    $AssetNumbers->pre_value = $request->current_value_child[$key];
+                } else {
+                    $AssetNumbers->pre_value = $request->previous_value_child[$key];
+                }
+                $AssetNumbers->current_value = $request->current_value_child[$key];
                 $AssetNumbers->save();
-            }
-            else
-            {
+            } else {
                 $asset_number = new AssetNumbers;
                 $asset_number->year = $request->year_child_id;
                 $asset_number->asset_id = $value;
+                $asset_number->asset_geo_loc_id = $request->geo_location_id;
                 $asset_number->geo_id = $request->geo_child_id;
-                $asset_number->pre_value = $request->previous_value_child[$key];
-                $asset_number->current_value = ( $request->current_value_child[$key] != null) ? $request->current_value_child[$key] : 0;
-        
+                // $asset_number->pre_value = $request->previous_value_child[$key];
+                // $asset_number->current_value = ( $request->current_value_child[$key] != null) ? $request->current_value_child[$key] : 0;
+                if ($request->current_value_child[$key] != 0) {
+                    $AssetNumbers->pre_value = $request->current_value_child[$key];
+                } else {
+                    $AssetNumbers->pre_value = $request->previous_value_child[$key];
+                }
+                $AssetNumbers->current_value = $request->current_value_child[$key];
+
                 $asset_number->created_by = '1';
                 $asset_number->updated_by = '1';
                 $asset_number->save();
-
             }
         }
         session()->put('alert-class', 'alert-success');
         session()->put('alert-content', 'Child Resources details have been successfully submitted !');
-        return redirect('asset-numbers/add?purpose=edit&id='.$request->main_asset_id);
+        return redirect('asset-numbers/add?purpose=edit&id=' . $request->main_asset_id);
+    }
+
+    public function list_of_imagedata($loc_id, $asset_id, $year_id, $geo_id, $hidden_input_id)
+    {
+        # code...
+        $toReturn = array();
+        $toReturn['asset_gallery'] = AssetGallery::where('asset_id', $asset_id)->where('asset_geo_loc_id', $loc_id)->where('geo_id', $geo_id)->where('year_id', $year_id)->first();
+        $toReturn['asset_location_images'] = unserialize(AssetGallery::where('asset_id', $asset_id)->where('asset_geo_loc_id', $loc_id)->where('geo_id', $geo_id)->where('year_id', $year_id)->value('images'));
+        // echo "<pre>";
+        $toReturn['loc_id'] = $loc_id;
+        $toReturn['asset_id'] = $asset_id;
+        $toReturn['year_id'] = $year_id;
+        $toReturn['geo_id'] = $geo_id;
+        $toReturn['hidden_input_id'] = $hidden_input_id;
+        return $toReturn;
+        // echo ($asset_gallery);
+        // exit;
+    }
+
+    public function saveImagesforLoacation(Request $request)
+    {
+        # code...
+        // return $request;
+        $previous_images_array = array();
+        $upload_directory = "public/uploaded_documents/assets-gallery/";
+        if ($request->asset_gallery_id != null) {
+            # code...
+            $asset_gallery_edit = AssetGallery::find($request->asset_gallery_id);
+            $previous_images_array = unserialize($asset_gallery_edit->images);
+            if ($request->hasFile('galleryFile')) {
+                foreach ($request->file('galleryFile') as $file) {
+                    // $file = $request->file('images');
+                    // $file => is each files $images
+                    $images_tmp_name = "assets-gallery-" . time() . rand(1000, 5000) . '.' . strtolower($file->getClientOriginalExtension());
+                    $file->move($upload_directory, $images_tmp_name);   // move the file to desired folder
+                    array_push($previous_images_array, $upload_directory . $images_tmp_name);    // appending location of image in previous image array for further insertion into database
+                }
+            }
+
+            $asset_gallery_edit->images = serialize($previous_images_array);
+            $asset_gallery_edit->save();
+
+            $asset_gallery_check = AssetGallery::select("asset_gallery_id", "images")->where('asset_gallery_id', $request->asset_gallery_id)->first();
+            if ($asset_gallery_check) {
+                if ($request->gallery_images_delete) {
+                    $to_delete_image_arr = explode(",", $request->gallery_images_delete);
+                    for ($i = 0; $i < count($to_delete_image_arr); $i++) {
+                        if (file_exists($to_delete_image_arr[$i])) {
+                            unlink($to_delete_image_arr[$i]);
+                        }
+                    }
+
+                    if ($asset_gallery_check) {
+                        $asset_gallery_update = AssetGallery::find($asset_gallery_check->asset_gallery_id);
+                        $asset_gallery_update->images = serialize(array_values(array_diff(unserialize($asset_gallery_update->images), $to_delete_image_arr))); //array_diff remove matching elements from 1, array_values changes index starting from 0
+                        $asset_gallery_update->save();
+                    }
+                }
+            }
+        } else {
+            # code...
+            $asset_gallery = new AssetGallery;
+            $asset_gallery->asset_id = $request->image_asset_id;
+            $asset_gallery->asset_geo_loc_id = $request->geo_location_image_id;
+            $asset_gallery->geo_id = $request->geo_image_id;
+            $asset_gallery->year_id = $request->year_image_id;
+            $asset_gallery->org_id = 1;
+            if ($request->hasFile('galleryFile')) {
+
+                foreach ($request->file('galleryFile') as $file) {
+                    $images_tmp_name = "assets-gallery-" . time() . rand(1000, 5000) . '.' . strtolower($file->getClientOriginalExtension());
+                    $file->move($upload_directory, $images_tmp_name);   // move the file to desired folder
+                    array_push($previous_images_array, $upload_directory . $images_tmp_name);    // appending location of image in previous image array for further insertion into database
+                }
+                $asset_gallery->images = serialize($previous_images_array);    // assign the location of folder to the model
+            }
+
+            $asset_gallery->created_by = '1';
+            $asset_gallery->updated_by = '1';
+            $asset_gallery->save();
+        }
+
+        session()->put('alert-class', 'alert-success');
+        session()->put('alert-content', 'Location Gallery have been successfully submitted !');
+        return redirect('asset-numbers/add?purpose=edit&id=' . $request->asset_number_image_id);
     }
 }

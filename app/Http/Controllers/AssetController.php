@@ -23,7 +23,7 @@ class AssetController extends Controller
         $datas = Asset::leftJoin('department', 'asset.dept_id', '=', 'department.dept_id')
             ->leftJoin('asset_cat', 'asset.category_id', '=', 'asset_cat.asset_cat_id')
             ->leftJoin('asset_subcat', 'asset.subcategory_id', '=', 'asset_subcat.asset_sub_id')
-            ->where('asset.parent_id',-1)
+            ->where('asset.parent_id', -1)
             ->select('asset.*', 'department.dept_name', 'asset_cat.asset_cat_name', 'asset_subcat.asset_sub_cat_name')
             ->orderBy('asset.asset_id', 'desc')
             ->get();
@@ -138,23 +138,22 @@ class AssetController extends Controller
         }
         // return redirect('asset');
 
-        if($request->hidden_input_purpose == "add")//Add for child asset new entry for child
+        if ($request->hidden_input_purpose == "add") //Add for child asset new entry for child
         {
-            if (count($request->child_name) !=0 && $request->child_name != null) {
+            if (count($request->child_name) != 0 && $request->child_name != null) {
                 foreach ($request->child_name as $key => $value) {
                     if ($value != null) {
                         $childasset = new Asset;
                         $childasset->asset_name = $value;
-                        if ($request->hasFile('child_asset_icon.'.$key)) {
+                        if ($request->hasFile('child_asset_icon.' . $key)) {
 
                             $upload_directory_chid = "public/uploaded_documents/assets/";
-                            $file_child = $request->file('child_asset_icon.'.$key);
+                            $file_child = $request->file('child_asset_icon.' . $key);
                             $asset_icon_tmp_name_child = "assets-" . time() . rand(1000, 5000) . '.' . strtolower($file_child->getClientOriginalExtension());
                             $file_child->move($upload_directory_chid, $asset_icon_tmp_name_child);   // move the file to desired folder
-                
+
                             $childasset->asset_icon = $upload_directory_chid . $asset_icon_tmp_name_child;    // assign the location of folder to the mode
-                        }
-                        else{
+                        } else {
                             $childasset->asset_icon = "";
                         }
                         $childasset->movable = $request->movable_child[$key];
@@ -169,38 +168,34 @@ class AssetController extends Controller
                     }
                 }
             }
-        }
-        elseif($request->hidden_input_purpose == "edit") {
-            if (count($request->child_name) !=0 && $request->child_name != null) {
+        } elseif ($request->hidden_input_purpose == "edit") {
+            if (count($request->child_name) != 0 && $request->child_name != null) {
                 foreach ($request->child_name as $keyy => $value) {
                     if ($value != null) {
-                        if($request->asset_child_name_id[$keyy] != null)
-                        { //edit child asset if any changes
+                        if ($request->asset_child_name_id[$keyy] != null) { //edit child asset if any changes
                             $editchildasset = Asset::find($request->asset_child_name_id[$keyy]);
                             $editchildasset->asset_name = $value;
-                            if ($request->hasFile('child_asset_icon.'.$keyy)) {
+                            if ($request->hasFile('child_asset_icon.' . $keyy)) {
                                 $upload_directory_chid1 = "public/uploaded_documents/assets/";
-                                $file_child1 = $request->file('child_asset_icon.'.$keyy);
+                                $file_child1 = $request->file('child_asset_icon.' . $keyy);
                                 $asset_icon_tmp_name_child1 = "assets-" . time() . rand(1000, 5000) . '.' . strtolower($file_child1->getClientOriginalExtension());
                                 $file_child1->move($upload_directory_chid1, $asset_icon_tmp_name_child1);   // move the file to desired folder
-                    
+
                                 $editchildasset->asset_icon = $upload_directory_chid1 . $asset_icon_tmp_name_child1;    // assign the location of folder to the mode
                             }
                             $editchildasset->movable = $request->movable_child[$keyy];
                             $editchildasset->save();
-                        }
-                        else{ //edit time new entry of child asset
+                        } else { //edit time new entry of child asset
                             $editnewchildasset = new Asset;
                             $editnewchildasset->asset_name = $value;
-                            if ($request->hasFile('child_asset_icon.'.$keyy)) {
+                            if ($request->hasFile('child_asset_icon.' . $keyy)) {
                                 $upload_directory_chid2 = "public/uploaded_documents/assets/";
-                                $file_child2 = $request->file('child_asset_icon.'.$keyy);
+                                $file_child2 = $request->file('child_asset_icon.' . $keyy);
                                 $asset_icon_tmp_name_child2 = "assets-" . time() . rand(1000, 5000) . '.' . strtolower($file_child2->getClientOriginalExtension());
                                 $file_child2->move($upload_directory_chid2, $asset_icon_tmp_name_child2);   // move the file to desired folder
-                    
+
                                 $editnewchildasset->asset_icon = $upload_directory_chid2 . $asset_icon_tmp_name_child2;    // assign the location of folder to the mode
-                            }
-                            else{
+                            } else {
                                 $editnewchildasset->asset_icon = "";
                             }
                             $editnewchildasset->movable = $request->movable_child[$keyy];
@@ -217,7 +212,7 @@ class AssetController extends Controller
                 }
             }
 
-            if($request->deleted_asset_child_id){
+            if ($request->deleted_asset_child_id) {
                 $deleted_asset_child_id = rtrim($request->deleted_asset_child_id, ",");
                 $deleted_asset_child_id = explode(",", $deleted_asset_child_id);
                 $to_delete_query = Asset::whereIn('asset_id', $deleted_asset_child_id)->delete();
@@ -228,7 +223,7 @@ class AssetController extends Controller
 
     public function get_asset_details(Request $request)
     {
-        
+
         $response = "no_data";
 
         if (isset($request->asset_id)) {
