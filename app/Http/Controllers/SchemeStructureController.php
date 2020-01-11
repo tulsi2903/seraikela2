@@ -241,6 +241,8 @@ class SchemeStructureController extends Controller
                 unlink($request->scheme_logo_delete);
             }
         }
+
+        
         // for scheme_map_maker
         if($request->hasFile('scheme_map_marker'))
         {

@@ -46,14 +46,16 @@
                 
                     <li class="nav-item dropdown hidden-caret">
                         <a class="nav-link" data-toggle="dropdown" href="#" aria-expanded="false">
-                            <p style="color: #fff;font-weight: 500;font-family: 'Bree Serif', serif;margin-top: 5px;">Language :<i class="fas fa-sort-alpha-down"></i></p>
+                            <p style="color: rgba(235, 225, 224, 0.932);font-weight: 500;font-family: 'Bree Serif', serif;margin-top: 5px;">Language :<i class="fas fa-sort-alpha-down"></i></p>
                         </a>
                         <div class="dropdown-menu quick-actions quick-actions-info animated fadeIn">
                             <div class="quick-actions-header">
-                                <span class="title mb-1">English</span>
+                                <button><span class="title mb-1">English</span></button>
                                 <span class="title mb-1">Hindi</span>
+
                             </div>
-                        </li>
+                        </div>
+                    </li>
 
                         <li class="nav-item dropdown hidden-caret">
                             <span id='ct' ></span>

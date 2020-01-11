@@ -35,9 +35,9 @@
                                 <tr>
                                     <th>#</th>
                                     <th>Name</th>
-                                     <th>Geo Related</th>
+                                    <th>Icon</th>
+                                    <th>Geo Related</th>
                                     <th>Multiple Geo Tags</th>
-                                    <th>Number of Tags</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -48,6 +48,7 @@
                                         <tr>
                                             <td width="40px;">{{$count++}}</td>
                                             <td>{{$data->scheme_asset_name}}</td>
+                                            <td>@if($data->mapmarkericon) <img src="{{$data->mapmarkericon}}" style="height: 50px;"> @endif</td>                              
                                             <td>
                                                 @if($data->geo_related == 1)
                                                 Yes
@@ -61,10 +62,7 @@
                                                 @else
                                                 No
                                                 @endif
-                                            </td>
-                                            <td>
-                                                <?php echo $data->no_of_tags ?: '-'; ?>
-                                            </td>
+                                            </td>     
                                             <td>
                                                 <a href="{{url('scheme-asset/view')}}/{{$data->scheme_asset_id}}" class="btn btn-secondary btn-sm"><i class="fas fa-eye"></i></a>
                                                 &nbsp;&nbsp;<a href="{{url('scheme-asset/add')}}?purpose=edit&id={{$data->scheme_asset_id}}" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></a>

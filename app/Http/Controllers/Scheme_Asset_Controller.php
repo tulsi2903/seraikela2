@@ -50,22 +50,43 @@ class Scheme_Asset_Controller extends Controller
 
         $scheme_asset->scheme_asset_name = $request->scheme_asset_name;
         $scheme_asset->geo_related = $request->geo_related;
+
+        if ($request->hasFile('mapmarkericon')) {
+            $upload_directory = "public/uploaded_documents/scheme_assets/mapmarker/";
+            $file = $request->file('mapmarkericon');
+            $mapmarker_temp = "mapmarker-" . time() . rand(1000, 5000) . '.' . strtolower($file->getClientOriginalExtension());
+            $file->move($upload_directory, $mapmarker_temp);   // move the file to desired folder
+
+            // deleteprevious icon
+            if ($request->hidden_input_purpose == "edit") {
+                if (file_exists($scheme_asset->mapmarkericon)) {
+                    unlink($scheme_asset->mapmarkericon);
+                }
+            }
+             $scheme_asset->mapmarkericon = $upload_directory . $mapmarker_temp;    // assign the location of folder to the model
+        } 
+        else {
+            if ($request->hidden_input_purpose == "add") {
+                $scheme_asset->mapmarkericon = "";
+            } else if ($request->hidden_input_purpose == "edit" && $request->scheme_assets_delete) { // edit
+                $scheme_asset->mapmarkericon = "";
+            }
+        }
+        //
+        // // to previous attachment if delete clicked
+        if($request->scheme_assets_delete){
+            if(file_exists($request->scheme_assets_delete)){
+                unlink($request->scheme_assets_delete);
+            }
+        }
         
         if($request->geo_related!="")
         {
             $scheme_asset->multiple_geo_tags = $request->multiple_geo_tags;
-            if($request->multiple_geo_tags!="")
-            {   
-                $scheme_asset->no_of_tags = $request->no_of_tags;
-            }
-            else
-            {   
-                $scheme_asset->no_of_tags = null;
-            }
         }
-        else{
+        else
+        {
             $scheme_asset->multiple_geo_tags = null;
-            $scheme_asset->no_of_tags = null;
         }
        
         $scheme_asset->created_by = Auth::user()->id;

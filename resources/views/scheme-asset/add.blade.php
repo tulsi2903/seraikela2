@@ -23,7 +23,7 @@
 
     <div class="col-md-12">
         <div class="card-body">
-            <form action="{{url('scheme-asset/store')}}" method="POST" id="scheme-asset-form">
+            <form action="{{url('scheme-asset/store')}}" method="POST" id="scheme-asset-form" enctype="multipart/form-data">
                 @csrf
                 <div class="row">
                     <div class="col-md-3">
@@ -34,7 +34,7 @@
                         </div>
                     </div>
 
-                    <div class="col-md-2">
+                    <div class="col-md-3">
                         <div class="form-group">
                             <div style="height:30px;"></div>
                             <label for="geo_related">Geo Related</label>&nbsp;&nbsp;
@@ -48,15 +48,26 @@
                             <label for="multiple_geo_tags">Multiple Geo Tags</label>&nbsp;&nbsp;
                             <input type="checkbox" name="multiple_geo_tags" id="multiple_geo_tags" value="1" <?php echo ($data[ 'multiple_geo_tags']==1 ? 'checked' : '');?>>
                         </div>
-                    </div>
+                    </div> -->
 
                     <div class="col-md-3">
                         <div class="form-group" id="no_of_tag">
-                            <label for="no_of_tags">Number of Tags</label>
-                            <input name="no_of_tags" id="no_of_tags" class="form-control" autocomplete="off" value="{{$data->no_of_tags}}">
-                            <div class="invalid-feedback" id="no_of_tags_error_msg"></div>
+                            <label for="mapmarkericon">Map Marker Icon</label>
+                            <input type="file" name="mapmarkericon" id="mapmarkericon" class="form-control" autocomplete="off" value="{{$data->mapmarkericon}}">
+                            @if($hidden_input_purpose=="edit"&&$data->mapmarkericon)
+                            <div id="scheme_assets_delete_icon" style="min-height: 132px; padding:10px; border:1px solid #c4c4c4; border-radius: 0 0 5px 5px; background: white;">
+                                <div>Previous Icon</div>
+                                    <div style="display: inline-block;position:relative;padding:3px;border:1px solid #c4c4c4; border-radius:3px;">
+                                        <img src="{{url($data->mapmarkericon)}}" style="height:80px;">
+                                        <span style="position:absolute;top:0;right:0; background: rgba(202, 0, 0, 0.85); font-size: 18px; cursor: pointer; padding: 5px 10px;" class="text-white" onclick="to_delete_map_marker('{{$data->mapmarkericon}}',this)"><i class="fas fa-trash"></i></span>
+                                    </div>
+                            </div>
+                            @endif
+                            <!-- <span id="map_marker_error_msg"></span> -->
+                            <div class="invalid-feedback" id="map_marker_error_msg" ></div>
+                            <input type="text" name="scheme_assets_delete" id="scheme_assets_delete" value="" hidden>           
                         </div>
-                    </div> -->
+                    </div> 
                 </div>
                 <!--end of row-->
 
@@ -123,7 +134,7 @@
                 <br>
 
                 <div class="form-group">
-                    <input type="text" name="hidden_input_purpose" value="{{$hidden_input_purpose}}" hidden>
+                    <input type="text" name="hidden_input_purpose" value="{{$hidden_input_purpose}}" hidden >
                     <input type="text" name="hidden_input_id" value="{{$hidden_input_id}}" hidden>
                     <button type="submit" class="btn btn-primary" style="float:right;" onclick="return submitForm();">Save&nbsp;&nbsp;<i class="fas fa-check"></i></button>
                 </div>
@@ -197,10 +208,14 @@
         var scheme_asset_name_error = true;
         var attribute_name_error = true;
         var attribute_uom_error = true;
+        var marker_icon_error=true;
 
         $(document).ready(function() {
             $("#scheme_asset_name").change(function() {
                 scheme_asset_name_validate();
+            });
+            $("#mapmarkericon").change(function() {
+                mapmarker_validate();
             });
         });
 
@@ -266,12 +281,33 @@
 
         }
 
+        // map marker validate
+        function mapmarker_validate() {
+            var map_marker_val = $("#mapmarkericon").val();
+            var ext = map_marker_val.substring(map_marker_val.lastIndexOf('.') + 1).toLowerCase();
+            if (ext) // if selected
+            {
+                if (ext != "jpg" && ext != "jpeg" && ext != "png") {
+                    // alert(ext);
+                    marker_icon_error = true;
+                    $("#mapmarkericon").addClass('is-invalid');
+                    $("#map_marker_error_msg").html("Please select JPG/JPEG/PNG only");
+                } else {
+                    marker_icon_error = false;
+                    $("#mapmarkericon").removeClass('is-invalid');
+                }
+            } else {
+                marker_icon_error = false;
+                $("#mapmarkericon").removeClass('is-invalid');
+            }
+    }
+    
         function submitForm() {
             scheme_asset_name_validate();
             attribute_name_validate();
             attribute_uom_validate();
-
-            if (scheme_asset_name_error || attribute_name_error || attribute_uom_error) {
+            mapmarker_validate();
+            if (scheme_asset_name_error || attribute_name_error || attribute_uom_error || marker_icon_error) {
                 return false;
             } // error occured
             else {
@@ -280,4 +316,10 @@
 
         }
     </script>
+<script>
+    function to_delete_map_marker(path, e) {
+        $("#scheme_assets_delete").val(path);
+        $(e).closest("#scheme_assets_delete_icon").fadeOut(300);
+    }
+</script>
     @endsection
