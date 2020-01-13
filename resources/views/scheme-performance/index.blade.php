@@ -91,7 +91,12 @@
                         <div style="display: inline-block; float: left; font-size: 16px;">
                             <b>Data Saved:</b> 0
                         </div>
-                        <!-- <a href="{{url('scheme-performance/viewimport')}}?scheme_id={{$scheme_data->scheme_id}}&year_id={{$year_data->year_id}}&block_id={{$block_data->geo_id}}" class="btn" style="float:right; background: #349601; color: white;"><i class="fas fa-file-import"></i>&nbsp;&nbsp;Import</a> -->
+                        <span style="display: none;" id="excelformat">
+                            <!-- <a href="\{{url('scheme-performance/downloadFormat')}}?scheme_id={{$scheme->scheme_id}}&year_id={{$year_data->year_id}}&block_id={{$block_data->geo_id}}" class="btn" style="float:right; background: #349601; color: white;" title="Download Excel Format"><i class="fas fa-file-import"></i>&nbsp;&nbsp;Import Format</a>
+                            <a href="{{url('scheme-performance/viewimport')}}?scheme_id={{$scheme->scheme_id}}&year_id={{$year_data->year_id}}&block_id={{$block_data->geo_id}}" class="btn" style="float:right; background: #349601; color: white;margin-right: 10px;" ><i class="fas fa-file-import"></i>&nbsp;&nbsp;Import</a> -->
+                            <button type="submit" class="btn btn-primary" onclick="location.href='\ scheme-performance/downloadFormat?scheme_id='+ document.getElementById('scheme_id').value+'&year_id={{$year_data->year_id}}&block_id={{$block_data->geo_id}}'"  style="float:right; background: #349601; color: white;" title="Download Excel Format"><i class="fas fa-file-import"></i>&nbsp;&nbsp;Import Format</button>
+                            <button type="submit" class="btn btn-primary" onclick="location.href='\ scheme-performance/viewimport?scheme_id='+ document.getElementById('scheme_id').value+'&year_id={{$year_data->year_id}}&block_id={{$block_data->geo_id}}'"  style="float:right; background: #349601; color: white;;margin-right: 10px;" title="Import Excel"><i class="fas fa-file-import"></i>&nbsp;&nbsp;Import</button>
+                        </span>
                     </div>
                     <div id="to_append_table" style="display: none;">
                         <form action="{{url('scheme-performance/store')}}" method="POST" enctype="multipart/form-data">
@@ -246,7 +251,7 @@
         year_id_validate();
         block_id_validate();
         panchayat_id_validate();
-
+        
         if(scheme_id_error||year_id_error||block_id_error||panchayat_id_error){
             return false; // error occured
         }
@@ -254,7 +259,10 @@
             /*
             -> ajax: get performance datas along with add-more button form inputs 7 and display them
             */
-
+            // downloadformat
+            // importexcel
+            // excelformat
+            $("#excelformat").show();
             var scheme_id_tmp = $("#scheme_id").val();
             var year_id_tmp = $("#year_id").val();
             var panchayat_id_tmp = $("#panchayat_id").val();
@@ -331,6 +339,7 @@
         $("#to_append_table").fadeOut(300);
         $("#to_append_thead").html();
         $("#to_append_tbody").html();
+        $("#excelformat").hide();
     }
 </script>
 

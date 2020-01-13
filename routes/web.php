@@ -222,6 +222,7 @@ Route::get('scheme-performance/get-all-datas', 'SchemePerformanceController@get_
 Route::post('scheme-performance/store', 'SchemePerformanceController@store');
 Route::get('scheme-performance/add-datas','SchemePerformanceController@add_datas');
 Route::get('scheme-performance/viewimport','SchemePerformanceController@viewimport');
+Route::get('scheme-performance/downloadFormat','SchemePerformanceController@downloadFormat');
 Route::post('scheme-performance/importtoExcel','SchemePerformanceController@Import_from_Excel');
 
 

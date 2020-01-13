@@ -14,7 +14,7 @@ use App\SchemeGeoTarget2;
 use App\SchemePerformance2;
 use App\SchemeAsset;
 use Maatwebsite\Excel\Facades\Excel;
-
+use Session;
 
 class SchemePerformanceController extends Controller
 {
@@ -193,6 +193,7 @@ class SchemePerformanceController extends Controller
 
     public function viewimport(Request $request)
     {
+        // return $request;
         if(!$request->scheme_id||!$request->year_id||!$request->block_id){
             return redirect("scheme-performance");
         }
@@ -202,66 +203,132 @@ class SchemePerformanceController extends Controller
         $year_id = $request->year_id;
         $block_id = $request->block_id;
 
-
         return view('scheme-performance.importExcel')->with(compact('scheme_id','year_id','block_id'));
 
     }
 
     public function Import_from_Excel(Request $request)  
-    {     
-        $block_array[] =array();
-        $panchayat_array[]=array();
-        $status_array[]=array();
-        $block_not_found[]=array();
-        $panchyat_not_found[]=array();
-        $block_id="";$block_name="";
-        $panchayat_id="";$panchayat_name="";
-        $sts_id="";$sts_name="";
-        $notepad_name="";
-        $is_notepad_create=false;
-        
-        if ( $_FILES['excelcsv']['tmp_name']){
-            $readExcel = \Excel::load($_FILES['excelcsv']['tmp_name'], function($reader) { })->get()->toArray();
-            try {
-                // echo '<pre>';
-                // print_r($readExcel);
-                // die;                  
-                foreach ($readExcel as $row) {
-                    
-                    $block_name = $row['0']['block_name'];
-                    if(array_key_exists($block_name, $block_array)) {
-                        // echo "yes"; 
-                        //to do later
-                    }  
-                    else{
-                        $block_name = $row['0']['block_name'];
-                        if(array_key_exists($block_name, $block_not_found)) {
-                           exit;
-                        }  
-                        else{
-                            $block_name_find =  GeoStructure::where('bl_id', $request->block_id)->get();
-                            echo $block_name_find;
+    {
 
+        if ($_FILES['excelcsv']['tmp_name']) {
+            $readExcel = \Excel::load($_FILES['excelcsv']['tmp_name'], function ($reader) { })->get()->toArray();
+            // echo "<pre>";
+            // print_r($readExcel[0]);exit;
+            $filename = "Error Log.txt";
+            $myfile = fopen($filename, "w");
+            foreach ($readExcel[0] as $key => $row) {
+                $block_name =  ucwords($row['block_name']);
+                $panchayat_name =   ucwords($row['panchayat_name']);
+                $fetch_block_id = GeoStructure::where('geo_name', $block_name)->value('geo_id'); //for block ID
+                $fetch_panchayat_id = GeoStructure::where('geo_name', $panchayat_name)->value('geo_id'); //for Panchayat ID
+                $fetch_subdivision_id = GeoStructure::where('geo_id', $fetch_block_id)->value('parent_id'); //for subdivision_id ID
+                $fetch_year_id = Year::where('year_value', $row['work_start_fin_year'])->value('year_id'); //for Year ID
 
+                if ($row['no.'] != null && $fetch_block_id != null && $fetch_panchayat_id != null && $fetch_year_id != null && $fetch_subdivision_id != null) {
+                    $scheme_performance = new SchemePerformance;
+                    $scheme_performance->year_id = $fetch_year_id;
+                    $scheme_performance->scheme_id = $request->scheme_id;
+                    $scheme_performance->block_id = $fetch_block_id;
+                    $scheme_performance->panchayat_id = $fetch_panchayat_id;
+                    $scheme_performance->subdivision_id = $fetch_subdivision_id;
+                    $scheme_performance->status = $row['work_status'];
+                    $scheme_performance->created_by = Session::get('user_id');
+                    $scheme_performance->save();
+                } else {
+                    if($row['no.'] != null)
+                    {
+                        if ($fetch_block_id == null && $fetch_panchayat_id != null) {
+                            $txt = " ON row no. ".$row['no.']." Block Not Found \n";
+                            fwrite($myfile, $txt);
+                        } elseif ($fetch_panchayat_id == null && $fetch_block_id != null) {
+                            $txt = " ON row no. ".$row['no.']." Panchayat Not Found \n";
+                            fwrite($myfile, $txt);
+                        }
+                        elseif ($fetch_panchayat_id == null && $fetch_block_id == null) {
+                            $txt = " ON row no. ".$row['no.']." Both Panchayat And Block Not Found \n";
+                            fwrite($myfile, $txt);
+                        }
+                        elseif ($fetch_subdivision_id == null || $fetch_year_id == null) {
+                            $txt = " ON row no. ".$row['no.']." Something Error \n";
+                            fwrite($myfile, $txt);
+                        }
+                    }
+                    else {
+                        $txt = " Serial Number Not Available \n";
+                        fwrite($myfile, $txt);
+                    }
 
-                            
-                        }  
-                        
-                    }                 
-                    
-                  
-         
                 }
-               
-              
-    
-            } catch (Exception $e) {
-              report($e);
-              return false;
             }
-          }
+        }
+        fclose($myfile);
+        if(file_get_contents($filename) == null)
+        {
+            session()->put('alert-class','alert-success');
+            session()->put('alert-content','Scheme details has been saved');
+            return back();
+        }
+        else
+        {
+            header("Cache-Control: public");
+            header("Content-Description: File Transfer");
+            header("Content-Length: " . filesize("$filename") . ";");
+            header("Content-Disposition: attachment; filename=$filename");
+            header("Content-Type: application/octet-stream; ");
+            header("Content-Transfer-Encoding: binary");
+            readfile($filename);
+            exit;
+        }
     }
 
+    public function downloadFormat(Request $request)
+    {
+        # code...
+        // return $request;
+        if ($request->scheme_id == 117) {
+            # code...
+            $data[] = array('SNo.', 'Block Name', 'Panchayat Name', 'Work Start Fin Year', 'Work Status', 'Work Code', 'Work Name');
+        } elseif($request->scheme_id == 127) {
+            # code...
+            session()->put('alert-class','alert-danger');
+            session()->put('alert-content','Under Development');
+            return back();
+        }
+        elseif ($request->scheme_id == 130) {
+            # code...
+            session()->put('alert-class','alert-danger');
+            session()->put('alert-content','Under Development');
+            return back();
+        }
+        elseif ($request->scheme_id == 131) {
+            # code...
+            session()->put('alert-class','alert-danger');
+            session()->put('alert-content','Under Development');
+            return back();
+        }
+        elseif ($request->scheme_id == 132) {
+            # code...
+            session()->put('alert-class','alert-danger');
+            session()->put('alert-content','Under Development');
+            return back();
+        }
+        
+        \Excel::create('Scheme-Format', function ($excel) use ($data) {
+
+            // Set the title
+            $excel->setTitle('Scheme-Format');
+
+            // Chain the setters
+            $excel->setCreator('Seraikela')->setCompany('Seraikela');
+
+            $excel->sheet('Fees', function ($sheet) use ($data) {
+                // $sheet->freezePane('A3');
+                // $sheet->mergeCells('A1:I1');
+                $sheet->fromArray($data, null, 'A1', true, false);
+                $sheet->setColumnFormat(array('I1' => '@'));
+            });
+        })->download('xls');
+    }
 
     // public function add(Request $request){
     //     $hidden_input_purpose = "add";

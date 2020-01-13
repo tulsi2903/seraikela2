@@ -27,11 +27,10 @@
                 <div class="col-md-6">
                     <form action="{{url('scheme-performance/importtoExcel')}}" method="POST" enctype="multipart/form-data">
                     @csrf
-                        <div class="form-group">                 
-                        
-                            <input type="text" name="scheme_id" value={{$scheme_id}}>
-                            <input type="text" name="year_id" value={{$year_id}}>
-                            <input type="text" name="block_id" value={{$block_id}}>
+                        <div class="form-group">
+                            <input type="text" name="scheme_id" value="{{$scheme_id}}" hidden>
+                            <input type="text" name="year_id" value="{{$year_id}}" hidden>
+                            <input type="text" name="block_id" value="{{$block_id}}" hidden>
                             <label for="dept_name">File to import<span style="color:red;margin-left:5px;">*</span></label>
                             <input type="file" name="excelcsv" id="excelcsv" class="form-control" required>
                         </div>
