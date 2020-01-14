@@ -655,7 +655,7 @@
         var to_append = `<tr>
                             <td>
                                 <input type="hidden" name="attribute_id[]" value="new_id" >
-                                <input type="text" class="form-control" name="attribute_name[]" autocomplete="off">
+                                <input type="text" class="form-control" name="attribute_name[]" autocomplete="off" required>
                                 <div class="invalid-feedback">Please enter valid name</div>
                             </td> 
                             <td>
