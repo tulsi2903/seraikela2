@@ -231,8 +231,7 @@ class AssetReviewController extends Controller
     public function get_tabular_view_datas(Request $request){
         // initializing what to send back
         $tabular_view = [];
-        $map_view_blocks = [];
-        $map_view_assets = [];
+        $map_datas=[];
 
         // received datas
         $review_for = $request->review_for;
@@ -311,6 +310,59 @@ class AssetReviewController extends Controller
                 array_push($tabular_view_block_wise, $tabular_view_tmp);
             }
 
+            /**for map datas **/
+            if($request->asset_id){
+                $asset_parent_id_test = Asset::select('parent_id')->where('asset_id', $request->asset_id)->first()->parent_id;
+            }
+            else{
+                $asset_parent_id_test = -1;
+            }
+
+            if($asset_parent_id_test==-1){
+                $map_datas_tmps = AssetGeoLocation::leftJoin('geo_structure', 'asset_geo_location.geo_id', '=', 'geo_structure.geo_id')
+                    ->leftJoin('asset', 'asset_geo_location.asset_id', '=', 'asset.asset_id')
+                    ->select('asset_geo_location.asset_geo_loc_id','asset_geo_location.asset_id','asset_geo_location.geo_id','asset_geo_location.location_name','asset_geo_location.latitude','asset_geo_location.longitude','asset.asset_name','asset.asset_icon','geo_structure.geo_name')
+                    ->whereIn('asset_geo_location.geo_id', $panchayat_ids)
+                    ->whereIn('asset_geo_location.asset_id', $asset_unique_ids)
+                    ->where('asset_geo_location.year', $year)
+                    ->get();
+
+                foreach($map_datas_tmps as $map_datas_tmp){
+                    $asset_numbers_child = AssetNumbers::leftJoin('asset', 'asset_numbers.asset_id', '=', 'asset.asset_id')
+                        ->select('asset_numbers.current_value','asset.asset_name')
+                        ->where('asset_numbers.asset_geo_loc_id', $map_datas_tmp->asset_geo_loc_id)
+                        ->where('asset_numbers.current_value','>', 0)
+                        ->get();
+                    $map_datas_tmp->child = $asset_numbers_child;
+
+                    $asset_numbers_current_value = AssetNumbers::where('geo_id',$map_datas_tmp->geo_id)
+                        ->where('asset_id',$map_datas_tmp->asset_id)
+                        ->where('year',$year)
+                        ->first()->current_value;
+                    $map_datas_tmp->current_value = $asset_numbers_current_value;
+
+
+                    array_push($map_datas, $map_datas_tmp);
+                }
+            }
+            else{
+                $asset_numbers_childs = AssetNumbers::leftJoin('asset', 'asset_numbers.asset_id', '=', 'asset.asset_id')
+                                    ->leftJoin('asset_geo_location', 'asset_numbers.asset_geo_loc_id', '=', 'asset_geo_location.asset_geo_loc_id')
+                                    ->leftJoin('geo_structure', 'asset_numbers.geo_id', '=', 'geo_structure.geo_id')
+                                    ->select('asset_numbers.current_value','asset.asset_name','asset.asset_icon','asset_geo_location.latitude','asset_geo_location.longitude','asset_geo_location.location_name','geo_structure.geo_name')
+                                    ->where('asset_numbers.asset_id', $request->asset_id)
+                                    ->whereIn('asset_numbers.geo_id', $panchayat_ids)
+                                    ->where('asset_numbers.year', $year)
+                                    ->where('asset_numbers.current_value','>', 0)
+                                    ->get();
+
+                foreach($asset_numbers_childs as $asset_numbers_child){
+                    array_push($map_datas, $asset_numbers_child);
+                }
+                                   
+            }
+            /** for map datas **/
+
             array_push($tabular_view, ["block_name"=>$block_data->block_name, "count_datas"=>$tabular_view_block_wise]);
 
         }
@@ -323,7 +375,9 @@ class AssetReviewController extends Controller
             $response = "no_data";
         }
 
-        return ['review_for'=>$review_for, 'response'=>$response, 'tabular_view'=>$tabular_view, "asset_id"=>$asset_id, "uniwue"=>$asset_unique_ids];
+        // return $map_datas;
+
+        return ['map_datas'=>$map_datas, 'review_for'=>$review_for, 'response'=>$response, 'tabular_view'=>$tabular_view, "asset_id"=>$asset_id, "uniwue"=>$asset_unique_ids];
     }
 
     public function get_panchayat_data(Request $request){

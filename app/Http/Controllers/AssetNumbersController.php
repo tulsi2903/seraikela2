@@ -554,11 +554,11 @@ class AssetNumbersController extends Controller
                 // $asset_number->pre_value = $request->previous_value_child[$key];
                 // $asset_number->current_value = ( $request->current_value_child[$key] != null) ? $request->current_value_child[$key] : 0;
                 if ($request->current_value_child[$key] != 0) {
-                    $AssetNumbers->pre_value = $request->current_value_child[$key];
+                    $asset_number->pre_value = $request->current_value_child[$key];
                 } else {
-                    $AssetNumbers->pre_value = $request->previous_value_child[$key];
+                    $asset_number->pre_value = $request->previous_value_child[$key];
                 }
-                $AssetNumbers->current_value = $request->current_value_child[$key];
+                $asset_number->current_value = $request->current_value_child[$key];
 
                 $asset_number->created_by = '1';
                 $asset_number->updated_by = '1';

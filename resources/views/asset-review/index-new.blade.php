@@ -427,7 +427,7 @@
                     </li>
                 </ul> -->
                 <br/>
-                <div id="all-view-details-filter" class="printable-area" style="overflow: hidden; background: #e8eeff; padding: 10px 10px; border-radius: 5px; border: 1px solid #95b1ff; color: black;">
+                <div id="all-view-details-filter" class="printable-area" style="overflow: hidden; background: #e8eeff; padding: 15px 15px; border-radius: 5px; line-height: 150%; margin-bottom: 20px; border: 1px solid #95b1ff; color: black;">
                     <div id="all-view-details">
                     </div>
                 </div>
@@ -456,29 +456,7 @@
                     <div class="tab-pane fade printable-area" id="map-view-tab" role="tabpanel">
                         <!-- <h4>Map View&nbsp;<button type="button" class="btn btn-secondary btn-sm print-button" onclick="printReview('map')">Print&nbsp;<i class="fa fa-print" aria-hidden="true"></i></button></h4> -->
                         <div id="map-view">
-                            <div class="map-view-form">
-                                <div class="row form-group">
-                                    <div class="col-3">
-                                        <label for="map-view-block">Select <span id="map-view-block-title">Block<span style="color:red;margin-left:5px;">*</span></label>
-                                        <select name="map-view-block" id="map-view-block" class="form-control">
-                                            <option value="">-Select-</option>
-                                        </select>
-                                        <div class="invalid-feedback">Please select block</div>
-                                    </div>
-                                    <div class="col-3">
-                                        <label for="map-view-asset">Select Resource<span style="color:red;margin-left:5px;">*</span></label>
-                                        <select name="map-view-asset" id="map-view-asset" class="form-control">
-                                            <option value="">-Select-</option>
-                                        </select>
-                                        <div class="invalid-feedback">Please select resource</div>
-                                    </div>
-                                    <div class="col-2">
-                                        <div style="height: 30px;"></div>
-                                        <button type="button" class="btn btn-primary" id="map-view-search" onclick="mapSearch()">Search</button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="mapCanvas" style="width: 100%; height: 400px; border-radius: 3px;"></div>
+                            <div id="mapCanvas" style="width: 100%; height: 600px; border-radius: 3px; 1px solid rgb(140, 140, 140); box-shadow: -2px 6px 10px 0px #00000052;"></div>
                         </div>
                         <div class="no-data" style="width: 100%; height: 400px; border-radius: 8px;">
                             <i class="fas fa-info-circle text-success"></i>&nbsp;&nbsp;No geo locations found
@@ -522,7 +500,6 @@
     function review_for_toggle() {
         // resetting every view
         resetTabularView();
-        resetGraphicalView();
         resetMapView();
         resetGalleryView();
         resetCommon(); // to reset common things among all views
@@ -606,7 +583,6 @@
             if ($("#dept_id").val()) {
                 $("#dept_id").removeClass('is-invalid');
                 resetTabularView();
-                resetGraphicalView();
                 resetMapView();
                 resetGalleryView();
                 resetCommon(); // to reset common things among all views
@@ -616,7 +592,6 @@
             if ($("#asset_id").val()) {
                 $("#asset_id").removeClass('is-invalid');
                 resetTabularView();
-                resetGraphicalView();
                 resetMapView();
                 resetGalleryView();
                 resetCommon(); // to reset common things among all views
@@ -626,7 +601,6 @@
             if ($("#year_id").val()) {
                 $("#year_id").removeClass('is-invalid');
                 resetTabularView();
-                resetGraphicalView();
                 resetMapView();
                 resetGalleryView();
                 resetCommon(); // to reset common things among all views
@@ -636,7 +610,6 @@
             if ($("#geo_id").val()) {
                 $("#geo_id").removeClass('is-invalid');
                 resetTabularView();
-                resetGraphicalView();
                 resetMapView();
                 resetGalleryView();
                 resetCommon(); // to reset common things among all views
@@ -704,7 +677,7 @@
         else {
             $("#dept_id").removeClass('is-invalid');
             dept_id_error = false;
-        }
+            }
 
         // year
         if ($("#year_id").val() == "") {
@@ -733,7 +706,6 @@
         else {
             // resetting all views because we are now getting panchayat datas
             resetTabularView();
-            resetGraphicalView();
             resetMapView();
             resetGalleryView();
             resetCommon(); // to reset common things among all views
@@ -771,7 +743,6 @@
                 console.log(data);
                 // resetting all view's blocks/divs/inputs
                 resetTabularView();
-                resetGraphicalView();
                 resetMapView();
                 resetGalleryView();
                 resetCommon(); // to reset common things among all views
@@ -787,7 +758,7 @@
                     to_export_datas = data.tabular_view;
                     initializeTabularView(data.tabular_view);
                     // intializeGraphicalView(data.chart_labels, data.chart_datasets);
-                    // initializeMapView(data.map_view_blocks, data.map_view_assets);
+                    initializeMapView(data.map_datas);
                     // initializeGalleryView(data.gallery_images);
 
                     // all-view-details
@@ -872,188 +843,17 @@
     }
 </script>
 
-<!-- chart view -->
-<script>
-    // chart intitalizing
-    var assetChart = document.getElementById('asset-chart').getContext('2d');
-    var chart_data = new Object();
-    var assetChartCall;
-    // whenever graphical view is active/shown
-    function showGraph() {
-        assetChartCall = new Chart(assetChart, {
-            type: 'bar',
-            data: chart_data,
-            options: {
-                offset: true,
-                scales: {
-                    yAxes: [{
-                        ticks: {
-                            beginAtZero: true,
-                            precision: 0
-                        }
-                    }]
-                },
-                tooltips: {
-                    callbacks: {
-                        label: function (tooltipItem, data) {
-                            var label = data.datasets[tooltipItem.datasetIndex].label || '';
-
-                            if (tooltipItem.yLabel <= 0.5) {
-                                label += " : 0";
-                            }
-                            else {
-                                label += " : " + tooltipItem.yLabel;
-                            }
-                            return label;
-                        }
-                    }
-                }
-            }
-        });
-    }
-    function intializeGraphicalView(chart_labels, chart_datasets) {
-        var labels = [];
-        var datasets = [];
-        var backgroundColor = [];
-        var borderColor = [];
-
-        labels = chart_labels; // labels i.e block names
-
-        for (var i = 0; i < chart_datasets.length; i++) {
-            var datasets_obj = new Object();
-            datasets_obj.label = chart_datasets[i].label;
-            datasets_obj.data = chart_datasets[i].data;
-            var color = getRandomColor();
-            datasets_obj.backgroundColor = color[0];
-            datasets_obj.borderColor = color[1];
-            datasets_obj.borderWidth = 2;
-
-            datasets_obj.categoryPercentage = 0.6;
-            datasets_obj.barPercentage = 1.0;
-            datasets_obj.barThickness = 'flex';
-            datasets_obj.maxBarThickness = 60;
-
-            datasets.push(datasets_obj);
-        }
-        chart_data.labels = labels;
-        chart_data.datasets = datasets;
-        console.log(chart_data);
-        console.log(getRandomColor());
-
-        // showing before showing bar graph
-        $("#graphical-view").show();
-        $("#graphical-view + .no-data").hide();
-        showGraph();
-    }
-    function resetGraphicalView() {
-        $("#graphical-view").hide();
-        $("#graphical-view + .no-data").show();
-    }
-    function getRandomColor() {
-        var color = ['#a6ffc9', '#5eff9e']; //['brighter', 'darker']
-        var random_tmp = Math.floor(Math.random() * (360 - 0 + 1)) + 0;
-        color[0] = 'hsl(' + random_tmp + ',76%,70%)';
-        color[1] = 'hsl(' + random_tmp + ',76%,50%)';
-        return color;
-    }
-</script>
-
 
 <!-- for map-view -->
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCuYbCxfGw_c6lasAlpExIOFj55MVY6xSo"></script>
 <script>
-    var marker_icon = "";
-    function initializeMapView(map_view_blocks, map_view_assets) {
-        $("#map-view-block-title").html(review_for);
-
-        $("#map-view-block").html('<option value="">-Select-</option>');
-        for (var i = 0; i < map_view_blocks.length; i++) {
-            $("#map-view-block").append('<option value="' + map_view_blocks[i].id + '">' + map_view_blocks[i].name + '</option>');
-        }
-        $("#map-view-asset").html('<option value="">-Select-</option>');
-        for (var i = 0; i < map_view_assets.length; i++) {
-            $("#map-view-asset").append('<option value="' + map_view_assets[i].id + '">' + map_view_assets[i].name + '</option>');
-        }
-
-        $("#map-view").show();
-        $("#mapCanvas").hide();
-        $("#map-view + .no-data").show();
-    }
-    // validation reset
-    $(document).ready(function () {
-        $("#map-view-block").change(function () {
-            $(this).removeClass("is-invalid");
-        });
-        $("#map-view-asset").change(function () {
-            $(this).removeClass("is-invalid");
-        });
-    });
-    function mapSearch() {
-        // validation for map-select/ map-inputs
-        var errorMapSearch = false;
-        var mapViewBlock = $("#map-view-block").val();
-        var mapViewAsset = $("#map-view-asset").val();
-        var mapViewYear = $("#year_id").val();
-
-        if (mapViewBlock == "") {
-            $("#map-view-block").addClass("is-invalid");
-            errorMapSearch = true;
-        }
-        else {
-            $("#map-view-block").removeClass("is-invalid");
-        }
-
-        if (mapViewAsset == "") {
-            $("#map-view-asset").addClass("is-invalid");
-            errorMapSearch = true;
-        }
-        else {
-            $("#map-view-asset").removeClass("is-invalid");
-        }
-
-        /* ajax */
-        if (errorMapSearch == false) {
-
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-            $.ajax({
-                url: "{{url('asset-review/get-map-data')}}",
-                data: { 'review_for': review_for, 'geo_id': mapViewBlock, 'asset_id': mapViewAsset, 'year_id': mapViewYear },
-                method: "GET",
-                contentType: 'application/json',
-                dataType: "json",
-                beforeSend: function (data) {
-                    $(".custom-loader").fadeIn(300);
-                },
-                error: function (xhr) {
-                    alert("error" + xhr.status + ", " + xhr.statusText);
-                    $(".custom-loader").fadeOut(300);
-                },
-                success: function (data) {
-                    console.log(data);
-                    if (data.response == "no_data") { // no data found
-                        $("#map-view").show();
-                        $("#mapCanvas").hide();
-                        $("#map-view + .no-data").show();
-                    }
-                    else { // data.response == success
-                        $("#map-view").show();
-                        $("#mapCanvas").show();
-                        $("#map-view + .no-data").hide();
-                        if (data.icon) {
-                            marker_icon = data.icon;
-                        }
-                        else {
-                            marker_icon = null;
-                        }
-                        showMap(data.map_data);
-                    }
-                    $(".custom-loader").fadeOut(300);
-                }
-            });
+    var marker_icon = null;
+    function initializeMapView(map_datas) {
+        if(map_datas.length>0){ 
+            $("#map-view").show();
+            $("#mapCanvas").show();
+            $("#map-view + .no-data").hide();
+            showMap(map_datas); 
         }
     }
     function showMap(data) {
@@ -1079,6 +879,7 @@
         $.each(data, function () {
             //Plot the location as a marker
             var theposition = new google.maps.LatLng(this.latitude, this.longitude);
+            icon.url = this.asset_icon || null;
             var marker = new google.maps.Marker({
                 position: theposition,
                 map: map,
@@ -1088,14 +889,17 @@
             });
 
 
-            var contentString = '<div id="content">' +
-                '<div id="siteNotice">' +
-                '</div>' +
-                '<h4 id="firstHeading" class="firstHeading">' + this.location_name + '</h4>' +
-                '<div id="bodyContent">' +
-                '<p><b>Panchayat:</b> ' + this.geo_name + '</p>' +
-                '</div>' +
-                '</div>';
+            var contentString = '<span style="color: #3d8e00; font-weight: bold; font-size:16px;display: block; padding-bottom: 5px;margin-bottom: 5px;border-bottom: 1px solid #d8d8d8;">'+this.asset_name+': ' +this.current_value+ '</span><b>Location:</b> ' +this.location_name+ '<br/><b>Panchayat:</b> ' + this.geo_name;
+            if(this.child){
+                if(this.child.length>0)
+                {
+                    contentString+='<span style="display: block; padding-top: 5px; margin-top: 5px; border-top:1px solid #d8d8d8;"><b>Sub Resources: </b>';
+                    this.child.forEach(function(element){
+                        contentString+='<br/>'+element.asset_name+' - '+element.current_value;
+                    })
+                    contentString+='</span>';
+                }
+            }
 
             var infowindow = new google.maps.InfoWindow({
                 content: contentString
