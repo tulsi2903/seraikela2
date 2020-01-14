@@ -5,52 +5,8 @@
 			<ul class="nav nav-primary">
 				<li class="nav-item"><a href="{{url(session()->get('dashboard_url'))}}"><i class="fas fa-home"></i><p>{{session()->get('dashboard_title')}}</p></a></li>
 
-				<li class="nav-item">
-					<a data-toggle="collapse" href="#administator" class="collapsed" aria-expanded="false">
-							<i class="fas fa-user-tie"></i>
-						<p>Administrator</p>
-						<span class="caret"></span>
-					</a>
-					<div class="collapse" id="administator">
-						<ul class="nav nav-collapse">
-							@if(array_key_exists("mod1", $desig_permissions))
-								<li class="nav-item"><a href="{{url('user')}}"><i class="fas fa-users"></i><p>User</p></a></li>
-							@endif
-							@if(array_key_exists("mod2", $desig_permissions))
-								<li class="nav-item"><a href="{{url('department')}}"><i class="fas fa-sitemap"></i><p>Department</p></a></li>
-							@endif
-							<li class="nav-item"><a href="{{url('geo-structure')}}"><i class="fas fa-map-marker-alt"></i><p>Geo Structure</p></a></li>
-							@if(array_key_exists("mod3", $desig_permissions))
-								<li class="nav-item"><a href="{{url('year')}}"><i class="fas fa-calendar-alt"></i><p>Year</p></a></li>
-							@endif
-							@if(array_key_exists("mod4", $desig_permissions))
-								<!-- <li class="nav-item"><a href="{{url('uom')}}"><i class="fas fa-list-ol"></i><p>UoM</p></a></li> -->
-							@endif
-							@if(array_key_exists("mod5", $desig_permissions))
-								<li class="nav-item"><a href="{{url('designation')}}"><i class="fas fa-user-check"></i><p>Designation</p></a></li>
-							@endif
-							@if(array_key_exists("mod6", $desig_permissions))
-								<li class="nav-item"><a href="{{url('scheme-type')}}"><i class="fas fa-receipt"></i><p>Scheme Type</p></a></li>
-							@endif
-							@if(array_key_exists("mod7", $desig_permissions))
-								<li class="nav-item"><a href="{{url('scheme-group')}}"><i class="fas fa-receipt"></i><p>Scheme Group</p></a></li>
-							@endif
-							@if(array_key_exists("mod8", $desig_permissions))
-								<li class="nav-item"><a href="{{url('assetcat')}}"><i class="fas fa-receipt"></i><p> Resource Category</p></a></li>
-							@endif
-							@if(array_key_exists("mod9", $desig_permissions))
-								<li class="nav-item"><a href="{{url('asset_subcat')}}"><i class="fas fa-receipt"></i><p> Resource Sub Category</p></a></li>
-							@endif
-							@if(session()->get('user_designation')=="1")
-								<li class="nav-item"><a href="{{url('module')}}"><i class="fas fa-indent"></i><p>Module</p></a></li>
-								<li class="nav-item"><a href="{{url('designation-permission')}}"><i class="fas fa-users-cog"></i><p>Designation Permission</p></a></li>
-							@endif
-						</ul>
-					</div>
-				</li>
-				@if(array_key_exists("mod12", $desig_permissions))
-				<li class="nav-item"><a href="{{url('geo-structure')}}"><i class="fas fa-map-marker-alt"></i><p>Geo Structure</p></a></li>
-				@endif
+				
+			
 				<li class="nav-item">
 					<a data-toggle="collapse" href="#asset" class="collapsed" aria-expanded="false">
 						<i class="fas fa-layer-group"></i>
@@ -112,6 +68,51 @@
 				@if(array_key_exists("mod22", $desig_permissions))
 				<li class="nav-item"><a href="{{url('favourites')}}"><i class="fa fa-bookmark" aria-hidden="true"></i><p>Favourite</p></a></li>
 				@endif<!-- <li class="nav-item"><a href="{{url('mgnrega')}}"><i class="fa fa-bookmark" aria-hidden="true"></i><p>Mgnrega</p></a></li> -->
+				<li class="nav-item">
+					<a data-toggle="collapse" href="#administator" class="collapsed" aria-expanded="false">
+							<i class="fas fa-user-tie"></i>
+						<p>Settings</p>
+						<span class="caret"></span>
+					</a>
+					<div class="collapse" id="administator">
+						<ul class="nav nav-collapse">
+							@if(array_key_exists("mod1", $desig_permissions))
+								<li class="nav-item"><a href="{{url('user')}}"><i class="fas fa-users"></i><p>User</p></a></li>
+							@endif
+							@if(array_key_exists("mod12", $desig_permissions))
+							<li class="nav-item"><a href="{{url('geo-structure')}}"><i class="fas fa-map-marker-alt"></i><p>Geo Structure</p></a></li>
+							@endif
+							@if(array_key_exists("mod2", $desig_permissions))
+								<li class="nav-item"><a href="{{url('department')}}"><i class="fas fa-sitemap"></i><p>Department</p></a></li>
+							@endif
+							@if(array_key_exists("mod3", $desig_permissions))
+								<li class="nav-item"><a href="{{url('year')}}"><i class="fas fa-calendar-alt"></i><p>Year</p></a></li>
+							@endif
+							@if(array_key_exists("mod4", $desig_permissions))
+								<!-- <li class="nav-item"><a href="{{url('uom')}}"><i class="fas fa-list-ol"></i><p>UoM</p></a></li> -->
+							@endif
+							@if(array_key_exists("mod5", $desig_permissions))
+								<li class="nav-item"><a href="{{url('designation')}}"><i class="fas fa-user-check"></i><p>Designation</p></a></li>
+							@endif
+							@if(array_key_exists("mod6", $desig_permissions))
+								<li class="nav-item"><a href="{{url('scheme-type')}}"><i class="fas fa-receipt"></i><p>Scheme Type</p></a></li>
+							@endif
+							@if(array_key_exists("mod7", $desig_permissions))
+								<li class="nav-item"><a href="{{url('scheme-group')}}"><i class="fas fa-receipt"></i><p>Scheme Group</p></a></li>
+							@endif
+							@if(array_key_exists("mod8", $desig_permissions))
+								<li class="nav-item"><a href="{{url('assetcat')}}"><i class="fas fa-receipt"></i><p> Resource Category</p></a></li>
+							@endif
+							@if(array_key_exists("mod9", $desig_permissions))
+								<li class="nav-item"><a href="{{url('asset_subcat')}}"><i class="fas fa-receipt"></i><p> Resource Sub Category</p></a></li>
+							@endif
+							@if(session()->get('user_designation')=="1")
+								<li class="nav-item"><a href="{{url('module')}}"><i class="fas fa-indent"></i><p>Module</p></a></li>
+								<li class="nav-item"><a href="{{url('designation-permission')}}"><i class="fas fa-users-cog"></i><p>Designation Permission</p></a></li>
+							@endif
+						</ul>
+					</div>
+				</li>
 			</ul>
 		</div>
 	</div>

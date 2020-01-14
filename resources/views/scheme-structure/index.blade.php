@@ -20,6 +20,7 @@
 @endsection
 
 @section('page-content')
+<?php  $desig_permissions = session()->get('desig_permission'); // assigning desig_permission so we can use ?>
 <div class="card">
     <div class="col-md-12">
         <div class="card-header">
@@ -30,8 +31,9 @@
                     <a href="#" data-toggle="tooltip" title="Print"><button type="button" class="btn btn-icon btn-round btn-default" id="print-button" onclick="printView();"><i class="fa fa-print" aria-hidden="true"></i></button></a>
                     <a href="{{url('scheme-structure/pdf/pdfURL')}}" data-toggle="tooltip" title="Export to PDF"><button type="button" class="btn btn-icon btn-round btn-warning"><i class="fas fa-file-export"></i></button></a>
                     <a href="{{url('scheme-structure/export/excelURL')}}" data-toggle="tooltip" title="Export to Excel"><button type="button" class="btn btn-icon btn-round btn-primary"><i class="fas fa-file-excel"></i></button></a>
+                    @if($desig_permissions["mod15"]["add"])
                     <a class="btn btn-secondary" href="{{url('scheme-structure/add')}}" role="button"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;Add</a>
-
+                    @endif
                 </div>
             </div>
         </div>
@@ -52,7 +54,9 @@
                                 <th>Scheme Name</th>
                                 <th>Department</th>
                                 <th>Status</th>
+                                @if($desig_permissions["mod15"]["edit"] || $desig_permissions["mod15"]["del"])
                                 <th class="action-buttons">Actions</th>
+                                @endif
                             </tr>
                         </thead>
                         <?php $count=1; ?>
@@ -70,12 +74,18 @@
                                     ?><i class="fas fa-dot-circle text-dark"></i>&nbsp;&nbsp;Inactive<?php
                                 } ?>
                             </td>
+                            @if($desig_permissions["mod15"]["edit"] || $desig_permissions["mod15"]["del"])
                             <td class="action-buttons">
-                                <a href="{{url('scheme-structure/add')}}?purpose=edit&id={{$data->scheme_id}}" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></a>
+                                @if($desig_permissions["mod15"]["edit"]) <a href="{{url('scheme-structure/add')}}?purpose=edit&id={{$data->scheme_id}}" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></a>
+                                @endif
+                                @if($desig_permissions["mod15"]["view"])
                                 &nbsp;&nbsp;<a href="{{url('scheme-structure/view')}}/{{$data->scheme_id}}" class="btn btn-sm btn-secondary"><i class="fas fa-eye"></i></a>
+                                @endif
+                                @if($desig_permissions["mod15"]["del"])
                                 &nbsp;&nbsp;<a href="{{url('scheme-structure/delete')}}/{{$data->scheme_id}};" class="btn btn-danger btn-sm delete-button"><i class="fas fa-trash-alt"></i></a>
-
+                                @endif
                             </td>
+                            @endif
                         </tr>
                         @endforeach
                         @endif

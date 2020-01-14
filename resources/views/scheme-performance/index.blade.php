@@ -21,7 +21,6 @@
             </div>
         </div>
     </div>
-
     <div class="col-md-12">
         <div class="card-body">
             <div class="search-block">
@@ -47,7 +46,7 @@
                                 <select name="year_id" id="year_id" class="form-control">
                                     <option value="">---Select---</option>
                                     @foreach($year_datas as $year_data )
-                                    <option value="{{ $year_data->year_id }}" <?php if($data->year_id == $year_data->year_id) echo"selected"; ?>>{{ $year_data->year_value }}</option>
+                                    <option value="{{ $year_data->year_id }}" >{{ $year_data->year_value }}</option>
                                     @endforeach
                                 </select>
                                 <div class="invalid-feedback" id="year_id_error_msg"></div>
@@ -59,7 +58,7 @@
                                 <select name="block_id" id="block_id" class="form-control">
                                     <option value="">---Select---</option>
                                     @foreach( $block_datas as $block_data )
-                                    <option value="{{ $block_data->geo_id }}" <?php if($data->block_id == $block_data->geo_id ) echo"selected" ?>>{{ $block_data->geo_name }}</option>
+                                    <option value="{{ $block_data->geo_id }}" >{{ $block_data->geo_name }}</option>
                                     @endforeach
                                 </select>
                                 <div class="invalid-feedback" id="block_id_error_msg"></div>
