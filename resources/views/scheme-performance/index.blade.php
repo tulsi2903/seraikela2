@@ -291,8 +291,9 @@
                 },
                 success:function(data){
                     console.log(data);
-
+                    $("#to_append_tbody").html("");
                     $("#to_append_thead").html(data.to_append_thead);
+                    $("#to_append_tbody").html(data.to_append_tbody);
                     to_append_row = data.to_append_row;
 
                     $("#to_append_table").fadeIn(300);

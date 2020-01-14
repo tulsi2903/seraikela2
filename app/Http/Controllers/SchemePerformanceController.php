@@ -111,7 +111,7 @@ class SchemePerformanceController extends Controller
         return $datas;
     }
 
-    public function get_all_datas(Request $request)
+    public function get_all_datas_old(Request $request)
     {
         // received datas
         $scheme_id = $request->scheme_id;
@@ -167,8 +167,107 @@ class SchemePerformanceController extends Controller
 
         return ['to_append_thead' => $to_append_thead, 'to_append_row' => $to_append_row];
     }
+    public function get_all_datas(Request $request)
+    {
+        // received datas
+        $scheme_id = $request->scheme_id;
 
-    public function store(Request $request)
+        $year_id = $request->year_id;
+        $panchayat_id = $request->panchayat_id;
+        $SchemePerformance_details = SchemePerformance::where('scheme_id', $scheme_id)->where('year_id', $year_id)->where('panchayat_id', $panchayat_id)->get()->toArray();
+        // print_r($SchemePerformance_details);
+        $to_append_tbody='';
+        if (count($SchemePerformance_details != 0)) {
+            foreach ($SchemePerformance_details as $key_SchemePerformance => $value_SchemePerformance) {
+                $to_append_tbody.='<tr>';
+                $SchemePerformance_attributes=unserialize($value_SchemePerformance['attribute']);
+                // print_r($SchemePerformance_attributes);
+                $scheme_data = SchemeStructure::find($value_SchemePerformance['scheme_id']);
+                $scheme_asset_data = SchemeAsset::get();
+                
+                $to_append_tbody .= '<input type="hidden" name="scheme_performance_id[]" value="'.$value_SchemePerformance['scheme_performance_id'].'"><td> <select name="assest_name[]" class="form-control">';
+                foreach ($scheme_asset_data as $key_asset => $value_assest) {
+                    if($value_SchemePerformance['assest_name']==$value_assest["scheme_asset_id"])
+                    $to_append_tbody .= "<option  value=\"" . $value_assest["scheme_asset_id"] . "\">" . $value_assest["scheme_asset_name"] . "</option>";
+                }
+                $to_append_tbody .= '</select>';
+                $attributes  = unserialize($scheme_data->attributes);
+                foreach ($attributes as $key_att=>$attribute) {
+                    $to_append_tbody .= '<td><input type="text" name="' . $attribute['id'] . '[]" class="form-control" value="'.$SchemePerformance_attributes[$key_att][$attribute['id']].'" placeholder="' . $attribute['name'] . '"></td>';
+                }
+                $to_append_tbody .= '<td><a href="javascript:void();"><i class="fas fa-plus"></i>Images</a>';
+                $to_append_tbody .= '</td>';
+                $to_append_tbody .= '<td>
+                            <select name="status[]" class="form-control">
+                                ';
+                if($value_SchemePerformance['status']==0)
+                $to_append_tbody.='<option value="0">Ongoing</option>';
+                if($value_SchemePerformance['status']==1)
+                $to_append_tbody.='<option value="1">Completed</option>';
+                $to_append_tbody.='</select></td>';
+                $to_append_tbody .= '<td><input type="text" name="comments[]" value="'.$value_SchemePerformance['comments'].'" class="form-control" placeholder="comments"></td>';
+                $to_append_tbody .= '<td><button type="button" class="btn btn-danger btn-xs" onclick="delete_row(this)"><i class="fas fa-trash-alt"></i></button></td>';
+                $to_append_tbody .= '</tr>';
+            }
+        }
+        // exit;
+        /*
+        to send
+        scheme_data
+        scheme_asset_data
+        scheme_performance_data
+        add_new_input
+        */
+        $to_append_thead = '<tr>';
+        $to_append_row = '<tr>';
+
+        $scheme_data = SchemeStructure::find($scheme_id);
+        $scheme_asset_data = SchemeAsset::get();
+
+        // for attributes
+        $to_append_thead .= '<th>Select Assest</th>';
+        $to_append_row .= '<input type="hidden" name="scheme_performance_id[]" value="new_scheme_performance"> <td><select name="assest_name[]" class="form-control">';
+        foreach ($scheme_asset_data as $key_asset => $value_assest) {
+            $to_append_row .= "<option value=\"" . $value_assest["scheme_asset_id"] . "\">" . $value_assest["scheme_asset_name"] . "</option>";
+        }
+        $to_append_row .= '</select>';
+        $attributes  = unserialize($scheme_data->attributes);
+        // return $attributes;
+        foreach ($attributes as $attribute) {
+            $to_append_thead .= '<th>' . $attribute["name"] . '</th>';
+            $to_append_row .= '<td><input type="text" name="' . $attribute['id'] . '[]" class="form-control" placeholder="' . $attribute['name'] . '"></td>';
+        }
+        // return $to_append_row;
+
+
+        // for gallery & coordinates
+        $to_append_thead .= '<th>Others</th>';
+        $to_append_row .= '<td><a href="javascript:void();"><i class="fas fa-plus"></i>Images</a>';
+        // for coordinates
+        // if($scheme_data->geo_related==1){
+        //     $to_append_row.='<br/><a href="javascript:void();"><i class="fas fa-plus"></i>Coordinates</a>';
+        // }
+        $to_append_row .= '</td>';
+
+        $to_append_thead .= '<th>Status</th>';
+        $to_append_row .= '<td>
+                            <select name="status[]" class="form-control">
+                                <option value="0">Ongoing</option>
+                                <option value="1">Completed</option>
+                            </select>
+                        </td>';
+
+        $to_append_thead .= '<th>Comments</th>';
+        $to_append_row .= '<td><input type="text" name="comments[]" class="form-control" placeholder="comments"></td>';
+        $to_append_thead .= '<th>Actions</th>';
+        $to_append_row .= '<td><button type="button" class="btn btn-danger btn-xs" onclick="delete_row(this)"><i class="fas fa-trash-alt"></i></button></td>';
+
+        $to_append_thead .= '</tr>';
+        $to_append_row .= '</tr>';
+
+        return ['to_append_thead' => $to_append_thead, 'to_append_row' => $to_append_row, 'to_append_tbody'=>$to_append_tbody];
+    }
+    public function store_old(Request $request)
     {
         // recieved datas
         return $request;
@@ -192,7 +291,49 @@ class SchemePerformanceController extends Controller
 
         return $request;
     }
+    public function store(Request $request)
+    {
+        // recieved datas
+        return $request;
+        $scheme_id = $request->scheme_id;
+        $year_id = $request->year_id;
+        $panchayat_id = $request->panchayat_id;
+        $block_id = GeoStructure::where('geo_id', $panchayat_id)->first()->bl_id;
+        $subdivision_id = GeoStructure::where('geo_id', $panchayat_id)->first()->sd_id;
+        $scheme_data = SchemeStructure::where('scheme_id', $scheme_id)->first();
+        // $scheme_asset_data = SchemeAsset::where('scheme_asset_id', $scheme_data->scheme_asset_id)->first();
+        $attributes = unserialize($scheme_data->attributes);
+        // $attributes_ids = 
+        $form_request_id = array();
+        $form_attributes_data_array = array();
+        foreach ($attributes as $key_id => $value_id) {
+            foreach ($request->input($value_id['id']) as $key => $value) {
+                $form_request_id[$key][$key_id][$value_id['id']] = $value;
+            }
+        }
+        // echo "<pre>";
+        foreach ($form_request_id as $key_request => $value_request) {
 
+            if($request->scheme_performance_id[$key_request]=='new_scheme_performance')
+            $scheme_performance = new SchemePerformance;
+            $scheme_performance->scheme_id = $scheme_id;
+            $scheme_performance->year_id = $year_id;
+            $scheme_performance->subdivision_id = $subdivision_id;
+            $scheme_performance->block_id = $block_id;
+            $scheme_performance->panchayat_id = $panchayat_id;
+            $scheme_performance->attribute = serialize($value_request) ?? "";
+            $scheme_performance->status = $request->status[$key_request];
+            $scheme_performance->assest_name = $request->assest_name[$key_request];
+            $scheme_performance->gallery = "ddd";
+            $scheme_performance->comments = $request->comments[$key_request] ?? "";
+            $scheme_performance->coordinates = "fdddgd";
+            $scheme_performance->created_by = Auth::user()->id;
+            $scheme_performance->updated_by = Auth::user()->id;
+            $scheme_performance->save();
+            // echo "<br>";
+        }
+        return redirect('scheme-performance');
+    }
     public function viewimport(Request $request)
     {
         // return $request;
