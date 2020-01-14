@@ -33,7 +33,7 @@
                     <a href="#" data-toggle="tooltip" title="Print"><button type="button" class="btn btn-icon btn-round btn-default" id="print-button" onclick="printView();"><i class="fa fa-print" aria-hidden="true"></i></button></a>
                     <a href="{{url('asset_Numbers/pdf/pdfURL')}}" target="_blank" data-toggle="tooltip" title="Export to PDF"><button type="button" class="btn btn-icon btn-round btn-warning"><i class="fas fa-file-export"></i></button></a>
                     <a href="{{url('asset_Numbers/export/excelURL')}}" data-toggle="tooltip" title="Export to Excel"><button type="button" class="btn btn-icon btn-round btn-primary"><i class="fas fa-file-excel"></i></button></a>
-                    @if($desig_permissions["asset numbers"]["add"])
+                    @if($desig_permissions["mod14"]["add"])
                     <a class="btn btn-secondary" href="{{url('asset-numbers/add')}}" role="button"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;Add</a>
                     @endif
                 </div>
@@ -58,7 +58,9 @@
                                 <th>Panchyat</th>
                                 <!-- <th>Pre Value</th> -->
                                 <th>Current Value</th>
+                                @if($desig_permissions["mod14"]["view"] ||$desig_permissions["mod14"]["del"] || $desig_permissions["mod14"]["edit"])
                                 <th class="action-buttons">Action</th>
+                                @endif
                             </tr>
                         </thead>
                         <tbody>
@@ -73,17 +75,19 @@
                                 <td>{{$data->panchayat_name}}</td>
                                 <!-- <td>{{$data->pre_value}}</td> -->
                                 <td>{{$data->current_value}}</td>
+                                @if($desig_permissions["mod14"]["view"] ||$desig_permissions["mod14"]["del"] || $desig_permissions["mod14"]["edit"])
                                 <td class="action-buttons">
-                                    @if($desig_permissions["asset numbers"]["del"])
+                                    @if($desig_permissions["mod14"]["del"])
                                     <!--  <a href="{{url('asset_numbers/delete')}}/{{$data->asset_numbers_id}}/{$data->asset_geo_location_id}/{$data->asset_block_count_id}" id="delete-button" class="btn btn-secondary btn-sm"><i class="fas fa-trash-alt"></i></a>-->
                                     @endif
-                                    @if($desig_permissions["asset numbers"]["edit"])
+                                    @if($desig_permissions["mod14"]["edit"])
                                     &nbsp;&nbsp;<a href="{{url('asset-numbers/add')}}?purpose=edit&id={{$data->asset_numbers_id}}" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></a>
                                     @endif
-                                    @if($desig_permissions["asset numbers"]["view"])
+                                    @if($desig_permissions["mod14"]["view"])
                                     &nbsp;&nbsp;<a href="{{url('asset-numbers/view')}}/{{$data->asset_numbers_id}}" class="btn btn-sm btn-secondary"><i class="fas fa-eye"></i></a>
                                     @endif
                                 </td>
+                                @endif
                             </tr>
                             @endforeach
                             @endif

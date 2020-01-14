@@ -33,7 +33,7 @@
                     <a href="#" data-toggle="tooltip" title="Print"><button type="button" class="btn btn-icon btn-round btn-default" id="print-button" onclick="printView();"><i class="fa fa-print" aria-hidden="true"></i></button></a>
                     <a href="{{url('asset/pdf/pdfURL')}}" target="_BLANK" data-toggle="tooltip" title="Export to PDF"><button type="button" class="btn btn-icon btn-round btn-warning"><i class="fas fa-file-export"></i></button></a>
                     <a href="{{url('asset/export/excelURL')}}" data-toggle="tooltip" title="Export to Excel"><button type="button" class="btn btn-icon btn-round btn-primary"><i class="fas fa-file-excel"></i></button></a>
-                    @if($desig_permissions["asset"]["add"])
+                    @if($desig_permissions["mod13"]["add"])
                     <a id="toggle1" onclick="resetAssetForm()" class="btn btn-secondary" href="javascript:void();" role="button"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;Add</a>
                     @endif
                 </div>
@@ -176,7 +176,9 @@
                                 <th>Name</th>
                                 <th>Type</th>
                                 <th>Department Name</th>
+                                @if($desig_permissions["mod13"]["del"] || $desig_permissions["mod13"]["edit"])
                                 <th class="action-buttons">Action</th>
+                                @endif
                             </tr>
                         </thead>
                         <?php $count=1; ?>
@@ -197,10 +199,12 @@
                                 ?>
                             </td>
                             <td>{{$data->dept_name}}</td>
+                            @if($desig_permissions["mod13"]["del"] || $desig_permissions["mod13"]["edit"])
                             <td class="action-buttons">
-                                @if($desig_permissions["asset"]["del"])<a href="{{url('asset/delete')}}/{{$data->asset_id}}" class="btn btn-danger btn-sm delete-button"><i class="fas fa-trash-alt"></i></a>@endif
-                                &nbsp;&nbsp;@if($desig_permissions["asset"]["edit"])<a href="javascirpt:void();" onclick="editAssetAjax('{{$data->asset_id}}')" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></a>@endif
+                                @if($desig_permissions["mod13"]["del"])<a href="{{url('asset/delete')}}/{{$data->asset_id}}" class="btn btn-danger btn-sm delete-button"><i class="fas fa-trash-alt"></i></a>@endif
+                                &nbsp;&nbsp;@if($desig_permissions["mod13"]["edit"])<a href="javascirpt:void();" onclick="editAssetAjax('{{$data->asset_id}}')" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></a>@endif
                             </td>
+                            @endif
                         </tr>
                         @endforeach
                         @endif
