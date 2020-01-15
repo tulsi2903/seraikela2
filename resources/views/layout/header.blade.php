@@ -28,9 +28,7 @@
                     <i class="icon-menu"></i>
                 </button>
             </div>
-        
-
-
+    
             <div class="container-fluid">
                 <div class="collapse" id="search-nav">
                     <div class="demo-icon" style="display: flex;">
@@ -49,10 +47,10 @@
                             <p style="color: rgba(235, 225, 224, 0.932);font-weight: 500;font-family: 'Bree Serif', serif;margin-top: 5px;">Language :<i class="fas fa-sort-alpha-down"></i></p>
                         </a>
                         <div class="dropdown-menu quick-actions quick-actions-info animated fadeIn">
+                        <?php $one =  1; $two =  2; ?>   
                             <div class="quick-actions-header">
-                                <button><span class="title mb-1">English</span></button>
-                                <span class="title mb-1">Hindi</span>
-
+                                <a href="{{url('lang/english/'.$one)}}"><button>English</button></a>
+                                <a href="{{url('lang/hindi/'.$two)}}"><button>हिन्दी</button></a> 
                             </div>
                         </div>
                     </li>
