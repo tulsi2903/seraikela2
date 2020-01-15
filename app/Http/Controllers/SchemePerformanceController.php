@@ -416,25 +416,27 @@ class SchemePerformanceController extends Controller
             array_push($tableHeadingsAndAtributes, strtolower(str_replace(" ", "_", $value_un['name'])));
             $schemeAtributes[$value_un['id']] =  strtolower(str_replace(" ", "_", $value_un['name']));
         }
+        array_push($tableHeadingsAndAtributes,0);
 
         if ($_FILES['excelcsv']['tmp_name']) {
             $readExcel = \Excel::load($_FILES['excelcsv']['tmp_name'], function ($reader) { })->get()->toArray();
             $readExcelHeader = \Excel::load($_FILES['excelcsv']['tmp_name'])->get();
-            $excelSheetHeadings = $readExcelHeader[0]->first()->keys()->toArray(); /* this is for excel sheet heading */
+            $excelSheetHeadings = $readExcelHeader->first()->keys()->toArray(); /* this is for excel sheet heading */
+            
+            
             sort($tableHeadingsAndAtributes);
             sort($excelSheetHeadings); 
             $unserializedAtributesData = array();
-
+            
             /* validation for matching of headings */
             if ($tableHeadingsAndAtributes == $excelSheetHeadings) { 
 
-                foreach ($readExcel[0] as $excel_key => $excel_value) { 
-
+                foreach ($readExcel as $excel_key => $excel_value) { 
                     foreach ($excel_value as $key => $value) { 
-
                         foreach ($schemeAtributes as $attribute_key => $attribute_value) {
-
-                            if ($attribute_value == $key) {
+                            
+                            if ($attribute_value === $key) { 
+                                
                                 $unserializedAtributesData[$attribute_key] = $value;
                             }
                         }
@@ -446,7 +448,7 @@ class SchemePerformanceController extends Controller
                 $filename = "Error Log.txt"; /* error file name */
                 $myfile = fopen($filename, "w"); /* open error file name by using fopen function */
 
-                foreach ($readExcel[0] as $key => $row) { /* Insert Data By using for each one by one */
+                foreach ($readExcel as $key => $row) { /* Insert Data By using for each one by one */
                     $block_name =  ucwords($row['block_name']);
                     $panchayat_name =   ucwords($row['panchayat_name']);
                     $fetch_block_id = GeoStructure::where('geo_name', $block_name)->value('geo_id'); /* for block ID */
