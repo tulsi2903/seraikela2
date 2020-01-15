@@ -11,6 +11,7 @@ use App\SchemeStructure;
 use App\Department;
 use App\DesignationPermission;
 use DB;
+use App\Languages;
 
 class DashboardController extends Controller
 {
@@ -109,4 +110,26 @@ class DashboardController extends Controller
         return $asset_department_wise;
     }
 
+    public function language_change($id = "")
+    {
+        // echo "heee";
+        if($id==1)
+        {
+            Languages::where('id',$id)->update(array(
+                'status' => 1
+            ));
+            Languages::where('id',$id+1)->update(array(
+                'status' => 0
+            ));
+        }
+        else{
+            Languages::where('id',$id)->update(array(
+                'status' => 1
+            ));
+            Languages::where('id',$id-1)->update(array(
+                'status' => 0
+            ));          
+        }
+    return redirect('/'); 
+    }
 }

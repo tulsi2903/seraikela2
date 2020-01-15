@@ -294,3 +294,7 @@ Route::post('sendmail','EmailController@sendmail');
  Route::get('mgnrega/delete/{mgnrega_category_id}','MgnregaCategoryController@delete');
  Route::get('mgnrega/export/excelURL','MgnregaCategoryController@export_ExcelFunction');
  Route::get('mgnrega/pdf/pdfURL','MgnregaCategoryController@export_PDF_Function');
+
+ //language changes
+ Route::get('lang/english/{id}','DashboardController@language_change');
+ Route::get('lang/hindi/{id}','DashboardController@language_change');
