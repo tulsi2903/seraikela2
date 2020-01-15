@@ -71,7 +71,7 @@
 				<li class="nav-item">
 					<a data-toggle="collapse" href="#administator" class="collapsed" aria-expanded="false">
 							<i class="fas fa-user-tie"></i>
-						<p>{{$phrase->setting}}</p>
+						<p>Setting</p>
 						<span class="caret"></span>
 					</a>
 					<div class="collapse" id="administator">
