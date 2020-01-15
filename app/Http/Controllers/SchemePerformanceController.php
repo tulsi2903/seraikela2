@@ -112,62 +112,6 @@ class SchemePerformanceController extends Controller
         return $datas;
     }
 
-    public function get_all_datas_old(Request $request)
-    {
-        // received datas
-        $scheme_id = $request->scheme_id;
-        $year_id = $request->year_id;
-        $panchayat_id = $request->panchayat_id;
-
-        /*
-        to send
-        scheme_data
-        scheme_asset_data
-        scheme_performance_data
-        add_new_input
-        */
-        $to_append_thead = '<tr>';
-        $to_append_tbody = ''; // to show previous datas
-        $to_append_row = '<tr>';
-
-        $scheme_data = SchemeStructure::find($scheme_id);
-        $scheme_asset_data = SchemeAsset::find($scheme_data->scheme_asset_id);
-
-        // for attributes
-        $attributes  = unserialize($scheme_asset_data->attribute);
-        foreach ($attributes as $attribute) {
-            $to_append_thead .= '<th>' . $attribute["name"] . '</th>';
-            $to_append_row .= '<td><input type="text" name="' . $attribute['id'] . '[]" class="form-control" placeholder="' . $attribute['name'] . '"></td>';
-        }
-
-        // for gallery & coordinates
-        $to_append_thead .= '<th>Others</th>';
-        $to_append_row .= '<td><a href="javascript:void();"><i class="fas fa-plus"></i>Images</a>';
-        // for coordinates
-        if ($scheme_asset_data->geo_related == 1) {
-            $to_append_row .= '<br/><a href="javascript:void();"><i class="fas fa-plus"></i>Coordinates</a>';
-        }
-        $to_append_row .= '</td>';
-
-        $to_append_thead .= '<th>Status</th>';
-        $to_append_row .= '<td>
-                            <select name="status[]" class="form-control">
-                                <option value="0">Ongoing</option>
-                                <option value="1">Completed</option>
-                            </select>
-                        </td>';
-
-        $to_append_thead .= '<th>Comments</th>';
-        $to_append_row .= '<td><input type="text" name="comments[]" class="form-control" placeholder="comments"></td>';
-
-        $to_append_thead .= '<th>Actions</th>';
-        $to_append_row .= '<td><button type="button" class="btn btn-danger btn-xs" onclick="delete_row(this)"><i class="fas fa-trash-alt"></i></button></td>';
-
-        $to_append_thead .= '</tr>';
-        $to_append_row .= '</tr>';
-
-        return ['to_append_thead' => $to_append_thead, 'to_append_row' => $to_append_row];
-    }
     public function get_all_datas(Request $request)
     {
         // received datas
@@ -177,38 +121,40 @@ class SchemePerformanceController extends Controller
         $panchayat_id = $request->panchayat_id;
         $SchemePerformance_details = SchemePerformance::where('scheme_id', $scheme_id)->where('year_id', $year_id)->where('panchayat_id', $panchayat_id)->get()->toArray();
         // print_r($SchemePerformance_details);
-        $to_append_tbody='';
+        $to_append_tbody = '';
         if (count($SchemePerformance_details != 0)) {
             foreach ($SchemePerformance_details as $key_SchemePerformance => $value_SchemePerformance) {
-                $to_append_tbody.='<tr>';
-                $SchemePerformance_attributes=unserialize($value_SchemePerformance['attribute']);
+                $to_append_tbody .= '<tr>';
+                $SchemePerformance_attributes = unserialize($value_SchemePerformance['attribute']);
                 // print_r($SchemePerformance_attributes);
                 $scheme_data = SchemeStructure::find($value_SchemePerformance['scheme_id']);
                 $scheme_asset_data = SchemeAsset::get();
-                $to_append_tbody .= '<input type="hidden" name="scheme_performance_id[]" value="'.$value_SchemePerformance['scheme_performance_id'].'"><td> <select name="assest_name[]" class="form-control">';
-                foreach ($scheme_asset_data as $key_asset => $value_assest) {
-                    if($value_SchemePerformance['assest_name']==$value_assest["scheme_asset_id"])
-                    $to_append_tbody .= "<option  value=\"" . $value_assest["scheme_asset_id"] . "\">" . $value_assest["scheme_asset_name"] . "</option>";
-                    $to_append_tbody .= "<option  value=\"" . $value_assest["scheme_asset_id"] . "\">" . $value_assest["scheme_asset_name"] . "</option>";
-
+                $to_append_tbody .= '<input type="hidden" name="scheme_performance_id[]" value="' . $value_SchemePerformance['scheme_performance_id'] . '">';
+                if ($scheme_data->scheme_is == 2) {
+                    $to_append_tbody .= '<td> <select name="assest_name[]" class="form-control">';
+                    foreach ($scheme_asset_data as $key_asset => $value_assest) {
+                        if ($value_SchemePerformance['assest_name'] == $value_assest["scheme_asset_id"])
+                            $to_append_tbody .= "<option  value=\"" . $value_assest["scheme_asset_id"] . "\">" . $value_assest["scheme_asset_name"] . "</option>";
+                        $to_append_tbody .= "<option  value=\"" . $value_assest["scheme_asset_id"] . "\">" . $value_assest["scheme_asset_name"] . "</option>";
+                    }
+                    $to_append_tbody .= '</select>';
                 }
-                
-                $to_append_tbody .= '</select>';
+
                 $attributes  = unserialize($scheme_data->attributes);
-                foreach ($attributes as $key_att=>$attribute) {
-                    $to_append_tbody .= '<td><input type="text" name="' . $attribute['id'] . '[]" class="form-control" value="'.$SchemePerformance_attributes[$key_att][$attribute['id']].'" placeholder="' . $attribute['name'] . '"></td>';
+                foreach ($attributes as $key_att => $attribute) {
+                    $to_append_tbody .= '<td><input type="text" name="' . $attribute['id'] . '[]" class="form-control" value="' . $SchemePerformance_attributes[$key_att][$attribute['id']] . '" placeholder="' . $attribute['name'] . '"></td>';
                 }
                 $to_append_tbody .= '<td><a href="javascript:void();"><i class="fas fa-plus"></i>Images</a>';
                 $to_append_tbody .= '</td>';
                 $to_append_tbody .= '<td>
                             <select name="status[]" class="form-control">
                                 ';
-                if($value_SchemePerformance['status']==0)
-                $to_append_tbody.='<option value="0">Ongoing</option>';
-                if($value_SchemePerformance['status']==1)
-                $to_append_tbody.='<option value="1">Completed</option>';
-                $to_append_tbody.='</select></td>';
-                $to_append_tbody .= '<td><input type="text" name="comments[]" value="'.$value_SchemePerformance['comments'].'" class="form-control" placeholder="comments"></td>';
+                if ($value_SchemePerformance['status'] == 0)
+                    $to_append_tbody .= '<option value="0">Ongoing</option>';
+                if ($value_SchemePerformance['status'] == 1)
+                    $to_append_tbody .= '<option value="1">Completed</option>';
+                $to_append_tbody .= '</select></td>';
+                $to_append_tbody .= '<td><input type="text" name="comments[]" value="' . $value_SchemePerformance['comments'] . '" class="form-control" placeholder="comments"></td>';
                 $to_append_tbody .= '<td><button type="button" class="btn btn-danger btn-xs" onclick="delete_row(this)"><i class="fas fa-trash-alt"></i></button></td>';
                 $to_append_tbody .= '</tr>';
             }
@@ -228,12 +174,17 @@ class SchemePerformanceController extends Controller
         $scheme_asset_data = SchemeAsset::get();
 
         // for attributes
-        $to_append_thead .= '<th>Select Assest</th>';
-        $to_append_row .= '<input type="hidden" name="scheme_performance_id[]" value="new_scheme_performance"> <td><select name="assest_name[]" class="form-control">';
-        foreach ($scheme_asset_data as $key_asset => $value_assest) {
-            $to_append_row .= "<option value=\"" . $value_assest["scheme_asset_id"] . "\">" . $value_assest["scheme_asset_name"] . "</option>";
+        if ($scheme_data->scheme_is == 2) {
+            $to_append_thead .= '<th>Select Assest</th>';
         }
-        $to_append_row .= '</select>';
+        $to_append_row .= '<input type="hidden" name="scheme_performance_id[]" value="new_scheme_performance"> ';
+        if ($scheme_data->scheme_is == 2) {
+            $to_append_row .= '<td><select name="assest_name[]" class="form-control">';
+            foreach ($scheme_asset_data as $key_asset => $value_assest) {
+                $to_append_row .= "<option value=\"" . $value_assest["scheme_asset_id"] . "\">" . $value_assest["scheme_asset_name"] . "</option>";
+            }
+            $to_append_row .= '</select>';
+        }
         $attributes  = unserialize($scheme_data->attributes);
         // return $attributes;
         foreach ($attributes as $attribute) {
@@ -264,35 +215,10 @@ class SchemePerformanceController extends Controller
         $to_append_row .= '<td><input type="text" name="comments[]" class="form-control" placeholder="comments"></td>';
         $to_append_thead .= '<th>Actions</th>';
         $to_append_row .= '<td><button type="button" class="btn btn-danger btn-xs" onclick="delete_row(this)"><i class="fas fa-trash-alt"></i></button></td>';
-
         $to_append_thead .= '</tr>';
         $to_append_row .= '</tr>';
 
-        return ['to_append_thead' => $to_append_thead, 'to_append_row' => $to_append_row, 'to_append_tbody'=>$to_append_tbody];
-    }
-    public function store_old(Request $request)
-    {
-        // recieved datas
-        return $request;
-        $scheme_id = $request->scheme_id;
-        $year_id = $request->year_id;
-        $panchayat_id = $request->panchayat_id;
-        $block_id = GeoStructure::where('geo_id', $panchayat_id)->first()->bl_id;
-        $subdivision_id = GeoStructure::where('geo_id', $panchayat_id)->first()->sd_id;
-
-        $scheme_data = SchemeStructure::where('scheme_id', $scheme_id)->first();
-        $scheme_asset_data = SchemeAsset::where('scheme_asset_id', $scheme_data->scheme_asset_id)->first();
-        $attributes = unserialize($scheme_asset_data->attribute);
-        $attributes_ids =
-
-            // to save
-            $scheme_performance = new SchemePerformance;
-
-        // loop
-        for ($i = 0; $i < count($request->status); $i++) { }
-
-
-        return $request;
+        return ['to_append_thead' => $to_append_thead, 'to_append_row' => $to_append_row, 'to_append_tbody' => $to_append_tbody];
     }
     public function store(Request $request)
     {
@@ -315,33 +241,18 @@ class SchemePerformanceController extends Controller
             }
         }
         // echo "<pre>";
-        $tmp_array=array();
-        $delete_check_array=array();
+        $tmp_array = array();
+        $delete_check_array = array();
         foreach ($form_request_id as $key_request => $value_request) {
             // $SchemePerformance_get=SchemePerformance::where('scheme_id',$scheme_id)->get('scheme_performance_id')->toArray();
             $SchemePerformance_get = SchemePerformance::where('scheme_id', $scheme_id)->where('year_id', $year_id)->where('panchayat_id', $panchayat_id)->get()->toArray();
-            foreach($SchemePerformance_get as $tmp) {
+            foreach ($SchemePerformance_get as $tmp) {
                 array_push($tmp_array, $tmp['scheme_performance_id']);
-              }
-            // if(in_array($request->scheme_performance_id[$key_request],$tmp_array))
-            // {
-            //     echo "in";
-            //     echo "<br>";
-            //     echo $request->scheme_performance_id[$key_request];
-            // }
-            // else
-            // {
-            //     echo "out";
-            //     echo "<br>";
-            //     echo $request->scheme_performance_id[$key_request];
-            // }
-            // return $SchemePerformance_get;
-            if($request->scheme_performance_id[$key_request]!='new_scheme_performance')
-            {
-                if(in_array($request->scheme_performance_id[$key_request],$tmp_array))
-                {
-                    $delete_check_array[] =$request->scheme_performance_id[$key_request];
-                    $scheme_performance =SchemePerformance::find($request->scheme_performance_id[$key_request]);
+            }
+            if ($request->scheme_performance_id[$key_request] != 'new_scheme_performance') {
+                if (in_array($request->scheme_performance_id[$key_request], $tmp_array)) {
+                    $delete_check_array[] = $request->scheme_performance_id[$key_request];
+                    $scheme_performance = SchemePerformance::find($request->scheme_performance_id[$key_request]);
                     $scheme_performance->scheme_id = $scheme_id;
                     $scheme_performance->year_id = $year_id;
                     $scheme_performance->subdivision_id = $subdivision_id;
@@ -350,16 +261,12 @@ class SchemePerformanceController extends Controller
                     $scheme_performance->attribute = serialize($value_request) ?? "";
                     $scheme_performance->status = $request->status[$key_request];
                     $scheme_performance->assest_name = $request->assest_name[$key_request];
-                    $scheme_performance->gallery = "ddd";
                     $scheme_performance->comments = $request->comments[$key_request] ?? "";
-                    $scheme_performance->coordinates = "fdddgd";
                     $scheme_performance->created_by = Auth::user()->id;
                     $scheme_performance->updated_by = Auth::user()->id;
                     $scheme_performance->save();
                 }
-            }
-            else
-            {
+            } else {
                 $scheme_performance = new SchemePerformance;
                 $scheme_performance->scheme_id = $scheme_id;
                 $scheme_performance->year_id = $year_id;
@@ -369,9 +276,7 @@ class SchemePerformanceController extends Controller
                 $scheme_performance->attribute = serialize($value_request) ?? "";
                 $scheme_performance->status = $request->status[$key_request];
                 $scheme_performance->assest_name = $request->assest_name[$key_request];
-                $scheme_performance->gallery = "ddd";
                 $scheme_performance->comments = $request->comments[$key_request] ?? "";
-                $scheme_performance->coordinates = "fdddgd";
                 $scheme_performance->created_by = Auth::user()->id;
                 $scheme_performance->updated_by = Auth::user()->id;
                 $scheme_performance->save();
@@ -380,11 +285,15 @@ class SchemePerformanceController extends Controller
         }
         $diff_result = array_diff($tmp_array, $delete_check_array);
         foreach ($diff_result as $key => $value_diff) {
-          $pcc_enitity_record = SchemePerformance::where('scheme_performance_id', $value_diff)->delete();
+            $pcc_enitity_record = SchemePerformance::where('scheme_performance_id', $value_diff)->delete();
         }
+        session()->put('alert-class', 'alert-danger');
+        session()->put('alert-content', 'You Have Existed Maximum No. Row at a Time');
+        return back();
         // exit;
         return redirect('scheme-performance');
     }
+
     public function viewimport(Request $request)
     {
         // return $request;
@@ -423,95 +332,103 @@ class SchemePerformanceController extends Controller
             $readExcelHeader = \Excel::load($_FILES['excelcsv']['tmp_name'])->get();
             $excelSheetHeadings = $readExcelHeader->first()->keys()->toArray(); /* this is for excel sheet heading */
             
-            
-            sort($tableHeadingsAndAtributes);
-            sort($excelSheetHeadings); 
-            $unserializedAtributesData = array();
-            
-            /* validation for matching of headings */
-            if ($tableHeadingsAndAtributes == $excelSheetHeadings) { 
+           if(count($readExcel)>=250)
+           { 
+                sort($tableHeadingsAndAtributes);
+                sort($excelSheetHeadings); 
+                $unserializedAtributesData = array();
+                
+                /* validation for matching of headings */
+                if ($tableHeadingsAndAtributes == $excelSheetHeadings) { /* Check for missmatch headings*/
 
-                foreach ($readExcel as $excel_key => $excel_value) { 
-                    foreach ($excel_value as $key => $value) { 
-                        foreach ($schemeAtributes as $attribute_key => $attribute_value) {
-                            
-                            if ($attribute_value === $key) { 
+                    foreach ($readExcel as $excel_key => $excel_value) { 
+                        foreach ($excel_value as $key => $value) { 
+                            foreach ($schemeAtributes as $attribute_key => $attribute_value) {
                                 
-                                $unserializedAtributesData[$attribute_key] = $value;
+                                if ($attribute_value === $key) { 
+                                    
+                                    $unserializedAtributesData[$attribute_key] = $value;
+                                }
+                            }
+                        }
+                        $serializationAttributes[] = $unserializedAtributesData;
+                        $unserializedAtributesData = [];
+                    }
+
+                    $filename = "Error Log.txt"; /* error file name */
+                    $myfile = fopen($filename, "w"); /* open error file name by using fopen function */
+
+                    foreach ($readExcel as $key => $row) { /* Insert Data By using for each one by one */
+                        $block_name =  ucwords($row['block_name']);
+                        $panchayat_name =   ucwords($row['panchayat_name']);
+                        $fetch_block_id = GeoStructure::where('geo_name', $block_name)->value('geo_id'); /* for block ID */
+                        $fetch_panchayat_id = GeoStructure::where('geo_name', $panchayat_name)->value('geo_id'); /* for Panchayat ID */
+                        $fetch_subdivision_id = GeoStructure::where('geo_id', $fetch_block_id)->value('parent_id'); /* for subdivision_id ID */
+                        $fetch_year_id = Year::where('year_value', $row['work_start_fin_year'])->value('year_id'); /* for Year ID */
+
+                        /* if those id avilable then insert data on the base */
+                        if ($row['sno.'] != null && $fetch_block_id != null && $fetch_panchayat_id != null && $fetch_year_id != null && $fetch_subdivision_id != null) {
+                            $scheme_performance = new SchemePerformance;
+                            $scheme_performance->year_id = $fetch_year_id;
+                            $scheme_performance->scheme_id = $request->scheme_id;
+                            $scheme_performance->block_id = $fetch_block_id;
+                            $scheme_performance->panchayat_id = $fetch_panchayat_id;
+                            $scheme_performance->subdivision_id = $fetch_subdivision_id;
+                            $scheme_performance->attribute = serialize($serializationAttributes[$key]);
+                            $scheme_performance->status = $row['work_status'];
+                            $scheme_performance->created_by = Session::get('user_id');
+                            $scheme_performance->save();
+                        } else {  /* Else find id and error write on the notepad */
+                            if ($row['sno.'] != null) {
+                                if ($fetch_block_id == null && $fetch_panchayat_id != null) {
+                                    $txt = " ON row sno. " . $row['sno.'] . " Block Not Found \n";
+                                    fwrite($myfile, $txt);
+                                } elseif ($fetch_panchayat_id == null && $fetch_block_id != null) {
+                                    $txt = " ON row sno. " . $row['sno.'] . " Panchayat Not Found \n";
+                                    fwrite($myfile, $txt);
+                                } elseif ($fetch_panchayat_id == null && $fetch_block_id == null) {
+                                    $txt = " ON row sno. " . $row['sno.'] . " Both Panchayat And Block Not Found \n";
+                                    fwrite($myfile, $txt);
+                                } elseif ($fetch_subdivision_id == null || $fetch_year_id == null) {
+                                    $txt = " ON row sno. " . $row['sno.'] . " Something Error \n";
+                                    fwrite($myfile, $txt);
+                                }
+                            } else {
+                                $txt = " Serial Number Not Available \n";
+                                fwrite($myfile, $txt);
                             }
                         }
                     }
-                    $serializationAttributes[] = $unserializedAtributesData;
-                    $unserializedAtributesData = [];
-                }
+            
+                    fclose($myfile); //close file
 
-                $filename = "Error Log.txt"; /* error file name */
-                $myfile = fopen($filename, "w"); /* open error file name by using fopen function */
-
-                foreach ($readExcel as $key => $row) { /* Insert Data By using for each one by one */
-                    $block_name =  ucwords($row['block_name']);
-                    $panchayat_name =   ucwords($row['panchayat_name']);
-                    $fetch_block_id = GeoStructure::where('geo_name', $block_name)->value('geo_id'); /* for block ID */
-                    $fetch_panchayat_id = GeoStructure::where('geo_name', $panchayat_name)->value('geo_id'); /* for Panchayat ID */
-                    $fetch_subdivision_id = GeoStructure::where('geo_id', $fetch_block_id)->value('parent_id'); /* for subdivision_id ID */
-                    $fetch_year_id = Year::where('year_value', $row['work_start_fin_year'])->value('year_id'); /* for Year ID */
-
-                    /* if those id avilable then insert data on the base */
-                    if ($row['sno.'] != null && $fetch_block_id != null && $fetch_panchayat_id != null && $fetch_year_id != null && $fetch_subdivision_id != null) {
-                        $scheme_performance = new SchemePerformance;
-                        $scheme_performance->year_id = $fetch_year_id;
-                        $scheme_performance->scheme_id = $request->scheme_id;
-                        $scheme_performance->block_id = $fetch_block_id;
-                        $scheme_performance->panchayat_id = $fetch_panchayat_id;
-                        $scheme_performance->subdivision_id = $fetch_subdivision_id;
-                        $scheme_performance->attribute = serialize($serializationAttributes[$key]);
-                        $scheme_performance->status = $row['work_status'];
-                        $scheme_performance->created_by = Session::get('user_id');
-                        $scheme_performance->save();
-                    } else {  /* Else find id and error write on the notepad */
-                        if ($row['sno.'] != null) {
-                            if ($fetch_block_id == null && $fetch_panchayat_id != null) {
-                                $txt = " ON row sno. " . $row['sno.'] . " Block Not Found \n";
-                                fwrite($myfile, $txt);
-                            } elseif ($fetch_panchayat_id == null && $fetch_block_id != null) {
-                                $txt = " ON row sno. " . $row['sno.'] . " Panchayat Not Found \n";
-                                fwrite($myfile, $txt);
-                            } elseif ($fetch_panchayat_id == null && $fetch_block_id == null) {
-                                $txt = " ON row sno. " . $row['sno.'] . " Both Panchayat And Block Not Found \n";
-                                fwrite($myfile, $txt);
-                            } elseif ($fetch_subdivision_id == null || $fetch_year_id == null) {
-                                $txt = " ON row sno. " . $row['sno.'] . " Something Error \n";
-                                fwrite($myfile, $txt);
-                            }
-                        } else {
-                            $txt = " Serial Number Not Available \n";
-                            fwrite($myfile, $txt);
-                        }
+                    if (file_get_contents($filename) == null) //if error file does not exit ant data then popup message success
+                    {
+                        session()->put('alert-class', 'alert-success');
+                        session()->put('alert-content', 'Scheme details has been saved');
+                        return back();
+                    } else { //Else download the error notepad file
+                        header("Cache-Control: public");
+                        header("Content-Description: File Transfer");
+                        header("Content-Length: " . filesize("$filename") . ";");
+                        header("Content-Disposition: attachment; filename=$filename");
+                        header("Content-Type: application/octet-stream; ");
+                        header("Content-Transfer-Encoding: binary");
+                        readfile($filename);
+                        exit;
                     }
-                }
-        
-                fclose($myfile); //close file
-
-                if (file_get_contents($filename) == null) //if error file does not exit ant data then popup message success
-                {
-                    session()->put('alert-class', 'alert-success');
-                    session()->put('alert-content', 'Scheme details has been saved');
+                } else { //for error message
+                    session()->put('alert-class', 'alert-danger');
+                    session()->put('alert-content', 'Your Excel Format Missmatch From Our Format..Please Download Our Excel Format..');
                     return back();
-                } else { //Else download the error notepad file
-                    header("Cache-Control: public");
-                    header("Content-Description: File Transfer");
-                    header("Content-Length: " . filesize("$filename") . ";");
-                    header("Content-Disposition: attachment; filename=$filename");
-                    header("Content-Type: application/octet-stream; ");
-                    header("Content-Transfer-Encoding: binary");
-                    readfile($filename);
-                    exit;
                 }
-            } else { //for error message
-                session()->put('alert-class', 'alert-danger');
-                session()->put('alert-content', 'Your Excel Format Missmatch From Our Format..Please Download Our Excel Format..');
-                return back();
-            }
+           }
+           else
+           {
+            session()->put('alert-class', 'alert-danger');
+            session()->put('alert-content', 'You Have Excited Maximum No. of Row at a Time');
+            return back();
+           }
         }
     }
 

@@ -32,6 +32,7 @@
                             <input type="text" name="year_id" value="{{$year_id}}" hidden>
                             <input type="text" name="block_id" value="{{$block_id}}" hidden>
                             <label for="dept_name">File to import<span style="color:red;margin-left:5px;">*</span></label>
+                            <span>[Maximum no. of entries that can be imported at a time is 250]</span>
                             <input type="file" name="excelcsv" id="excelcsv" class="form-control" required>
                         </div>
                         <div class="form-group">
