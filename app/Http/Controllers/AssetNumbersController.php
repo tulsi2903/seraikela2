@@ -48,6 +48,7 @@ class AssetNumbersController extends Controller
                 $data->asset_numbers_id = $tmp->asset_numbers_id;
             }
         }
+        
         // echo "<pre>";
         // print_r($datas);exit;
         return view('asset-numbers.index')->with('datas', $datas);
@@ -61,7 +62,7 @@ class AssetNumbersController extends Controller
         $assets = Asset::orderBy('asset_id')->where('parent_id', -1)->get();
         $panchayats = GeoStructure::where('level_id', '4')->orderBy('geo_name')->get();
         $years = Year::orderBy('year_id')->get();
-
+        $block_datas = GeoStructure::select('geo_id', 'geo_name')->orderBy('geo_name', 'asc')->where('level_id', '=', '3')->get();
 
         $data = new AssetNumbers;
 
@@ -72,8 +73,13 @@ class AssetNumbersController extends Controller
                 $data = $data->find($request->id);
             }
         }
-
-        return view('asset-numbers.add')->with(compact('hidden_input_purpose', 'hidden_input_id', 'data', 'assets', 'panchayats', 'years'));
+        if (GeoStructure::find($data->geo_id)) {
+            $panchayat_data_tmp = GeoStructure::find($data->geo_id);
+            $block_data_tmp = GeoStructure::find($panchayat_data_tmp->bl_id);
+            $data->block_name = $block_data_tmp->geo_id;
+        }
+        
+        return view('asset-numbers.add')->with(compact('hidden_input_purpose', 'hidden_input_id', 'data', 'assets', 'panchayats', 'years','block_datas'));
     }
 
     public function view(Request $request)

@@ -47,12 +47,29 @@
 
                 <div class="col-md-3">
                     <div class="form-group">
+                        <label for="block_id">Block<span style="color:red;margin-left:5px;">*</span></label>
+                        <select name="block_id" id="block_id" class="form-control">
+                            <option value="">---Select---</option>
+                            @foreach( $block_datas as $block_data )
+                            <option value="{{ $block_data->geo_id }}" <?php if($data->block_name==$block_data->geo_id){ echo "selected"; } ?> >{{ $block_data->geo_name }}</option>
+                            @endforeach
+                        </select>
+                        <div class="invalid-feedback" id="block_id_error_msg"></div>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="form-group">
                         <label for="geo_id">Panchayat<span style="color:red;margin-left:5px;">*</span></label>
                         <select name="geo_id" id="geo_id" class="form-control">
-                            <option value="">---Select---</option>
-                            @foreach($panchayats as $panchayat)
-                            <option value="{{ $panchayat->geo_id }}" <?php if($data->geo_id==$panchayat->geo_id){ echo "selected"; } ?>>{{ $panchayat->geo_name }}</option>
-                            @endforeach
+                            @if($hidden_input_purpose == 'edit')
+                                @foreach($panchayats as $panchayat)
+                                <option value="{{ $panchayat->geo_id }}" <?php if($data->geo_id==$panchayat->geo_id){ echo "selected"; } ?> >{{ $panchayat->geo_name }}</option>
+                                @endforeach
+                            @else
+                                <option value="">---Select---</option>
+                            @endif
+                           
                         </select>
                         <div class="invalid-feedback" id="geo_id_error_msg"></div>
 
@@ -178,6 +195,7 @@
         var year_error = true;
         var asset_id_error = true;
         var geo_id_error = true;
+        var block_id_error = true;
         var images_error = true;
 
         $(document).ready(function () {
@@ -189,11 +207,17 @@
                 asset_id_validate();
                 resetAll();
             });
+            $("#block_id").change(function(){
+                block_id_validate();
+                get_panchayat_datas();
+                // resetAll();
+            });
             $("#geo_id").change(function () {
                 geo_id_validate();
-                resetAll();
+                // resetAll();
             });
 
+           
             // for images
             $("#images").change(function () {
                 images_validate();
@@ -233,16 +257,26 @@
             }
         }
 
+        function block_id_validate() {
+            var block_id_val = $("#block_id").val();
+            if (block_id_val == "") {
+                block_id_error = true;
+                $("#block_id").addClass('is-invalid');
+                $("#block_id_error_msg").html("Please select block");
+            }
+            else {
+                block_id_error = false;
+                $("#block_id").removeClass('is-invalid');
+            }
+        }
         //geo_id validation
         function geo_id_validate() {
             var geo_id_val = $("#geo_id").val();
-
             if (geo_id_val == "") {
                 geo_id_error = true;
                 $("#geo_id").addClass('is-invalid');
                 $("#geo_id_error_msg").html("Panchayat should not be blank");
             }
-
             else {
                 geo_id_error = false;
                 $("#geo_id").removeClass('is-invalid');
@@ -502,9 +536,10 @@
             if (step == 1) { // next
                 year_validate();
                 asset_id_validate();
+                block_id_validate();
                 geo_id_validate();
                 $("#loc").show();
-                if (year_error || asset_id_error || geo_id_error) {
+                if (year_error || asset_id_error || geo_id_error||block_id_error) {
 
                 }
                 else {
@@ -663,6 +698,40 @@
                 }
             });
         }
+    
+        function get_panchayat_datas(){
+        var block_id_tmp = $("#block_id").val();
+        $("#geo_id").html('<option value="">--Select--</option>');
+        if(block_id_tmp)
+        {
+            $.ajaxSetup({
+                headers:{
+                    'X-CSRF-TOKEN' : $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                url:"{{url('scheme-performance/get-panchayat-datas')}}",
+                data: {'block_id':block_id_tmp},
+                method:"GET",
+                contentType:'application/json',
+                dataType:"json",
+                beforeSend: function(data){
+                    $(".custom-loader").fadeIn(300);
+                },
+                error:function(xhr){
+                    alert("error"+xhr.status+","+xhr.statusText);
+                    $(".custom-loader").fadeOut(300);
+                },
+                success:function(data){
+                    $("#geo_id").html('<option value="">--Select--</option>');
+                    for(var i=0;i<data.length;i++){
+                        $("#geo_id").append('<option value="'+data[i].geo_id+'" >'+data[i].geo_name+'</option>');
+                    }
+                    $(".custom-loader").fadeOut(300);
+                }
+            });
+        }
+    }
     </script>
 
     @endsection
