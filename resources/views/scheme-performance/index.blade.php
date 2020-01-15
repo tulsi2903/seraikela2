@@ -311,7 +311,7 @@
     }
 
     // delete rows (not working)
-    function delete_row(){
+    function delete_row(e){
         swal({
             title: 'Are you sure?',
             // text: "You won't be able to revert this!",
@@ -329,7 +329,7 @@
             }
         }).then((willDelete) => {
             if (willDelete) {
-                $(this).closest("tr").remove();
+                $(e).closest("tr").remove();
             }
         });
     }

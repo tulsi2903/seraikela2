@@ -16,6 +16,7 @@ use App\SchemeAsset;
 use Maatwebsite\Excel\Facades\Excel;
 use PhpParser\Node\Expr\Print_;
 use Session;
+use Auth;
 
 class SchemePerformanceController extends Controller
 {
@@ -184,12 +185,14 @@ class SchemePerformanceController extends Controller
                 // print_r($SchemePerformance_attributes);
                 $scheme_data = SchemeStructure::find($value_SchemePerformance['scheme_id']);
                 $scheme_asset_data = SchemeAsset::get();
-                
                 $to_append_tbody .= '<input type="hidden" name="scheme_performance_id[]" value="'.$value_SchemePerformance['scheme_performance_id'].'"><td> <select name="assest_name[]" class="form-control">';
                 foreach ($scheme_asset_data as $key_asset => $value_assest) {
                     if($value_SchemePerformance['assest_name']==$value_assest["scheme_asset_id"])
                     $to_append_tbody .= "<option  value=\"" . $value_assest["scheme_asset_id"] . "\">" . $value_assest["scheme_asset_name"] . "</option>";
+                    $to_append_tbody .= "<option  value=\"" . $value_assest["scheme_asset_id"] . "\">" . $value_assest["scheme_asset_name"] . "</option>";
+
                 }
+                
                 $to_append_tbody .= '</select>';
                 $attributes  = unserialize($scheme_data->attributes);
                 foreach ($attributes as $key_att=>$attribute) {
@@ -294,7 +297,7 @@ class SchemePerformanceController extends Controller
     public function store(Request $request)
     {
         // recieved datas
-        return $request;
+        // return $request;
         $scheme_id = $request->scheme_id;
         $year_id = $request->year_id;
         $panchayat_id = $request->panchayat_id;
@@ -312,26 +315,74 @@ class SchemePerformanceController extends Controller
             }
         }
         // echo "<pre>";
+        $tmp_array=array();
+        $delete_check_array=array();
         foreach ($form_request_id as $key_request => $value_request) {
-
-            if($request->scheme_performance_id[$key_request]=='new_scheme_performance')
-            $scheme_performance = new SchemePerformance;
-            $scheme_performance->scheme_id = $scheme_id;
-            $scheme_performance->year_id = $year_id;
-            $scheme_performance->subdivision_id = $subdivision_id;
-            $scheme_performance->block_id = $block_id;
-            $scheme_performance->panchayat_id = $panchayat_id;
-            $scheme_performance->attribute = serialize($value_request) ?? "";
-            $scheme_performance->status = $request->status[$key_request];
-            $scheme_performance->assest_name = $request->assest_name[$key_request];
-            $scheme_performance->gallery = "ddd";
-            $scheme_performance->comments = $request->comments[$key_request] ?? "";
-            $scheme_performance->coordinates = "fdddgd";
-            $scheme_performance->created_by = Auth::user()->id;
-            $scheme_performance->updated_by = Auth::user()->id;
-            $scheme_performance->save();
+            // $SchemePerformance_get=SchemePerformance::where('scheme_id',$scheme_id)->get('scheme_performance_id')->toArray();
+            $SchemePerformance_get = SchemePerformance::where('scheme_id', $scheme_id)->where('year_id', $year_id)->where('panchayat_id', $panchayat_id)->get()->toArray();
+            foreach($SchemePerformance_get as $tmp) {
+                array_push($tmp_array, $tmp['scheme_performance_id']);
+              }
+            // if(in_array($request->scheme_performance_id[$key_request],$tmp_array))
+            // {
+            //     echo "in";
+            //     echo "<br>";
+            //     echo $request->scheme_performance_id[$key_request];
+            // }
+            // else
+            // {
+            //     echo "out";
+            //     echo "<br>";
+            //     echo $request->scheme_performance_id[$key_request];
+            // }
+            // return $SchemePerformance_get;
+            if($request->scheme_performance_id[$key_request]!='new_scheme_performance')
+            {
+                if(in_array($request->scheme_performance_id[$key_request],$tmp_array))
+                {
+                    $delete_check_array[] =$request->scheme_performance_id[$key_request];
+                    $scheme_performance =SchemePerformance::find($request->scheme_performance_id[$key_request]);
+                    $scheme_performance->scheme_id = $scheme_id;
+                    $scheme_performance->year_id = $year_id;
+                    $scheme_performance->subdivision_id = $subdivision_id;
+                    $scheme_performance->block_id = $block_id;
+                    $scheme_performance->panchayat_id = $panchayat_id;
+                    $scheme_performance->attribute = serialize($value_request) ?? "";
+                    $scheme_performance->status = $request->status[$key_request];
+                    $scheme_performance->assest_name = $request->assest_name[$key_request];
+                    $scheme_performance->gallery = "ddd";
+                    $scheme_performance->comments = $request->comments[$key_request] ?? "";
+                    $scheme_performance->coordinates = "fdddgd";
+                    $scheme_performance->created_by = Auth::user()->id;
+                    $scheme_performance->updated_by = Auth::user()->id;
+                    $scheme_performance->save();
+                }
+            }
+            else
+            {
+                $scheme_performance = new SchemePerformance;
+                $scheme_performance->scheme_id = $scheme_id;
+                $scheme_performance->year_id = $year_id;
+                $scheme_performance->subdivision_id = $subdivision_id;
+                $scheme_performance->block_id = $block_id;
+                $scheme_performance->panchayat_id = $panchayat_id;
+                $scheme_performance->attribute = serialize($value_request) ?? "";
+                $scheme_performance->status = $request->status[$key_request];
+                $scheme_performance->assest_name = $request->assest_name[$key_request];
+                $scheme_performance->gallery = "ddd";
+                $scheme_performance->comments = $request->comments[$key_request] ?? "";
+                $scheme_performance->coordinates = "fdddgd";
+                $scheme_performance->created_by = Auth::user()->id;
+                $scheme_performance->updated_by = Auth::user()->id;
+                $scheme_performance->save();
+            }
             // echo "<br>";
         }
+        $diff_result = array_diff($tmp_array, $delete_check_array);
+        foreach ($diff_result as $key => $value_diff) {
+          $pcc_enitity_record = SchemePerformance::where('scheme_performance_id', $value_diff)->delete();
+        }
+        // exit;
         return redirect('scheme-performance');
     }
     public function viewimport(Request $request)
