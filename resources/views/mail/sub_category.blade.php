@@ -33,16 +33,7 @@
 						$Asset_cat_name=DB::table('asset_cat')->where('asset_cat_id',@$val->asset_cat_id)->first();
 						?>
 						<td>{{$Asset_cat_name->asset_cat_name}}</td>
-						<!-- <td>
-							<?php
-							if($val->movable == '1'){
-								echo "Movable";
-							}
-							else{
-								echo "Immovable";
-							}
-							?>
-						</td> -->
+					
                         
                     </tr>
                 </tbody>

@@ -11,15 +11,78 @@
         height: 100%;
         margin-top: 1em;
     }
+
     .btn-toggle {
-        color: #fff!important;
+        color: #fff !important;
         margin-top: 1em;
-    }   
+    }
+
     .btn-warning {
-    background: #673AB7!important;
-    border-color: #673AB7!important;
-    color: #fff!important;
-}
+        background: #673AB7 !important;
+        border-color: #673AB7 !important;
+        color: #fff !important;
+    }
+
+    #printable-info-details {
+        visibility: hidden;
+        height: 0px;
+        /* position: fixed;
+        left: 0;
+        top: 20px;
+        width: 100vw !important; */
+    }
+
+    @media print{
+
+            #printable-area{
+                margin-top: 250px !important;
+            }
+
+            .no-print, .no-print *
+            {
+                display: none !important;
+            }
+            #printable-info-details{
+                visibility: visible;
+                position: fixed;
+            }
+            #print-button, #print-button *{
+                visibility: hidden;
+            }
+            .card-title-print-1{
+                visibility: visible !important;
+                position: fixed;
+                color: #147785;
+                font-size: 30px;;
+                left: 0;
+                top: 50px;
+                width: 100vw !important;
+                height: 100vw !important;
+            }
+            .card-title-print-2{
+                visibility: visible !important;
+                position: fixed;
+                 color: #147785;
+                 font-size: 30px;;
+                left: 0;
+                top: 100px;
+                width: 100vw !important;
+                height: 100vw !important;
+            }
+            .card-title-print-3{
+                visibility: visible !important;
+                position: fixed;
+                 color: #147785;
+                 font-size: 30px;;
+                left: 0;
+                top: 140px;
+                width: 100vw !important;
+                height: 100vw !important;
+            }
+            .action-buttons{
+                display: none;
+            }
+         } 
 </style>
 @endsection
 
@@ -28,18 +91,24 @@
 <?php  $desig_permissions = session()->get('desig_permission'); // assigning desig_permission so we can use ?>
 
     <div class="card">
+        <form action="{{url('department/view_diffrent_formate')}}" method="POST" enctype="multipart/form-data"> <!-- for for edit, if inline edit form append then this form action/method will triggered -->
+
         <div class="col-md-12">
                 <div class="card-header">
+
                     <div class="card-head-row card-tools-still-right" style="background:#fff;">
-                        <h4 class="card-title">Department</h4>
+                        <h4 class="card-title no-print">Department</h4>
                         <div class="card-tools">
-                            <button type="button" class="btn btn-icon btn-round btn-success" data-target="#create-email" data-toggle="modal" ><i class="fa fa-envelope" aria-hidden="true"></i></button>
-                            <button type="button" class="btn btn-icon btn-round btn-default" id="print-button" onclick="printView();"><i class="fa fa-print" aria-hidden="true"></i></button>
-                            <a href="{{url('department/export/excelURL')}}"><button type="button" class="btn btn-icon btn-round btn-success" ><i class="fas fa-file-excel"></i></button></a>
-                            <a href="{{url('department/pdf/pdfURL')}}" target="_BLANK"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button></a>
+                            <button type="button" class="btn btn-icon btn-round btn-success"  onclick="openmodel();" ><i class="fa fa-envelope" aria-hidden="true"></i></button>
+                            <button type="button" class="btn btn-icon btn-round btn-default" onclick="printViewone();"><i class="fa fa-print" aria-hidden="true"></i></button>
+                            <!-- <a href="{{url('department/export/excelURL')}}"><button type="button" class="btn btn-icon btn-round btn-success" ><i class="fas fa-file-excel"></i></button></a> -->
+                            <!-- <a href="{{url('department/export/excelURL')}}"><button type="button" class="btn btn-icon btn-round btn-success" ><i class="fas fa-file-excel"></i></button></a> -->
+                            <!-- <a href="{{url('department/pdf/pdfURL')}}"  target="_BLANK"><button  type="submit" name="print_pdf" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button></a> -->
+                            <button type="submit" name="print" value="excel_sheet" class="btn btn-icon btn-round btn-success" ><i class="fas fa-file-excel"></i></button>
+                            <button  type="submit" name="print" value="print_pdf" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button>
                             <a href="{{url('department/changeView')}}" data-toggle="tooltip" title="Import From Excel"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fa fa-upload"></i></button></a>
 
-                            @if($desig_permissions["mod1"]["add"])
+                            @if($desig_permissions["mod2"]["add"])
                                 <a id="toggle1" class="btn btn-secondary department-add-button" href="javascript:void();" role="button"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;Add</a>
                             @endif
                         </div>
@@ -92,16 +161,20 @@
                         </form>
                     </div>
                     <div class="table-responsive table-hover table-sales">
-                        <form action="{{url('department/store')}}" method="POST" enctype="multipart/form-data"> <!-- for for edit, if inline edit form append then this form action/method will triggered -->
-                        @csrf    
+                        @csrf   
+                        <div id="printable-info-details">
+                            <p class="card-title-print-1">Title: Department</p>
+                            <p class="card-title-print-2">Date & Time: <?php $currentDateTime = date('d-m-Y H:i:s'); echo $currentDateTime; ?>
+                            <p class="card-title-print-3">User Name: {{session()->get('user_full_name')}}</p>
+                        </div>
                             <table class="table table-datatable" id="printable-area">
-                                <thead style="background: #d6dcff;color: #000;">
+                                <thead class="print-thead" style="background: #d6dcff;color: #000;"> 
                                     <tr>
                                         <th>#</th>
                                         <th>Icon</th>
                                         <th>Department Name</th>
                                         <th>Organisation</th>
-                                        <th>Status</th> 
+                                        <th>Status</th>  
                                         @if($desig_permissions["mod2"]["del"] ||$desig_permissions["mod2"]["edit"] ) 
                                         <th class="action-buttons">Action</th>  
                                         @endif
@@ -111,9 +184,11 @@
                                     <?php $count=1; ?>
                                     @if(isset($datas))
                                         @foreach($datas as $data)
+                                       
                                         <tr data-row-id="{{$data->dept_id}}" data-row-values="{{$data->dept_icon}},{{$data->dept_name}},{{$data->org_name}},{{$data->is_active}}">
-                                            <td>{{$count}}</td>
-                                            <td>@if($data->dept_icon) <img src="{{$data->dept_icon}}" style="height: 50px;"> @endif</td>
+                                            <td>{{$count}} <input type="hidden" value="{{$data->dept_id}}" name="department_id[]" ></td>
+                                            <td> @if($data->dept_icon) <img src="{{$data->dept_icon}}" style="height: 50px;"> @endif</td>
+                                          
                                             <td>{{$data->dept_name}}</td>
                                             <td>{{$data->org_name}}</td>
                                             <td><?php if($data->is_active=='1'){
@@ -122,12 +197,10 @@
                                             else{
                                                 echo '<i class="fas fa-times text-danger"></i> Inactive';
                                             } ?></td>
-                                            @if($desig_permissions["mod2"]["del"] ||$desig_permissions["mod2"]["edit"] ) 
                                             <td class="action-buttons">
                                                 @if($desig_permissions["mod2"]["del"])<a href="{{url('department/delete')}}/{{$data->dept_id}}" class="btn btn-danger btn-sm delete-button"><i class="fas fa-trash-alt"></i></a>@endif
                                                 @if($desig_permissions["mod2"]["edit"])&nbsp;&nbsp;<button type="button" class="btn btn-sm btn-secondary" onclick="openInlineForm('{{$data->dept_id}}')"><i class="fas fa-edit"></i></button>@endif
                                             </td>
-                                            @endif
                                         </tr>
                                         <?php $count++; ?>
                                         @endforeach
@@ -139,12 +212,21 @@
                                     @endif
                                 </tbody>
                             </table>
-                        </form>
+                       
                     </div>
                 </div>
             </div>
         </div>
+        </form>
+        </div>
 
+        <script>
+            function printViewone()
+            {
+              window.print();
+            }
+        </script>
+        
 <script>
     /*
     *
@@ -400,6 +482,15 @@
         else{ $(".custom-loader").show();  return true; } // proceed to submit form data
     }
 </script>
+<script>
+function openmodel()
+{
+    var search_element=$( "input[type=search]" ).val();
+    $('#create-email').modal('show');
+    $('#dept_search').val(search_element);
+    // alert(search_element);
+}
+
 </script>
 @endsection
 <!-- email -->
@@ -420,6 +511,7 @@
                             <div class="form-group">
                                 <input type="hidden" name="department" value="department">
                                 <input type="hidden" name="data" value="{{$datas}}">
+                                <input type="hidden" name="search_query" id="dept_search" >
                                 <!-- <input type="text" name="from" class="form-control" placeholder="From" required=""> -->
                             </div> 
                             <div class="form-group">  

@@ -14,12 +14,12 @@
                 <div class="card-header">
                     <div class="card-head-row card-tools-still-right" style="background:#fff;">
                         <h4 class="card-title">Designation Permission</h4>
-                        <div class="card-tools">
+                        <!-- <div class="card-tools">
                             <a href="#" data-toggle="tooltip" title="Send Mail"><button type="button" class="btn btn-icon btn-round btn-success"><i class="fa fa-envelope" aria-hidden="true"></i></button></a>
                             <a href="#" data-toggle="tooltip" title="Print"><button type="button" class="btn btn-icon btn-round btn-default" id="print-button" onclick="printView();"><i class="fa fa-print" aria-hidden="true"></i></button></a>
                             <a href="#" data-toggle="tooltip" title="Export to PDF"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button></a>
                             <a href="#" data-toggle="tooltip" title="Export to Excel"><button type="button" class="btn btn-icon btn-round btn-primary" ><i class="fas fa-file-excel"></i></button></a>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </div>

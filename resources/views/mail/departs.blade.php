@@ -28,7 +28,7 @@
         @if(@count($user['results']!=0))
             @foreach($user['results'] as $key => $val)
             <tr>
-                <td width="40px;">{{++$key}}</td>
+                <td width="40px;">{{++$key}}  <input type="hidden value="{{$val->dept_id}}" name="dept_id[]" ></td>
                 <td>{{$val->dept_name}}</td>
                 <td>{{$val->org_name}}</td>
                 <td>

@@ -10,6 +10,7 @@ use App\Exports\DisneyplusExport;
 use DB;
 use PDF;
 use Session;
+use Auth;
 
 class DepartmentController extends Controller
 {
@@ -167,11 +168,16 @@ class DepartmentController extends Controller
             "topMarginValue" => 10,
             "mode" => 'P'
         );
-
+        date_default_timezone_set('Asia/Kolkata');
+         $currentDateTime = date('d-m-Y H:i:s'); 
+         $user_name=Auth::user()->first_name;
+         $user_last_name=Auth::user()->last_name;
         $pdfbuilder = new \PdfBuilder($doc_details);
 
         $content = "<table cellspacing=\"0\" cellpadding=\"4\" border=\"1\" ><tr>";
-        $content .= "<th style='border: solid 1px #000000;' colspan=\"5\" align=\"left\" ><b>Department</b></th></tr>";
+        $content .= "<th style='border: solid 1px #000000;' colspan=\"5\" align=\"center\" ><b>District Scheme & Resource Management</b></th></tr>";
+        $content .= "<p style=\"border: solid 1px #000000;width: 50px;\" padding:\"100px;\">"."<b>"."<span>Title: </span>&nbsp;&nbsp;&nbsp;Department"."<br>"."<span>Date & Time: </span>&nbsp;&nbsp;&nbsp;".$currentDateTime."<br>"."<span>User Name:</span>&nbsp;&nbsp;&nbsp;" . $user_name."&nbsp;".$user_last_name.
+        "</b>"."</p>";
         
 
         /* ========================================================================= */
@@ -209,7 +215,6 @@ class DepartmentController extends Controller
         # code...
         return view('department.ImportExcel');
     }
-    
     public function importFromExcel(Request $request)
     {
         # code...
@@ -253,43 +258,197 @@ class DepartmentController extends Controller
         foreach ($totalLength as $key => $value) {
             $Department = Department::where('dept_name',$request->department_name[$key])->first();
             // echo"<pre>";print_r($Department);exit;
-            if ($request->department_name[$key] != null || $request->status[$key] != null) {
-                if($Department->dept_name == $request->department_name[$key])
+            if($Department->dept_name == $request->department_name[$key])
+            {
+                $Department_edit = Department::find($Department->dept_id);
+                if($request->status[$key] == "Active")
                 {
-                    $Department_edit = Department::find($Department->dept_id);
-                    if($request->status[$key] == "Active")
-                    {
-                        $Department_edit->is_active = 1;
-                    }
-                    else
-                    {
-                        $Department_edit->is_active = 0;
-                    }
-                    $Department_edit->updated_by = Session::get('user_id');
-                    $Department_edit->org_id = 1;
-                    $Department_edit->save();
+                    $Department_edit->is_active = 1;
                 }
                 else
                 {
-                    $Department1 = new Department;
-                    $Department1->dept_name = $request->department_name[$key];
-                    if($request->status[$key] == "Active")
-                    {
-                        $Department1->is_active = 1;
-                    }
-                    else
-                    {
-                        $Department1->is_active = 0;
-                    }
-                    // $Department->created_at = date('Y-m-d');
-                    $Department1->created_by = Session::get('user_id');
-                    $Department1->org_id = 1;
-                    $Department1->save();
+                    $Department_edit->is_active = 0;
                 }
+                $Department_edit->updated_by = Session::get('user_id');
+                $Department_edit->org_id = 1;
+                $Department_edit->save();
+            }
+            else
+            {
+                $Department = new Department;
+                $Department->dept_name = $request->department_name[$key];
+                if($request->status[$key] == "Active")
+                {
+                    $Department->is_active = 1;
+                }
+                else
+                {
+                    $Department->is_active = 0;
+                }
+                // $Department->created_at = date('Y-m-d');
+                $Department->created_by = Session::get('user_id');
+                $Department->org_id = 1;
+                $Department->save();
             }
         }
         session()->put('alert-class','alert-success');
         session()->put('alert-content','Department Details has been Saved');
         return redirect('department');
+    }
+    public function view_diffrent_formate(Request $request)
+    {
+        // return $request;
+        $department=array();
+        if($request->print=="print_pdf")
+        {
+
+            if($request->department_id!="")
+            {
+
+               
+
+                $department = Department::whereIn('dept_id',$request->department_id)
+                ->join('organisation','department.org_id','=','organisation.org_id')
+                ->select('department.dept_id','department.dept_name','organisation.org_name','department.is_active','department.created_at')->get();
+
+                foreach ($department as $key => $value) {
+                    $value->createdDate = date('d/m/Y',strtotime($value->created_at));
+                    if($department[$key]->is_active == 1){
+                        $value->is_active= "Active";
+                    }
+                    else 
+                    {
+                        $value->is_active= "Inactive";
+                    }
+                }
+        
+                $doc_details = array(
+                    "title" => "Department",
+                    "author" => 'IT-Scient',
+                    "topMarginValue" => 10,
+                    "mode" => 'P'
+                );
+                date_default_timezone_set('Asia/Kolkata');
+                 $currentDateTime = date('d-m-Y H:i:s'); 
+                 $user_name=Auth::user()->first_name;
+                 $user_last_name=Auth::user()->last_name;
+                $pdfbuilder = new \PdfBuilder($doc_details);
+        
+                $content = "<table cellspacing=\"0\" cellpadding=\"4\" border=\"1\" ><tr>";
+                $content .= "<th style='border: solid 1px #000000;' colspan=\"5\" align=\"center\" ><b>District Scheme & Resource Management</b></th></tr>";
+                $content .= "<p style=\"border: solid 1px #000000;width: 50px;\" padding:\"100px;\">"."<b>"."<span>Title: </span>&nbsp;&nbsp;&nbsp;Department"."<br>"."<span>Date & Time: </span>&nbsp;&nbsp;&nbsp;".$currentDateTime."<br>"."<span>User Name:</span>&nbsp;&nbsp;&nbsp;" . $user_name."&nbsp;".$user_last_name.
+                "</b>"."</p>";
+                
+        
+                /* ========================================================================= */
+                /*             Total width of the pdf table is 1017px lanscape               */
+                /*             Total width of the pdf table is 709px portrait                */
+                /* ========================================================================= */
+                $content .= "<thead>";
+                $content .= "<tr>";
+                $content .= "<th style=\"border: solid 1px #000000;width: 50px;\" align=\"center\"><b>Sl.No.</b></th>";
+                $content .= "<th style=\"border: solid 1px #000000;width: 385px;\" align=\"center\"><b>Name</b></th>";
+                $content .= "<th style=\"border: solid 1px #000000;width: 100px;\" align=\"center\"><b>Org Name</b></th>";
+                $content .= "<th style=\"border: solid 1px #000000;width: 75px;\" align=\"center\"><b>Status</b></th>";
+                $content .= "<th style=\"border: solid 1px #000000;width: 100px;\" align=\"center\"><b>Date</b></th>";
+                $content .= "</tr>";
+                $content .= "</thead>";
+                $content .= "<tbody>";
+                foreach ($department as $key => $row) {
+                    $index = $key+1;
+                    $content .= "<tr>";
+                    $content .= "<td style=\"border: solid 1px #000000;width: 50px;\" align=\"right\">" . $index . "</td>";
+                    $content .= "<td style=\"border: solid 1px #000000;width: 385px;\" align=\"left\">" . $row->dept_name . "</td>";
+                    $content .= "<td style=\"border: solid 1px #000000;width: 100px;\" align=\"left\">" . $row->org_name. "</td>";
+                    $content .= "<td style=\"border: solid 1px #000000;width: 75px;\" align=\"left\">" . $row->is_active . "</td>";
+                    $content .= "<td style=\"border: solid 1px #000000;width: 100px;\" align=\"right\">" . $row->createdDate. "</td>";
+                    $content .= "</tr>";
+                }
+                $content .= "</tbody></table>";
+                $pdfbuilder->table($content, array('border' => '1', 'align' => ''));
+                $pdfbuilder->output('Department.pdf');
+                exit;
+            }
+            // return $Department;
+        }
+        elseif($request->print=="excel_sheet")
+        {
+
+            if($request->department_id!="")
+            {
+
+              
+                $data = array(1 => array("Department Detail Sheet"));
+                $data[] = array('Sl. No.', 'Department Name', 'Organization Name', 'Status', 'Date');
+        
+                $items =  DB::table('department')
+                    ->whereIn('dept_id',$request->department_id)
+                    ->join('organisation', 'department.org_id', '=', 'organisation.org_id')
+                    ->select('department.dept_id as slId', 'department.dept_name', 'organisation.org_name', 'department.is_active', 'department.created_at')->get();
+        
+                foreach ($items as $key => $value) {
+                    if ($value->is_active == 1) {
+                        $value->is_active = "Active";
+                    } else {
+                        $value->is_active = "Inactive";
+                    }
+                    $value->created_at = date('d/m/Y', strtotime($value->created_at));
+                    $data[] = array(
+                        $key+1,
+                        $value->dept_name,
+                        $value->org_name,
+                        $value->is_active,
+                        $value->created_at,
+                    );
+        
+        
+                }
+                \Excel::create('Department-Sheet', function ($excel) use ($data) {
+        
+                    // Set the title
+                    $excel->setTitle('Department-Sheet');
+        
+                    // Chain the setters
+                    $excel->setCreator('Seraikela')->setCompany('Seraikela');
+        
+                    $excel->sheet('Fees', function ($sheet) use ($data) {
+                        $sheet->freezePane('A3');
+                        $sheet->mergeCells('A1:I1');
+                        $sheet->fromArray($data, null, 'A1', true, false);
+                        $sheet->setColumnFormat(array('I1' => '@'));
+                    });
+                })->download('xls');
+
+
+            }
+            // return $request;
+        }
+
+
+
+
+
+        // testing mail
+        elseif($request->print=="mail_system")
+        {
+
+            if($request->department_id!="")
+            {
+
+                $data_for_mail= DB::table('department')->join('organisation','department.org_id','=','organisation.org_id')->whereIn('dept_id',$request->department_id)->select('department.*','organisation.org_name')->get();
+                  
+             
+                // return view('department.index');
+                // return view('department.index')->with('data_for_mail',$data_for_mail);
+                // return $data_for_mail;
+                
+            }
+           
+        }
+
+        // testing mail end
+
+
+
     }
 }

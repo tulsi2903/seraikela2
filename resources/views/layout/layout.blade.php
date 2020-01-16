@@ -180,6 +180,7 @@
                 top: 40px;
                 width: 100vw !important;
             }
+            
             #print-button, #print-button *{
                 visibility: hidden;
             }

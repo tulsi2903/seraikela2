@@ -15,6 +15,66 @@
             color: #fff!important;
             margin-top: 1em;
         }   
+        #printable-info-details {
+        visibility: hidden;
+        height: 0px;
+        /* position: fixed;
+        left: 0;
+        top: 20px;
+        width: 100vw !important; */
+    }
+
+    @media print{
+
+            #printable-area{
+                margin-top: 250px !important;
+            }
+
+            .no-print, .no-print *
+            {
+                display: none !important;
+            }
+            #printable-info-details{
+                visibility: visible;
+                position: fixed;
+            }
+            #print-button, #print-button *{
+                visibility: hidden;
+            }
+            .card-title-print-1{
+                visibility: visible !important;
+                position: fixed;
+                color: #147785;
+                font-size: 30px;;
+                left: 0;
+                top: 50px;
+                width: 100vw !important;
+                height: 100vw !important;
+            }
+            .card-title-print-2{
+                visibility: visible !important;
+                position: fixed;
+                 color: #147785;
+                 font-size: 30px;;
+                left: 0;
+                top: 100px;
+                width: 100vw !important;
+                height: 100vw !important;
+            }
+            .card-title-print-3{
+                visibility: visible !important;
+                position: fixed;
+                 color: #147785;
+                 font-size: 30px;;
+                left: 0;
+                top: 140px;
+                width: 100vw !important;
+                height: 100vw !important;
+            }
+            .action-buttons{
+                display: none;
+            }
+         } 
     </style>
 @endsection
 
@@ -23,16 +83,25 @@
 <?php  $desig_permissions = session()->get('desig_permission'); // assigning desig_permission so we can use ?>
 
 <div class="card">
+    <form action="{{url('assetcat/view_diffrent_formate')}}" method="POST" enctype="multipart/form-data"> <!-- for for edit, if inline edit form append then this form action/method will triggered -->
+        @csrf
         <div class="col-md-12">
            
                 <div class="card-header">
                     <div class="card-head-row card-tools-still-right" style="background:#fff;">
                         <h4 class="card-title">Resource Category</h4>
                         <div class="card-tools">
-                            <a href="#" data-toggle="tooltip" title="Send Mail"><button type="button" class="btn btn-icon btn-round btn-success" data-target="#create-email" data-toggle="modal" ><i class="fa fa-envelope" aria-hidden="true"></i></button></a>
-                            <a href="#" data-toggle="tooltip" title="Print"><button type="button" class="btn btn-icon btn-round btn-default" id="print-button" onclick="printView();"><i class="fa fa-print" aria-hidden="true"></i></button></a>
-                            <a href="{{url('assetcat/pdf/pdfURL')}}"  target="_BLANK" data-toggle="tooltip" title="Export to PDF"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button></a>
-                            <a href="{{url('assetcat/export/excelURL')}}" data-toggle="tooltip" title="Export to Excel"><button type="button" class="btn btn-icon btn-round btn-primary" ><i class="fas fa-file-excel"></i></button></a>
+                            
+                            <!-- <a href="#" data-toggle="tooltip" title="Send Mail"><button type="button" class="btn btn-icon btn-round btn-success" data-target="#create-email" data-toggle="modal" ><i class="fa fa-envelope" aria-hidden="true"></i></button></a> -->
+                            <button type="button" class="btn btn-icon btn-round btn-success"  onclick="openmodel();" ><i class="fa fa-envelope" aria-hidden="true"></i></button>
+                            <button type="button" class="btn btn-icon btn-round btn-default" onclick="printViewone();"><i class="fa fa-print" aria-hidden="true"></i></button>
+                            <button  type="submit" name="print" value="print_pdf" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button>
+                            <button type="submit" name="print" value="excel_sheet" class="btn btn-icon btn-round btn-success" ><i class="fas fa-file-excel"></i></button>
+
+
+                            <!-- <a href="#" data-toggle="tooltip" title="Print"><button type="button" class="btn btn-icon btn-round btn-default" id="print-button" onclick="printView();"><i class="fa fa-print" aria-hidden="true"></i></button></a> -->
+                            <!-- <a href="{{url('assetcat/pdf/pdfURL')}}"  target="_BLANK" data-toggle="tooltip" title="Export to PDF"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button></a> -->
+                            <!-- <a href="{{url('assetcat/export/excelURL')}}" data-toggle="tooltip" title="Export to Excel"><button type="button" class="btn btn-icon btn-round btn-primary" ><i class="fas fa-file-excel"></i></button></a> -->
                             @if($desig_permissions["mod8"]["add"])
                                 <a class="btn btn-secondary" href="{{url('assetcat/add')}}" role="button"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;Add</a>
                             @endif
@@ -48,23 +117,30 @@
                         <a class="btn btn-secondary" href="{{url('assetcat/add')}}" role="button"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;Add</a>
                     </div><br><br> -->
                     <div class="table-responsive table-hover table-sales">
+                        <div id="printable-info-details">
+                            <p class="card-title-print-1">Title: Resource Category</p>
+                            <p class="card-title-print-2">Date & Time: <?php $currentDateTime = date('d-m-Y H:i:s'); echo $currentDateTime; ?>
+                            <p class="card-title-print-3">User Name: {{session()->get('user_full_name')}}</p>
+                        </div>
                         <table class="table table-datatable" id="printable-area">
                             <thead style="background: #d6dcff;color: #000;">
                                 <tr>
                                     <th>#</th>
                                     <th>Name</th>
                                     <th>Category Description</th>
-                                    <th>Type</th> 
+                                    <th>Type</th>    
                                     @if($desig_permissions["mod8"]["del"] ||$desig_permissions["mod8"]["edit"])                                 
+                              
                                     <th class="action-buttons">Action</th>
                                     @endif
+
                                 </tr>
                             </thead>
                             <?php $count=1; ?>
                             @if(isset($datas))
                                 @foreach($datas as $data)
                                     <tr>
-                                        <td width="40px;">{{$count++}}</td>
+                                        <td width="40px;">{{$count++}} <input type="hidden" value="{{$data->asset_cat_id}}" name="asset_cat_id[]"></td>
                                         <td>{{$data->asset_cat_name}}</td> 
                                         <td>{{$data->asset_cat_description}}</td> 
                                         <td>
@@ -77,7 +153,7 @@
                                             }
                                             ?>
                                         </td>
-                                        @if($desig_permissions["mod8"]["del"] ||$desig_permissions["mod8"]["edit"])
+                                        @if($desig_permissions["mod8"]["del"] ||$desig_permissions["mod8"]["edit"])                                 
                                         <td class="action-buttons">
                                             @if($desig_permissions["mod8"]["del"])<a href="{{url('assetcat/delete')}}/{{$data->asset_cat_id}}" class="btn btn-danger btn-sm delete-button"><i class="fas fa-trash-alt"></i></a>@endif
                                             @if($desig_permissions["mod8"]["edit"])&nbsp;&nbsp;<a href="{{url('assetcat/add')}}?purpose=edit&id={{$data->asset_cat_id}}" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></a>@endif
@@ -96,8 +172,25 @@
                 </div>
             </div>
         </div>
- 
+    </form>
+</div>
 @endsection
+<script>
+    function printViewone()
+    {
+      window.print();
+    }
+</script>
+<script>
+    function openmodel()
+    {
+        var search_element=$( "input[type=search]" ).val();
+        $('#create-email').modal('show');
+        $('#dept_search').val(search_element);
+        // alert(search_element);
+    }
+    
+    </script>
 <div id="create-email" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -115,6 +208,7 @@
                             <div class="form-group">
                                 <input type="hidden" name="category" value="category">
                                 <input type="hidden" name="data" value="{{$datas}}">
+                                <input type="hidden" name="search_query" id="dept_search" >
                                 <!-- <input type="text" name="from" class="form-control" placeholder="From" required=""> -->
                             </div> 
                             <div class="form-group">  

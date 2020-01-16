@@ -1,4 +1,6 @@
 <?php
+
+
 if(version_compare(PHP_VERSION, '7.2.0', '>=')) {
     error_reporting(E_ALL ^ E_NOTICE ^ E_WARNING);
 }
@@ -60,9 +62,10 @@ Route::get('pdfview',array('as'=>'pdfview','uses'=>'DepartmentController@pdfview
 Route::get('export','DepartmentController@export');
 Route::get('department/export/excelURL','DepartmentController@exportExcelFunctiuon');
 Route::get('department/pdf/pdfURL','DepartmentController@export_PDF_Function');
-Route::get('department/changeView','DepartmentController@changeView'); //view for import
-Route::post('department/importFromExcel','DepartmentController@importFromExcel'); //list of import
-Route::post('department/ImportreviewSave','DepartmentController@ImportreviewSave'); //import in db
+Route::get('department/changeView','DepartmentController@changeView');
+Route::post('department/view_diffrent_formate','DepartmentController@view_diffrent_formate');
+Route::post('department/importFromExcel','DepartmentController@importFromExcel');
+Route::post('department/ImportreviewSave','DepartmentController@ImportreviewSave');
 
 /* designation */
 Route::get('designation','DesignationController@index');
@@ -72,6 +75,8 @@ Route::get('designation/delete/{desig_id}','DesignationController@delete');
 Route::get('designation/export/excelURL','DesignationController@exportExcelFunctiuonforDesignation');
 Route::get('designation/pdf/pdfURL','DesignationController@exportpdfFunctiuonforDesignation');
 
+Route::post('designation/view_diffrent_formate','DesignationController@view_diffrent_formate');
+
 /* Geo Structure */
 Route::get('geo-structure','GeoStructureController@index');
 Route::get('geo-structure/add','GeoStructureController@add');
@@ -80,6 +85,9 @@ Route::get('geo-structure/delete/{geo_id}','GeoStructureController@delete');
 Route::get('geo-structure/get-block-data','GeoStructureController@get_block_data');
 Route::get('geo-structure/export/excelURL','GeoStructureController@exportExcelFunctiuonforgeostructure');
 Route::get('geo-structure/pdf/pdfURL','GeoStructureController@exportpdfFunctiuonforgeostructure');
+
+Route::post('geo-structure/view_diffrent_formate','GeoStructureController@view_diffrent_formate');
+
 
 /* Scheme Structure */
 Route::get('scheme-structure','SchemeStructureController@index');
@@ -123,6 +131,9 @@ Route::get('year/delete/{year_id}','YearController@delete');
 Route::get('year/export/excelURL','YearController@exportExcelFunctiuonforyear');
 Route::get('year/pdf/pdfURL','YearController@exportpdfFunctiuonforyear');
 
+Route::post('year/view_diffrent_formate','YearController@view_diffrent_formate');
+
+
 /*uom*/
 Route::get('uom','UomController@index');
 Route::get('uom/add','UomController@add');
@@ -150,6 +161,8 @@ Route::get('assetcat/delete/{asset_cat_id}','AssetController@delete_cat');
 Route::get('assetcat/export/excelURL','AssetController@export_Excel_Asset_Category');
 Route::get('assetcat/pdf/pdfURL','AssetController@export_PDF_Asset_Category');
 
+Route::post('assetcat/view_diffrent_formate','AssetController@view_diffrent_formate');
+
 /*Asset Sub Category*/
 Route::get('asset_subcat','AssetController@index_subcat');
 Route::get('asset_subcat/add','AssetController@add_subcat');
@@ -158,11 +171,18 @@ Route::get('asset_subcat/delete/{asset_sub_id}','AssetController@delete_subcat')
 Route::get('asset_subcat/export/excelURL','AssetController@export_Excel_Asset_SubCategory');
 Route::get('asset_subcat/pdf/pdfURL','AssetController@export_PDF_Asset_SubCategory');
 
+
+Route::post('asset_subcat/view_diffrent_formate','AssetController@view_diffrent_formate_sub_cat');
+
+
 /*Scheme Type*/
 Route::get('scheme-type','SchemeTypeController@index');
 Route::get('scheme-type/add','SchemeTypeController@add');
 Route::post('scheme-type/store','SchemeTypeController@store');
 Route::get('scheme-type/delete/{sch_type_id}','SchemeTypeController@delete');
+
+Route::post('scheme-type/view_diffrent_formate','SchemeTypeController@view_diffrent_formate');
+
 
 /*Asset Numbers*/
 Route::get('asset-numbers','AssetNumbersController@index');
@@ -172,13 +192,9 @@ Route::post('asset-numbers/store','AssetNumbersController@store');
 Route::get('asset-numbers/view/{asset_numbers_id}','AssetNumbersController@view');
 Route::get('asset_Numbers/export/excelURL','AssetNumbersController@exportExcelFunctiuonforasset_Numbers');
 Route::get('asset_Numbers/pdf/pdfURL','AssetNumbersController@exportpdfFunctiuonforasset_Numbers');
-Route::get('asset_number/list_of_childs/{child_id}/{geo_child_id}/{year_child_id}/{hidden_input_id}/{geo_location_id}','AssetNumbersController@list_of_childs');
+Route::get('asset_number/list_of_childs/{child_id}/{geo_child_id}/{year_child_id}/{hidden_input_id}','AssetNumbersController@list_of_childs');
 Route::post('asset-numbers/saveChilddata','AssetNumbersController@saveChilddata'); 
-Route::get('asset_number/list_of_imagedata/{loc_id}/{asset_id}/{year_id}/{geo_id}/{hidden_input_id}','AssetNumbersController@list_of_imagedata');
-Route::post('asset-numbers/saveImagesforLoacation','AssetNumbersController@saveImagesforLoacation'); 
-Route::get('asset_Numbers/downloadFormat','AssetNumbersController@downloadFormat'); 
-Route::get('asset_Numbers/changeViewforimport','AssetNumbersController@changeViewforimport'); 
-Route::post('asset-numbers/saveimporttoExcel','AssetNumbersController@saveimporttoExcel'); 
+
 /* asset review */
 Route::get('asset-review', 'AssetReviewController@index');
 Route::POST('asset-review/show', 'AssetReviewController@show');
@@ -190,7 +206,6 @@ Route::get('asset-review/pdf/pdfURL','AssetReviewController@export_pdf');
 
 Route::get('new-asset-review', 'AssetReviewController@index'); // for new changes, old asset review is still on server and index.blade.php
 Route::get('asset-review/get-tabular-view-datas', 'AssetReviewController@get_tabular_view_datas'); // for new changes, old asset review is still on server and index.blade.php
-Route::get('asset-review/get-assets-datas','AssetReviewController@get_assets_datas');
 
 /*Scheme Type*/
 Route::get('scheme-type','SchemeTypeController@index');
@@ -219,21 +234,11 @@ Route::get('scheme-asset/delete/{scheme_asset_id}','Scheme_Asset_Controller@dele
 // Route::get('scheme-performance/get-target','SchemePerformanceController@get_target');
 // Route::get("scheme-performance/get-scheme-performance-datas", "SchemePerformanceController@get_scheme_performance_datas");
 Route::get('scheme-performance','SchemePerformanceController@index');
-Route::get('scheme-performance/get-panchayat-datas','SchemePerformanceController@get_panchayat_datas'); // to get panchayat data and append in <select>
-Route::get('scheme-performance/get-all-datas', 'SchemePerformanceController@get_all_datas');
-Route::post('scheme-performance/store', 'SchemePerformanceController@store');
-Route::get('scheme-performance/add-datas','SchemePerformanceController@add_datas');
-Route::get('scheme-performance/viewimport','SchemePerformanceController@viewimport');
-Route::get('scheme-performance/downloadFormat','SchemePerformanceController@downloadFormat');
-Route::post('scheme-performance/importtoExcel','SchemePerformanceController@Import_from_Excel');
-Route::post('scheme_performance/galleryFile_update','SchemePerformanceController@saveImagesofscheme_performance');
-Route::get('scheme-performance/get-gallery/{id}','SchemePerformanceController@get_gallery_image');
-Route::post('scheme_performance/coordinatesupdate','SchemePerformanceController@save_coordinate');
-Route::get('scheme-performance/get-coordinates/{id}','SchemePerformanceController@get_coordinates_details');
+
+
 
 /* scheme review */
-Route::get('scheme-review', 'SchemeReviewController@index');
-Route::get('scheme-review/get-tabular-view-datas', 'SchemeReviewController@get_tabular_view_datas');
+Route::get('review/{review_type}', 'SchemeReviewController@index');
 Route::get('scheme-review/get-datas', 'SchemeReviewController@get_datas');
 Route::get('scheme-review/get-map-data', 'SchemeReviewController@get_map_data');
 Route::get('scheme-review/get-panchayat-data', 'SchemeReviewController@get_panchayat_data');
@@ -246,6 +251,8 @@ Route::get('scheme-group/delete/{id}','GroupController@delete');
 //Route::post('scheme-group/send_mail','GroupController@sendEmail');
 Route::get('scheme-group/export/excelURL','GroupController@scheme_group_excel_function');
 Route::get('scheme-group/pdf/pdfURL','GroupController@scheme_group_pdf_function');
+
+Route::post('scheme-group/view_diffrent_formate','GroupController@view_diffrent_formate');
 
 
 /*Designation Permission*/
@@ -262,6 +269,9 @@ Route::post('module/store','ModuleController@store');
 Route::get('module/delete/{mod_id}','ModuleController@delete');
 Route::get('module/export/excelURL','ModuleController@exportExcelFunctiuonformodule');
 Route::get('module/pdf/pdfURL','ModuleController@exportpdfFunctiuonformodule');
+
+Route::post('module/view_diffrent_formate','ModuleController@view_diffrent_formate');
+
 	
 //send mail by rohit
 Route::post('send_mail','EmailController@sendEmail');	
@@ -299,18 +309,3 @@ Route::post('sendmail','EmailController@sendmail');
  Route::get('mgnrega/delete/{mgnrega_category_id}','MgnregaCategoryController@delete');
  Route::get('mgnrega/export/excelURL','MgnregaCategoryController@export_ExcelFunction');
  Route::get('mgnrega/pdf/pdfURL','MgnregaCategoryController@export_PDF_Function');
-
- //language changes
- Route::get('lang/english/{id}','DashboardController@language_change');
- Route::get('lang/hindi/{id}','DashboardController@language_change');
-
- // Abhishek 
- Route::post('department/view_diffrent_formate','DepartmentController@view_diffrent_formate');
-Route::post('designation/view_diffrent_formate','DesignationController@view_diffrent_formate');
-Route::post('geo-structure/view_diffrent_formate','GeoStructureController@view_diffrent_formate');
-Route::post('year/view_diffrent_formate','YearController@view_diffrent_formate');
-Route::post('assetcat/view_diffrent_formate','AssetController@view_diffrent_formate');
-Route::post('asset_subcat/view_diffrent_formate','AssetController@view_diffrent_formate_sub_cat');
-Route::post('scheme-type/view_diffrent_formate','SchemeTypeController@view_diffrent_formate');
-Route::post('scheme-group/view_diffrent_formate','GroupController@view_diffrent_formate');
-Route::post('module/view_diffrent_formate','ModuleController@view_diffrent_formate');

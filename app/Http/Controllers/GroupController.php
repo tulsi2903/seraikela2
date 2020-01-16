@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Group;
 use Mail;
+use Auth;
 
 
 
@@ -163,11 +164,17 @@ class GroupController extends Controller
             "mode" => 'P'
         );
 
+        date_default_timezone_set('Asia/Kolkata');
+        $currentDateTime = date('d-m-Y H:i:s'); 
+        $user_name=Auth::user()->first_name;
+        $user_last_name=Auth::user()->last_name;
         $pdfbuilder = new \PdfBuilder($doc_details);
 
         $content = "<table cellspacing=\"0\" cellpadding=\"4\" border=\"1\" ><tr>";
         $content .= "<th style='border: solid 1px #000000;' colspan=\"4\" align=\"left\" ><b>Scheme Group</b></th></tr>";
-        
+        $content .= "<p style=\"border: solid 1px #000000;width: 50px;\" padding:\"100px;\">"."<b>"."<span>Title: </span>&nbsp;&nbsp;&nbsp;Scheme Group
+        "."<br>"."<span>Date & Time: </span>&nbsp;&nbsp;&nbsp;".$currentDateTime."<br>"."<span>User Name:</span>&nbsp;&nbsp;&nbsp;" . $user_name."&nbsp;".$user_last_name.
+        "</b>"."</p>";
 
         /* ========================================================================= */
         /*                Total width of the pdf table is 1017px                     */
@@ -195,5 +202,124 @@ class GroupController extends Controller
         $pdfbuilder->output('SchemeGroup.pdf');
         exit;
     }
+
+       // abhishek 
+       public function view_diffrent_formate(Request $request)
+       {
+        //    return "dsfs";
+           $department=array();
+           if($request->print=="print_pdf")
+           {
+   
+               if($request->scheme_group_id!="")
+               {
+   
+                $scheme_group = Group::whereIn('scheme_group_id',$request->scheme_group_id)->orderBy('scheme_group_id','desc')->Select('scheme_group_name','is_active','created_at as createdDate')->get();
+        
+                foreach ($scheme_group as $key => $value) {
+                    $value->createdDate = date('d/m/Y',strtotime($value->createdDate));
+                    if ($value->is_active == 1) {
+                        $value->is_active = "Active";
+                    } else {
+                        $value->is_active = "Inactive";
+                    }
+                }
+        
+                $doc_details = array(
+                    "title" => "Scheme Group",
+                    "author" => 'IT-Scient',
+                    "topMarginValue" => 10,
+                    "mode" => 'P'
+                );
+        
+                date_default_timezone_set('Asia/Kolkata');
+                $currentDateTime = date('d-m-Y H:i:s'); 
+                $user_name=Auth::user()->first_name;
+                $user_last_name=Auth::user()->last_name;
+                $pdfbuilder = new \PdfBuilder($doc_details);
+        
+                $content = "<table cellspacing=\"0\" cellpadding=\"4\" border=\"1\" ><tr>";
+                $content .= "<th style='border: solid 1px #000000;' colspan=\"4\" align=\"left\" ><b>Scheme Group</b></th></tr>";
+                $content .= "<p style=\"border: solid 1px #000000;width: 50px;\" padding:\"100px;\">"."<b>"."<span>Title: </span>&nbsp;&nbsp;&nbsp;Scheme Group
+                "."<br>"."<span>Date & Time: </span>&nbsp;&nbsp;&nbsp;".$currentDateTime."<br>"."<span>User Name:</span>&nbsp;&nbsp;&nbsp;" . $user_name."&nbsp;".$user_last_name.
+                "</b>"."</p>";
+        
+                /* ========================================================================= */
+                /*                Total width of the pdf table is 1017px                     */
+                /* ========================================================================= */
+                $content .= "<thead>";
+                $content .= "<tr>";
+                $content .= "<th style=\"border: solid 1px #000000;width: 50px;\" align=\"center\"><b>Sl.No.</b></th>";
+                $content .= "<th style=\"border: solid 1px #000000;width: 459px;\" align=\"center\"><b>Group</b></th>";
+                $content .= "<th style=\"border: solid 1px #000000;width: 110px;\" align=\"center\"><b>Status</b></th>";
+                $content .= "<th style=\"border: solid 1px #000000;width: 90px;\" align=\"center\"><b>Date</b></th>";
+                $content .= "</tr>";
+                $content .= "</thead>";
+                $content .= "<tbody>";
+                foreach ($scheme_group as $key => $row) {
+                    $index = $key+1;
+                    $content .= "<tr>";
+                    $content .= "<td style=\"border: solid 1px #000000;width: 50px;\" align=\"right\">" . $index . "</td>";
+                    $content .= "<td style=\"border: solid 1px #000000;width: 459px;\" align=\"left\">" . $row->scheme_group_name . "</td>";
+                    $content .= "<td style=\"border: solid 1px #000000;width: 110px;\" align=\"left\">" . $row->is_active . "</td>";
+                    $content .= "<td style=\"border: solid 1px #000000;width: 90px;\" align=\"right\">" . $row->createdDate. "</td>";
+                    $content .= "</tr>";
+                }
+                $content .= "</tbody></table>";
+                $pdfbuilder->table($content, array('border' => '1', 'align' => ''));
+                $pdfbuilder->output('SchemeGroup.pdf');
+                exit;
+                    
+ 
+               }
+            //    return $request;
+           }
+           elseif($request->print=="excel_sheet")
+           {
+   
+               if($request->scheme_group_id!="")
+               {
+   
+                
+                $data = array(1 => array("Scheme Group Sheet"));
+                $data[] = array('Sl. No.','Group','Is Active','Date');
+        
+                $items = Group::whereIn('scheme_group_id',$request->scheme_group_id)->orderBy('scheme_group_id','desc')->Select('scheme_group_name','is_active','created_at as createdDate')->get(); 
+                foreach ($items as $key => $value) {
+                    if ($value->is_active == 1) {
+                        $value->is_active = "Active";
+                    } else {
+                        $value->is_active = "Inactive";
+                    }       
+                    $value->createdDate = date('d/m/Y', strtotime($value->createdDate));
+                    $data[] = array(
+                        $key + 1,
+                        $value->scheme_group_name,
+                        $value->is_active,
+                        $value->createdDate,
+                    );
+                }
+                \Excel::create('SchemeGroup-Sheet', function ($excel) use ($data) {
+        
+                    // Set the title
+                    $excel->setTitle('Scheme Group Sheet');
+        
+                    // Chain the setters
+                    $excel->setCreator('Seraikela')->setCompany('Seraikela');
+        
+                    $excel->sheet('Fees', function ($sheet) use ($data) {
+                        $sheet->freezePane('A3');
+                        $sheet->mergeCells('A1:I1');
+                        $sheet->fromArray($data, null, 'A1', true, false);
+                        $sheet->setColumnFormat(array('I1' => '@'));
+                    });
+                })->download('xls');
+                   
+   
+               }
+            //    return $request;
+           }
+       }
+   
 }
 

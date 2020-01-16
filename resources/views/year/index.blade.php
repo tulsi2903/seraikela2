@@ -4,7 +4,67 @@
 
 @section('page-style')
 <style>
-  
+         
+         #printable-info-details {
+        visibility: hidden;
+        height: 0px;
+        /* position: fixed;
+        left: 0;
+        top: 20px;
+        width: 100vw !important; */
+    }
+
+    @media print{
+
+            #printable-area{
+                margin-top: 250px !important;
+            }
+
+            .no-print, .no-print *
+            {
+                display: none !important;
+            }
+            #printable-info-details{
+                visibility: visible;
+                position: fixed;
+            }
+            #print-button, #print-button *{
+                visibility: hidden;
+            }
+            .card-title-print-1{
+                visibility: visible !important;
+                position: fixed;
+                color: #147785;
+                font-size: 30px;;
+                left: 0;
+                top: 50px;
+                width: 100vw !important;
+                height: 100vw !important;
+            }
+            .card-title-print-2{
+                visibility: visible !important;
+                position: fixed;
+                 color: #147785;
+                 font-size: 30px;;
+                left: 0;
+                top: 100px;
+                width: 100vw !important;
+                height: 100vw !important;
+            }
+            .card-title-print-3{
+                visibility: visible !important;
+                position: fixed;
+                 color: #147785;
+                 font-size: 30px;;
+                left: 0;
+                top: 140px;
+                width: 100vw !important;
+                height: 100vw !important;
+            }
+            .action-buttons{
+                display: none;
+            }
+         } 
 </style>
 @endsection
 
@@ -13,15 +73,25 @@
 <?php  $desig_permissions = session()->get('desig_permission'); // assigning desig_permission so we can use ?>
 
     <div class="card">
+        <form action="{{url('year/view_diffrent_formate')}}" method="POST" enctype="multipart/form-data"> <!-- for for edit, if inline edit form append then this form action/method will triggered -->
+            @csrf
         <div class="col-md-12">
                 <div class="card-header">
                     <div class="card-head-row card-tools-still-right" style="background:#fff;">
                         <h4 class="card-title">Year</h4>
                         <div class="card-tools">
-                            <a href="#" data-toggle="tooltip" title="Send Mail"><button type="button" class="btn btn-icon btn-round btn-success" data-target="#create-email" data-toggle="modal"><i class="fa fa-envelope" aria-hidden="true"></i></button></a>
-                            <a href="#" data-toggle="tooltip" title="Print"><button type="button" class="btn btn-icon btn-round btn-default" id="print-button" onclick="printView();"><i class="fa fa-print" aria-hidden="true"></i></button></a>
+                            <!-- <a href="#" data-toggle="tooltip" title="Send Mail"><button type="button" class="btn btn-icon btn-round btn-success" data-target="#create-email" data-toggle="modal"><i class="fa fa-envelope" aria-hidden="true"></i></button></a> -->
+                            <button type="button" class="btn btn-icon btn-round btn-success"  onclick="openmodel();" ><i class="fa fa-envelope" aria-hidden="true"></i></button>
+
+                            <button  type="submit" name="print" value="print_pdf" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button>
+
+                            <button type="submit" name="print" value="excel_sheet" class="btn btn-icon btn-round btn-success" ><i class="fas fa-file-excel"></i></button>
+                            <button type="button" class="btn btn-icon btn-round btn-default" onclick="printViewone();"><i class="fa fa-print" aria-hidden="true"></i></button>
+
+
+                            <!-- <a href="#" data-toggle="tooltip" title="Print"><button type="button" class="btn btn-icon btn-round btn-default" id="print-button" onclick="printView();"><i class="fa fa-print" aria-hidden="true"></i></button></a>
                             <a href="{{url('year/pdf/pdfURL')}}" target="_BLANK" data-toggle="tooltip" title="Export to PDF"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button></a>
-                            <a href="{{url('year/export/excelURL')}}" data-toggle="tooltip" title="Export to Excel"><button type="button" class="btn btn-icon btn-round btn-primary" ><i class="fas fa-file-excel"></i></button></a>
+                            <a href="{{url('year/export/excelURL')}}" data-toggle="tooltip" title="Export to Excel"><button type="button" class="btn btn-icon btn-round btn-primary" ><i class="fas fa-file-excel"></i></button></a> -->
                             @if($desig_permissions["mod3"]["add"])
                                 <a id="toggle1" class="btn btn-secondary year-add-button" href="javascript:void();" role="button"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;Add</a>
                             @endif
@@ -88,15 +158,20 @@
                         </form>
                     </div>
                     <div class="table-responsive table-hover table-sales">
-                        <form action="{{url('year/store')}}" method="POST">
+                        <!-- <form action="{{url('year/store')}}" method="POST"> -->
                         @csrf
+                        <div id="printable-info-details">
+                            <p class="card-title-print-1">Title: Year </p>
+                            <p class="card-title-print-2">Date & Time: <?php $currentDateTime = date('d-m-Y H:i:s'); echo $currentDateTime; ?>
+                            <p class="card-title-print-3">User Name: {{session()->get('user_full_name')}}</p>
+                        </div>
                             <table class="table table-datatable" id="printable-area">
                                 <thead style="background: #d6dcff;color: #000;">
                                     <tr>
                                         <th>#</th>
                                         <th>Year</th>
                                         <th>is Active</th>
-                                        @if($desig_permissions["mod3"]["del"] || $desig_permissions["mod3"]["edit"])
+                                        @if($desig_permissions["mod3"]["del"] ||$desig_permissions["mod3"]["edit"] )
                                         <th class="action-buttons">Actions</th>
                                         @endif
                                     </tr>
@@ -106,7 +181,7 @@
                                     @foreach($datas as $data)
                                         <?php $year_value_tmp = explode('-',$data->year_value); ?>
                                         <tr data-row-id="{{$data->year_id}}" data-row-values="{{$year_value_tmp[0]}},{{$year_value_tmp[1]}},{{$data->status}}">
-                                            <td width="40px;">{{$count++}}</td>
+                                            <td width="40px;">{{$count++}} <input type="hidden" value="{{$data->year_id}}" name="year_id[]"></td>
                                             <td>{{$data->year_value}}</td>
                                             <td><?php if($data->status=='1'){
                                                 echo '<i class="fas fa-check text-success"></i> Active';
@@ -114,7 +189,7 @@
                                             else{
                                                 echo '<i class="fas fa-times text-danger"></i> Inactive';
                                             } ?></td>
-                                            @if($desig_permissions["mod3"]["del"] || $desig_permissions["mod3"]["edit"])
+                                            @if($desig_permissions["mod3"]["del"] ||$desig_permissions["mod3"]["edit"] )
                                             <td class="action-buttons">
                                                 @if($desig_permissions["mod3"]["del"])<a href="{{url('year/delete')}}/{{$data->year_id}}" class="btn btn-danger btn-sm delete-button"><i class="fas fa-trash-alt"></i></a>@endif
                                                 @if($desig_permissions["mod3"]["edit"])&nbsp;&nbsp;<button type="button" class="btn btn-sm btn-secondary" onclick="openInlineForm('{{$data->year_id}}')"><i class="fas fa-edit"></i></button>@endif
@@ -129,14 +204,14 @@
                                     </tr>
                                 @endif
                             </table>
-                        </form>
+                        <!-- </form> -->
                     </div>
                 </div>
             </div>
         </div>
- 
 
-   <!-- email -->
+
+           <!-- email -->
 <div id="create-email" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -154,10 +229,11 @@
                             <div class="form-group">
                                 <input type="hidden" name="year" value="year"> 
                                 <input type="hidden" name="data" value="{{$datas}}">
+                                <input type="text" name="search_query" id="dept_search" >
                                 <!-- <input type="text" name="from" class="form-control" placeholder="From" required=""> -->
                             </div> 
                             <div class="form-group">  
-                                <input type="email" name="to" class="form-control" placeholder="To" required="">
+                                <input type="email" name="to" class="form-control" placeholder="To" >
                             </div>
                             <div class="form-group">                           
                                 <input type="text" name="cc" class="form-control" placeholder="CC">
@@ -165,7 +241,7 @@
                            
                             <div class="form-group">
                                 <label for="subject" class="control-label">Subject <font color="red">*</font></label>
-                                <input type="text" class="form-control" id="subject" name="subject" placeholder="Subject"  required=""  aria-required="true">
+                                <input type="text" class="form-control" id="subject" name="subject" placeholder="Subject"   aria-required="true">
                             </div>
                             <!-- <div class="form-group">
                                 <label for="field-2" class="control-label">Message <font color="red">*</font></label>
@@ -185,6 +261,32 @@
     </div>
 </div>
 <!-- /.modal -->
+
+
+
+
+        </form>
+    </div>
+    <script>
+        function openmodel()
+        {
+            var search_element=$( "input[type=search]" ).val();
+            $('#create-email').modal('show');
+            $('#dept_search').val(search_element);
+            // alert(search_element);
+        }
+        
+        </script>
+
+
+
+<script>
+    function printViewone()
+    {
+        window.print();
+    }
+</script>
+
 
 <script>
     /*

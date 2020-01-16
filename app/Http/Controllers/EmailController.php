@@ -14,60 +14,86 @@ use DB;
 class EmailController extends Controller
 {
     public function sendEmail(Request $request)
-    {
+    {       
+       
+  
         if($request->department=="department")
         {
             $email_from=$request->from;
             $email_to=$request->to;
             $email_cc=$request->cc;
             $send_subject=$request->subject;
-            $details= DB::table('department')->join('organisation','department.org_id','=','organisation.org_id')->select('department.*','organisation.org_name')->get();
-                   
+            
+            $details= DB::table('department')->join('organisation','department.org_id','=','organisation.org_id')->select('department.*','organisation.org_name');
+            if($request->search_query!="")
+            {
+              $details = $details->where('department.dept_name', 'LIKE', "%{$request->search_query}%")->get();
+            }
+            else
+            {
+                $details=$details->get();
+            }
+            // return $details;
+            // exit;
             $user = array('email_from'=>$email_from,'email_to'=>$email_to, 'cc'=>$email_cc, 'subject'=>$send_subject,'results'=>$details);
             // $pdf = PDF::loadView('mail.departs',['user'=>$user]);  
             // //$data =$pdf; 
             // // echo $data;
             // // die;
 
-            Mail::send('mail.departs',['user'=> $user], function($message) use ($user)
-            {
-                $email_to=explode(',',$user['email_to']);
-                foreach($email_to as $key=>$value)
-                {
-                $message->to($email_to[$key]);
-                }
+            // Mail::send('mail.departs',['user'=> $user], function($message) use ($user)
+            // {
+            //     $email_to=explode(',',$user['email_to']);
+            //     foreach($email_to as $key=>$value)
+            //     {
+            //     $message->to($email_to[$key]);
+            //     }
 
-                if(@$user['cc'])
-                {
-                $email_cc=explode(',',$user['cc']);
-                foreach($email_cc as $key=>$value)
-                {
-                    $message->cc($email_cc[$key]);
-                }
-                } 
+            //     if(@$user['cc'])
+            //     {
+            //     $email_cc=explode(',',$user['cc']);
+            //     foreach($email_cc as $key=>$value)
+            //     {
+            //         $message->cc($email_cc[$key]);
+            //     }
+            //     } 
             
-                // $message->attachData($pdf->output(), "department.pdf");
-                $message->subject($user['subject']);
-                $message->from('dsrm.skla@gmail.com','seraikela'); 
-                session()->put('alert-class','alert-success');
-                session()->put('alert-content','Email send');
-            });
+            //     // $message->attachData($pdf->output(), "department.pdf");
+            //     $message->subject($user['subject']);
+            //     $message->from('dsrm.skla@gmail.com','seraikela'); 
+            //     session()->put('alert-class','alert-success');
+            //     session()->put('alert-content','Email send');
+            // });
+            return view('mail.departs')->with('user',$user);
             return redirect('department');
 
         }
         elseif($request->designation=="designation")
         {
+          
             $email_from=$request->from;
             $email_to=$request->to;
             $email_cc=$request->cc;
             $send_subject=$request->subject;
             $details=json_decode($request->data);
 
+            // return $request->search_query;
+            $details_designation= DB::table('designation')->join('organisation','designation.org_id','=','organisation.org_id')->select('designation.*','organisation.org_name');
+            if($request->search_query!="")
+            {
+              $details_designation = $details_designation->where('designation.name', 'LIKE', "%{$request->search_query}%")->get();
+            }
+            else
+            {
+                $details_designation=$details_designation->get();
+            }
+            // return $details_designation;
+            // exit;
 
-            // $user = array('email_from'=>$email_from,'email_to'=>$email_to, 'cc'=>$email_cc, 'subject'=>$send_subject,'results'=>$details);
-            // $pdf = PDF::loadView('mail.designation',['user'=>$user]);
+            $user = array('email_from'=>$email_from,'email_to'=>$email_to, 'cc'=>$email_cc, 'subject'=>$send_subject,'results'=>$details_designation);
+            $pdf = PDF::loadView('mail.designation',['user'=>$user]);
 
-            $user = array('email_from'=>$email_from,'email_to'=>$email_to, 'cc'=>$email_cc, 'subject'=>$request->subject, 'content'=>$request->message,'results'=>$details);
+            $user = array('email_from'=>$email_from,'email_to'=>$email_to, 'cc'=>$email_cc, 'subject'=>$request->subject, 'content'=>$request->message,'results'=>$details_designation);
             Mail::send('mail.designation',['user'=> $user], function($message) use ($user)
             {
                 $email_to=explode(',',$user['email_to']);
@@ -90,6 +116,7 @@ class EmailController extends Controller
                 session()->put('alert-class','alert-success');
                 session()->put('alert-content','Email send');
             });
+            // return view('mail.designation')->with('user',$user);
             return redirect('designation');
         }
        
@@ -100,7 +127,20 @@ class EmailController extends Controller
             $send_subject=$request->subject;
             $details=json_decode($request->data);
 
-            $user = array('email_from'=>$email_from,'email_to'=>$email_to, 'cc'=>$email_cc, 'subject'=>$request->subject, 'content'=>$request->message,'results'=>$details);
+            //   return $request->search_query;
+              $details_scheme_type= DB::table('scheme_type');
+              if($request->search_query!="")
+              {
+                $details_scheme_type = $details_scheme_type->where('scheme_type.sch_type_name', 'LIKE', "%{$request->search_query}%")->get();
+              }
+              else
+              {
+                  $details_scheme_type=$details_scheme_type->get();
+              }
+              // return $details_designation;
+              // exit;
+
+            $user = array('email_from'=>$email_from,'email_to'=>$email_to, 'cc'=>$email_cc, 'subject'=>$request->subject, 'content'=>$request->message,'results'=>$details_scheme_type);
             Mail::send('mail.scheme_type',['user'=> $user], function($message) use ($user)
             {
                 $email_to=explode(',',$user['email_to']);
@@ -122,6 +162,7 @@ class EmailController extends Controller
                 session()->put('alert-class','alert-success');
                 session()->put('alert-content','Email send');
             });
+            // return view('mail.scheme_type')->with('user',$user);
             return redirect('scheme_type');
         }
         elseif($request->asset_numbers=="asset_numbers"){
@@ -258,7 +299,21 @@ class EmailController extends Controller
             $send_subject=$request->subject;
             $details=json_decode($request->result);
 
-            $user = array('email_from'=>$email_from,'email_to'=>$email_to, 'cc'=>$email_cc, 'subject'=>$request->subject, 'content'=>$request->message,'results'=>$details);
+            //    return $request->search_query;
+             $details_scheme_group= DB::table('scheme_group');
+             if($request->search_query!="")
+             {
+               $details_scheme_group = $details_scheme_group->where('scheme_group.scheme_group_name', 'LIKE', "%{$request->search_query}%")->get();
+             }
+             else
+             {
+                 $details_scheme_group=$details_scheme_group->get();
+             }
+             // return $details_designation;
+             // exit;
+
+
+            $user = array('email_from'=>$email_from,'email_to'=>$email_to, 'cc'=>$email_cc, 'subject'=>$request->subject, 'content'=>$request->message,'results'=>$details_scheme_group);
             
             // return view('mail.groups')->with('user',$user);       
             // print_r($user['results']);
@@ -285,6 +340,7 @@ class EmailController extends Controller
                  session()->put('alert-class','alert-success');
                  session()->put('alert-content','Email send');
              });
+            // return view('mail.groups')->with('user',$user);
               return redirect('scheme-group');
         }
         elseif($request->geo_target=="geo_target"){
@@ -329,8 +385,23 @@ class EmailController extends Controller
             $send_subject=$request->subject;
             $details=json_decode($request->data);
 
-            $user = array('email_from'=>$email_from,'email_to'=>$email_to, 'cc'=>$email_cc, 'subject'=>$request->subject, 'content'=>$request->message,'results'=>$details);
+            //    return $request->search_query;
+            $details_year= DB::table('year');
+            if($request->search_query!="")
+            {
+              $details_year = $details_year->where('year.year_value', 'LIKE', "%{$request->search_query}%")->get();
+            }
+            else
+            {
+                $details_year=$details_year->get();
+            }
+            // return $details_designation;
+            // exit;
+
             
+            $user = array('email_from'=>$email_from,'email_to'=>$email_to, 'cc'=>$email_cc, 'subject'=>$request->subject, 'content'=>$request->message,'results'=>$details_year);
+            
+           
             Mail::send('mail.year',['user'=> $user], function($message) use ($user)
              {
                  $email_to=explode(',',$user['email_to']);
@@ -352,6 +423,7 @@ class EmailController extends Controller
                  session()->put('alert-class','alert-success');
                  session()->put('alert-content','Email send');
              });
+            // return view('mail.year')->with('user',$user);
               return redirect('year');
         }
 
@@ -363,7 +435,21 @@ class EmailController extends Controller
             $send_subject=$request->subject;
             $details=json_decode($request->data);
 
-            $user = array('email_from'=>$email_from,'email_to'=>$email_to, 'cc'=>$email_cc, 'subject'=>$request->subject, 'content'=>$request->message,'results'=>$details);
+             //    return $request->search_query;
+             $details_module= DB::table('module');
+             if($request->search_query!="")
+             {
+               $details_module = $details_module->where('module.mod_name', 'LIKE', "%{$request->search_query}%")->get();
+             }
+             else
+             {
+                 $details_module=$details_module->get();
+             }
+             // return $details_designation;
+             // exit;
+
+
+            $user = array('email_from'=>$email_from,'email_to'=>$email_to, 'cc'=>$email_cc, 'subject'=>$request->subject, 'content'=>$request->message,'results'=>$details_module);
             
             Mail::send('mail.module',['user'=> $user], function($message) use ($user)
              {
@@ -386,6 +472,7 @@ class EmailController extends Controller
                  session()->put('alert-class','alert-success');
                  session()->put('alert-content','Email send');
              });
+            // return view('mail.module')->with('user',$user);
               return redirect('module');
         }
 
@@ -431,7 +518,22 @@ class EmailController extends Controller
             $send_subject=$request->subject;
             $details=json_decode($request->data);
 
-            $user = array('email_from'=>$email_from,'email_to'=>$email_to, 'cc'=>$email_cc, 'subject'=>$request->subject, 'content'=>$request->message,'results'=>$details);
+            
+                // return $request->search_query;
+             $details_asset_subcat= DB::table('asset_subcat');
+             if($request->search_query!="")
+             {
+               $details_asset_subcat = $details_asset_subcat->where('asset_subcat.asset_sub_cat_name', 'LIKE', "%{$request->search_query}%")->get();
+             }
+             else
+             {
+                 $details_asset_subcat=$details_asset_subcat->get();
+             }
+             // return $details_designation;
+             // exit;
+
+
+            $user = array('email_from'=>$email_from,'email_to'=>$email_to, 'cc'=>$email_cc, 'subject'=>$request->subject, 'content'=>$request->message,'results'=>$details_asset_subcat);
             
             Mail::send('mail.sub_category',['user'=> $user], function($message) use ($user)
              {
@@ -454,6 +556,7 @@ class EmailController extends Controller
                  session()->put('alert-class','alert-success');
                  session()->put('alert-content','Email send');
              });
+            // return view('mail.sub_category')->with('user',$user);
               return redirect('asset_subcat');
         }
 
@@ -465,7 +568,20 @@ class EmailController extends Controller
             $send_subject=$request->subject;
             $details=json_decode($request->data);
 
-            $user = array('email_from'=>$email_from,'email_to'=>$email_to, 'cc'=>$email_cc, 'subject'=>$request->subject, 'content'=>$request->message,'results'=>$details);
+            //    return $request->search_query;
+             $details_asset_cat= DB::table('asset_cat');
+             if($request->search_query!="")
+             {
+               $details_asset_cat = $details_asset_cat->where('asset_cat.asset_cat_name', 'LIKE', "%{$request->search_query}%")->get();
+             }
+             else
+             {
+                 $details_asset_cat=$details_asset_cat->get();
+             }
+             // return $details_designation;
+             // exit;
+
+            $user = array('email_from'=>$email_from,'email_to'=>$email_to, 'cc'=>$email_cc, 'subject'=>$request->subject, 'content'=>$request->message,'results'=>$details_asset_cat);
             
             Mail::send('mail.category',['user'=> $user], function($message) use ($user)
              {
@@ -488,6 +604,7 @@ class EmailController extends Controller
                  session()->put('alert-class','alert-success');
                  session()->put('alert-content','Email send');
              });
+            // return view('mail.category')->with('user',$user);
               return redirect('assetcat');
         }
 

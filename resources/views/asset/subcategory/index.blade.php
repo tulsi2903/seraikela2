@@ -15,6 +15,68 @@
             color: #fff!important;
             margin-top: 1em;
         }   
+
+             
+    #printable-info-details {
+        visibility: hidden;
+        height: 0px;
+        /* position: fixed;
+        left: 0;
+        top: 20px;
+        width: 100vw !important; */
+    }
+
+    @media print{
+
+            #printable-area{
+                margin-top: 250px !important;
+            }
+
+            .no-print, .no-print *
+            {
+                display: none !important;
+            }
+            #printable-info-details{
+                visibility: visible;
+                position: fixed;
+            }
+            #print-button, #print-button *{
+                visibility: hidden;
+            }
+            .card-title-print-1{
+                visibility: visible !important;
+                position: fixed;
+                color: #147785;
+                font-size: 30px;;
+                left: 0;
+                top: 50px;
+                width: 100vw !important;
+                height: 100vw !important;
+            }
+            .card-title-print-2{
+                visibility: visible !important;
+                position: fixed;
+                 color: #147785;
+                 font-size: 30px;;
+                left: 0;
+                top: 100px;
+                width: 100vw !important;
+                height: 100vw !important;
+            }
+            .card-title-print-3{
+                visibility: visible !important;
+                position: fixed;
+                 color: #147785;
+                 font-size: 30px;;
+                left: 0;
+                top: 140px;
+                width: 100vw !important;
+                height: 100vw !important;
+            }
+            .action-buttons{
+                display: none;
+            }
+         } 
     </style>
 @endsection
 
@@ -23,16 +85,25 @@
 <?php  $desig_permissions = session()->get('desig_permission'); // assigning desig_permission so we can use ?>
 
 <div class="card">
+    <form action="{{url('asset_subcat/view_diffrent_formate')}}" method="POST" enctype="multipart/form-data"> <!-- for for edit, if inline edit form append then this form action/method will triggered -->
+        @csrf
         <div class="col-md-12">
          
                 <div class="card-header">
                     <div class="card-head-row card-tools-still-right" style="background:#fff;">
                         <h4 class="card-title">Sub Category</h4>
                         <div class="card-tools">
-                            <a href="#" data-toggle="tooltip" title="Send Mail"><button type="button" class="btn btn-icon btn-round btn-success" data-target="#create-email" data-toggle="modal" ><i class="fa fa-envelope" aria-hidden="true"></i></button></a>
-                            <a href="#" data-toggle="tooltip" title="Print"><button type="button" class="btn btn-icon btn-round btn-default" id="print-button" onclick="printView();"><i class="fa fa-print" aria-hidden="true"></i></button></a>
+                            <!-- <a href="#" data-toggle="tooltip" title="Send Mail"><button type="button" class="btn btn-icon btn-round btn-success" data-target="#create-email" data-toggle="modal" ><i class="fa fa-envelope" aria-hidden="true"></i></button></a> -->
+                            <button type="button" class="btn btn-icon btn-round btn-success"  onclick="openmodel();" ><i class="fa fa-envelope" aria-hidden="true"></i></button>
+
+                            <button type="button" class="btn btn-icon btn-round btn-default" onclick="printViewone();"><i class="fa fa-print" aria-hidden="true"></i></button>
+                            <button  type="submit" name="print" value="print_pdf" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button>
+                            <button type="submit" name="print" value="excel_sheet" class="btn btn-icon btn-round btn-success" ><i class="fas fa-file-excel"></i></button>
+
+
+                            <!-- <a href="#" data-toggle="tooltip" title="Print"><button type="button" class="btn btn-icon btn-round btn-default" id="print-button" onclick="printView();"><i class="fa fa-print" aria-hidden="true"></i></button></a>
                             <a href="{{url('asset_subcat/pdf/pdfURL')}}" target="_BLANK" data-toggle="tooltip" title="Export to PDF"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button></a>
-                            <a href="{{url('asset_subcat/export/excelURL')}}" data-toggle="tooltip" title="Export to Excel"><button type="button" class="btn btn-icon btn-round btn-primary" ><i class="fas fa-file-excel"></i></button></a>
+                            <a href="{{url('asset_subcat/export/excelURL')}}" data-toggle="tooltip" title="Export to Excel"><button type="button" class="btn btn-icon btn-round btn-primary" ><i class="fas fa-file-excel"></i></button></a> -->
                             @if($desig_permissions["mod9"]["add"])
                                 <a class="btn btn-secondary" href="{{url('asset_subcat/add')}}" role="button"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;Add</a>
                             @endif    
@@ -42,68 +113,86 @@
             </div>
        
         <div class="card-body">
-            <div class="row">
-                <div class="col-12">
-                    <!-- <div style="display: -webkit-box; float:right;margin-top: -22px;">
-                        <a class="btn btn-secondary" href="{{url('asset_subcat/add')}}" role="button"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;Add</a>
-                    </div><br><br> -->
-                    <div class="table-responsive table-hover table-sales">
-                        <table class="table table-datatable" id="printable-area">
-                            <thead style="background: #d6dcff;color: #000;">
-                                <tr>
-                                    <th>#</th>
-                                    <th>Sub Category Name</th>
-                                    <th>Sub Category Description</th>
-                                    <th> Category Name  </th>
-                                    <!-- <th>Type</th> -->
-                                    @if($desig_permissions["mod9"]["edit"] || $desig_permissions["mod9"]["del"])
-                                    <th class="action-buttons">Action</th>
-                                    @endif
-
-                                </tr>
-                            </thead>
-                            <?php $count=1; ?>
-                            @if(isset($datas))
-                                @foreach($datas as $data)
+           
+                <div class="row">
+                    <div class="col-12">
+                        <!-- <div style="display: -webkit-box; float:right;margin-top: -22px;">
+                            <a class="btn btn-secondary" href="{{url('asset_subcat/add')}}" role="button"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;Add</a>
+                        </div><br><br> -->
+                        <div class="table-responsive table-hover table-sales">
+                            <div id="printable-info-details">
+                                <p class="card-title-print-1">Title: Asset Sub Category</p>
+                                <p class="card-title-print-2">Date & Time: <?php $currentDateTime = date('d-m-Y H:i:s'); echo $currentDateTime; ?>
+                                <p class="card-title-print-3">User Name: {{session()->get('user_full_name')}}</p>
+                            </div>
+                            <table class="table table-datatable" id="printable-area">
+                                <thead style="background: #d6dcff;color: #000;">
                                     <tr>
-                                        <td width="40px;">{{$count++}}</td>
-                                        <td>{{$data->asset_sub_cat_name}}</td>
-                                        <td>{{$data->asset_sub_cat_description}}</td>
-                                        <?php 
-                                        $Asset_cat_name=DB::table('asset_cat')->where('asset_cat_id',@$data->asset_cat_id)->first();
-                                        ?>
-                                        <td>{{$Asset_cat_name->asset_cat_name}}</td>
-                                        <!-- <td>
-                                            <?php
-                                            if($data->movable == '1'){
-                                                echo "Movable";
-                                            }
-                                            else{
-                                                echo "Immovable";
-                                            }
-                                            ?>
-                                        </td> -->
+                                        <th>#</th>
+                                        <th>Sub Category Name</th>
+                                        <th>Sub Category Description</th>
+                                        <th> Category Name  </th>
+                                        <!-- <th>Type</th> -->
                                         @if($desig_permissions["mod9"]["edit"] || $desig_permissions["mod9"]["del"])
-                                        <td class="action-buttons">
-                                            @if($desig_permissions["mod9"]["del"])<a href="{{url('asset_subcat/delete')}}/{{$data->asset_sub_id}}" class="btn btn-danger btn-sm delete-button"><i class="fas fa-trash-alt"></i></a>@endif
-                                            @if($desig_permissions["mod9"]["edit"])&nbsp;&nbsp;<a href="{{url('asset_subcat/add')}}?purpose=edit&id={{$data->asset_sub_id}}" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></a>@endif
-                                        </td>
+
+                                        <th class="action-buttons">Action</th>
                                         @endif
+
                                     </tr>
-                                @endforeach
-                            @endif
-                            @if($count==1)
-                                <tr>
-                                    <td colspan="8"><center>No data to shown</center></td>
-                                </tr>
-                            @endif
-                        </table>
+                                </thead>
+                                <?php $count=1; ?>
+                                @if(isset($datas))
+                                    @foreach($datas as $data)
+                                        <tr>
+                                            <td width="40px;">{{$count++}} <input type="hidden" value="{{$data->asset_sub_id}}" name="asset_sub_id[]"></td>
+                                            <td>{{$data->asset_sub_cat_name}}</td>
+                                            <td>{{$data->asset_sub_cat_description}}</td>
+                                            <?php 
+                                            $Asset_cat_name=DB::table('asset_cat')->where('asset_cat_id',@$data->asset_cat_id)->first();
+                                            ?>
+                                            <td>{{$Asset_cat_name->asset_cat_name}}</td>
+                                            @if($desig_permissions["mod9"]["edit"] || $desig_permissions["mod9"]["del"])
+
+                                            <td class="action-buttons">
+                                                @if($desig_permissions["mod9"]["del"])<a href="{{url('asset_subcat/delete')}}/{{$data->asset_sub_id}}" class="btn btn-danger btn-sm delete-button"><i class="fas fa-trash-alt"></i></a>@endif
+                                                @if($desig_permissions["mod9"]["edit"])&nbsp;&nbsp;<a href="{{url('asset_subcat/add')}}?purpose=edit&id={{$data->asset_sub_id}}" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></a>@endif
+                                            </td>
+                                            @endif
+                                        </tr>
+                                    @endforeach
+                                @endif
+                                @if($count==1)
+                                    <tr>
+                                        <td colspan="8"><center>No data to shown</center></td>
+                                    </tr>
+                                @endif
+                            </table>
+                        </div>
                     </div>
                 </div>
-            </div>
+           
         </div>
-  
+    </form>
+</div>
 @endsection
+
+<script>
+    function printViewone()
+    {
+      window.print();
+    }
+</script>
+
+<script>
+    function openmodel()
+    {
+        var search_element=$( "input[type=search]" ).val();
+        $('#create-email').modal('show');
+        $('#dept_search').val(search_element);
+        // alert(search_element);
+    }
+    
+    </script>
 <div id="create-email" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -121,6 +210,8 @@
                             <div class="form-group">
                                 <input type="hidden" name="sub_category" value="sub_category">
                                 <input type="hidden" name="data" value="{{$datas}}">
+                                <input type="hidden" name="search_query" id="dept_search" >
+
                                 <!-- <input type="text" name="from" class="form-control" placeholder="From" required=""> -->
                             </div> 
                             <div class="form-group">  
