@@ -228,7 +228,8 @@ Route::get('scheme-performance/downloadFormat','SchemePerformanceController@down
 Route::post('scheme-performance/importtoExcel','SchemePerformanceController@Import_from_Excel');
 Route::post('scheme_performance/galleryFile_update','SchemePerformanceController@saveImagesofscheme_performance');
 Route::get('scheme-performance/get-gallery/{id}','SchemePerformanceController@get_gallery_image');
-
+Route::post('scheme_performance/coordinatesupdate','SchemePerformanceController@save_coordinate');
+Route::get('scheme-performance/get-coordinates/{id}','SchemePerformanceController@get_coordinates_details');
 
 /* scheme review */
 Route::get('review/{review_type}', 'SchemeReviewController@index');

@@ -176,14 +176,14 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form action="{{url('scheme_performance/cordinatesupdate')}}" method="post" id="FormsaveImagesforLoacation" enctype="multipart/form-data" autocomplete="off">
+            <form action="{{url('scheme_performance/coordinatesupdate')}}" method="post" id="FormsaveImagesforLoacation" enctype="multipart/form-data" autocomplete="off">
                 @csrf
                 <div class="modal-body">
                     <div class="row">
                         <div class="card-body p-t-30" style="padding: 11px;">
                             <div class="form-group">
-                                <input type="text" name="coordinates_lang_value[]" placeholder=""lass="form-control" Required >
-                                <input type="text" name="coordinates_lat_value[]" class="form-control" Required >
+                                <input type="text" name="coordinates_lang_value" id="coordinates_lang_value" placeholder="Longitude" class="form-control" Required >
+                                <input type="text" name="coordinates_lat_value" id="coordinates_lat_value" placeholder="Latitude" class="form-control" Required >
                                 
                             </div>
                         </div>
@@ -499,6 +499,31 @@ function coordinates_details(id)
 {
     var scheme_performance=$('#scheme_performance_id_for_coordinates').val(id);
         $('#create-coordinates').modal('show');
+        $.ajax({
+                url: "{{url('scheme-performance/get-coordinates/')}}"+"/"+id,
+                method: "GET",
+                contentType: 'application/json',
+                dataType: "json",
+                beforeSend: function (data) {
+                    $(".custom-loader").fadeIn(300);
+                },
+                error: function (xhr) {
+                    alert("error" + xhr.status + "," + xhr.statusText);
+                    $(".custom-loader").fadeOut(300);
+                },
+                success: function (data) {
+                    // console.log(data.coordinates.latitude);
+                    $("#coordinates_lang_value").val("");
+                        $("#coordinates_lat_value").val("");
+                    if(data.coordinates!="")
+                    {
+                        $("#coordinates_lang_value").val(data.coordinates.longitude);
+                        $("#coordinates_lat_value").val(data.coordinates.latitude);
+                        
+                    }
+                    $(".custom-loader").fadeOut(300);
+                }
+            });
 }
 </script>
 
