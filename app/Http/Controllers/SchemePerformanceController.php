@@ -330,105 +330,115 @@ class SchemePerformanceController extends Controller
         if ($_FILES['excelcsv']['tmp_name']) {
             $readExcel = \Excel::load($_FILES['excelcsv']['tmp_name'], function ($reader) { })->get()->toArray();
             $readExcelHeader = \Excel::load($_FILES['excelcsv']['tmp_name'])->get();
-            $excelSheetHeadings = $readExcelHeader->first()->keys()->toArray(); /* this is for excel sheet heading */
+            if(count($readExcelHeader) != 0){
+                $excelSheetHeadings = $readExcelHeader->first()->keys()->toArray(); /* this is for excel sheet heading */
+            }
             
-           if(count($readExcel)>=250)
-           { 
-                sort($tableHeadingsAndAtributes);
-                sort($excelSheetHeadings); 
-                $unserializedAtributesData = array();
-                
-                /* validation for matching of headings */
-                if ($tableHeadingsAndAtributes == $excelSheetHeadings) { /* Check for missmatch headings*/
-
-                    foreach ($readExcel as $excel_key => $excel_value) { 
-                        foreach ($excel_value as $key => $value) { 
-                            foreach ($schemeAtributes as $attribute_key => $attribute_value) {
-                                
-                                if ($attribute_value === $key) { 
-                                    
-                                    $unserializedAtributesData[$attribute_key] = $value;
-                                }
-                            }
-                        }
-                        $serializationAttributes[] = $unserializedAtributesData;
-                        $unserializedAtributesData = [];
-                    }
-
-                    $filename = "Error Log.txt"; /* error file name */
-                    $myfile = fopen($filename, "w"); /* open error file name by using fopen function */
-
-                    foreach ($readExcel as $key => $row) { /* Insert Data By using for each one by one */
-                        $block_name =  ucwords($row['block_name']);
-                        $panchayat_name =   ucwords($row['panchayat_name']);
-                        $fetch_block_id = GeoStructure::where('geo_name', $block_name)->value('geo_id'); /* for block ID */
-                        $fetch_panchayat_id = GeoStructure::where('geo_name', $panchayat_name)->value('geo_id'); /* for Panchayat ID */
-                        $fetch_subdivision_id = GeoStructure::where('geo_id', $fetch_block_id)->value('parent_id'); /* for subdivision_id ID */
-                        $fetch_year_id = Year::where('year_value', $row['work_start_fin_year'])->value('year_id'); /* for Year ID */
-
-                        /* if those id avilable then insert data on the base */
-                        if ($row['sno.'] != null && $fetch_block_id != null && $fetch_panchayat_id != null && $fetch_year_id != null && $fetch_subdivision_id != null) {
-                            $scheme_performance = new SchemePerformance;
-                            $scheme_performance->year_id = $fetch_year_id;
-                            $scheme_performance->scheme_id = $request->scheme_id;
-                            $scheme_performance->block_id = $fetch_block_id;
-                            $scheme_performance->panchayat_id = $fetch_panchayat_id;
-                            $scheme_performance->subdivision_id = $fetch_subdivision_id;
-                            $scheme_performance->attribute = serialize($serializationAttributes[$key]);
-                            $scheme_performance->status = $row['work_status'];
-                            $scheme_performance->created_by = Session::get('user_id');
-                            $scheme_performance->save();
-                        } else {  /* Else find id and error write on the notepad */
-                            if ($row['sno.'] != null) {
-                                if ($fetch_block_id == null && $fetch_panchayat_id != null) {
-                                    $txt = " ON row sno. " . $row['sno.'] . " Block Not Found \n";
-                                    fwrite($myfile, $txt);
-                                } elseif ($fetch_panchayat_id == null && $fetch_block_id != null) {
-                                    $txt = " ON row sno. " . $row['sno.'] . " Panchayat Not Found \n";
-                                    fwrite($myfile, $txt);
-                                } elseif ($fetch_panchayat_id == null && $fetch_block_id == null) {
-                                    $txt = " ON row sno. " . $row['sno.'] . " Both Panchayat And Block Not Found \n";
-                                    fwrite($myfile, $txt);
-                                } elseif ($fetch_subdivision_id == null || $fetch_year_id == null) {
-                                    $txt = " ON row sno. " . $row['sno.'] . " Something Error \n";
-                                    fwrite($myfile, $txt);
-                                }
-                            } else {
-                                $txt = " Serial Number Not Available \n";
-                                fwrite($myfile, $txt);
-                            }
-                        }
-                    }
-            
-                    fclose($myfile); //close file
-
-                    if (file_get_contents($filename) == null) //if error file does not exit ant data then popup message success
-                    {
-                        session()->put('alert-class', 'alert-success');
-                        session()->put('alert-content', 'Scheme details has been saved');
-                        return back();
-                    } else { //Else download the error notepad file
-                        header("Cache-Control: public");
-                        header("Content-Description: File Transfer");
-                        header("Content-Length: " . filesize("$filename") . ";");
-                        header("Content-Disposition: attachment; filename=$filename");
-                        header("Content-Type: application/octet-stream; ");
-                        header("Content-Transfer-Encoding: binary");
-                        readfile($filename);
-                        exit;
-                    }
-                } else { //for error message
-                    session()->put('alert-class', 'alert-danger');
-                    session()->put('alert-content', 'Your Excel Format Missmatch From Our Format..Please Download Our Excel Format..');
-                    return back();
+            if(count($readExcel) != 0)
+            {
+                if(count($readExcel)<=250)
+                { 
+                     sort($tableHeadingsAndAtributes);
+                     sort($excelSheetHeadings); 
+                     $unserializedAtributesData = array();
+                     
+                     /* validation for matching of headings */
+                     if ($tableHeadingsAndAtributes == $excelSheetHeadings) { /* Check for missmatch headings*/
+     
+                         foreach ($readExcel as $excel_key => $excel_value) { 
+                             foreach ($excel_value as $key => $value) { 
+                                 foreach ($schemeAtributes as $attribute_key => $attribute_value) {
+                                     
+                                    if ($attribute_value === $key) { 
+                                    $unserializedAtributesData[$excel_key][][$attribute_key] = $value;
+                                    }
+                                 }
+                             }
+                            //  $serializationAttributes[] = $unserializedAtributesData;
+                            //  $unserializedAtributesData = [];
+                         }
+                         
+                         $filename = "Error Log.txt"; /* error file name */
+                         $myfile = fopen($filename, "w"); /* open error file name by using fopen function */
+     
+                         foreach ($readExcel as $key => $row) { /* Insert Data By using for each one by one */
+                             $block_name =  ucwords($row['block_name']);
+                             $panchayat_name =   ucwords($row['panchayat_name']);
+                             $fetch_block_id = GeoStructure::where('geo_name', $block_name)->value('geo_id'); /* for block ID */
+                             $fetch_panchayat_id = GeoStructure::where('geo_name', $panchayat_name)->value('geo_id'); /* for Panchayat ID */
+                             $fetch_subdivision_id = GeoStructure::where('geo_id', $fetch_block_id)->value('parent_id'); /* for subdivision_id ID */
+                             $fetch_year_id = Year::where('year_value', $row['work_start_fin_year'])->value('year_id'); /* for Year ID */
+     
+                             /* if those id avilable then insert data on the base */
+                             if ($row['sno.'] != null && $fetch_block_id != null && $fetch_panchayat_id != null && $fetch_year_id != null && $fetch_subdivision_id != null) {
+                                 $scheme_performance = new SchemePerformance;
+                                 $scheme_performance->year_id = $fetch_year_id;
+                                 $scheme_performance->scheme_id = $request->scheme_id;
+                                 $scheme_performance->block_id = $fetch_block_id;
+                                 $scheme_performance->panchayat_id = $fetch_panchayat_id;
+                                 $scheme_performance->subdivision_id = $fetch_subdivision_id;
+                                 $scheme_performance->attribute = serialize($unserializedAtributesData[$key]);
+                                 $scheme_performance->status = 1;
+                                 $scheme_performance->created_by = Session::get('user_id');
+                                 $scheme_performance->save();
+                             } else {  /* Else find id and error write on the notepad */
+                                 if ($row['sno.'] != null) {
+                                     if ($fetch_block_id == null && $fetch_panchayat_id != null) {
+                                         $txt = " ON row sno. " . $row['sno.'] . " Block Not Found \n";
+                                         fwrite($myfile, $txt);
+                                     } elseif ($fetch_panchayat_id == null && $fetch_block_id != null) {
+                                         $txt = " ON row sno. " . $row['sno.'] . " Panchayat Not Found \n";
+                                         fwrite($myfile, $txt);
+                                     } elseif ($fetch_panchayat_id == null && $fetch_block_id == null) {
+                                         $txt = " ON row sno. " . $row['sno.'] . " Both Panchayat And Block Not Found \n";
+                                         fwrite($myfile, $txt);
+                                     } elseif ($fetch_subdivision_id == null || $fetch_year_id == null) {
+                                         $txt = " ON row sno. " . $row['sno.'] . " Something Error \n";
+                                         fwrite($myfile, $txt);
+                                     }
+                                 } else {
+                                     $txt = " Serial Number Not Available \n";
+                                     fwrite($myfile, $txt);
+                                 }
+                             }
+                         }
+                 
+                         fclose($myfile); //close file
+     
+                         if (file_get_contents($filename) == null) //if error file does not exit ant data then popup message success
+                         {
+                             session()->put('alert-class', 'alert-success');
+                             session()->put('alert-content', 'Scheme details has been saved');
+                             return back();
+                         } else { //Else download the error notepad file
+                             header("Cache-Control: public");
+                             header("Content-Description: File Transfer");
+                             header("Content-Length: " . filesize("$filename") . ";");
+                             header("Content-Disposition: attachment; filename=$filename");
+                             header("Content-Type: application/octet-stream; ");
+                             header("Content-Transfer-Encoding: binary");
+                             readfile($filename);
+                             exit;
+                         }
+                     } else { //for error message
+                         session()->put('alert-class', 'alert-danger');
+                         session()->put('alert-content', 'Your Excel Format Missmatch From Our Format..Please Download Our Excel Format..');
+                         return back();
+                     }
                 }
-           }
-           else
-           {
-            session()->put('alert-class', 'alert-danger');
-            session()->put('alert-content', 'You Have Excited Maximum No. of Row at a Time');
-            return back();
-           }
+                else
+                {
+                 session()->put('alert-class', 'alert-danger');
+                 session()->put('alert-content', 'You Have Excited Maximum No. of Row at a Time');
+                 return back();
+                }
+            }
+            else
+            {
+                session()->put('alert-class', 'alert-danger');
+                session()->put('alert-content', 'Please Fill At Least One Row in Excel Sheet');
+                return back();
+            }
         }
     }
 
