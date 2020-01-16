@@ -185,24 +185,40 @@ class AssetNumbersController extends Controller
             $longitude = $request->longitude;
 
             for ($i = 0; $i < count($location_name); $i++) {
-                $asset_geo_location = new AssetGeoLocation;
-                $asset_geo_location->year = $request->year;
-                $asset_geo_location->asset_id = $request->asset_id;
-                $asset_geo_location->geo_id = $request->geo_id; // panchayat
-
-                $asset_geo_location->location_name = $location_name[$i];
-                if (isset($latitude[$i]) && isset($longitude[$i])) {
-                    $asset_geo_location->latitude = $latitude[$i];
-                    $asset_geo_location->longitude = $longitude[$i];
+                if ($request->edit_asset_geo_loc_id[$i] != null) { /*For edit geo location */
+                    # code...
+                    $asset_location_for_geo = AssetGeoLocation::find($request->edit_asset_geo_loc_id[$i]);
+                    $asset_location_for_geo->location_name = $location_name[$i];
+                    if (isset($latitude[$i]) && isset($longitude[$i])) {
+                        $asset_location_for_geo->latitude = $latitude[$i];
+                        $asset_location_for_geo->longitude = $longitude[$i];
+                    } else {
+                        $asset_location_for_geo->latitude = "";
+                        $asset_location_for_geo->longitude = "";
+                    }
+                    $asset_location_for_geo->save();
                 } else {
-                    $asset_geo_location->latitude = "";
-                    $asset_geo_location->longitude = "";
+                    # code...
+                    $asset_geo_location = new AssetGeoLocation;
+                    $asset_geo_location->year = $request->year;
+                    $asset_geo_location->asset_id = $request->asset_id;
+                    $asset_geo_location->geo_id = $request->geo_id; // panchayat
+    
+                    $asset_geo_location->location_name = $location_name[$i];
+                    if (isset($latitude[$i]) && isset($longitude[$i])) {
+                        $asset_geo_location->latitude = $latitude[$i];
+                        $asset_geo_location->longitude = $longitude[$i];
+                    } else {
+                        $asset_geo_location->latitude = "";
+                        $asset_geo_location->longitude = "";
+                    }
+    
+                    $asset_geo_location->created_by = '1';
+                    $asset_geo_location->updated_by = '1';
+    
+                    $asset_geo_location->save();
                 }
-
-                $asset_geo_location->created_by = '1';
-                $asset_geo_location->updated_by = '1';
-
-                $asset_geo_location->save();
+                
             }
         } else if (isset($request->delete_asset_geo_loc_id)) {
             $asset_geo_loc_id = $request->delete_asset_geo_loc_id;
@@ -665,7 +681,7 @@ class AssetNumbersController extends Controller
     public function downloadFormat()
     {
         # code...
-        $data[] = array('SNo.', 'Year', 'Resource Name', 'Panchayat Name', 'Previous Value', 'Current Value');
+        $data[] = array('SNo.', 'Year', 'Resource Name', 'Panchayat Name', 'Current Value');
 
         \Excel::create('Resource Number-Format', function ($excel) use ($data) {
 

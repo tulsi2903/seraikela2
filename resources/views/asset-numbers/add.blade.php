@@ -106,7 +106,7 @@
                                 <th>Location/Landmark</th>
                                 <th>Latitude</th>
                                 <th>Longitude</th>
-                                <th style="text-align: center;">Action</th>
+                                <th style="text-align: center;" id="actionHide">Action</th>
                             </tr>
                         </thead>
                         <tbody id="append-location-delete">
@@ -166,6 +166,8 @@
                                     <input type="file" name="galleryFile[]" class="form-control" multiple>
                                 </div>
                             </div>
+                        </div>
+                        <div class="row">
                             <div id="show_image_for_location">
                                 <!-- append images -->
                             </div>
@@ -210,11 +212,11 @@
             $("#block_id").change(function(){
                 block_id_validate();
                 get_panchayat_datas();
-                // resetAll();
+                resetAll();
             });
             $("#geo_id").change(function () {
                 geo_id_validate();
-                // resetAll();
+                resetAll();
             });
 
            
@@ -421,6 +423,7 @@
             $hidden_input_id = document.getElementById("hidden_input_id").value;
             $("#append-location tbody").html("");
             $("#show_location_error").html("");
+            $("#actionHide").hide();
             step = 3; // assigning steps
             $("#save-button-text").html("Save");
             var diff = parseFloat($("#current_value").val()) - parseFloat($("#previous_value").val()); //0-2 = -2
@@ -428,8 +431,9 @@
             if (movable == "no") {
                 // show location inputs
                 if (diff > 0) {
+                    
                     for (var i = 0; i < diff; i++) {
-                        $("#append-location #append-location-new").append("<tr><td>" + (i + 1) + "</td><td><input type='text' name='location_name[]' class='form-control' autocomplete='off'></td><td><input type='text' name='latitude[]' class='form-control' autocomplete='off'></td><td><input type='text' name='longitude[]' class='form-control' autocomplete='off'></td></tr>");
+                        $("#append-location #append-location-new").append("<tr><td>" + (i + 1) + "</td><td><input type='text' name='edit_asset_geo_loc_id[]' value='' hidden><input type='text' name='location_name[]' class='form-control' autocomplete='off'></td><td><input type='text' name='latitude[]' class='form-control' autocomplete='off'></td><td><input type='text' name='longitude[]' class='form-control' autocomplete='off'></td></tr>");
                     }
                     $("#append-location #append-location-new").show(300);
                 }
@@ -442,13 +446,14 @@
                 $("#asset_number_image_id").val($hidden_input_id);
                 // show previous locations
                 if (asset_location.length > 0) {
+                    $("#actionHide").show();
                     // to show previous location for delete
                     for (var i = 0; i < asset_location.length; i++) {
 
 
                         // 
                         $("#append-location #append-location-delete").append("<tr>" +
-                            "<td><input type='checkbox' name='delete_asset_geo_loc_id[]' value='" + asset_location[i].asset_geo_loc_id + "'></td><td>" + asset_location[i].location_name + "</td><td>" + asset_location[i].latitude + "</td><td>" + asset_location[i].longitude + "</td>"
+                            "<td><input type='checkbox' name='delete_asset_geo_loc_id[]' value='" + asset_location[i].asset_geo_loc_id + "'></td><td><input type='text' name='edit_asset_geo_loc_id[]' value='" + asset_location[i].asset_geo_loc_id + "' hidden><input type='text' class='form-control' name='location_name[]' value='" + asset_location[i].location_name + "'></td><td><input type='text' class='form-control' name='latitude[]' value='" + asset_location[i].latitude + "'></td><td><input type='text' class='form-control' name='longitude[]' value='" + asset_location[i].longitude + "'></td>"
                             + "<td style='text-align: center;'><a class='btn btn-secondary btn-sm' title='Add Sub Resource Number' href=" + '{{url("asset_number/list_of_childs")}}/' + $asset_child_id + '/' + $geo_child_id + '/' + $year_child_id + '/' + $hidden_input_id + '/' + asset_location[i].asset_geo_loc_id + "><i class='fa fa-plus'></i></a>" +
                             "&nbsp;&nbsp;<a class='btn btn-secondary btn-sm'  title='Add Gallery' onclick='assetGeoLocIdFetch\(" + asset_location[i].asset_geo_loc_id + "," + $asset_child_id + "," + $year_child_id + "," + $geo_child_id + "," + $hidden_input_id + ")\' href='javascript:void();'><i class='fas fa-images'></i></a></td></tr>");
                     }
