@@ -113,9 +113,9 @@
                             </div>
                             <hr />
                             <!-- hidden inputs -->
-                            <input type="text" name="scheme_id" id="scheme_id_hidden">
-                            <input type="text" name="year_id" id="year_id_hidden">
-                            <input type="text" name="panchayat_id" id="panchayat_id_hidden">
+                            <input type="hidden" name="scheme_id" id="scheme_id_hidden">
+                            <input type="hidden" name="year_id" id="year_id_hidden">
+                            <input type="hidden" name="panchayat_id" id="panchayat_id_hidden">
                             <!-- hidden inputs -->
                             <button type="submit" class="btn btn-secondary"><i class="fas fa-check"></i>&nbsp;&nbsp;Save</button>
                         </form>
@@ -154,7 +154,7 @@
                     </div>
                 </div>
 
-                <input type="text" class="form-control" name="scheme_performance_id" id="scheme_performance_id" > <!--  scheme_performance_id -->
+                <input type="hidden" class="form-control" name="scheme_performance_id" id="scheme_performance_id" > <!--  scheme_performance_id -->
                
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Cancel</button>
@@ -193,7 +193,7 @@
                     </div>
                 </div>
 
-                <input type="text" class="form-control" name="scheme_performance_id" id="scheme_performance_id_for_coordinates" > <!--  scheme_performance_id -->
+                <input type="hidden" class="form-control" name="scheme_performance_id" id="scheme_performance_id_for_coordinates" > <!--  scheme_performance_id -->
                
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Cancel</button>

@@ -259,7 +259,7 @@ class SchemePerformanceController extends Controller
                     $scheme_performance->panchayat_id = $panchayat_id;
                     $scheme_performance->attribute = serialize($value_request) ?? "";
                     $scheme_performance->status = $request->status[$key_request];
-                    $scheme_performance->assest_name = $request->assest_name[$key_request] ?? $scheme_data->scheme_asset_id;
+                    $scheme_performance->scheme_asset_id = $request->assest_name[$key_request] ?? $scheme_data->scheme_asset_id;
                     $scheme_performance->comments = $request->comments[$key_request] ?? "";
                     $scheme_performance->created_by = Auth::user()->id;
                     $scheme_performance->updated_by = Auth::user()->id;
@@ -274,7 +274,7 @@ class SchemePerformanceController extends Controller
                 $scheme_performance->panchayat_id = $panchayat_id;
                 $scheme_performance->attribute = serialize($value_request) ?? "";
                 $scheme_performance->status = $request->status[$key_request];
-                $scheme_performance->assest_name = $request->assest_name[$key_request] ?? $scheme_data->scheme_asset_id;
+                $scheme_performance->scheme_asset_id = $request->assest_name[$key_request] ?? $scheme_data->scheme_asset_id;
                 $scheme_performance->comments = $request->comments[$key_request] ?? "";
                 $scheme_performance->created_by = Auth::user()->id;
                 $scheme_performance->updated_by = Auth::user()->id;
