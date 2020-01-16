@@ -770,8 +770,12 @@
                                 }
                             }
                             else { // for others
-                                // if(k==0)
-                                toShowTabularForm+=`<td>` + data[i].performance_datas[j][k]+ `</td>`;
+                                if(k==0){
+                                    toShowTabularForm+=`<td><a href="javascript:void();">` + data[i].performance_datas[j][k]+ `</a></td>`;
+                                }
+                                else{
+                                    toShowTabularForm+=`<td>` + data[i].performance_datas[j][k]+ `</td>`;
+                                }
                             }
                         }
                         toShowTabularForm+=`</tr>`;
