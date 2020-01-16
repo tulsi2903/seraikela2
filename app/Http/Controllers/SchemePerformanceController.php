@@ -318,7 +318,8 @@ class SchemePerformanceController extends Controller
             'sno.',
             'block_name',
             'panchayat_name',
-            'work_start_fin_year'
+            'work_start_fin_year',
+            'Status'
         );
         foreach ($unserialDatas as $key_un => $value_un) {
             array_push($tableHeadingsAndAtributes, strtolower(str_replace(" ", "_", $value_un['name'])));
@@ -359,9 +360,11 @@ class SchemePerformanceController extends Controller
                     foreach ($readExcel as $key => $row) { /* Insert Data By using for each one by one */
                         $block_name =  ucwords($row['block_name']);
                         $panchayat_name =   ucwords($row['panchayat_name']);
-                        $fetch_block_id = GeoStructure::where('geo_name', $block_name)->value('geo_id'); /* for block ID */
-                        $fetch_panchayat_id = GeoStructure::where('geo_name', $panchayat_name)->value('geo_id'); /* for Panchayat ID */
-                        $fetch_subdivision_id = GeoStructure::where('geo_id', $fetch_block_id)->value('parent_id'); /* for subdivision_id ID */
+                        $status =   ucwords($row['status']);
+
+                        $fetch_block_id = GeoStructure::where('geo_name', $block_name)->where('level_id','3')->value('geo_id'); /* for block ID */
+                        $fetch_panchayat_id = GeoStructure::where('geo_name', $panchayat_name)->where('level_id','4')->value('geo_id'); /* for Panchayat ID */
+                        $fetch_subdivision_id = GeoStructure::where('geo_id', $fetch_block_id)->where('level_id','2')->value('parent_id'); /* for subdivision_id ID */
                         $fetch_year_id = Year::where('year_value', $row['work_start_fin_year'])->value('year_id'); /* for Year ID */
 
                         /* if those id avilable then insert data on the base */
@@ -373,7 +376,16 @@ class SchemePerformanceController extends Controller
                             $scheme_performance->panchayat_id = $fetch_panchayat_id;
                             $scheme_performance->subdivision_id = $fetch_subdivision_id;
                             $scheme_performance->attribute = serialize($serializationAttributes[$key]);
-                            $scheme_performance->status = $row['work_status'];
+                            if($status == "Completed")
+                            {
+                                $scheme_performance->status = 1;
+                            }
+                            elseif ($status == "Incompleted") {
+                                $scheme_performance->status = 0;
+                            } 
+                            elseif ($status != "Incompleted" && $status != "Completed") {
+                                $scheme_performance->status = "";
+                            }
                             $scheme_performance->created_by = Session::get('user_id');
                             $scheme_performance->save();
                         } else {  /* Else find id and error write on the notepad */
@@ -438,7 +450,8 @@ class SchemePerformanceController extends Controller
             'SNo.',
             'Block Name',
             'Panchayat Name',
-            'Work Start Fin Year'
+            'Work Start Fin Year',
+            'Status'
         );
         foreach ($unserialDatas as $key_un => $value_un) {
             array_push($data, $value_un['name']);
