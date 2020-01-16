@@ -146,6 +146,7 @@ class SchemePerformanceController extends Controller
                 }
                 $to_append_tbody .= '<td><a  onclick="update_image('.$value_SchemePerformance['scheme_performance_id'].');" href="javascript:void()"> <i class="fas fa-plus"></i>Images</a>';
                 // $to_append_tbody.='<td><button type="button" class="btn btn-danger btn-xs" onclick="delete_row(this)"><i class="fas fa-trash-alt"></i></button></td>';
+                $to_append_tbody.='<br/><a  onclick="coordinates_details('.$value_SchemePerformance['scheme_performance_id'].');" href="javascript:void();"><i class="fas fa-plus"></i>Coordinates</a>';
                 $to_append_tbody .= '</td>';
                 $to_append_tbody .= '<td><select name="status[]" class="form-control">';
                 if ($value_SchemePerformance['status'] == 0)
@@ -194,11 +195,11 @@ class SchemePerformanceController extends Controller
 
 
         // for gallery & coordinates
-        // $to_append_thead .= '<th>Others</th>';
-        // $to_append_row .= '<td><a href="javascript:void();"><i class="fas fa-plus"></i>Images</a>';
+        $to_append_thead .= '<th>Others</th>';
+        $to_append_row .= '<td><a  href="javascript:void();"><i class="fas fa-plus"></i>Images</a>';
         // for coordinates
         // if($scheme_data->geo_related==1){
-        //     $to_append_row.='<br/><a href="javascript:void();"><i class="fas fa-plus"></i>Coordinates</a>';
+            $to_append_row.='<br/><a   href="javascript:void();"><i class="fas fa-plus"></i>Coordinates</a>';
         // }
         $to_append_row .= '</td>';
 
@@ -745,7 +746,10 @@ class SchemePerformanceController extends Controller
         $upload_directory = "public/uploaded_documents/scheme_performance/";
         if ($request->scheme_performance_id != null) {
             $SchemePerformance_edit = SchemePerformance::find($request->scheme_performance_id);
+            if($SchemePerformance_edit->gallery!="")
+            {
             $previous_images_array = unserialize($SchemePerformance_edit->gallery);
+            }
             if ($request->hasFile('galleryFile')) {
     
                 foreach ($request->file('galleryFile') as $file) {
@@ -787,18 +791,18 @@ class SchemePerformanceController extends Controller
     }
     public function get_gallery_image($id="")
     {
-        // $gallery_details =array();
+        $toArray =array();
         $SchemePerformance_fetch_gallery= SchemePerformance::where('scheme_performance_id',$id)->first('gallery');
         // if()
-        $gallery_details="nofound";
+        $gallery_details=array();
         // $gallery_details=unserialize($SchemePerformance_fetch_gallery->gallery);
         if($SchemePerformance_fetch_gallery->gallery!="")
         {
             $gallery_details=unserialize($SchemePerformance_fetch_gallery->gallery);
-            return $gallery_details;
+            return ["gallery"=>$gallery_details];
         }
         // echo "<pre>";
         // print_r($gallery_details);exit;
-        return $gallery_details;
+        return ["gallery"=>$gallery_details];
     }
 }

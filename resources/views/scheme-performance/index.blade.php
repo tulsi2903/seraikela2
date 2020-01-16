@@ -164,6 +164,45 @@
         </div>
     </div>
 </div>
+
+
+/* Coordinates Model */
+<div id="create-coordinates" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title mt-0">Coordinates</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="{{url('scheme_performance/cordinatesupdate')}}" method="post" id="FormsaveImagesforLoacation" enctype="multipart/form-data" autocomplete="off">
+                @csrf
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="card-body p-t-30" style="padding: 11px;">
+                            <div class="form-group">
+                                <input type="text" name="coordinates_lang_value[]" placeholder=""lass="form-control" Required >
+                                <input type="text" name="coordinates_lat_value[]" class="form-control" Required >
+                                
+                            </div>
+                        </div>
+                        <div id="cordinates_details">
+                            <!-- append images -->
+                        </div>
+                    </div>
+                </div>
+
+                <input type="text" class="form-control" name="scheme_performance_id" id="scheme_performance_id_for_coordinates" > <!--  scheme_performance_id -->
+               
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-info waves-effect waves-light">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 <script>
     // to append row
     var to_append_row = "";
@@ -381,8 +420,6 @@
 </script>
 <script>
     function update_image(id) {
-        // alert(id);
-        // $().model
         var scheme_performance=$('#scheme_performance_id').val(id);
         $('#create-gallery').modal('show');
         $.ajax({
@@ -405,16 +442,16 @@
                     // for (var i = 0; i < data.length; i++) {
                     //     $("#panchayat_id").append('<option value="' + data[i].geo_id + '">' + data[i].geo_name + '</option>');
                     // }
-                    if (data!="nofound") {
+                    if (data.gallery.length>0) {
                         var to_append = `<div class="row">
                                 <div class="col-12">
                                     <div><label>Previous Images</label></div>
                                      <div class="form-group">
                                    `;
-                        for (var i = 0; i < data.length; i++) {
+                        for (var i = 0; i < data.gallery.length; i++) {
                             to_append += `<div class="images-delete-block" style="margin-right:5px; display:inline-block; position:relative; padding:3px;border:1px solid #c4c4c4;border-radious:3px;">
-                                <img src="{{url('`+ data[i] + `')}}" style="height:90px; min-height:90px; min-width:80px;">
-                                <span style="position:absolute; top:3px; left:3px; border-radius: 3px; background: rgba(0,0,0,0.5); cursor: pointer; padding: 3px 6px;" class="text-white" onclick="to_delete('`+ data[i] + `',this)"><i class="fas fa-trash" style="text-shadow: 0px 0px 2px black;"></i></span>
+                                <img src="{{url('`+ data.gallery[i] + `')}}" style="height:90px; min-height:90px; min-width:80px;">
+                                <span style="position:absolute; top:3px; left:3px; border-radius: 3px; background: rgba(0,0,0,0.5); cursor: pointer; padding: 3px 6px;" class="text-white" onclick="to_delete('`+ data.gallery[i] + `',this)"><i class="fas fa-trash" style="text-shadow: 0px 0px 2px black;"></i></span>
                             </div>`;
                         }
 
@@ -456,6 +493,13 @@
                 }
             });
         }
+</script>
+<script>
+function coordinates_details(id)
+{
+    var scheme_performance=$('#scheme_performance_id_for_coordinates').val(id);
+        $('#create-coordinates').modal('show');
+}
 </script>
 
 
