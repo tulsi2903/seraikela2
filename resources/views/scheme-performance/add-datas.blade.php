@@ -166,5 +166,11 @@
     });
 
 </script>
+<script>
+function update_image()
+{
+    alert("fdfdf");
+}
+</script>
 
 @endsection

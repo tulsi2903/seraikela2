@@ -144,11 +144,10 @@ class SchemePerformanceController extends Controller
                 foreach ($attributes as $key_att => $attribute) {
                     $to_append_tbody .= '<td><input type="text" name="' . $attribute['id'] . '[]" class="form-control" value="' . $SchemePerformance_attributes[$key_att][$attribute['id']] . '" placeholder="' . $attribute['name'] . '"></td>';
                 }
-                $to_append_tbody .= '<td><a href="javascript:void();"><i class="fas fa-plus"></i>Images</a>';
+                $to_append_tbody .= '<td><a  onclick="update_image('.$value_SchemePerformance['scheme_performance_id'].');" href="javascript:void()"> <i class="fas fa-plus"></i>Images</a>';
+                // $to_append_tbody.='<td><button type="button" class="btn btn-danger btn-xs" onclick="delete_row(this)"><i class="fas fa-trash-alt"></i></button></td>';
                 $to_append_tbody .= '</td>';
-                $to_append_tbody .= '<td>
-                            <select name="status[]" class="form-control">
-                                ';
+                $to_append_tbody .= '<td><select name="status[]" class="form-control">';
                 if ($value_SchemePerformance['status'] == 0)
                     $to_append_tbody .= '<option value="0">Ongoing</option>';
                 if ($value_SchemePerformance['status'] == 1)
@@ -287,9 +286,9 @@ class SchemePerformanceController extends Controller
         foreach ($diff_result as $key => $value_diff) {
             $pcc_enitity_record = SchemePerformance::where('scheme_performance_id', $value_diff)->delete();
         }
-        session()->put('alert-class', 'alert-danger');
-        session()->put('alert-content', 'You Have Existed Maximum No. Row at a Time');
-        return back();
+        session()->put('alert-class', 'alert-success');
+        session()->put('alert-content', 'New performance data(s) has been saved successfully!');
+        // return back();
         // exit;
         return redirect('scheme-performance');
     }
@@ -737,5 +736,69 @@ class SchemePerformanceController extends Controller
     //     return ["response"=>$response, "data"=>$to_return];
     // }
 
+    public function saveImagesofscheme_performance(Request $request)
+    {
+        # code...
+        // return $request;
+        // return $request;
+        $previous_images_array = array();
+        $upload_directory = "public/uploaded_documents/scheme_performance/";
+        if ($request->scheme_performance_id != null) {
+            $SchemePerformance_edit = SchemePerformance::find($request->scheme_performance_id);
+            $previous_images_array = unserialize($SchemePerformance_edit->gallery);
+            if ($request->hasFile('galleryFile')) {
+    
+                foreach ($request->file('galleryFile') as $file) {
+                    $images_tmp_name = "scheme_performance-" . time() . rand(1000, 5000) . '.' . strtolower($file->getClientOriginalExtension());
+                    $file->move($upload_directory, $images_tmp_name);   // move the file to desired folder
+                    array_push($previous_images_array, $upload_directory . $images_tmp_name);    // appending location of image in previous image array for further insertion into database
+                }
+                $SchemePerformance_edit->gallery = serialize($previous_images_array);    // assign the location of folder to the model
+            }
+    
+    
+            $SchemePerformance_edit->save();
+            # code...
+                $schemeperformance_gallery = SchemePerformance::select("scheme_performance_id", "gallery")->where('scheme_performance_id', $request->scheme_performance_id)->first();
+                if ($schemeperformance_gallery) {
+                    if ($request->gallery_images_delete) {
+                        $to_delete_image_arr = explode(",", $request->gallery_images_delete);
+                        for ($i = 0; $i < count($to_delete_image_arr); $i++) {
+                            if (file_exists($to_delete_image_arr[$i])) {
+                                unlink($to_delete_image_arr[$i]);
+                            }
+                        }
+                        if ($schemeperformance_gallery) {
+                            $scheme_per_gallery_delete = SchemePerformance::find($schemeperformance_gallery->scheme_performance_id);
+                            $scheme_per_gallery_delete->gallery = serialize(array_values(array_diff(unserialize($scheme_per_gallery_delete->gallery), $to_delete_image_arr))); //array_diff remove matching elements from 1, array_values changes index starting from 0
+                            $scheme_per_gallery_delete->save();
+                        }
+                    }
+                }
+            }
+        // }
 
+        session()->put('alert-class', 'alert-success');
+        session()->put('alert-content', 'Location Gallery have been successfully submitted !');
+        // echo "done";
+        // exit;
+        return redirect('scheme-performance');
+        // return redirect('asset-numbers/add?purpose=edit&id=' . $request->asset_number_image_id);
+    }
+    public function get_gallery_image($id="")
+    {
+        // $gallery_details =array();
+        $SchemePerformance_fetch_gallery= SchemePerformance::where('scheme_performance_id',$id)->first('gallery');
+        // if()
+        $gallery_details="nofound";
+        // $gallery_details=unserialize($SchemePerformance_fetch_gallery->gallery);
+        if($SchemePerformance_fetch_gallery->gallery!="")
+        {
+            $gallery_details=unserialize($SchemePerformance_fetch_gallery->gallery);
+            return $gallery_details;
+        }
+        // echo "<pre>";
+        // print_r($gallery_details);exit;
+        return $gallery_details;
+    }
 }

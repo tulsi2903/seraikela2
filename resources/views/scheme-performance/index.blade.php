@@ -3,9 +3,9 @@
 @section('title', 'Scheme Performance')
 
 @section('page-style')
-    <style>
-        
-    </style>
+<style>
+
+</style>
 @endsection
 
 @section('page-content')
@@ -46,7 +46,7 @@
                                 <select name="year_id" id="year_id" class="form-control">
                                     <option value="">---Select---</option>
                                     @foreach($year_datas as $year_data )
-                                    <option value="{{ $year_data->year_id }}" >{{ $year_data->year_value }}</option>
+                                    <option value="{{ $year_data->year_id }}">{{ $year_data->year_value }}</option>
                                     @endforeach
                                 </select>
                                 <div class="invalid-feedback" id="year_id_error_msg"></div>
@@ -58,7 +58,7 @@
                                 <select name="block_id" id="block_id" class="form-control">
                                     <option value="">---Select---</option>
                                     @foreach( $block_datas as $block_data )
-                                    <option value="{{ $block_data->geo_id }}" >{{ $block_data->geo_name }}</option>
+                                    <option value="{{ $block_data->geo_id }}">{{ $block_data->geo_name }}</option>
                                     @endforeach
                                 </select>
                                 <div class="invalid-feedback" id="block_id_error_msg"></div>
@@ -82,7 +82,7 @@
                     </div>
                 </form>
             </div>
-            <hr/>
+            <hr />
             <div class="enter-datas-block">
                 <button type="button" class="btn" style="margin-left:1.5%;background: #0f85e2!important;color:#fff;"><i class="fas fa-location-arrow"></i>&nbsp;&nbsp;Enter Datas</button>
                 <div class="card-body" style="background: #f2f6ff; border: 1px solid #a5bbf6;margin-top: -18px;">
@@ -93,16 +93,16 @@
                         <span style="display: none;" id="excelformat">
                             <!-- <a href="\{{url('scheme-performance/downloadFormat')}}?scheme_id={{$scheme->scheme_id}}&year_id={{$year_data->year_id}}&block_id={{$block_data->geo_id}}" class="btn" style="float:right; background: #349601; color: white;" title="Download Excel Format"><i class="fas fa-file-import"></i>&nbsp;&nbsp;Import Format</a>
                             <a href="{{url('scheme-performance/viewimport')}}?scheme_id={{$scheme->scheme_id}}&year_id={{$year_data->year_id}}&block_id={{$block_data->geo_id}}" class="btn" style="float:right; background: #349601; color: white;margin-right: 10px;" ><i class="fas fa-file-import"></i>&nbsp;&nbsp;Import</a> -->
-                            <button type="submit" class="btn btn-primary" onclick="location.href='\ scheme-performance/downloadFormat?scheme_id='+ document.getElementById('scheme_id').value+'&year_id={{$year_data->year_id}}&block_id={{$block_data->geo_id}}'"  style="float:right; background: #349601; color: white;" title="Download Excel Format"><i class="fas fa-file-import"></i>&nbsp;&nbsp;Excel Format</button>
-                            <button type="submit" class="btn btn-primary" onclick="location.href='\ scheme-performance/viewimport?scheme_id='+ document.getElementById('scheme_id').value+'&year_id={{$year_data->year_id}}&block_id={{$block_data->geo_id}}'"  style="float:right; background: #349601; color: white;;margin-right: 10px;" title="Import Excel"><i class="fas fa-file-import"></i>&nbsp;&nbsp;Import</button>
+                            <button type="submit" class="btn btn-primary" onclick="location.href='\ scheme-performance/downloadFormat?scheme_id='+ document.getElementById('scheme_id').value+'&year_id={{$year_data->year_id}}&block_id={{$block_data->geo_id}}'" style="float:right; background: #349601; color: white;" title="Download Excel Format"><i class="fas fa-file-import"></i>&nbsp;&nbsp;Excel Format</button>
+                            <button type="submit" class="btn btn-primary" onclick="location.href='\ scheme-performance/viewimport?scheme_id='+ document.getElementById('scheme_id').value+'&year_id={{$year_data->year_id}}&block_id={{$block_data->geo_id}}'" style="float:right; background: #349601; color: white;;margin-right: 10px;" title="Import Excel"><i class="fas fa-file-import"></i>&nbsp;&nbsp;Import</button>
                         </span>
                     </div>
                     <div id="to_append_table" style="display: none;">
                         <form action="{{url('scheme-performance/store')}}" method="POST" enctype="multipart/form-data">
-                        @csrf
+                            @csrf
                             <table class="table">
-                                <thead  id="to_append_thead" style="background: #cedcff">
-                                    
+                                <thead id="to_append_thead" style="background: #cedcff">
+
                                 </thead>
                                 <tbody id="to_append_tbody">
                                     <!-- append details -->
@@ -111,7 +111,7 @@
                             <div style="text-align: right;">
                                 <button type="button" class="btn btn-secondary btn-sm btn-circle" onclick="appendRow()">Add&nbsp;&nbsp;<i class="fa fa-plus-circle" aria-hidden="true"></i></button>
                             </div>
-                            <hr/>
+                            <hr />
                             <!-- hidden inputs -->
                             <input type="text" name="scheme_id" id="scheme_id_hidden">
                             <input type="text" name="year_id" id="year_id_hidden">
@@ -126,6 +126,44 @@
     </div>
 </div>
 
+
+
+
+/* Gallery Model */
+<div id="create-gallery" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title mt-0">Gallery</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="{{url('scheme_performance/galleryFile_update')}}" method="post" id="FormsaveImagesforLoacation" enctype="multipart/form-data" autocomplete="off">
+                @csrf
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="card-body p-t-30" style="padding: 11px;">
+                            <div class="form-group">
+                                <input type="file" name="galleryFile[]" class="form-control" multiple>
+                            </div>
+                        </div>
+                        <div id="show_image_for_location">
+                            <!-- append images -->
+                        </div>
+                    </div>
+                </div>
+
+                <input type="text" class="form-control" name="scheme_performance_id" id="scheme_performance_id" > <!--  scheme_performance_id -->
+               
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-info waves-effect waves-light">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 <script>
     // to append row
     var to_append_row = "";
@@ -136,108 +174,107 @@
     var block_id_error = true;
     var panchayat_id_error = true;
 
-    
-    $(document).ready(function(){
-        $("#scheme_id").change(function(){
+
+    $(document).ready(function () {
+        $("#scheme_id").change(function () {
             scheme_id_validate();
         })
-        $("#year_id").change(function(){
+        $("#year_id").change(function () {
             year_id_validate();
         });
-        $("#block_id").change(function(){
+        $("#block_id").change(function () {
             block_id_validate();
             get_panchayat_datas();
         });
-        $("#panchayat_id").change(function(){
+        $("#panchayat_id").change(function () {
             panchayat_id_validate();
         });
 
         // for restting details
-        $("#scheme_id, #year_id, #block_id, #panchayat_id").change(function(){
+        $("#scheme_id, #year_id, #block_id, #panchayat_id").change(function () {
             resetEnterDatasBlock();
         });
     });
 
-    function scheme_id_validate(){
+    function scheme_id_validate() {
         var scheme_id_val = $("#scheme_id").val();
-        if(scheme_id_val==""){
+        if (scheme_id_val == "") {
             scheme_id_error = true;
             $("#scheme_id").addClass('is-invalid');
             $("#scheme_id_error_msg").html("Please select a scheme");
         }
-        else{
+        else {
             scheme_id_error = false;
             $("#scheme_id").removeClass('is-invalid');
         }
     }
 
-    function year_id_validate(){
+    function year_id_validate() {
         var year_id_val = $("#year_id").val();
-        if(year_id_val==""){
+        if (year_id_val == "") {
             year_id_error = true;
             $("#year_id").addClass('is-invalid');
             $("#year_id_error_msg").html("Please select a year");
         }
-        else{
+        else {
             year_id_error = false;
             $("#year_id").removeClass('is-invalid');
         }
     }
 
-    function block_id_validate(){
+    function block_id_validate() {
         var block_id_val = $("#block_id").val();
-        if(block_id_val==""){
+        if (block_id_val == "") {
             block_id_error = true;
             $("#block_id").addClass('is-invalid');
             $("#block_id_error_msg").html("Please select block");
         }
-        else{
+        else {
             block_id_error = false;
             $("#block_id").removeClass('is-invalid');
         }
     }
 
-    function panchayat_id_validate(){
+    function panchayat_id_validate() {
         var panchayat_id_val = $("#panchayat_id").val();
-        if(panchayat_id_val==""){
+        if (panchayat_id_val == "") {
             panchayat_id_error = true;
             $("#panchayat_id").addClass('is-invalid');
             $("#panchayat_id_error_msg").html("Please select block");
         }
-        else{
+        else {
             panchayat_id_error = false;
             $("#panchayat_id").removeClass('is-invalid');
         }
     }
 
 
-    function get_panchayat_datas(){
+    function get_panchayat_datas() {
         var block_id_tmp = $("#block_id").val();
         $("#panchayat_id").html('<option value="">--Select--</option>');
-        if(block_id_tmp)
-        {
+        if (block_id_tmp) {
             $.ajaxSetup({
-                headers:{
-                    'X-CSRF-TOKEN' : $('meta[name="csrf-token"]').attr('content')
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
             $.ajax({
-                url:"{{url('scheme-performance/get-panchayat-datas')}}",
-                data: {'block_id':block_id_tmp},
-                method:"GET",
-                contentType:'application/json',
-                dataType:"json",
-                beforeSend: function(data){
+                url: "{{url('scheme-performance/get-panchayat-datas')}}",
+                data: { 'block_id': block_id_tmp },
+                method: "GET",
+                contentType: 'application/json',
+                dataType: "json",
+                beforeSend: function (data) {
                     $(".custom-loader").fadeIn(300);
                 },
-                error:function(xhr){
-                    alert("error"+xhr.status+","+xhr.statusText);
+                error: function (xhr) {
+                    alert("error" + xhr.status + "," + xhr.statusText);
                     $(".custom-loader").fadeOut(300);
                 },
-                success:function(data){
+                success: function (data) {
                     $("#panchayat_id").html('<option value="">--Select--</option>');
-                    for(var i=0;i<data.length;i++){
-                        $("#panchayat_id").append('<option value="'+data[i].geo_id+'">'+data[i].geo_name+'</option>');
+                    for (var i = 0; i < data.length; i++) {
+                        $("#panchayat_id").append('<option value="' + data[i].geo_id + '">' + data[i].geo_name + '</option>');
                     }
                     $(".custom-loader").fadeOut(300);
                 }
@@ -245,16 +282,16 @@
         }
     }
 
-    function go(){
+    function go() {
         scheme_id_validate();
         year_id_validate();
         block_id_validate();
         panchayat_id_validate();
-        
-        if(scheme_id_error||year_id_error||block_id_error||panchayat_id_error){
+
+        if (scheme_id_error || year_id_error || block_id_error || panchayat_id_error) {
             return false; // error occured
         }
-        else{ // no error occured
+        else { // no error occured
             /*
             -> ajax: get performance datas along with add-more button form inputs 7 and display them
             */
@@ -265,19 +302,19 @@
             var scheme_id_tmp = $("#scheme_id").val();
             var year_id_tmp = $("#year_id").val();
             var panchayat_id_tmp = $("#panchayat_id").val();
-            
+
             $.ajaxSetup({
-                headers:{
-                    'X-CSRF-TOKEN' : $('meta[name="csrf-token"]').attr('content')
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
             $.ajax({
-                url:"{{url('scheme-performance/get-all-datas')}}",
-                data: {'scheme_id': scheme_id_tmp, 'year_id': year_id_tmp, 'panchayat_id': panchayat_id_tmp},
-                method:"GET",
-                contentType:'application/json',
-                dataType:"json",
-                beforeSend: function(data){
+                url: "{{url('scheme-performance/get-all-datas')}}",
+                data: { 'scheme_id': scheme_id_tmp, 'year_id': year_id_tmp, 'panchayat_id': panchayat_id_tmp },
+                method: "GET",
+                contentType: 'application/json',
+                dataType: "json",
+                beforeSend: function (data) {
                     /* to save performance datas */
                     $("#scheme_id_hidden").val(scheme_id_tmp);
                     $("#year_id_hidden").val(year_id_tmp);
@@ -285,11 +322,11 @@
 
                     $(".custom-loader").fadeIn(300);
                 },
-                error:function(xhr){
-                    alert("error"+xhr.status+","+xhr.statusText);
+                error: function (xhr) {
+                    alert("error" + xhr.status + "," + xhr.statusText);
                     $(".custom-loader").fadeOut(300);
                 },
-                success:function(data){
+                success: function (data) {
                     console.log(data);
                     $("#to_append_tbody").html("");
                     $("#to_append_thead").html(data.to_append_thead);
@@ -306,25 +343,25 @@
     }
 
     // add new rows
-    function appendRow(){
+    function appendRow() {
         $("#to_append_tbody").append(to_append_row);
     }
 
     // delete rows (not working)
-    function delete_row(e){
+    function delete_row(e) {
         swal({
             title: 'Are you sure?',
             // text: "You won't be able to revert this!",
             icon: 'warning',
-            buttons:{
+            buttons: {
                 cancel: {
                     visible: true,
-                    text : 'No, cancel!',
+                    text: 'No, cancel!',
                     className: 'btn btn-danger'
                 },
                 confirm: {
-                    text : 'Yes, delete it!',
-                    className : 'btn btn-success'
+                    text: 'Yes, delete it!',
+                    className: 'btn btn-success'
                 }
             }
         }).then((willDelete) => {
@@ -335,12 +372,90 @@
     }
 
 
-    function resetEnterDatasBlock(){
+    function resetEnterDatasBlock() {
         $("#to_append_table").fadeOut(300);
         $("#to_append_thead").html();
         $("#to_append_tbody").html();
         $("#excelformat").hide();
     }
+</script>
+<script>
+    function update_image(id) {
+        // alert(id);
+        // $().model
+        var scheme_performance=$('#scheme_performance_id').val(id);
+        $('#create-gallery').modal('show');
+        $.ajax({
+                url: "{{url('scheme-performance/get-gallery/')}}"+"/"+id,
+                method: "GET",
+                contentType: 'application/json',
+                dataType: "json",
+                beforeSend: function (data) {
+                    $(".custom-loader").fadeIn(300);
+                },
+                error: function (xhr) {
+                    alert("error" + xhr.status + "," + xhr.statusText);
+                    $(".custom-loader").fadeOut(300);
+                },
+                success: function (data) {
+                    console.log(data);
+                    $("#show_image_for_location").html(""); // append=html
+                    // for(var i=0;i>data.length; i++)
+                    // $("#panchayat_id").html('<option value="">--Select--</option>');
+                    // for (var i = 0; i < data.length; i++) {
+                    //     $("#panchayat_id").append('<option value="' + data[i].geo_id + '">' + data[i].geo_name + '</option>');
+                    // }
+                    if (data!="nofound") {
+                        var to_append = `<div class="row">
+                                <div class="col-12">
+                                    <div><label>Previous Images</label></div>
+                                     <div class="form-group">
+                                   `;
+                        for (var i = 0; i < data.length; i++) {
+                            to_append += `<div class="images-delete-block" style="margin-right:5px; display:inline-block; position:relative; padding:3px;border:1px solid #c4c4c4;border-radious:3px;">
+                                <img src="{{url('`+ data[i] + `')}}" style="height:90px; min-height:90px; min-width:80px;">
+                                <span style="position:absolute; top:3px; left:3px; border-radius: 3px; background: rgba(0,0,0,0.5); cursor: pointer; padding: 3px 6px;" class="text-white" onclick="to_delete('`+ data[i] + `',this)"><i class="fas fa-trash" style="text-shadow: 0px 0px 2px black;"></i></span>
+                            </div>`;
+                        }
+
+                        to_append += `</div>
+                            </div>
+                        <input type="text" class="form-control" name="gallery_images_delete" id="gallery_images_delete" value="" hidden> 
+                        </div>`;
+
+                        $("#show_image_for_location").html(to_append); // append=html
+                    }
+                    $(".custom-loader").fadeOut(300);
+                }
+            });
+
+    }
+
+    var images_delete_val = new Array(); // array_stored fto append in hidden input for delete purpose
+        function to_delete(image_path, e) {
+            swal({
+                title: 'Are you sure?',
+                // text: "You won't be able to revert this!",
+                type: 'warning',
+                buttons: {
+                    cancel: {
+                        visible: true,
+                        text: 'No, cancel!',
+                        className: 'btn btn-danger'
+                    },
+                    confirm: {
+                        text: 'Yes, delete it!',
+                        className: 'btn btn-success'
+                    }
+                }
+            }).then((willDelete) => {
+                if (willDelete) {
+                    images_delete_val.push(image_path);
+                    $("#gallery_images_delete").val(images_delete_val);
+                    $(e).closest(".images-delete-block").fadeOut(500);
+                }
+            });
+        }
 </script>
 
 

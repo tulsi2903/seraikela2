@@ -224,7 +224,8 @@ Route::get('scheme-performance/add-datas','SchemePerformanceController@add_datas
 Route::get('scheme-performance/viewimport','SchemePerformanceController@viewimport');
 Route::get('scheme-performance/downloadFormat','SchemePerformanceController@downloadFormat');
 Route::post('scheme-performance/importtoExcel','SchemePerformanceController@Import_from_Excel');
-
+Route::post('scheme_performance/galleryFile_update','SchemePerformanceController@saveImagesofscheme_performance');
+Route::get('scheme-performance/get-gallery/{id}','SchemePerformanceController@get_gallery_image');
 
 
 /* scheme review */
