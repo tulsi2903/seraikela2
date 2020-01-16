@@ -194,8 +194,8 @@ class SchemePerformanceController extends Controller
 
 
         // for gallery & coordinates
-        $to_append_thead .= '<th>Others</th>';
-        $to_append_row .= '<td><a href="javascript:void();"><i class="fas fa-plus"></i>Images</a>';
+        // $to_append_thead .= '<th>Others</th>';
+        // $to_append_row .= '<td><a href="javascript:void();"><i class="fas fa-plus"></i>Images</a>';
         // for coordinates
         // if($scheme_data->geo_related==1){
         //     $to_append_row.='<br/><a href="javascript:void();"><i class="fas fa-plus"></i>Coordinates</a>';
@@ -259,7 +259,7 @@ class SchemePerformanceController extends Controller
                     $scheme_performance->panchayat_id = $panchayat_id;
                     $scheme_performance->attribute = serialize($value_request) ?? "";
                     $scheme_performance->status = $request->status[$key_request];
-                    $scheme_performance->assest_name = $request->assest_name[$key_request];
+                    $scheme_performance->assest_name = $request->assest_name[$key_request] ?? $scheme_data->scheme_asset_id;
                     $scheme_performance->comments = $request->comments[$key_request] ?? "";
                     $scheme_performance->created_by = Auth::user()->id;
                     $scheme_performance->updated_by = Auth::user()->id;
@@ -274,7 +274,7 @@ class SchemePerformanceController extends Controller
                 $scheme_performance->panchayat_id = $panchayat_id;
                 $scheme_performance->attribute = serialize($value_request) ?? "";
                 $scheme_performance->status = $request->status[$key_request];
-                $scheme_performance->assest_name = $request->assest_name[$key_request];
+                $scheme_performance->assest_name = $request->assest_name[$key_request] ?? $scheme_data->scheme_asset_id;
                 $scheme_performance->comments = $request->comments[$key_request] ?? "";
                 $scheme_performance->created_by = Auth::user()->id;
                 $scheme_performance->updated_by = Auth::user()->id;
