@@ -116,7 +116,7 @@
                             <input type="hidden" name="scheme_id" id="scheme_id_hidden">
                             <input type="hidden" name="year_id" id="year_id_hidden">
                             <input type="hidden" name="panchayat_id" id="panchayat_id_hidden">
-                            <input type="text" name="to_delete" id="to_delete" >
+                            <input type="hidden" name="to_delete" id="to_delete" >
                             <!-- hidden inputs -->
                             <button type="submit" class="btn btn-secondary"><i class="fas fa-check"></i>&nbsp;&nbsp;Save</button>
                         </form>
@@ -183,7 +183,10 @@
                     <div class="row">
                         <div class="card-body p-t-30" style="padding: 11px;">
                             <div class="form-group">
+                                <label for="coordinates_lang_value">Longitude</label>
                                 <input type="text" name="coordinates_lang_value" id="coordinates_lang_value" placeholder="Longitude" class="form-control" Required >
+                                <label for="coordinates_lang_value">Longitude</label>
+
                                 <input type="text" name="coordinates_lat_value" id="coordinates_lat_value" placeholder="Latitude" class="form-control" Required >
                                 
                             </div>

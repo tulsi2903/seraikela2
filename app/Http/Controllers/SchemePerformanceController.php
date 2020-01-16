@@ -105,7 +105,6 @@ class SchemePerformanceController extends Controller
         return view('scheme-performance.add-datas')->with(compact('scheme_data', 'year_data', 'scheme_asset_data', 'panchayat_data', 'block_data', 'scheme_performance_data'));
     }
 
-
     public function get_panchayat_datas(Request $request)
     {
         $datas = GeoStructure::where('bl_id', $request->block_id)->get();
