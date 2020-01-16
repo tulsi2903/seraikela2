@@ -34,6 +34,8 @@
                     <a href="{{url('asset_Numbers/pdf/pdfURL')}}" target="_blank" data-toggle="tooltip" title="Export to PDF"><button type="button" class="btn btn-icon btn-round btn-warning"><i class="fas fa-file-export"></i></button></a>
                     <a href="{{url('asset_Numbers/export/excelURL')}}" data-toggle="tooltip" title="Export to Excel"><button type="button" class="btn btn-icon btn-round btn-primary"><i class="fas fa-file-excel"></i></button></a>
                     @if($desig_permissions["mod14"]["add"])
+                    <a href="{{url('asset_Numbers/downloadFormat')}}" data-toggle="tooltip" title="Excel Format"><button type="button" class="btn btn-icon btn-round btn-primary" ><i class="fa fa-download"></i></button></a>
+                    <a href="{{url('asset_Numbers/changeViewforimport')}}" data-toggle="tooltip" title="Import From Excel"><button type="button" class="btn btn-icon btn-round btn-default" ><i class="fa fa-upload"></i></button></a>
                     <a class="btn btn-secondary" href="{{url('asset-numbers/add')}}" role="button"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;Add</a>
                     @endif
                 </div>

@@ -14,6 +14,7 @@ use App\AssetGallery;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\AssetNumberSectionExport;
 use PDF;
+use Session;
 
 class AssetNumbersController extends Controller
 {
@@ -659,5 +660,132 @@ class AssetNumbersController extends Controller
         session()->put('alert-class', 'alert-success');
         session()->put('alert-content', 'Location Gallery have been successfully submitted !');
         return redirect('asset-numbers/add?purpose=edit&id=' . $request->asset_number_image_id);
+    }
+
+    public function downloadFormat()
+    {
+        # code...
+        $data[] = array('SNo.', 'Year', 'Resource Name', 'Panchayat Name', 'Previous Value', 'Current Value');
+
+        \Excel::create('Resource Number-Format', function ($excel) use ($data) {
+
+            // Set the title
+            $excel->setTitle('Resource Number-Format');
+
+            // Chain the setters
+            $excel->setCreator('Seraikela')->setCompany('Seraikela');
+
+            $excel->sheet('Resource Number-Format', function ($sheet) use ($data) {
+                // $sheet->freezePane('A3');
+                // $sheet->mergeCells('A1:I1');
+                $sheet->fromArray($data, null, 'A1', true, false);
+                $sheet->setColumnFormat(array('I1' => '@'));
+            });
+        })->download('xls');
+    }
+
+    public function changeViewforimport()
+    {
+        # code...
+        return view('asset-numbers.ImportExcel');
+    }
+
+    public function saveimporttoExcel(Request $request)
+    {
+        // return $request;
+        if ($_FILES['excel_for_asset_number']['tmp_name']) {
+            $readExcel = \Excel::load($_FILES['excel_for_asset_number']['tmp_name'], function ($reader) { })->get()->toArray();
+            $readExcelHeader = \Excel::load($_FILES['excel_for_asset_number']['tmp_name'])->get();
+            $excelSheetHeadings = $readExcelHeader->first()->keys()->toArray(); /* this is for excel sheet heading */
+            
+            if(count($readExcel)<=250)
+            { 
+                $filename = "ResourceNumber ErrorLog.txt"; /* error file name */
+                $myfile = fopen($filename, "w"); /* open error file name by using fopen function */
+                foreach ($readExcel as $key => $row) { /* Insert Data By using for each one by one */
+                    // $block_name =  ucwords($row['block_name']);
+                    // $fetch_block_id = GeoStructure::where('geo_name', $block_name)->value('geo_id'); /* for block ID */
+
+                    $panchayat_name =   ucwords($row['panchayat_name']);
+                    $asset_name =   ucwords($row['resource_name']);
+                    $fetch_panchayat_id = GeoStructure::where('geo_name', $panchayat_name)->value('geo_id'); /* for Panchayat ID */
+                    $fetch_asset_id = Asset::where('asset_name', $asset_name)->value('asset_id'); /* for Panchayat ID */ 
+                    $fetch_year_id = Year::where('year_value', $row['year'])->value('year_id'); /* for Year ID */
+                    $fetch_asset_number_edit = AssetNumbers::where('asset_id', $fetch_asset_id)->where('geo_id', $fetch_panchayat_id)->value('asset_numbers_id');
+                    if ($row['sno.'] != null && $fetch_panchayat_id != null && $fetch_year_id != null && $fetch_asset_id != null) {
+                        if($fetch_asset_number_edit != null)
+                        {
+                            $AssetNumbers = AssetNumbers::find($fetch_asset_number_edit);
+                            $AssetNumbers->pre_value = $row['previous_value'];
+                            $AssetNumbers->current_value = $row['current_value'];
+                            $AssetNumbers->updated_by = Session::get('user_id');
+                            $AssetNumbers->save();
+                        }
+                        else {
+                            $asset_number = new AssetNumbers;
+                            $asset_number->year = $fetch_year_id;
+                            $asset_number->asset_id = $fetch_asset_id;
+                            $asset_number->geo_id = $fetch_panchayat_id;
+                            $asset_number->pre_value = $row['previous_value'];
+                            $asset_number->current_value = $row['current_value'];
+            
+                            $asset_number->created_by = Session::get('user_id');
+                            
+                            $asset_number->save();
+                        }
+                    }else {  /* Else find id and error write on the notepad */
+                        if ($row['sno.'] != null) {
+                            if ($fetch_asset_id == null && $fetch_panchayat_id != null && $fetch_year_id != null) {
+                                $txt = " ON row sno. " . $row['sno.'] . " Resources Not Found \n";
+                                fwrite($myfile, $txt);
+                            } elseif ($fetch_panchayat_id == null && $fetch_asset_id != null && $fetch_year_id != null) {
+                                $txt = " ON row sno. " . $row['sno.'] . " Panchayat Not Found \n";
+                                fwrite($myfile, $txt);
+                            } elseif ($fetch_year_id == null && $fetch_panchayat_id != null && $fetch_asset_id != null) {
+                                $txt = " ON row sno. " . $row['sno.'] . " Year Not Found \n";
+                                fwrite($myfile, $txt);
+                            } elseif ($fetch_year_id == null && $fetch_panchayat_id == null && $fetch_asset_id != null) {
+                                $txt = " ON row sno. " . $row['sno.'] . " Year And Panchayat Not Found \n";
+                                fwrite($myfile, $txt);
+                            } elseif ($fetch_year_id != null && $fetch_panchayat_id == null && $fetch_asset_id == null) {
+                                $txt = " ON row sno. " . $row['sno.'] . " Resources And Panchayat Not Found \n";
+                                fwrite($myfile, $txt);
+                            } elseif ($fetch_year_id == null && $fetch_panchayat_id != null && $fetch_asset_id == null) {
+                                $txt = " ON row sno. " . $row['sno.'] . " Resources And Year Not Found \n";
+                                fwrite($myfile, $txt);
+                            } elseif ($fetch_year_id == null && $fetch_panchayat_id == null && $fetch_asset_id == null) {
+                                $txt = " ON row sno. " . $row['sno.'] . " Year Resources And Panchayat Not Found \n";
+                                fwrite($myfile, $txt);
+                            }
+                        } else {
+                            $txt = " Serial Number Not Available \n";
+                            fwrite($myfile, $txt);
+                        }
+                    }
+                }
+                fclose($myfile); //close file
+                if (file_get_contents($filename) == null) //if error file does not exit ant data then popup message success
+                {
+                    session()->put('alert-class', 'alert-success');
+                    session()->put('alert-content', 'Resources Numbers details has been saved');
+                    return back();
+                } else { //Else download the error notepad file
+                    header("Cache-Control: public");
+                    header("Content-Description: File Transfer");
+                    header("Content-Length: " . filesize("$filename") . ";");
+                    header("Content-Disposition: attachment; filename=$filename");
+                    header("Content-Type: application/octet-stream; ");
+                    header("Content-Transfer-Encoding: binary");
+                    readfile($filename);
+                    exit;
+                }
+            }
+            else
+            {
+                session()->put('alert-class', 'alert-danger');
+                session()->put('alert-content', 'You Have Excited Maximum No. of Row at a Time');
+                return back();
+            }
+        }
     }
 }
