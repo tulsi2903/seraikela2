@@ -247,10 +247,8 @@ class AssetReviewController extends Controller
         }
         $year = $request->year_id;
 
-        // varible needed
-        $block_datas; // block_id, block_name
-
         // assigning block datas
+        $block_datas; // block_id, block_name
         if($review_for=="block"){
             $block_datas = GeoStructure::select('geo_id as block_id','geo_name as block_name')->whereIn('geo_id', $geo_id)->get();
         }

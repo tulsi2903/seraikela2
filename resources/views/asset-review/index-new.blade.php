@@ -456,7 +456,7 @@
                     <div class="tab-pane fade printable-area" id="map-view-tab" role="tabpanel">
                         <!-- <h4>Map View&nbsp;<button type="button" class="btn btn-secondary btn-sm print-button" onclick="printReview('map')">Print&nbsp;<i class="fa fa-print" aria-hidden="true"></i></button></h4> -->
                         <div id="map-view">
-                            <div id="mapCanvas" style="width: 100%; height: 600px; border-radius: 3px; 1px solid rgb(140, 140, 140); box-shadow: -2px 6px 10px 0px #00000052;"></div>
+                            <div id="mapCanvas" style="width: 100%; height: 600px; border-radius: 3px; border: 1px solid rgb(140, 140, 140); box-shadow: -2px 6px 10px 0px #00000052;"></div>
                         </div>
                         <div class="no-data" style="width: 100%; height: 400px; border-radius: 8px;">
                             <i class="fas fa-info-circle text-success"></i>&nbsp;&nbsp;No geo locations found
@@ -861,7 +861,8 @@
             url: marker_icon, // url
             scaledSize: new google.maps.Size(50, 50), // scaled size
             origin: new google.maps.Point(0, 0), // origin
-            anchor: new google.maps.Point(0, 0) // anchor
+            anchor: new google.maps.Point(0, 0), // anchor
+            optimized: false
         };
         var mapCanvas = document.getElementById('mapCanvas');
         var mapOptions = {
@@ -1001,36 +1002,4 @@
         });
     });
 </script>
-
-<!-- 
-Process: (Block Level)
-1. search()-> after year, department, blocks(svg) selected
-    -> reset all views (call respective function for better resetting)
-    -> show errors (year, department, blocks)
-    -> call ajax to get data
-    -> on success
-        -> if no_data -> show no data in all in one div
-        -> if success -> call initialiaze (all views) pass respective data
-2. On each initialization function
-    a) tabular view
-        -> receive data as arugument and show table
-    b) chart view
-        -> receive data as argument and show chart
-    c) map view
-        -> receive data as arugument -> assign/append options for block & asset
-        -> on search
-            -> check errors for input fields (asset, blocks)
-            -> cal ajax to get location data according to block and asset
-            -> on success
-                -> if no_data -> show message
-                -> success -> show map markers on map
-
-Reset Function:
-1. Tabular view
-    -> table html("")
-2. Chart View
-    -> destroy chart
-3. Map view
-    -> destroy map, 
- -->
 @endsection

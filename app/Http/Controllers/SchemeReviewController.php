@@ -12,6 +12,7 @@ use App\SchemeIndicator;
 use App\SchemeGeoTarget;
 use App\SchemeGeoLocation;
 use App\SchemePerformance;
+use App\SchemeAsset;
 use App\Group;
 use DB;
 
@@ -19,18 +20,10 @@ class SchemeReviewController extends Controller
 {
     //
     public function index(Request $request){
-        $review_type = "scheme";  // scheme, group
-        if(isset($request->review_type)){
-            if($request->review_type=="scheme"||$request->review_type=="group"){
-                $review_type = $request->review_type;
-            }
-        }
-        $block_datas = GeoStructure::where('level_id','3')->get();
-        $department_datas = Department::orderBy('dept_name')->get();
-        $year_datas = Year::select('year_id','year_value')->get();
-        $scheme_datas = SchemeStructure::select('scheme_id','scheme_name','scheme_short_name')->get();
-        $scheme_group_datas = Group::select('scheme_group_id','scheme_group_name')->get();
-        return view('scheme-review.index')->with(compact('review_type', 'block_datas','year_datas','department_datas','scheme_datas','scheme_group_datas'));
+        $year_datas = Year::select('year_id','year_value')->where('status', 1)->get();
+        $scheme_datas = SchemeStructure::select('scheme_id','scheme_name','scheme_is','scheme_short_name')->where('status', 1)->get();
+        $scheme_asset_datas = SchemeAsset::select('scheme_asset_id','scheme_asset_name')->get();
+        return view('scheme-review.index')->with(compact('year_datas','scheme_datas','scheme_asset_datas'));
     }
 
     public function get_panchayat_data(Request $request){
@@ -285,6 +278,75 @@ class SchemeReviewController extends Controller
         }
 
         return ['review_for'=>$review_for, 'geo_related'=>$geo_related, 'scheme_geo_target_datas'=>$scheme_geo_target_datas, 'response'=>$response, 'tabular_view'=>$tabular_view, 'tabular_view_blocks'=>$tabular_view_blocks, 'chart_labels'=>$chart_labels, 'chart_datasets'=>$chart_datasets, 'map_view_blocks'=>$map_view_blocks, 'map_view_indicators'=>$map_view_indicators];
+    }
+
+
+    public function get_tabular_view_datas(Request $request){
+        // initializing what to send back
+        $tabular_view = [];
+        $map_datas=[];
+
+        /* received datas */
+        $review_for = $request->review_for;
+        $geo_id = explode(",", $request->geo_id); // geo_id/block_id/panchayat_id received as
+        $scheme_id = $request->scheme_id;
+        $year_id = $request->year_id;
+        $scheme_asset_id = $request->scheme_asset_id;
+
+        // assigning block datas
+        $block_datas; // block_id, block_name
+        if($review_for=="block"){
+            $block_datas = GeoStructure::select('geo_id as block_id','geo_name as block_name')->whereIn('geo_id', $geo_id)->get();
+        }
+        if($review_for=="panchayat"){
+            $bl_id_tmp = GeoStructure::select('bl_id')->whereIn('geo_id', $geo_id)->distinct()->get()->pluck('bl_id');
+            // return $bl_id_tmp;
+            $block_datas = GeoStructure::select('geo_id as block_id','geo_name as block_name')->whereIn('geo_id', $bl_id_tmp)->get();
+        }
+
+        foreach($block_datas as $block_data){
+            $tabular_view_block_wise = []; // to append (block wise)
+
+            if($review_for=="block"){
+                $panchayat_datas = GeoStructure::where('bl_id',$block_data->block_id)->get();
+            }
+            else{ // review_for panchayat
+                // select only those panchayat which are selected in map
+                $panchayat_datas = GeoStructure::whereIn('geo_id', $geo_id)->where('bl_id', $block_data->block_id)->get();
+            }
+            
+            /* for <th> i.e. heading */
+            $tabular_view_block_wise = [["","Incomplete","Completed","Total"]];
+            
+            /* getting all performance datas starts: for specific scheme and block wise & respective panchayat wise */
+            foreach($panchayat_datas as $panchayat_data){
+                // retriving rows from performance table/DB
+                $performance_datas = SchemePerformance::where('panchayat_id', $panchayat_data->geo_id)
+                                                        ->where('scheme_id', $scheme_id)
+                                                        ->where('year_id', $year_id)
+                                                        ->get();
+                if($scheme_asset_id){ // if scheme asset selected
+                    $performance_datas = $performance_datas->where('scheme_asset_id',$scheme_asset_id);
+                }
+                // assigning datas to variable that has to be returned (tmp)
+                $tabular_view_tmp = [$panchayat_data->geo_name, $performance_datas->where('status','0')->count(), $performance_datas->where('status','1')->count(), $performance_datas->count()];
+                // appedning datas to array to be send (tmp)
+                array_push($tabular_view_block_wise, $tabular_view_tmp);
+            }
+            /* getting all datas ends */
+
+            // appending datas (block wise) to final return valible (array)
+            array_push($tabular_view, ["block_name"=>$block_data->block_name, "performance_datas"=>$tabular_view_block_wise]);
+        }
+
+        if(count($tabular_view)!=0){
+            $response = "success"; // if no records found
+        }
+        else{
+            $response = "no_data";
+        }
+
+        return ["response"=>$response, "tabular_view"=>$tabular_view, "map_datas"=>$map_datas];
     }
 
 

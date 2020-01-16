@@ -58,11 +58,8 @@
 							<li class="nav-item"><a href="{{url('asset-review')}}"><i class="fas fa-receipt"></i><p>Resources Review</p></a></li>
 							@endif
 							@if(array_key_exists("mod20", $desig_permissions))
-							<li class="nav-item"><a href="{{url('review/scheme')}}"><i class="fas fa-receipt"></i><p>Scheme Review</p></a></li>
+							<li class="nav-item"><a href="{{url('scheme-review')}}"><i class="fas fa-receipt"></i><p>Scheme Review</p></a></li>
 							@endif
-							@if(array_key_exists("mod21", $desig_permissions))
-							<li class="nav-item"><a href="{{url('review/group')}}"><i class="fas fa-receipt"></i><p>Group Review</p></a></li>
-							@endif</ul>
 					</div>
 				</li>
 				@if(array_key_exists("mod22", $desig_permissions))

@@ -232,7 +232,8 @@ Route::post('scheme_performance/coordinatesupdate','SchemePerformanceController@
 Route::get('scheme-performance/get-coordinates/{id}','SchemePerformanceController@get_coordinates_details');
 
 /* scheme review */
-Route::get('review/{review_type}', 'SchemeReviewController@index');
+Route::get('scheme-review', 'SchemeReviewController@index');
+Route::get('scheme-review/get-tabular-view-datas', 'SchemeReviewController@get_tabular_view_datas');
 Route::get('scheme-review/get-datas', 'SchemeReviewController@get_datas');
 Route::get('scheme-review/get-map-data', 'SchemeReviewController@get_map_data');
 Route::get('scheme-review/get-panchayat-data', 'SchemeReviewController@get_panchayat_data');
