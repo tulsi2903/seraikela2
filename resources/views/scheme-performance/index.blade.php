@@ -116,6 +116,7 @@
                             <input type="hidden" name="scheme_id" id="scheme_id_hidden">
                             <input type="hidden" name="year_id" id="year_id_hidden">
                             <input type="hidden" name="panchayat_id" id="panchayat_id_hidden">
+                            <input type="text" name="to_delete" id="to_delete" >
                             <!-- hidden inputs -->
                             <button type="submit" class="btn btn-secondary"><i class="fas fa-check"></i>&nbsp;&nbsp;Save</button>
                         </form>
@@ -129,7 +130,7 @@
 
 
 
-/* Gallery Model */
+
 <div id="create-gallery" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -166,7 +167,7 @@
 </div>
 
 
-/* Coordinates Model */
+
 <div id="create-coordinates" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -387,7 +388,7 @@
     }
 
     // delete rows (not working)
-    function delete_row(e) {
+    function delete_row(e,id) {
         swal({
             title: 'Are you sure?',
             // text: "You won't be able to revert this!",
@@ -404,6 +405,9 @@
                 }
             }
         }).then((willDelete) => {
+            if(id){
+                    $("#to_delete").val($("#to_delete").val()+id+",");
+                }
             if (willDelete) {
                 $(e).closest("tr").remove();
             }

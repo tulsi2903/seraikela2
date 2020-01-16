@@ -155,7 +155,7 @@ class SchemePerformanceController extends Controller
                     $to_append_tbody .= '<option value="1">Completed</option>';
                 $to_append_tbody .= '</select></td>';
                 $to_append_tbody .= '<td><input type="text" name="comments[]" value="' . $value_SchemePerformance['comments'] . '" class="form-control" placeholder="comments"></td>';
-                $to_append_tbody .= '<td><button type="button" class="btn btn-danger btn-xs" onclick="delete_row(this)"><i class="fas fa-trash-alt"></i></button></td>';
+                $to_append_tbody .= '<td><button type="button" class="btn btn-danger btn-xs" onclick="delete_row(this,'.$value_SchemePerformance['scheme_performance_id'].')"><i class="fas fa-trash-alt"></i></button></td>';
                 $to_append_tbody .= '</tr>';
             }
         }
@@ -222,23 +222,26 @@ class SchemePerformanceController extends Controller
     }
     public function store(Request $request)
     {
-
+        // return $request;
         $scheme_id = $request->scheme_id;
         $year_id = $request->year_id;
         $panchayat_id = $request->panchayat_id;
         $block_id = GeoStructure::where('geo_id', $panchayat_id)->first()->bl_id;
         $subdivision_id = GeoStructure::where('geo_id', $panchayat_id)->first()->sd_id;
         $scheme_data = SchemeStructure::where('scheme_id', $scheme_id)->first();
-        // $scheme_asset_data = SchemeAsset::where('scheme_asset_id', $scheme_data->scheme_asset_id)->first();
         $attributes = unserialize($scheme_data->attributes);
-        // $attributes_ids = 
         $form_request_id = array();
         $form_attributes_data_array = array();
+        // return $attributes;
         foreach ($attributes as $key_id => $value_id) {
-            foreach ($request->input($value_id['id']) as $key => $value) {
-                $form_request_id[$key][$key_id][$value_id['id']] = $value;
+            if($request->input($value_id['id'])!="")
+            {
+                foreach ($request->input($value_id['id']) as $key => $value) {
+                    $form_request_id[$key][$key_id][$value_id['id']] = $value;
+                }
             }
         }
+        // exit;
         // echo "<pre>";
         $tmp_array = array();
         $delete_check_array = array();
@@ -282,9 +285,13 @@ class SchemePerformanceController extends Controller
             }
             // echo "<br>";
         }
-        $diff_result = array_diff($tmp_array, $delete_check_array);
-        foreach ($diff_result as $key => $value_diff) {
-            $pcc_enitity_record = SchemePerformance::where('scheme_performance_id', $value_diff)->delete();
+        if($request->to_delete!="")
+        {
+        $for_delete_record=explode(',',rtrim($request->to_delete,','));
+        // return $for_delete_record;
+        // $diff_result = array_diff($tmp_array, $delete_check_array);
+        // foreach ($diff_result as $key => $value_diff) {
+            $pcc_enitity_record = SchemePerformance::whereIn('scheme_performance_id', $for_delete_record)->delete();
         }
         session()->put('alert-class', 'alert-success');
         session()->put('alert-content', 'New performance data(s) has been saved successfully!');
@@ -319,7 +326,7 @@ class SchemePerformanceController extends Controller
             'block_name',
             'panchayat_name',
             'work_start_fin_year',
-            'Status'
+            'status'
         );
         foreach ($unserialDatas as $key_un => $value_un) {
             array_push($tableHeadingsAndAtributes, strtolower(str_replace(" ", "_", $value_un['name'])));
@@ -350,12 +357,12 @@ class SchemePerformanceController extends Controller
 
                                     if ($attribute_value === $key) {
 
-                                        $unserializedAtributesData[$attribute_key] = $value;
+                                        $unserializedAtributesData[$excel_key][][$attribute_key] = $value;
                                     }
                                 }
                             }
-                            $serializationAttributes[] = $unserializedAtributesData;
-                            $unserializedAtributesData = [];
+                            // $serializationAttributes[] = $unserializedAtributesData;
+                            // $unserializedAtributesData = [];
                         }
 
                         $filename = "Error Log.txt"; /* error file name */
@@ -368,7 +375,7 @@ class SchemePerformanceController extends Controller
 
                             $fetch_block_id = GeoStructure::where('geo_name', $block_name)->where('level_id','3')->value('geo_id'); /* for block ID */
                             $fetch_panchayat_id = GeoStructure::where('geo_name', $panchayat_name)->where('level_id','4')->value('geo_id'); /* for Panchayat ID */
-                            $fetch_subdivision_id = GeoStructure::where('geo_id', $fetch_block_id)->where('level_id','2')->value('parent_id'); /* for subdivision_id ID */
+                            $fetch_subdivision_id = GeoStructure::where('geo_id', $fetch_block_id)->value('sd_id'); /* for subdivision_id ID */
                             $fetch_year_id = Year::where('year_value', $row['work_start_fin_year'])->value('year_id'); /* for Year ID */
 
                             /* if those id avilable then insert data on the base */
@@ -379,7 +386,7 @@ class SchemePerformanceController extends Controller
                                 $scheme_performance->block_id = $fetch_block_id;
                                 $scheme_performance->panchayat_id = $fetch_panchayat_id;
                                 $scheme_performance->subdivision_id = $fetch_subdivision_id;
-                                $scheme_performance->attribute = serialize($serializationAttributes[$key]);
+                                $scheme_performance->attribute = serialize($unserializedAtributesData[$key]);
                                 if($status == "Completed")
                                 {
                                     $scheme_performance->status = 1;
@@ -467,7 +474,7 @@ class SchemePerformanceController extends Controller
             array_push($data, $value_un['name']);
         }
         array_push($data,'Status');
-        \Excel::create('Scheme-Format', function ($excel) use ($data) {
+        \Excel::create($scheme_datas->scheme_short_name.' Scheme-Format-'.date("d-m-Y"), function ($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Scheme-Format');
@@ -475,7 +482,7 @@ class SchemePerformanceController extends Controller
             // Chain the setters
             $excel->setCreator('Seraikela')->setCompany('Seraikela');
 
-            $excel->sheet('Fees', function ($sheet) use ($data) {
+            $excel->sheet('Scheme-Format', function ($sheet) use ($data) {
                 // $sheet->freezePane('A3');
                 // $sheet->mergeCells('A1:I1');
                 $sheet->fromArray($data, null, 'A1', true, false);
@@ -837,7 +844,7 @@ class SchemePerformanceController extends Controller
                         }
                         // echo "<br>";
                     } else {
-                        echo "yesy";
+                        // echo "yesy";
                         session()->put('alert-class', 'alert-danger');
                         session()->put('alert-content', 'Asset latitudes longitudes You Have  Already entered !');
                         return redirect('scheme-performance');
