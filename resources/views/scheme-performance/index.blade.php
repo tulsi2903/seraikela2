@@ -183,7 +183,7 @@
                         <table class="table">
                             <thead>
                                 <th>SI.No</th>
-                                <th>Longitude</th>
+                                <th>Latitude</th>
                                 <th>Longitude</th>
                                 <th>Action</th>
                             </thead>
@@ -539,10 +539,10 @@
         append_no++;
         to_append = `<tr>
             <td>  <span>`+ append_no + `</span></td>
-            <td><input type="text" name="coordinates_lang_value[]" id="coordinates_lang_value" placeholder="Longitude" class="form-control" Required >
-                </td>
                 <td> <input type="text" name="coordinates_lat_value[]" id="coordinates_lat_value" placeholder="Latitude" class="form-control" Required >        
                     </td>
+                    <td><input type="text" name="coordinates_lang_value[]" id="coordinates_lang_value" placeholder="Longitude" class="form-control" Required >
+                </td>
                     <td><button type="button" class="btn btn-danger btn-xs" onclick="delete_lat_lon(this)"><i class="fas fa-trash-alt"></i></button></td>
                     </tr>`;
                     $("#append_coordinate_section").append(to_append);
@@ -601,10 +601,11 @@
                         append_no = append_no+i ; //2
                       to_append  += `<tr>
                             <td>  <span>`+ append_no+ `</span></td>
-                            <td><input type="text" name="coordinates_lang_value[]" value="`+data.coordinates[i].latitude+ `"  placeholder="Longitude" class="form-control" Required >
+                            <td> <input type="text" name="coordinates_lat_value[]" value="`+data.coordinates[i].latitude+ `" placeholder="Latitude" class="form-control" Required >        
                             </td>
-                            <td> <input type="text" name="coordinates_lat_value[]" value="`+data.coordinates[i].longitude+ `" placeholder="Latitude" class="form-control" Required >        
+                            <td><input type="text" name="coordinates_lang_value[]" value="`+data.coordinates[i].longitude+ `"  placeholder="Longitude" class="form-control" Required >
                             </td>
+                            
                             <td><button type="button" class="btn btn-danger btn-xs" onclick="delete_lat_lon(this)"><i class="fas fa-trash-alt"></i></button></td>
                         </tr>`;
                     }
