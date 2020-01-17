@@ -21,7 +21,7 @@ class SchemeReviewController extends Controller
     //
     public function index(Request $request){
         $year_datas = Year::select('year_id','year_value')->where('status', 1)->get();
-        $scheme_datas = SchemeStructure::select('scheme_id','scheme_name','scheme_is','scheme_short_name')->where('status', 1)->get();
+        $scheme_datas = SchemeStructure::select('scheme_id','scheme_asset_id','scheme_name','scheme_is','scheme_short_name')->where('status', 1)->get();
         $scheme_asset_datas = SchemeAsset::select('scheme_asset_id','scheme_asset_name')->get();
         return view('scheme-review.index')->with(compact('year_datas','scheme_datas','scheme_asset_datas'));
     }
@@ -321,15 +321,84 @@ class SchemeReviewController extends Controller
             /* getting all performance datas starts: for specific scheme and block wise & respective panchayat wise */
             foreach($panchayat_datas as $panchayat_data){
                 // retriving rows from performance table/DB
-                $performance_datas = SchemePerformance::where('panchayat_id', $panchayat_data->geo_id)
+                $performance_datas = SchemePerformance::LeftJoin('scheme_assets','scheme_performance.scheme_asset_id','=','scheme_assets.scheme_asset_id')
+                                                        ->LeftJoin('geo_structure','scheme_performance.panchayat_id','=','geo_structure.geo_id')
+                                                        ->select('scheme_performance.*','scheme_assets.scheme_asset_name','geo_structure.geo_name as panchayat_name')
+                                                        ->where('panchayat_id', $panchayat_data->geo_id)
                                                         ->where('scheme_id', $scheme_id)
                                                         ->where('year_id', $year_id)
                                                         ->get();
                 if($scheme_asset_id){ // if scheme asset selected
                     $performance_datas = $performance_datas->where('scheme_asset_id',$scheme_asset_id);
                 }
+
+
+                /******* for map_datas *******/
+                foreach($performance_datas as $performance_data)
+                {   
+                    $map_datas_tmp = [];
+                    $map_datas_tmp["attributes"]=[];
+
+                    // getting all attributes value in single dimentional associative array (before it is multidimnentional assiciative array)
+                    $scheme_data = SchemeStructure::find($scheme_id); // getting scheme details (attributes, id etc)
+                    $attributes = unserialize($scheme_data->attributes); // getting attrubutes
+
+                    $performance_attributes = [];
+                    $per_attr_tmps = unserialize($performance_data->attribute);
+                    foreach($per_attr_tmps as $per_attr_tmp){
+                        $performance_attributes[key($per_attr_tmp)] = $per_attr_tmp[key($per_attr_tmp)];
+                    }
+
+                    // for attributes
+                    foreach($attributes as $attribute){
+                        array_push($tabular_data_tmp, $performance_attributes[$attribute[id]]);
+                        array_push($map_datas_tmp["attributes"], [$attribute[name], $performance_attributes[$attribute[id]]]);
+                    }
+
+                    // for assets
+                    if($performance_data->scheme_asset_name){
+                        array_push($tabular_data_tmp, $performance_data->scheme_asset_name);
+                        $map_datas_tmp["asset_name"] = $performance_data->scheme_asset_name;
+                    }
+                    else{
+                        array_push($tabular_data_tmp, SchemeAsset::find($scheme_data->scheme_asset_id)->scheme_asset_name);
+                        $map_datas_tmp["asset_name"] = SchemeAsset::find($scheme_data->scheme_asset_id)->scheme_asset_name;
+                    }
+
+                    // for status
+                    if($performance_data->status==0){
+                        array_push($tabular_data_tmp, "Incomplete");
+                        $map_datas_tmp["status"] = "Incomplete";
+                    }
+                    else if($performance_data->status==1){
+                        array_push($tabular_data_tmp, "Completed");
+                        $map_datas_tmp["status"] = "Completed";
+                    }
+
+                    // for coordinates
+                    if($performance_data->coordinates){
+                        $coordinates_tmp = unserialize($performance_data->coordinates);
+                        $map_datas_tmp["latitude"] = $coordinates_tmp[0]["latitude"];
+                        $map_datas_tmp["longitude"] = $coordinates_tmp[0]["longitude"];
+                    }
+
+                    // for block_name, panchayat_name
+                    $map_datas_tmp["panchayat_name"] = $performance_data->panchayat_name;
+                    $map_datas_tmp["block_name"] = GeoStructure::where('geo_id', GeoStructure::find($performance_data->panchayat_id)->bl_id)->first()->geo_name;
+
+                    // for map marker
+                    $map_datas_tmp["scheme_map_marker"] = $scheme_data->scheme_map_marker;
+
+                    // final push, if coordinates available
+                    if($performance_data->coordinates){ 
+                        array_push($map_datas, $map_datas_tmp);
+                    }
+                }
+                /******** for map datas ********/
+
+
                 // assigning datas to variable that has to be returned (tmp)
-                $tabular_view_tmp = [$panchayat_data->geo_name, $performance_datas->where('status','0')->count(), $performance_datas->where('status','1')->count(), $performance_datas->count()];
+                $tabular_view_tmp = [$panchayat_data->geo_id.":".$panchayat_data->geo_name, $performance_datas->where('status','0')->count(), $performance_datas->where('status','1')->count(), $performance_datas->count()];
                 // appedning datas to array to be send (tmp)
                 array_push($tabular_view_block_wise, $tabular_view_tmp);
             }
@@ -347,6 +416,115 @@ class SchemeReviewController extends Controller
         }
 
         return ["response"=>$response, "tabular_view"=>$tabular_view, "map_datas"=>$map_datas];
+    }
+
+    public function get_all_performance_datas_individuallly(Request $request){
+        // initializing what to send back
+        $tabular_view = [];
+        $map_datas=[];
+
+        /* received datas */
+        $geo_id = $request->geo_id; // single panchayat
+        $scheme_id = $request->scheme_id;
+        $year_id = $request->year_id;
+        $scheme_asset_id = $request->scheme_asset_id;
+
+        // block name
+        $block_name_tmp = GeoStructure::where('geo_id', GeoStructure::find($geo_id)->bl_id)->first()->geo_name;
+        
+        $scheme_data = SchemeStructure::find($scheme_id); // getting scheme details (attributes, id etc)
+        $attributes = unserialize($scheme_data->attributes); // getting attrubutes
+        
+        // for thead
+        $tabular_data_tmp = [];
+        foreach($attributes as $attribute){
+            array_push($tabular_data_tmp, $attribute['name']);
+        }
+        array_push($tabular_data_tmp, "Asset", "Status");
+        array_push($tabular_view, $tabular_data_tmp);
+
+        // for body
+        $performance_datas = SchemePerformance::LeftJoin('scheme_assets','scheme_performance.scheme_asset_id','=','scheme_assets.scheme_asset_id')
+                                                ->LeftJoin('geo_structure','scheme_performance.panchayat_id','=','geo_structure.geo_id')
+                                                ->select('scheme_performance.*','scheme_assets.scheme_asset_name','geo_structure.geo_name as panchayat_name')
+                                                ->where('panchayat_id', $geo_id)
+                                                ->where('scheme_id', $scheme_id)
+                                                ->where('year_id', $year_id)
+                                                ->limit(250)
+                                                ->get();
+        if($scheme_asset_id){ // if scheme asset selected
+            $performance_datas = $performance_datas->where('scheme_asset_id',$scheme_asset_id);
+        }
+        foreach($performance_datas as $performance_data){
+            $tabular_data_tmp = [];
+            $map_datas_tmp = [];
+            $map_datas_tmp["attributes"]=[];
+
+            // getting all attributes value in single dimentional associative array (before it is multidimnentional assiciative array)
+            $performance_attributes = [];
+            $per_attr_tmps = unserialize($performance_data->attribute);
+            foreach($per_attr_tmps as $per_attr_tmp){
+                $performance_attributes[key($per_attr_tmp)] = $per_attr_tmp[key($per_attr_tmp)];
+            }
+            
+            // for attributes
+            foreach($attributes as $attribute){
+                array_push($tabular_data_tmp, $performance_attributes[$attribute[id]]);
+                array_push($map_datas_tmp["attributes"], [$attribute[name], $performance_attributes[$attribute[id]]]);
+            }
+
+            // for assets
+            if($performance_data->scheme_asset_name){
+                array_push($tabular_data_tmp, $performance_data->scheme_asset_name);
+                $map_datas_tmp["asset_name"] = $performance_data->scheme_asset_name;
+            }
+            else{
+                array_push($tabular_data_tmp, SchemeAsset::find($scheme_data->scheme_asset_id)->scheme_asset_name);
+                $map_datas_tmp["asset_name"] = SchemeAsset::find($scheme_data->scheme_asset_id)->scheme_asset_name;
+            }
+
+            // for status
+            if($performance_data->status==0){
+                array_push($tabular_data_tmp, "Incomplete");
+                $map_datas_tmp["status"] = "Incomplete";
+            }
+            else if($performance_data->status==1){
+                array_push($tabular_data_tmp, "Completed");
+                $map_datas_tmp["status"] = "Completed";
+            }
+
+            // for coordinates
+            if($performance_data->coordinates){
+                $coordinates_tmp = unserialize($performance_data->coordinates);
+                $map_datas_tmp["latitude"] = $coordinates_tmp[0]["latitude"];
+                $map_datas_tmp["longitude"] = $coordinates_tmp[0]["longitude"];
+            }
+
+            // for block_name, panchayat_name
+            $map_datas_tmp["panchayat_name"] = $performance_data->panchayat_name;
+            $map_datas_tmp["block_name"] = GeoStructure::where('geo_id', GeoStructure::find($performance_data->panchayat_id)->bl_id)->first()->geo_name;
+
+            // for map marker
+            $map_datas_tmp["scheme_map_marker"] = $scheme_data->scheme_map_marker;
+
+            // final push
+            array_push($tabular_view, $tabular_data_tmp);
+            // final push, if coordinates available
+            if($performance_data->coordinates){ 
+                array_push($map_datas, $map_datas_tmp);
+            }
+        }
+
+
+        if(count($tabular_view)!=0){
+            $response = "success"; // if no records found
+        }
+        else{
+            $response = "no_data";
+        }
+        
+        // return $map_datas;
+        return ["response"=>$response, "block_name"=>$block_name_tmp, "tabular_view"=>$tabular_view, "map_datas"=>$map_datas];
     }
 
 

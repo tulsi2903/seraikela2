@@ -264,7 +264,7 @@
                             <select name="scheme_id" id="scheme_id" class="form-control">
                                 <option value="">--Select--</option>
                                 @foreach($scheme_datas as $scheme_data)
-                                    <option value="{{$scheme_data->scheme_id}}" data-scheme-is="{{$scheme_data->scheme_is}}">({{$scheme_data->scheme_short_name}}) {{$scheme_data->scheme_name}}</option>
+                                    <option value="{{$scheme_data->scheme_id}}" data-scheme-is="{{$scheme_data->scheme_is}}" data-scheme-asset-id="{{$scheme_data->scheme_asset_id}}">({{$scheme_data->scheme_short_name}}) {{$scheme_data->scheme_name}}</option>
                                 @endforeach
                             </select>
                             <div class="invalid-feedback">Please select department</div>
@@ -579,15 +579,17 @@
 
     function get_scheme_asset(){
         var scheme_is_tmp = $("#scheme_id :selected").data('scheme-is');
+        var scheme_asset_tmp = $("#scheme_id :selected").data('scheme-asset-id');
         $("#scheme_asset_id").val("");
         // var scheme_is_tmp = $("#scheme_id:selected").data("scheme-id");
         if(scheme_is_tmp=="1"){
             // dont show any option of scheme asset
-            $("#scheme_asset_id option").hide();
+            $("#scheme_asset_id").val(scheme_asset_tmp);
+            $("#scheme_asset_id").attr("disabled",true);
         }
         else{ // scheme
             // show all option of scheme asset
-            $("#scheme_asset_id option").show();
+            $("#scheme_asset_id").attr("disabled",false);
         }
     }
 
@@ -666,6 +668,9 @@
         scheme_id_tmp = $("#scheme_id").val();
         year_id_tmp = $("#year_id").val();
         scheme_asset_id_tmp = $("#scheme_asset_id").val();
+        if($("#scheme_id :selected").data('scheme-is')==1){ // sending null data for scheme asset id for single asset scheme
+            scheme_asset_id_tmp = null;
+        }
         geo_id_tmp = $("#geo_id").val(); // string, have convert to array in controller// block ids
 
         $.ajaxSetup({
@@ -693,31 +698,84 @@
                 resetTabularView();
                 resetMapView();
                 resetCommon(); // to reset common things among all views
+
+                // show basic details
+                $("#all-view-details").html("<b>Scheme: </b>" + $("#scheme_id option:selected").text());
+                $("#all-view-details").append("&nbsp;&nbsp;&nbsp;&bull;&nbsp;&nbsp;&nbsp;<b>Year: </b>" + $("#year_id option:selected").text());
+                $("#all-view-details").append("&nbsp;&nbsp;&nbsp;&bull;&nbsp;&nbsp;&nbsp;<b>Asset: </b>" + $("#scheme_asset_id option:selected").text());
+                $("#all-view-details").append("&nbsp;&nbsp;&nbsp;&bull;&nbsp;&nbsp;&nbsp;<b>Block: </b><span></span>");
+                $("#all-view-details").append(`&nbsp;&nbsp;&nbsp;&bull;&nbsp;&nbsp;&nbsp;<a href="javascript:void();" onclick="showSearch()" class="btn btn-secondary btn-sm"><i class="fas fa-sync"></i>&nbsp;&nbsp;Change</a>`);
+
                 if(data.response == "no_data") { // no data found
                     to_export_datas = "";
-
-                    $("#all-view-details").html("<b>Scheme: </b>" + $("#scheme_id option:selected").text());
-                    $("#all-view-details").append("&nbsp;&nbsp;&nbsp;&bull;&nbsp;&nbsp;&nbsp;<b>Year: </b>" + $("#year_id option:selected").text());
-                    $("#all-view-details").append("&nbsp;&nbsp;&nbsp;&bull;&nbsp;&nbsp;&nbsp;<b>Asset: </b>" + $("#scheme_asset_id option:selected").text());
-                    $("#all-view-details").append(`&nbsp;&nbsp;&nbsp;&bull;&nbsp;&nbsp;&nbsp;<a href="javascript:void();" onclick="showSearch()" class="btn btn-secondary btn-sm"><i class="fas fa-sync"></i>&nbsp;&nbsp;Change</a>`);
                 }
                 else{ // data.response  == success
                     // calling/initialiazing all views
                     to_export_datas = data.tabular_view;
                     initializeTabularView(data.tabular_view);
                     // intializeGraphicalView(data.chart_labels, data.chart_datasets);
-                    // initializeMapView(data.map_datas);
+                    initializeMapView(data.map_datas);
                     // initializeGalleryView(data.gallery_images);
-
-                    // all-view-details
-                    initialiteCommon();
-                    $("#all-view-details").html("<b>Scheme: </b>" + $("#scheme_id option:selected").text());
-                    $("#all-view-details").append("&nbsp;&nbsp;&nbsp;&bull;&nbsp;&nbsp;&nbsp;<b>Year: </b>" + $("#year_id option:selected").text());
-                    $("#all-view-details").append("&nbsp;&nbsp;&nbsp;&bull;&nbsp;&nbsp;&nbsp;<b>Asset: </b>" + $("#scheme_asset_id option:selected").text());
-                    $("#all-view-details").append(`&nbsp;&nbsp;&nbsp;&bull;&nbsp;&nbsp;&nbsp;<a href="javascript:void();" onclick="showSearch()" class="btn btn-secondary btn-sm"><i class="fas fa-sync"></i>&nbsp;&nbsp;Change</a>`);
                 }
                 $(".custom-loader").fadeOut(300);
                 $("#search-results-block").removeClass("active-search");
+            }
+        });
+    }
+
+
+    function getAllDatasIndividually(id, name) {
+        // id = panchayat_id, to get indivisual entry datas, name =  selected panchayat name
+
+        // getting datas before send to controller
+        scheme_id_tmp = $("#scheme_id").val();
+        year_id_tmp = $("#year_id").val();
+        scheme_asset_id_tmp = $("#scheme_asset_id").val();
+        if($("#scheme_id :selected").data('scheme-is')==1){ // sending null data for scheme asset id for single asset scheme
+            scheme_asset_id_tmp = null;
+        }
+        geo_id_tmp = id; // single panchayat after panchayat clicked
+
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        $.ajax({
+            url: "{{url('scheme-review/get-all-performance-datas-individuallly')}}",
+            data: { 'scheme_id': scheme_id_tmp, 'year_id': year_id_tmp, 'scheme_asset_id': scheme_asset_id_tmp, 'geo_id': geo_id_tmp },
+            method: "GET",
+            contentType: 'application/json',
+            dataType: "json",
+            beforeSend: function (data) {
+                $(".custom-loader").fadeIn(300);
+            },
+            error: function (xhr) {
+                alert("error" + xhr.status + ", " + xhr.statusText);
+                $(".custom-loader").fadeOut(300);
+                $("#search-results-block").removeClass("active-search");
+            },
+            success: function (data) {
+                console.log(data);
+
+                // show basic details
+                $("#all-view-details").html("<b>Scheme: </b>" + $("#scheme_id option:selected").text());
+                $("#all-view-details").append("&nbsp;&nbsp;&nbsp;&bull;&nbsp;&nbsp;&nbsp;<b>Year: </b>" + $("#year_id option:selected").text());
+                $("#all-view-details").append("&nbsp;&nbsp;&nbsp;&bull;&nbsp;&nbsp;&nbsp;<b>Asset: </b>" + $("#scheme_asset_id option:selected").text());
+                $("#all-view-details").append("&nbsp;&nbsp;&nbsp;&bull;&nbsp;&nbsp;&nbsp;<b>Block: </b><span></span>");
+                $("#all-view-details").append("&nbsp;&nbsp;&nbsp;&bull;&nbsp;&nbsp;&nbsp;<b>Panchayat: </b>" + name);
+                $("#all-view-details").append(`&nbsp;&nbsp;&nbsp;&bull;&nbsp;&nbsp;&nbsp;<a href="javascript:void();" onclick="showSearch()" class="btn btn-secondary btn-sm"><i class="fas fa-sync"></i>&nbsp;&nbsp;Change</a>`);
+                $("#all-view-details").append(`&nbsp;&nbsp;&nbsp;<a href="javascript:void();" onclick="getDatas()" class="btn btn-secondary btn-sm"><i class="fas fa-arrow-left"></i>&nbsp;&nbsp;Back</a>`);
+
+                if(data.response == "no_data") { // no data found
+                    
+                }
+                else{ // data.response  == success
+                    $("#all-view-details span").append(data.block_name); // block name
+                    initializeTabularViewIndividualEntries(data.tabular_view);
+                    initializeMapView(data.map_datas);
+                }
+                $(".custom-loader").fadeOut(300);
             }
         });
     }
@@ -744,6 +802,12 @@
                             }
             to_show_nav_pills+=`" data-toggle="pill" href="#tabluar-view-table-`+(i+1)+`" role="tab" aria-selected="true">`+data[i].block_name+`</a>
                                 </li>`;
+            if(i!=(data.length-1)){
+                $("#all-view-details span").append(data[i].block_name+", ");
+            }
+            else{
+                $("#all-view-details span").append(data[i].block_name);
+            }
 
             /** tab-pane-start, block wise **/
             toShowTabularForm+=`<div class="tab-pane fade`;
@@ -771,7 +835,8 @@
                             }
                             else { // for others
                                 if(k==0){
-                                    toShowTabularForm+=`<td><a href="javascript:void();">` + data[i].performance_datas[j][k]+ `</a></td>`;
+                                    panchayat_name_and_id_arr = data[i].performance_datas[j][k].split(":");
+                                    toShowTabularForm+=`<td><a href="javascript:void();" onclick="getAllDatasIndividually(`+panchayat_name_and_id_arr[0]+`,'`+panchayat_name_and_id_arr[1]+`')">` + panchayat_name_and_id_arr[1] + `</a></td>`;
                                 }
                                 else{
                                     toShowTabularForm+=`<td>` + data[i].performance_datas[j][k]+ `</td>`;
@@ -794,6 +859,40 @@
         $("#tabular-view").html("");
         $("#tabular-view").hide();
         $("#tabular-view + .no-data").show();
+    }
+
+
+    function initializeTabularViewIndividualEntries(data){
+        toShowTabularForm = `<table id="target-table" class="table order-list" style="margin-top: 10px;">`;
+        for(var i = 0; i < data.length; i++){
+            if (i == 0) { // for first row
+                toShowTabularForm += `<tr style='background: #d6dcff;color: #000;'>`;
+                toShowTabularForm+=`<th>Sl.No.</th>`;
+            }
+            else { // for others
+                toShowTabularForm += `<tr>`;
+                toShowTabularForm+=`<td>` + (i)+ `</td>`;
+            }
+
+            for(var j=0; j< data[i].length; j++){
+                if (i == 0) {
+                    toShowTabularForm+=`<th>` + (data[i][j] || "")+ `</th>`;
+                }
+                else{
+                    toShowTabularForm+=`<td>` + (data[i][j] || "")+ `</td>`;
+                }
+            }
+
+            toShowTabularForm += `</tr>`;
+        }
+
+        if(data.length<=1){
+            toShowTabularForm += `<tr><td colspan="`+(data[0].length+1)+`"><center>No data found!</center></td></tr>`;
+        }
+
+        toShowTabularForm += `</table>`;
+
+        $("#tabular-view").html(toShowTabularForm);
     }
 </script>
 
@@ -833,27 +932,30 @@
         $.each(data, function () {
             //Plot the location as a marker
             var theposition = new google.maps.LatLng(this.latitude, this.longitude);
-            icon.url = this.asset_icon || null;
+            icon.url = this.scheme_map_marker || null;
             var marker = new google.maps.Marker({
                 position: theposition,
                 map: map,
-                title: 'Uluru (Ayers Rock)',
+                title: 'Scheme Data',
                 icon: icon,
                 animation: google.maps.Animation.DROP
             });
 
 
-            var contentString = '<span style="color: #3d8e00; font-weight: bold; font-size:16px;display: block; padding-bottom: 5px;margin-bottom: 5px;border-bottom: 1px solid #d8d8d8;">'+this.asset_name+': ' +this.current_value+ '</span><b>Location:</b> ' +this.location_name+ '<br/><b>Panchayat:</b> ' + this.geo_name;
-            if(this.child){
-                if(this.child.length>0)
+            var contentString = '<span style="color: black;"';
+            if(this.attributes){
+                if(this.attributes.length>0)
                 {
-                    contentString+='<span style="display: block; padding-top: 5px; margin-top: 5px; border-top:1px solid #d8d8d8;"><b>Sub Resources: </b>';
-                    this.child.forEach(function(element){
-                        contentString+='<br/>'+element.asset_name+' - '+element.current_value;
+                    this.attributes.forEach(function(element){
+                        contentString+='<br/><b>'+element[0]+'</b>: '+element[1];
                     })
-                    contentString+='</span>';
                 }
             }
+            contentString+='<br/><b>Asset</b>: '+this.asset_name;
+            contentString+='<br/><b>Block</b>: '+this.block_name;
+            contentString+='<br/><b>Panchayat</b>: '+this.panchayat_name;
+            contentString+='<br/><b>Status</b>: '+this.status;
+            contentString+='</span>';
 
             var infowindow = new google.maps.InfoWindow({
                 content: contentString
@@ -912,9 +1014,6 @@
 
 <script>
     function resetCommon() {
-        $("#all-view-details").html("");
-    }
-    function initialiteCommon() {
         $("#all-view-details").html("");
     }
 </script>
