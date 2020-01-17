@@ -582,37 +582,37 @@
 
             if ($("#dept_id").val()) {
                 $("#dept_id").removeClass('is-invalid');
-                resetTabularView();
-                resetMapView();
-                resetGalleryView();
-                resetCommon(); // to reset common things among all views
+                // resetTabularView();
+                // resetMapView();
+                // resetGalleryView();
+                // resetCommon(); // to reset common things among all views
             }
         });
         $("#asset_id").change(function () {
             if ($("#asset_id").val()) {
                 $("#asset_id").removeClass('is-invalid');
-                resetTabularView();
-                resetMapView();
-                resetGalleryView();
-                resetCommon(); // to reset common things among all views
+                // resetTabularView();
+                // resetMapView();
+                // resetGalleryView();
+                // resetCommon(); // to reset common things among all views
             }
         });
         $("#year_id").change(function () {
             if ($("#year_id").val()) {
                 $("#year_id").removeClass('is-invalid');
-                resetTabularView();
-                resetMapView();
-                resetGalleryView();
-                resetCommon(); // to reset common things among all views
+                // resetTabularView();
+                // resetMapView();
+                // resetGalleryView();
+                // resetCommon(); // to reset common things among all views
             }
         });
         $("#geo_id").change(function () {
             if ($("#geo_id").val()) {
                 $("#geo_id").removeClass('is-invalid');
-                resetTabularView();
-                resetMapView();
-                resetGalleryView();
-                resetCommon(); // to reset common things among all views
+                // resetTabularView();
+                // resetMapView();
+                // resetGalleryView();
+                // resetCommon(); // to reset common things among all views
 
                 geo_selected_name_show();
             }
