@@ -177,6 +177,7 @@ Route::post('asset-numbers/saveChilddata','AssetNumbersController@saveChilddata'
 Route::get('asset_number/list_of_imagedata/{loc_id}/{asset_id}/{year_id}/{geo_id}/{hidden_input_id}','AssetNumbersController@list_of_imagedata');
 Route::post('asset-numbers/saveImagesforLoacation','AssetNumbersController@saveImagesforLoacation'); 
 Route::get('asset_Numbers/downloadFormat','AssetNumbersController@downloadFormat'); 
+Route::get('asset_Numbers/downloadFormatwithLocation','AssetNumbersController@downloadFormatwithLocation'); 
 Route::get('asset_Numbers/changeViewforimport','AssetNumbersController@changeViewforimport'); 
 Route::post('asset-numbers/saveimporttoExcel','AssetNumbersController@saveimporttoExcel'); 
 /* asset review */

@@ -188,6 +188,9 @@ class AssetController extends Controller
                                 $editchildasset->asset_icon = $upload_directory_chid1 . $asset_icon_tmp_name_child1;    // assign the location of folder to the mode
                             }
                             $editchildasset->movable = $request->movable_child[$keyy];
+                            $editchildasset->dept_id = $request->dept_id;
+                            $editchildasset->category_id = $request->category;
+                            $editchildasset->subcategory_id = $request->subcategory;
                             $editchildasset->save();
                         }
                         else{ //edit time new entry of child asset
