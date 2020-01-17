@@ -737,7 +737,7 @@ class AssetNumbersController extends Controller
                 $excelSheetHeadings = $readExcelHeader->first()->keys()->toArray(); /* this is for excel sheet heading */
             }
             // echo "<pre>";
-            // print_r(($readExcelHeader));
+            // print_r(($readExcel));
             // exit;
             try {
             
@@ -753,11 +753,11 @@ class AssetNumbersController extends Controller
                             // ucwords(preg_replace('/[^A-Za-z ]/', '', "$row['panchayat_name']"));
                             // ucwords(preg_replace('/[^0-9-]/', '', $row['year']));
 
-                            // $panchayat_name =   ucwords($row['panchayat_name']);
-                            // $asset_name =   ucwords($row['resource_name']);
+                            $panchayat_name = trim(ucwords($row['panchayat_name'])," ");
+                            $asset_name = trim(ucwords($row['resource_name'])," ");
 
-                            $panchayat_name = ucwords(preg_replace('/[^A-Za-z ]/', '', $row['panchayat_name'])); //replace number and special character from panchayat name
-                            $asset_name = ucwords(preg_replace('/[^A-Za-z ]/', '', $row['resource_name'])); //replace number and special character from asset name
+                            // $panchayat_name = ucwords(preg_replace('/[^A-Za-z ]/', '', $row['panchayat_name'])); //replace number and special character from panchayat name
+                            // $asset_name = ucwords(preg_replace('/[^A-Za-z ]/', '', $row['resource_name'])); //replace number and special character from asset name
                             $year_value = ucwords(preg_replace('/[^0-9-]/', '', $row['year'])); //replace ASCII form year
 
                             $fetch_panchayat_id = GeoStructure::where('geo_name', $panchayat_name)->where('level_id','4')->value('geo_id'); /* for Panchayat ID */
@@ -856,10 +856,11 @@ class AssetNumbersController extends Controller
                                         $txt = " ON row sno. " . $row['sno.'] . " Year Resources And Panchayat Not Found \n";
                                         fwrite($myfile, $txt);
                                     }
-                                } else {
-                                    $txt = " Serial Number Not Available \n";
-                                    fwrite($myfile, $txt);
-                                }
+                                } 
+                                // else {
+                                //     $txt = " Serial Number Not Available \n";
+                                //     fwrite($myfile, $txt);
+                                // }
                             }
                         }
 
