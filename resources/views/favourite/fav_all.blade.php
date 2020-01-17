@@ -16,7 +16,7 @@
             <div class="col-md-12">
                     <div class="card-header">
                         <div class="card-head-row card-tools-still-right" style="background:#fff;">
-                            <h4 class="card-title">Add Favourites Details</h4>
+                            <h4 class="card-title">{{$phrase->add_favourites_details}}</h4>
                             <div class="card-tools">
                                
                             </div>
@@ -27,11 +27,11 @@
                         <div class="row">
                             <div class="col-2">
                                 <div class="nav flex-column nav-pills nav-secondary nav-pills-no-bd" id="v-pills-tab-without-border" role="tablist" aria-orientation="vertical">
-                                    <a class="nav-link active" id="v-pills-home-tab-nobd" data-toggle="pill" href="#v-pills-home-nobd" role="tab" aria-controls="v-pills-home-nobd" aria-selected="true">Departments</a>
-                                    <a class="nav-link" id="v-pills-profile-tab-nobd" data-toggle="pill" href="#v-pills-profile-nobd" role="tab" aria-controls="v-pills-profile-nobd" aria-selected="false">Scheme</a>
-                                    <a class="nav-link" id="v-pills-messages-tab-nobd" data-toggle="pill" href="#v-pills-messages-nobd" role="tab" aria-controls="v-pills-messages-nobd" aria-selected="false">Block</a>
-                                    <a class="nav-link" id="v-pills-report-tab-nobd" data-toggle="pill" href="#v-pills-report-nobd" role="tab" aria-controls="v-pills-report-nobd" aria-selected="false">Panchayat</a>
-                                    <a class="nav-link" id="v-pills-asset-tab-nobd" data-toggle="pill" href="#v-pills-asset-nobd" role="tab" aria-controls="v-pills-asset-nobd" aria-selected="false">Define Asset</a>
+                                    <a class="nav-link active" id="v-pills-home-tab-nobd" data-toggle="pill" href="#v-pills-home-nobd" role="tab" aria-controls="v-pills-home-nobd" aria-selected="true">{{$phrase->department}}</a>
+                                    <a class="nav-link" id="v-pills-profile-tab-nobd" data-toggle="pill" href="#v-pills-profile-nobd" role="tab" aria-controls="v-pills-profile-nobd" aria-selected="false">{{$phrase->scheme}}</a>
+                                    <a class="nav-link" id="v-pills-messages-tab-nobd" data-toggle="pill" href="#v-pills-messages-nobd" role="tab" aria-controls="v-pills-messages-nobd" aria-selected="false">{{$phrase->block}}</a>
+                                    <a class="nav-link" id="v-pills-report-tab-nobd" data-toggle="pill" href="#v-pills-report-nobd" role="tab" aria-controls="v-pills-report-nobd" aria-selected="false">{{$phrase->panchayat}}</a>
+                                    <a class="nav-link" id="v-pills-asset-tab-nobd" data-toggle="pill" href="#v-pills-asset-nobd" role="tab" aria-controls="v-pills-asset-nobd" aria-selected="false">{{$phrase->resource}}</a>
                                 </div>
                             </div>
                         
@@ -39,8 +39,8 @@
                                 <div class="tab-content" id="v-pills-without-border-tabContent">
                                     <div class="tab-pane fade show active" id="v-pills-home-nobd" role="tabpanel" aria-labelledby="v-pills-home-tab-nobd">
                                         <div style="float: right;">
-                                            <a href="{{url('fav_department/pdf/pdfURL')}}" target="_blank" data-toggle="tooltip" title="Export to PDF"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button></a>
-                                            <a href="{{url('fav_department/export/excelURL')}}" data-toggle="tooltip" title="Export to Excel"><button type="button" class="btn btn-icon btn-round btn-primary" ><i class="fas fa-file-excel"></i></button></a>
+                                            <a href="{{url('fav_department/pdf/pdfURL')}}" target="_blank" data-toggle="tooltip" title="{{$phrase->export_pdf}}"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button></a>
+                                            <a href="{{url('fav_department/export/excelURL')}}" data-toggle="tooltip" title="{{$phrase->export_excel}}"><button type="button" class="btn btn-icon btn-round btn-primary" ><i class="fas fa-file-excel"></i></button></a>
                                         </div><br><br>
                                             <form action="{{url('fav_department')}}" method="post" >
                                                     @csrf
@@ -50,8 +50,8 @@
                                                     <thead style="background: #d6dcff;color: #000;">
                                                         <tr>
                                                             <th>#</th>
-                                                            <th>Department Name</th>
-                                                            <th>Fav</th>                                         
+                                                            <th>{{$phrase->department_name}} </th>
+                                                                                                   
                                                         </tr>
                                                     </thead>
                                                     <tbody>                                                                    
@@ -61,7 +61,7 @@
                                                                 <tr>
                                                                     <td><input type="checkbox" name="dept_id[]" value="{{$val->dept_id}}" @if($val->checked==1) checked @endif> </td>
                                                                     <td>{{$val->dept_name}}</d>
-                                                                    <TD>@if($val->checked==1) 1 @else 0 @endif</TD>
+                                                                    
                                                                 </tr>
                                                             <!-- @endif -->
                                                         @endforeach
@@ -73,7 +73,7 @@
                                       
                                         <hr class="new2" style="width: 98%;"> 
                                         <div class="card-action" style="margin-top: -29px;">   
-                                                <button type="submit" class="btn btn-secondary">Submit</button>
+                                                <button type="submit" class="btn btn-secondary">{{$phrase->submit}}</button>
                                             </div>
                                         </form>
                                     </div><!--END OF TAB-->
@@ -81,8 +81,8 @@
 
                                     <div class="tab-pane fade" id="v-pills-profile-nobd" role="tabpanel" aria-labelledby="v-pills-profile-tab-nobd">
                                         <div style="float: right;margin-right: 2em;margin-bottom: 1em;">
-                                            <a href="{{url('fav_scheme/pdf/pdfURL')}}" target="_blank" data-toggle="tooltip" title="Export to PDF"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button></a>
-                                            <a href="{{url('fav_scheme/export/excelURL')}}" data-toggle="tooltip" title="Export to Excel"><button type="button" class="btn btn-icon btn-round btn-primary" ><i class="fas fa-file-excel"></i></button></a>
+                                            <a href="{{url('fav_scheme/pdf/pdfURL')}}" target="_blank" data-toggle="tooltip" title="{{$phrase->export_pdf}}"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button></a>
+                                            <a href="{{url('fav_scheme/export/excelURL')}}" data-toggle="tooltip" title="{{$phrase->export_excel}}"><button type="button" class="btn btn-icon btn-round btn-primary" ><i class="fas fa-file-excel"></i></button></a>
                                         </div><br><br>
                                             <form action="{{url('fav_scheme')}}" method="post">
                                                     @csrf
@@ -92,8 +92,8 @@
                                                     <thead style="background: #d6dcff;color: #000;">
                                                         <tr>
                                                             <th>#</th>
-                                                            <th>Scheme Name</th>
-                                                            <th>Short Name</th>
+                                                            <th>{{$phrase->scheme_name}}</th>
+                                                            <th>{{$phrase->short_name}}</th>
                                                                  
                                                         </tr>
                                                     </thead>
@@ -114,15 +114,15 @@
                                         </div><!--end of card body-->
                                         <hr class="new2" style="width: 98%;"> 
                                         <div class="card-action" style="margin-top: -29px;">   
-                                                <button type="submit" class="btn btn-secondary">Submit</button>
+                                                <button type="submit" class="btn btn-secondary">{{$phrase->submit}}</button>
                                             </div>
                                             </form>
                                     </div>  <!-- end of tab -->
                                     
                                     <div class="tab-pane fade" id="v-pills-messages-nobd" role="tabpanel" aria-labelledby="v-pills-messages-tab-nobd">
                                         <div style="float: right;margin-right: 2em;margin-bottom: 1em;">
-                                            <a href="{{url('fav_block/pdf/pdfURL')}}" target="_blank" data-toggle="tooltip" title="Export to PDF"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button></a>
-                                            <a href="{{url('fav_block/export/excelURL')}}" data-toggle="tooltip" title="Export to Excel"><button type="button" class="btn btn-icon btn-round btn-primary" ><i class="fas fa-file-excel"></i></button></a>
+                                            <a href="{{url('fav_block/pdf/pdfURL')}}" target="_blank" data-toggle="tooltip" title="{{$phrase->export_pdf}}"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button></a>
+                                            <a href="{{url('fav_block/export/excelURL')}}" data-toggle="tooltip" title="{{$phrase->export_excel}}"><button type="button" class="btn btn-icon btn-round btn-primary" ><i class="fas fa-file-excel"></i></button></a>
                                         </div><br><br>
                                             <form action="{{url('fav_block')}}" method="post">
                                                     @csrf
@@ -132,7 +132,7 @@
                                                             <thead style="background: #d6dcff;color: #000;">
                                                                 <tr>
                                                                     <th>#</th>
-                                                                    <th>Name of Block</th>
+                                                                    <th>{{$phrase->name_of_block}}</th>
                                                                     <!-- <th>Name of Block</th> -->
                                                                 </tr>
                                                             </thead>
@@ -151,7 +151,7 @@
                                         </div><!--end of card body-->
                                         <hr class="new2" style="width: 98%;"> 
                                         <div class="card-action" style="margin-top: -29px;">   
-                                                <button class="btn btn-secondary">Submit</button>
+                                                <button class="btn btn-secondary">{{$phrase->submit}}</button>
                                             </div>
                                             </form>
                                     </div>
@@ -159,8 +159,8 @@
                                                                        
                                     <div class="tab-pane fade" id="v-pills-report-nobd" role="tabpanel" aria-labelledby="v-pills-report-tab-nobd" style="overflow-y: scroll; height:600px;">
                                         <div style="float: right;margin-right: 2em;margin-bottom: 1em;">
-                                            <a href="{{url('fav_panchayat/pdf/pdfURL')}}" target="_blank" data-toggle="tooltip" title="Export to PDF"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button></a>
-                                            <a href="{{url('fav_panchayat/export/excelURL')}}" data-toggle="tooltip" title="Export to Excel"><button type="button" class="btn btn-icon btn-round btn-primary" ><i class="fas fa-file-excel"></i></button></a>
+                                            <a href="{{url('fav_panchayat/pdf/pdfURL')}}" target="_blank" data-toggle="tooltip" title="{{$phrase->export_pdf}}"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button></a>
+                                            <a href="{{url('fav_panchayat/export/excelURL')}}" data-toggle="tooltip" title="{{$phrase->export_excel}}"><button type="button" class="btn btn-icon btn-round btn-primary" ><i class="fas fa-file-excel"></i></button></a>
                                         </div><br><br>
                                             <form action="{{url('fav_panchayat')}}" method="post">
                                                     @csrf
@@ -169,7 +169,7 @@
                                                 <table class="display table-datatable table table-striped table-hover">
                                                     <thead style="background: #d6dcff;color: #000;">
                                                         <tr>
-                                                            <th colspan="5">Name of Panchayat</th>
+                                                            <th colspan="5">{{$phrase->name_of_panchayat}}</th>
                                                         </tr>
                                                     </thead>
                                                 
@@ -192,15 +192,15 @@
                                         </div><!--end of card body-->
                                         <hr class="new2" style="width: 98%;"> 
                                         <div class="card-action" style="margin-top: -29px;">   
-                                                <button class="btn btn-secondary">Submit</button>
+                                                <button class="btn btn-secondary">{{$phrase->submit}}</button>
                                             </div>
                                         </form>
                                     </div>
 
                                     <div class="tab-pane fade" id="v-pills-asset-nobd" role="tabpanel" aria-labelledby="v-pills-asset-tab-nobd" style="overflow-y: scroll; height:600px;">
                                         <div style="float: right;margin-right: 2em;margin-bottom: 1em;">
-                                            <a href="{{url('fav_define_asset/pdf/pdfURL')}}" target="_blank" data-toggle="tooltip" title="Export to PDF"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button></a>
-                                            <a href="{{url('fav_define_asset/export/excelURL')}}" data-toggle="tooltip" title="Export to Excel"><button type="button" class="btn btn-icon btn-round btn-primary" ><i class="fas fa-file-excel"></i></button></a>
+                                            <a href="{{url('fav_define_asset/pdf/pdfURL')}}" target="_blank" data-toggle="tooltip" title="{{$phrase->export_pdf}}"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button></a>
+                                            <a href="{{url('fav_define_asset/export/excelURL')}}" data-toggle="tooltip" title="{{$phrase->export_excel}}"><button type="button" class="btn btn-icon btn-round btn-primary" ><i class="fas fa-file-excel"></i></button></a>
                                         </div><br><br>
                                             <form action="{{url('fav_define_asset')}}" method="post">
                                                     @csrf
@@ -210,8 +210,8 @@
                                                     <thead style="background: #d6dcff;color: #000;">
                                                         <tr>
                                                             <th>#</th>
-                                                            <th>Asset Name</th>
-                                                            <th>Department Name</th>
+                                                            <th>{{$phrase->assets_name}}</th>
+                                                            <th>{{$phrase->department_name}}</th>
                                                         </tr>
                                                     </thead>
                                                 
@@ -233,7 +233,7 @@
                                         </div><!--end of card body-->
                                         <hr class="new2" style="width: 98%;"> 
                                         <div class="card-action" style="margin-top: -29px;">   
-                                                <button class="btn btn-secondary">Submit</button>
+                                                <button class="btn btn-secondary">{{$phrase->submit}}</button>
                                             </div>
                                         </form>
                                     </div>

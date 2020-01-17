@@ -22,24 +22,24 @@
     border-top: 1px dashed #000;
     }
 
-    </style>
+</style>
 @endsection
 
 @section('page-content')
        
             <div class="row row-card-no-pd" style="border-top: 3px solid #5c76b7;">
                 <div class="col-md-12">   
-                    <div class="card-title" style="float:left; margin-top: 11px;">Resource Number Details</div><br><br>
+                    <div class="card-title" style="float:left; margin-top: 11px;">{{$phrase->resource_number}}</div><br><br>
                     <hr class="new2">
                     <div class="card-body" style="margin-top: -35px;"> 
                         <table class="table table-striped mt-3">
                             <tbody>
                                 <tr>
-                                    <th>Year</th>
-                                    <th>Resource</th>
-                                    <th>Block</th>
-                                    <th>Panchayat</th>
-                                    <th>Current Value</th>
+                                    <th>{{$phrase->year}}</th>
+                                    <th>{{$phrase->resource}}</th>
+                                    <th>{{$phrase->block}}</th>
+                                    <th>{{$phrase->panchayat}}</th>
+                                    <th>{{$phrase->current_value}}</th>
                                 </tr>
                                 <tr>
                                     <td>{{$asset_numbers->year_value}}</td>
@@ -52,14 +52,14 @@
                         </table>
                         @if(count($asset_locations)!=0)
                             <div class="col-md-12">
-                                <button class="btn"  style="margin-left:1.5%;background: #0f85e2!important;color:#fff;"><i class="fas fa-location-arrow"></i>&nbsp;&nbsp;Resource Locations</button>
+                                <button class="btn"  style="margin-left:1.5%;background: #0f85e2!important;color:#fff;"><i class="fas fa-location-arrow"></i>&nbsp;&nbsp;{{$phrase->selectToDelete}}Resource Locations</button>
                                     <div class="card-body" style="background: #f2f6ff; border: 1px solid #a5bbf6;margin-top: -18px;">
                                     <table id="basic-datatables" class=" table order-list" style="margin-top: 10px;">
                                         <thead style="background: #cedcff">                                              
                                             <tr>
-                                                <th>Location/Landmark</th>
-                                                <th>Latitude</th>
-                                                <th>Longitude</th>                                                
+                                                <th>{{$phrase->location_landmark}}</th>
+                                                <th>{{$phrase->latitude}}</th>
+                                                <th>{{$phrase->longitude}}</th>                                                
                                             </tr>
                                         </thead> 
                                         @foreach($asset_locations as $asset_location)                                  

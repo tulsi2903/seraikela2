@@ -31,7 +31,7 @@
         <div class="col-md-12">
                 <div class="card-header">
                     <div class="card-head-row card-tools-still-right" style="background:#fff;">
-                        <h4 class="card-title">Department Import Review</h4>
+                        <h4 class="card-title">{{$phrase->deprt_import_review}} </h4>
                     </div>
                 </div>
             </div>
@@ -45,10 +45,10 @@
                                 <thead style="background: #d6dcff;color: #000;">
                                     <tr>
                                         <th>#</th>
-                                        <th>Department Name</th>
-                                        <th>Organisation Name</th>
-                                        <th>Status</th>  
-                                        <th>Date</th>  
+                                        <th>{{$phrase->department_name}}</th>
+                                        <th>{{$phrase->organisation_name}}</th>
+                                        <th>{{$phrase->sts}}</th>  
+                                        <th>{{$phrase->date}}</th>  
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -67,14 +67,14 @@
                                     @endif
                                     @if($count==1)
                                         <tr>
-                                            <td colspan="4"><center>No data to show</center></td>
+                                            <td colspan="5"><center>No data to show</center></td>
                                         </tr>
                                     @endif
                                 </tbody>
                             </table>
                             <div class="form-group row">
                                 <div class="col-sm-offset-2 col-sm-10">
-                                    <button type="submit" class="btn btn-default">Import</button>
+                                    <button type="submit" class="btn btn-default">{{$phrase->import}}</button>
                                 </div>
                             </div>
                         </form>

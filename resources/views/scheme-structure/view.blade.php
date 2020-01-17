@@ -30,9 +30,9 @@ hr.new2 {
     <div class="col-md-12">
         <div class="card-header">
             <div class="card-head-row card-tools-still-right" style="background:#fff;">
-                <h4 class="card-title">Scheme Details</h4>
+                <h4 class="card-title">{{$phrase->scheme_detail}} </h4>
                 <div class="card-tools">
-                    <a href="{{url('scheme-structure')}}" class="btn btn-sm btn-secondary" style="float:right;"><i class="fas fa-arrow-left"></i>&nbsp;&nbsp;Back</a>
+                    <a href="{{url('scheme-structure')}}" class="btn btn-sm btn-secondary" style="float:right;"><i class="fas fa-arrow-left"></i>&nbsp;&nbsp;{{$phrase->back}}</a>
                 </div>
             </div>
         </div>
@@ -47,10 +47,10 @@ hr.new2 {
                 <div style="display: inline-block; padding-left: 20px;">
                     <h2 style="color: black;">{{$data->scheme_name}} ({{$data->scheme_short_name}})</h2>
                     <p>
-                        <b>Scheme Type:</b> {{$data->sch_type_name}}
-                        <br/><b>Department:</b> {{$data->dept_name}}
-                        <br/><b>Asset:</b> {{$data->scheme_asset_name}}
-                        <br/><b>Status:</b> <?php if($data->status=="1"){
+                        <b>{{$phrase->scheme_type}}:</b> {{$data->sch_type_name}}
+                        <br/><b>{{$phrase->department}}:</b> {{$data->dept_name}}
+                        <br/><b>{{$phrase->asset}}:</b> {{$data->scheme_asset_name}}
+                        <br/><b>{{$phrase->sts}}:</b> <?php if($data->status=="1"){
                             ?><i class="fas fa-check-circle text-success"></i>&nbsp;&nbsp;Active<?php
                         } else{
                             ?><i class="fas fa-dot-circle text-dark"></i>&nbsp;&nbsp;Inactive<?php
@@ -62,7 +62,7 @@ hr.new2 {
         <hr/>
         <div class="row">
             <div class="col-12">
-                <h4 style="color: black;">Description</h4 style="color: black;">
+                <h4 style="color: black;">{{$phrase->description}}</h4 style="color: black;">
                 <p>{!! nl2br(e($data->description)) !!}</p>
             </div>
             <hr/>
@@ -70,11 +70,11 @@ hr.new2 {
         <hr/>
         <div class="row">
             <div class="col-3">
-                <h4 style="color: black;">Map Marker</h4 style="color: black;">
+                <h4 style="color: black;">{{$phrase->map_marker}}</h4 style="color: black;">
                 <img src="{{url($data->scheme_map_marker)}}" style="max-width: 80px;">
             </div>
             <div class="col-3">
-                <h4 style="color: black;">Attachment</h4 style="color: black;">
+                <h4 style="color: black;">{{$phrase->attachment}}</h4 style="color: black;">
                 <a href="{{url($data->attachment)}}" target="_blank"><i class="fas fa-file-download"></i><b>&nbsp;&nbsp;Click here to show/ download</b></a>
             </div>
         </div>

@@ -13,9 +13,9 @@
     <div class="col-md-12">
         <div class="card-header">
             <div class="card-head-row card-tools-still-right" style="background:#fff;">
-                <h4 class="card-title">Scheme Asset</h4>
+                <h4 class="card-title">{{$phrase->scheme_assets}}</h4>
                 <div class="card-tools">
-                    <a href="{{url('scheme-asset')}}" class="btn btn-sm btn-secondary" style="float:right;"><i class="fas fa-arrow-left"></i>&nbsp;&nbsp;Back</a>
+                    <a href="{{url('scheme-asset')}}" class="btn btn-sm btn-secondary" style="float:right;"><i class="fas fa-arrow-left"></i>&nbsp;&nbsp;{{$phrase->back}}</a>
                 </div>
             </div>
         </div>
@@ -28,7 +28,7 @@
                 <div class="row">
                     <div class="col-md-3">
                         <div class="form-group">
-                            <label for="scheme_asset_name">Name<span style="color:red;margin-left:5px;">*</span></label>
+                            <label for="scheme_asset_name">{{$phrase->name}}<span style="color:red;margin-left:5px;">*</span></label>
                             <input name="scheme_asset_name" id="scheme_asset_name" class="form-control" autocomplete="off" value="{{$data->scheme_asset_name}}">
                             <div class="invalid-feedback" id="scheme_asset_name_error_msg"></div>
                         </div>
@@ -37,7 +37,7 @@
                     <div class="col-md-3">
                         <div class="form-group">
                             <div style="height:30px;"></div>
-                            <label for="geo_related">Geo Related</label>&nbsp;&nbsp;
+                            <label for="geo_related">{{$phrase->geo_related}}</label>&nbsp;&nbsp;
                             <input type="checkbox" name="geo_related" id="geo_related" value="1" <?php echo ($data[ 'geo_related']==1 ? 'checked' : '');?>>
                         </div>
                     </div>
@@ -52,7 +52,7 @@
 
                     <div class="col-md-3">
                         <div class="form-group" id="no_of_tag">
-                            <label for="mapmarkericon">Map Marker Icon</label>
+                            <label for="mapmarkericon">{{$phrase->map_marker_icon}}</label>
                             <input type="file" name="mapmarkericon" id="mapmarkericon" class="form-control" autocomplete="off" value="{{$data->mapmarkericon}}">
                             @if($hidden_input_purpose=="edit"&&$data->mapmarkericon)
                             <div id="scheme_assets_delete_icon" style="min-height: 132px; padding:10px; border:1px solid #c4c4c4; border-radius: 0 0 5px 5px; background: white;">
@@ -75,15 +75,15 @@
 
                 <div class="row">
                     <div class="col-12">
-                        <button type="button" class="btn" style="margin-left:1.5%;background: #0f85e2!important;color:#fff;"><i class="fas fa-location-arrow"></i>&nbsp;&nbsp;Attributes</button>
+                        <button type="button" class="btn" style="margin-left:1.5%;background: #0f85e2!important;color:#fff;"><i class="fas fa-location-arrow"></i>&nbsp;&nbsp;{{$phrase->attributes}}</button>
                         <div class="card-body" style="background: #f2f6ff; border: 1px solid #a5bbf6;margin-top: -18px;">
                             <table class="table order-list" style="margin-top: 10px;">
                                 <thead style="background: #cedcff">
                                     <tr>
-                                        <th>Name<span style="color:red;margin-left:5px;">*</span></th>
+                                        <th>{{$phrase->name}}<span style="color:red;margin-left:5px;">*</span></th>
                                         <!-- <th>UoM<span style="color:red;margin-left:5px;">*</span></th> -->
-                                        <th width="130px;">Mandatory</th>
-                                        <th width="130px;">Action</th>
+                                        <th width="130px;">{{$phrase->mandatory}}</th>
+                                        <th width="130px;">{{$phrase->action}}</th>
                                     </tr>
                                 </thead>
                                 <tbody id="append-name-uom">
@@ -123,7 +123,7 @@
                                 <tbody>
                                     <tr>
                                         <td colspan="2"></td>
-                                        <td><button type="button" onclick="append_table_data('add',null);" class="btn btn-secondary btn-sm btn-circle">Add <i class="fa fa-plus-circle" aria-hidden="true"></i></button></td>
+                                        <td><button type="button" onclick="append_table_data('add',null);" class="btn btn-secondary btn-sm btn-circle">{{$phrase->add}} <i class="fa fa-plus-circle" aria-hidden="true"></i></button></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -136,7 +136,7 @@
                 <div class="form-group">
                     <input type="text" name="hidden_input_purpose" value="{{$hidden_input_purpose}}" hidden >
                     <input type="text" name="hidden_input_id" value="{{$hidden_input_id}}" hidden>
-                    <button type="submit" class="btn btn-primary" style="float:right;" onclick="return submitForm();">Save&nbsp;&nbsp;<i class="fas fa-check"></i></button>
+                    <button type="submit" class="btn btn-primary" style="float:right;" onclick="return submitForm();">{{$phrase->save}}&nbsp;&nbsp;<i class="fas fa-check"></i></button>
                 </div>
             </form>
         </div>

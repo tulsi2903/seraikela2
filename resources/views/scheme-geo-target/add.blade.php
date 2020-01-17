@@ -24,7 +24,7 @@
 
         <div class="card-header">
             <div class="card-head-row card-tools-still-right" style="background:#fff;">
-                <h4 class="card-title">Scheme Geo Target</h4>
+                <h4 class="card-title">{{$phrase->schemeGeoTarget}}</h4>
                 <!-- <div class="card-tools">
                     <a href="{{url('scheme-geo-target')}}" class="btn btn-sm btn-secondary" style="float:right;"><i class="fas fa-arrow-left"></i>&nbsp;&nbsp;Back</a>
                 </div> -->
@@ -39,7 +39,7 @@
                 <div class="row">
                     <div class="col-md-2">
                         <div class="form-group">
-                            <label for="scheme_id">Scheme<span style="color:red;margin-left:5px;">*</span></label>
+                            <label for="scheme_id">{{$phrase->scheme}}<span style="color:red;margin-left:5px;">*</span></label>
                             <select name="scheme_id" id="scheme_id" class="form-control">
                                 <option value="">---Select---</option>
                                 @foreach($scheme_datas as $scheme )
@@ -52,7 +52,7 @@
 
                     <div class="col-md-2">
                         <div class="form-group">
-                            <label for="year_id">Year<span style="color:red;margin-left:5px;">*</span></label>
+                            <label for="year_id">{{$phrase->year}}<span style="color:red;margin-left:5px;">*</span></label>
                             <select name="year_id" id="year_id" class="form-control">
                                 <option value="">---Select---</option>
                                 @foreach($year_datas as $year_data )
@@ -64,7 +64,7 @@
                     </div>
                     <div class="col-md-2">
                         <div class="form-group">
-                            <label for="block_id">Block<span style="color:red;margin-left:5px;">*</span></label>
+                            <label for="block_id">{{$phrase->block}}<span style="color:red;margin-left:5px;">*</span></label>
                             <select name="block_id" id="block_id" class="form-control">
                                 <option value="">---Select---</option>
                                 @foreach( $block_datas as $block_data )
@@ -76,7 +76,7 @@
                     </div>
                     <div class="col-md-2">
                         <div class="form-group">
-                            <label for="panchayat_id">Panchayat</label>
+                            <label for="panchayat_id">{{$phrase->panchayat}}</label>
                             <select name="panchayat_id" id="panchayat_id" class="form-control">
                                 <option value="">All Panchayats</option>
                             </select>
@@ -101,12 +101,12 @@
                 <div class="row">
                     <div class="col-12">
                         <div id="target-div-block">
-                            <button type="button" class="btn" style="margin-left:1.5%;background: #0f85e2!important;color:#fff;"><i class="fas fa-location-arrow"></i>&nbsp;&nbsp;Targets</button>
+                            <button type="button" class="btn" style="margin-left:1.5%;background: #0f85e2!important;color:#fff;"><i class="fas fa-location-arrow"></i>&nbsp;&nbsp;{{$phrase->target}}</button>
                             <div class="card-body" style="background: #f2f6ff; border: 1px solid #a5bbf6;margin-top: -18px;">
                                 <div id="block-target-details" style="color: black; text-align: right; margin-bottom: 15px; display: none;">
-                                    <b>Block:</b> -
-                                    &nbsp;&nbsp;&bull;&nbsp;&nbsp;<b>Current Block Target:</b> -
-                                    &nbsp;&nbsp;&bull;&nbsp;&nbsp;<b>New Block Target:</b> -
+                                    <b>{{$phrase->block}}:</b>-
+                                    &nbsp;&nbsp;&bull;&nbsp;&nbsp;<b>{{$phrase->currentBlockTarget}}:</b> -
+                                    &nbsp;&nbsp;&bull;&nbsp;&nbsp;<b>{{$phrase->newBlockTarget}}:</b> -
                                 </div>
                                 <hr/>
                                 <div id="target-no-data" style="font-size:16px;padding-top:25px;">
@@ -115,10 +115,10 @@
                                 <table id="target-table" class="table order-list" style="margin-top: 10px; display: none;">
                                     <thead style="background: #cedcff">
                                         <tr>
-                                            <th width="50px">Sl.No</th>
-                                            <th>Panchayat</th>
-                                            <th width="150px">Target</th>
-                                            <th width="200px">Change Target</th>
+                                            <th width="50px">{{$phrase->sl}}</th>
+                                            <th>{{$phrase->panchayat}}</th>
+                                            <th width="150px">{{$phrase->target}}</th>
+                                            <th width="200px">{{$phrase->change_target}}</th>
                                             <th width="150px"></th>
                                         </tr>
                                     </thead>
@@ -128,7 +128,7 @@
                                     <tbody>
                                         <tr>
                                             <td colspan="3"></td>
-                                            <td><button class="btn btn-secondary btn-block btn-sm" id="data-save-button" onclick="saveTarget()" disabled="true"><i class="fas fa-check"></i>&nbsp;&nbsp;Save</button></td>
+                                            <td><button class="btn btn-secondary btn-block btn-sm" id="data-save-button" onclick="saveTarget()" disabled="true"><i class="fas fa-check"></i>&nbsp;&nbsp;{{$phrase->save}}</button></td>
                                             <td></td>
                                         </tr>
                                     </tbody>

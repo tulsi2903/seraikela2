@@ -14,9 +14,9 @@
             <!-- <div class="card"> -->
                 <div class="card-header">
                     <div class="card-head-row card-tools-still-right" style="background:#fff;">
-                        <h4 class="card-title">Import From Excel</h4>
+                        <h4 class="card-title">{{$phrase->import_excel}}</h4>
                         <div class="card-tools">
-                        <a href="{{url('scheme-performance')}}" class="btn btn-sm btn-secondary" style="float:right;"><i class="fas fa-arrow-left"></i>&nbsp;&nbsp;Back</a>
+                        <a href="{{url('scheme-performance')}}" class="btn btn-sm btn-secondary" style="float:right;"><i class="fas fa-arrow-left"></i>&nbsp;&nbsp;{{$phrase->back}}</a>
                         </div>
                     </div>
                 </div>
@@ -31,12 +31,12 @@
                             <input type="text" name="scheme_id" value="{{$scheme_id}}" hidden>
                             <input type="text" name="year_id" value="{{$year_id}}" hidden>
                             <input type="text" name="block_id" value="{{$block_id}}" hidden>
-                            <label for="dept_name">File to import<span style="color:red;margin-left:5px;">*</span></label>
+                            <label for="dept_name">{{$phrase->file_to_import}}<span style="color:red;margin-left:5px;">*</span></label>
                             <span>[Maximum no. of entries that can be imported at a time is 250]</span>
                             <input type="file" name="excelcsv" id="excelcsv" class="form-control" required>
                         </div>
                         <div class="form-group">
-                            <button type="submit" class="btn btn-primary">Import</button>
+                            <button type="submit" class="btn btn-primary">{{$phrase->import}} </button>
                         </div>
                     </form>
                 </div>

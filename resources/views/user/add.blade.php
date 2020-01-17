@@ -14,10 +14,10 @@
         <div class="col-md-12">
             <div class="card" style="border-top: 3px solid #5c76b7;">
                 <div class="card-header">
-                    <div class="card-title" style="float:left;"><i class="fa fa-user" aria-hidden="true"></i> &nbsp;User Detail</div>
+                    <div class="card-title" style="float:left;"><i class="fa fa-user" aria-hidden="true"></i> &nbsp;{{$phrase->user_details}}</div>
                     @if(@$desig_permissions["mod1"]["add"])
                         <div id="toggle1">
-                            <div  style="float:right;margin-bottom: 1em;"><button class="btn btn-secondary" onclick="resetUserForm()"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;Add Users</button></div>
+                            <div  style="float:right;margin-bottom: 1em;"><button class="btn btn-secondary" onclick="resetUserForm()"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;{{$phrase->add_users}}</button></div>
                         </div>
                     @endif
                 </div>
@@ -32,7 +32,7 @@
                                     <div class="row">
                                         <div class="col-md-3">
                                             <div class="form-group">
-                                                <label for="title">Title<span style="color:red;">*</span></label>
+                                                <label for="title">{{$phrase->title}}<span style="color:red;">*</span></label>
                                                 <select name="title" id="title" class="form-control">
                                                     <option value="">--Select--</option>
                                                     <option value="Mr">Mr.</option>
@@ -45,21 +45,21 @@
                                         </div>
                                         <div class="col-md-3">
                                             <div class="form-group">
-                                                <label for="first_name">First Name<span style="color:red;">*</span></label>
+                                                <label for="first_name">{{$phrase->f_name}}<span style="color:red;">*</span></label>
                                                 <input type="text" name="first_name" id="first_name" class="form-control" placeholder="First Name" maxlength="20">
                                                 <div class="invalid-feedback" id="first_name_error_msg"></div class="invalid-feedback">
                                             </div>
                                         </div>
                                         <div class="col-md-3">
                                             <div class="form-group">
-                                                <label for="middle_name">Middle Name</label>
+                                                <label for="middle_name">{{$phrase->m_name}}</label>
                                                 <input type="text" name="middle_name" id="middle_name" class="form-control" placeholder="Middle Name" maxlength="20">
                                                 <div class="invalid-feedback" id="middle_name_error_msg"></div class="invalid-feedback">
                                             </div>
                                         </div>
                                         <div class="col-md-3">
                                             <div class="form-group">
-                                                <label for="last_name">Last Name</label>
+                                                <label for="last_name">{{$phrase->l_name}}</label>
                                                 <input type="text" name="last_name" id="last_name" class="form-control" placeholder="Last Name" maxlength="20">
                                                 <div class="invalid-feedback" id="last_name_error_msg"></div class="invalid-feedback">
                                             </div>
@@ -68,7 +68,7 @@
                                     <div class="row">
                                         <div class="col-md-3">
                                             <div class="form-group">
-                                                <label for="org_id">Organisation<span style="color:red;">*</span></label>
+                                                <label for="org_id">{{$phrase->organisation}}<span style="color:red;">*</span></label>
                                                 <select name="org_id" id="org_id" class="form-control form-control">
                                                     <option value="">--Select--</option>
                                                     @foreach($organization_data as $organization)
@@ -80,7 +80,7 @@
                                         </div>
                                         <div class="col-md-3">
                                             <div class="form-group">
-                                                <label for="desig_id">Designation<span style="color:red;">*</span></label>
+                                                <label for="desig_id">{{$phrase->designation}}<span style="color:red;">*</span></label>
                                                 <select name="desig_id" id="desig_id" class="form-control form-control">
                                                     <option value="">--Select--</option>
                                                     @foreach($designation_data as $designation)
@@ -92,14 +92,14 @@
                                         </div>
                                         <div class="col-md-3">
                                             <div class="form-group">
-                                                <label for="start_date">Start Date</label>
+                                                <label for="start_date">{{$phrase->start_date}} </label>
                                                 <input type="text" name="start_date" id="start_date" class="form-control start_date_end_date_datepicker" placeholder="dd/mm/yyyy" autocomplete="off">
                                                 <div class="invalid-feedback" id="start_date_error_msg"></div class="invalid-feedback">
                                             </div>
                                         </div>
                                         <div class="col-md-3">
                                             <div class="form-group">
-                                                <label for="end_date">End date</label>
+                                                <label for="end_date">{{$phrase->end_date}} </label>
                                                 <input type="text" name="end_date" id="end_date" class="form-control start_date_end_date_datepicker" placeholder="dd/mm/yyyy" autocomplete="off">
                                                 <div class="invalid-feedback" id="end_date_error_msg"></div class="invalid-feedback">
                                             </div>
@@ -108,28 +108,28 @@
                                     <div class="row">
                                         <div class="col-md-3">
                                             <div class="form-group">
-                                                <label for="email">Email Id.<font style="color:red;">*</font></label>
+                                                <label for="email">{{$phrase->email_id}}<font style="color:red;">*</font></label>
                                                 <input type="text" name="email" id="email" class="form-control" placeholder="example@example.com" maxlength="50">
                                                 <div class="invalid-feedback" id="email_error_msg"></div class="invalid-feedback">
                                             </div>
                                         </div>
                                         <div class="col-md-3">
                                             <div class="form-group">
-                                                <label for="username">Username<span style="color:red;">*</span></label>
+                                                <label for="username">{{$phrase->user_name}}<span style="color:red;">*</span></label>
                                                 <input type="text" name="username" id="username" class="form-control" placeholder="Username" maxlength="20" autocomplete="off">
                                                 <div class="invalid-feedback" id="username_error_msg"></div>
                                             </div>
                                         </div>
                                         <div class="col-md-3 edit-form-elements">
                                             <div class="form-group">
-                                                <label for="password">Password<span style="color:red;">*</span></label>
+                                                <label for="password">{{$phrase->password}}<span style="color:red;">*</span></label>
                                                 <input type="password" name="password" id="password" class="form-control" placeholder="Password" maxlength="15">
                                                 <div class="invalid-feedback" id="password_error_msg"></div class="invalid-feedback">
                                             </div>
                                         </div>
                                         <div class="col-md-3 edit-form-elements">
                                             <div class="form-group">
-                                                <label for="confirm_password">Confirm Password<span style="color:red;">*</span></label>
+                                                <label for="confirm_password">{{$phrase->conf_password}} <span style="color:red;">*</span></label>
                                                 <input type="text" name="confirm_password" id="confirm_password" class="form-control" placeholder="Re-type Password" maxlength="15">
                                                 <div class="invalid-feedback" id="confirm_password_error_msg"></div class="invalid-feedback">
                                             </div>
@@ -138,21 +138,21 @@
                                     <div class="row">
                                         <div class="col-md-3">
                                             <div class="form-group">
-                                                <label for="mobile">Mobile No.</label>
+                                                <label for="mobile">{{$phrase->mobile_no}}</label>
                                                 <input type="text" name="mobile" id="mobile" class="form-control" placeholder="10 digit number only" maxlength="10">
                                                 <div class="invalid-feedback" id="mobile_error_msg"></div class="invalid-feedback">
                                             </div>
                                         </div>
                                         <div class="col-md-3">
                                             <div class="form-group">
-                                                <label for="address">Address</label>
+                                                <label for="address">{{$phrase->address}}</label>
                                                 <input type="text" name="address" id="address" class="form-control" placeholder="Address" maxlength="100">
                                                 <div class="invalid-feedback" id="address_error_msg"></div class="invalid-feedback">
                                             </div>
                                         </div>
                                         <div class="col-md-3">
                                             <div class="form-group">
-                                                <label for="status">Status<font style="color:red;">*</font></label>
+                                                <label for="status">{{$phrase->sts}}<font style="color:red;">*</font></label>
                                                 <select name="status" id="status" class="form-control form-control">
                                                     <option value="">--Select--</option>
                                                     <option value="1">Active</option>
@@ -165,8 +165,8 @@
                                     <div class="card-action">
                                         <input type="text" name="hidden_input_purpose" id="hidden_input_purpose" value="add" hidden >
                                         <input type="text" name="hidden_input_id" id="hidden_input_id" value="NA" hidden>
-                                        <button type="submit" onclick="return submitForm()" class="btn btn-secondary">Submit</button>
-                                        &nbsp;&nbsp;<button type="button" class="btn btn-dark" onclick="hideForm()">Cancel&nbsp;&nbsp;<i class="fas fa-times"></i></button>
+                                        <button type="submit" onclick="return submitForm()" class="btn btn-secondary">{{$phrase->submit}}</button>
+                                        &nbsp;&nbsp;<button type="button" class="btn btn-dark" onclick="hideForm()">{{$phrase->cancel}}&nbsp;&nbsp;<i class="fas fa-times"></i></button>
                                     </div>
                                 </div>
                             </form>    
@@ -181,12 +181,12 @@
                     <table class="table-datatable display table table-striped table-hover" >
                         <thead style="background: #d6dcff;color: #000;">
                             <tr>
-                                <th>Name</th>
-                                <th>Email Id</th>
-                                <th>Username</th>
-                                <th>Designation</th>
-                                <th>Address</th>
-                                <th>Status</th>
+                                <th>{{$phrase->name}}</th>
+                                <th>{{$phrase->email_id}} </th>
+                                <th>{{$phrase->user_name}}</th>
+                                <th>{{$phrase->designation}}</th>
+                                <th>{{$phrase->address}}</th>
+                                <th>{{$phrase->sts}}</th>
                             </tr>
                         </thead>
                         <tbody>

@@ -9,22 +9,21 @@
            
                 <div class="card-header">
                     <div class="card-head-row card-tools-still-right" style="background:#fff;">
-                        <h4 class="card-title">Scheme Type</h4>
+                        <h4 class="card-title">{{$phrase->scheme_type}}</h4>
                         <div class="card-tools">
-                        <a href="{{url('scheme-type')}}" class="btn btn-sm btn-secondary" style="float:right;"><i class="fas fa-arrow-left"></i>&nbsp;&nbsp;Back</a>
+                        <a href="{{url('scheme-type')}}" class="btn btn-sm btn-secondary" style="float:right;"><i class="fas fa-arrow-left"></i>&nbsp;&nbsp;{{$phrase->back}}</a>
                         </div>
                     </div>
                 </div>
             </div>
        
         <div class="card-body">
-         
                     <div action="{{url('scheme-type/store')}}" method="POST">
                     @csrf
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="sch_type_name">Scheme Name<span style="color:red;margin-left:5px;">*</span></label>
+                                <label for="sch_type_name">{{$phrase->scheme_name}} <span style="color:red;margin-left:5px;">*</span></label>
                                 <input type="text" name="sch_type_name" id="sch_type_name" class="form-control" value="{{$data->sch_type_name}}">
                                 <div class="invalid-feedback" id="scheme_name_error_msg"></div>
                             </div>
@@ -34,8 +33,8 @@
                             <div class="form-group">
                                 <input type="text" name="hidden_input_purpose" value="{{$hidden_input_purpose}}" hidden>
                                 <input type="text" name="hidden_input_id" value="{{$hidden_input_id}}" hidden>
-                                <button type="submit" class="btn btn-primary" onclick="return submitForm()" id="sub">Save&nbsp;&nbsp;<i class="fas fa-check"></i></button>
-                                <button type="reset" class="btn btn-secondary">Reset&nbsp;&nbsp;<i class="fas fa-undo"></i></button>
+                                <button type="submit" class="btn btn-primary" onclick="return submitForm()" id="sub">{{$phrase->save}}&nbsp;&nbsp;<i class="fas fa-check"></i></button>
+                                <button type="reset" class="btn btn-secondary">{{$phrase->reset}}&nbsp;&nbsp;<i class="fas fa-undo"></i></button>
                             </div>
                             </div>
                         </form>

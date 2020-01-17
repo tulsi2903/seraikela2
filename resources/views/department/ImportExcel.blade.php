@@ -14,9 +14,9 @@
             <!-- <div class="card"> -->
                 <div class="card-header">
                     <div class="card-head-row card-tools-still-right" style="background:#fff;">
-                        <h4 class="card-title">Import From Excel</h4>
+                        <h4 class="card-title">{{$phrase->import_excel}} </h4>
                         <div class="card-tools">
-                        <a href="{{url('department')}}" class="btn btn-sm btn-secondary" style="float:right;"><i class="fas fa-arrow-left"></i>&nbsp;&nbsp;Back</a>
+                        <a href="{{url('department')}}" class="btn btn-sm btn-secondary" style="float:right;"><i class="fas fa-arrow-left"></i>&nbsp;&nbsp;{{$phrase->back}}</a>
                         </div>
                     </div>
                 </div>
@@ -28,11 +28,11 @@
                     <form action="{{url('department/importFromExcel')}}" method="POST" enctype="multipart/form-data">
                     @csrf
                         <div class="form-group">
-                            <label for="dept_name">File to import<span style="color:red;margin-left:5px;">*</span></label>
+                            <label for="dept_name">{{$phrase->file_to_import}}<span style="color:red;margin-left:5px;">*</span></label>
                             <input type="file" name="excelcsv" id="excelcsv" class="form-control">
                         </div>
                         <div class="form-group">
-                            <button type="submit" class="btn btn-primary">Import</button>
+                            <button type="submit" class="btn btn-primary">{{$phrase->import}}</button>
                         </div>
                     </form>
                 </div>

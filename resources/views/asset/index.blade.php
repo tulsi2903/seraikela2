@@ -27,14 +27,14 @@
     <div class="col-md-12">
         <div class="card-header">
             <div class="card-head-row card-tools-still-right" style="background:#fff;">
-                <h4 class="card-title">Resources</h4>
+                <h4 class="card-title">{{$phrase->resource}} </h4>
                 <div class="card-tools">
-                    <a href="#" data-toggle="tooltip" title="Send Mail"><button type="button" class="btn btn-icon btn-round btn-success" data-target="#create-email" data-toggle="modal"><i class="fa fa-envelope" aria-hidden="true"></i></button></a>
-                    <a href="#" data-toggle="tooltip" title="Print"><button type="button" class="btn btn-icon btn-round btn-default" id="print-button" onclick="printView();"><i class="fa fa-print" aria-hidden="true"></i></button></a>
-                    <a href="{{url('asset/pdf/pdfURL')}}" target="_BLANK" data-toggle="tooltip" title="Export to PDF"><button type="button" class="btn btn-icon btn-round btn-warning"><i class="fas fa-file-export"></i></button></a>
-                    <a href="{{url('asset/export/excelURL')}}" data-toggle="tooltip" title="Export to Excel"><button type="button" class="btn btn-icon btn-round btn-primary"><i class="fas fa-file-excel"></i></button></a>
+                    <a href="#" data-toggle="tooltip" title="{{$phrase->send_email}}"><button type="button" class="btn btn-icon btn-round btn-success" data-target="#create-email" data-toggle="modal"><i class="fa fa-envelope" aria-hidden="true"></i></button></a>
+                    <a href="#" data-toggle="tooltip" title="{{$phrase->print}}"><button type="button" class="btn btn-icon btn-round btn-default" id="print-button" onclick="printView();"><i class="fa fa-print" aria-hidden="true"></i></button></a>
+                    <a href="{{url('asset/pdf/pdfURL')}}" target="_BLANK" data-toggle="tooltip" title="{{$phrase->export_pdf}}"><button type="button" class="btn btn-icon btn-round btn-warning"><i class="fas fa-file-export"></i></button></a>
+                    <a href="{{url('asset/export/excelURL')}}" data-toggle="tooltip" title="{{$phrase->export_excel}}"><button type="button" class="btn btn-icon btn-round btn-primary"><i class="fas fa-file-excel"></i></button></a>
                     @if($desig_permissions["mod13"]["add"])
-                    <a id="toggle1" onclick="resetAssetForm()" class="btn btn-secondary" href="javascript:void();" role="button"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;Add</a>
+                    <a id="toggle1" onclick="resetAssetForm()" class="btn btn-secondary" href="javascript:void();" role="button"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;{{$phrase->add}}</a>
                     @endif
                 </div>
             </div>
@@ -47,14 +47,14 @@
                 <div class="row">
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label for="asset_name">Resource Name<span style="color:red;margin-left:5px;">*</span></label>
+                            <label for="asset_name">{{$phrase->resource}} <span style="color:red;margin-left:5px;">*</span></label>
                             <input type="text" name="asset_name" id="asset_name" class="form-control" value="{{$data->asset_name}}" autocomplete="off">
                             <div class="invalid-feedback" id="asset_name_error_msg"></div>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label for="movable">Type<span style="color:red;margin-left:5px;">*</span></label>
+                            <label for="movable">{{$phrase->type}}<span style="color:red;margin-left:5px;">*</span></label>
                             <select name="movable" id="movable" class="form-control">
                                 <option value="">--Select--</option>
                                 <option value="1" <?php if($data->movable=='1'){ echo "selected"; } ?>>Movable</option>
@@ -65,7 +65,7 @@
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label for="dept_id">Department Name<span style="color:red;margin-left:5px;">*</span></label>
+                            <label for="dept_id">{{$phrase->department_name}}<span style="color:red;margin-left:5px;">*</span></label>
                             <select name="dept_id" id="dept_id" class="form-control">
                                 <option value="">--Select--</option>
                                 @foreach( $departments as $department )
@@ -80,7 +80,7 @@
                 <div class="row">
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label for="category">Category</label>
+                            <label for="category">{{$phrase->catagory}}</label>
                             <select name="category" id="category" class="form-control">
                                 <option value="">--Select--</option>
                                 @foreach( $categories as $category )
@@ -94,7 +94,7 @@
 
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label for="subcategory">Sub Category</label>
+                            <label for="subcategory">{{$phrase->sub_catagory}} </label>
                             <select name="subcategory" id="subcategory" class="form-control">
                                 <option value="">--Select--</option>
                                 @foreach( $sub_categories as $sub_category )
@@ -109,10 +109,10 @@
                 <div class="row">
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label for="asset_icon">Resource Icon</label>
+                            <label for="asset_icon">{{$phrase->icon}}</label>
                             <input type="file" name="asset_icon" id="asset_icon" class="form-control">
                             <div id="asset_icon_delete_div" style="padding:5px 0; display: none;">
-                                <div>Previous Icon</div>
+                                <div>{{$phrase->icon}}</div>
                                 <div style="display: inline-block;position:relative;padding:3px;border:1px solid #c4c4c4; border-radius:3px;">
                                     <img src="" style="height:120px;">
                                     <span style="position:absolute;top:0;right:0; background: rgba(0,0,0,0.5); font-size: 18px; cursor: pointer; padding: 5px 10px;" class="text-white" onclick=""><i class="fas fa-trash"></i></span>
@@ -124,15 +124,15 @@
                     </div>
                     <div class="col-md-8">
                         <div class="form-group">
-                            <label for="asset_icon">Sub Resources</label>
+                            <label for="asset_icon">{{$phrase->sub_catagory}}</label>
                             <table>
                                 <thead>
                                     <tr>
-                                        <th>Name</th>
-                                        <th>Type</th>
-                                        <th>Icon</th>
+                                        <th>{{$phrase->name}} </th>
+                                        <th>{{$phrase->type}} </th>
+                                        <th>{{$phrase->icon}}</th>
                                         <th></th>
-                                        <th>Action</th>
+                                        <th>{{$phrase->action}}</th>
                                     </tr>
                                 </thead>
                                 <tbody id="append-name-child">
@@ -141,7 +141,7 @@
                                 <tbody>
                                     <tr>
                                         <td colspan="3"></td>
-                                        <td><button type="button" onclick="append_table_data('add',null);" class="btn btn-secondary btn-sm btn-circle">Add <i class="fa fa-plus-circle" aria-hidden="true"></i></button></td>
+                                        <td><button type="button" onclick="append_table_data('add',null);" class="btn btn-secondary btn-sm btn-circle">{{$phrase->add}} <i class="fa fa-plus-circle" aria-hidden="true"></i></button></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -155,8 +155,8 @@
                             <input type="text" name="hidden_input_purpose" id="hidden_input_purpose" value="add" hidden>
                             <input type="text" name="hidden_input_id" id="hidden_input_id" value="NA" hidden>
                             <input type="text" name="deleted_asset_child_id" id="deleted_asset_child_id" value="" hidden>
-                            <button type="button" class="btn btn-secondary" onclick="return submitForm()">Save&nbsp;&nbsp;<i class="fas fa-check"></i></button>
-                            &nbsp;&nbsp;<button type="button" class="btn btn-dark" onclick="hideForm()">Cancel&nbsp;&nbsp;<i class="fas fa-times"></i></button>
+                            <button type="button" class="btn btn-secondary" onclick="return submitForm()">{{$phrase->save}}&nbsp;&nbsp;<i class="fas fa-check"></i></button>
+                            &nbsp;&nbsp;<button type="button" class="btn btn-dark" onclick="hideForm()">{{$phrase->cancel}} &nbsp;&nbsp;<i class="fas fa-times"></i></button>
                         </div>
                     </div>
                 </div>
@@ -172,12 +172,12 @@
                         <thead style="background: #d6dcff;color: #000;">
                             <tr>
                                 <th>#</th>
-                                <th>Icon</th>
-                                <th>Name</th>
-                                <th>Type</th>
-                                <th>Department Name</th>
+                                <th>{{$phrase->icon}}</th>
+                                <th>{{$phrase->name}}</th>
+                                <th>{{$phrase->type}}</th>
+                                <th>{{$phrase->department_name}}</th>
                                 @if($desig_permissions["mod13"]["del"] || $desig_permissions["mod13"]["edit"])
-                                <th class="action-buttons">Action</th>
+                                <th class="action-buttons">{{$phrase->action}}</th>
                                 @endif
                             </tr>
                         </thead>
@@ -689,7 +689,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title mt-0">Send Email</h4>
+                <h4 class="modal-title mt-0">{{$phrase->send_email}}</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -705,15 +705,15 @@
                                 <!-- <input type="text" name="from" class="form-control" placeholder="From" required=""> -->
                             </div>
                             <div class="form-group">
-                                <input type="text" name="to" class="form-control" placeholder="To" required="">
+                                <input type="text" name="to" class="form-control" placeholder="{{$phrase->to}}" required="">
                             </div>
                             <div class="form-group">
-                                <input type="text" name="cc" class="form-control" placeholder="CC" required="">
+                                <input type="text" name="cc" class="form-control" placeholder="{{$phrase->cc}}" required="">
                             </div>
 
                             <div class="form-group">
-                                <label for="subject" class="control-label">Subject <font color="red">*</font></label>
-                                <input type="text" class="form-control" id="subject" name="subject" placeholder="Subject" required="" aria-required="true">
+                                <label for="subject" class="control-label">{{$phrase->subject}} <font color="red">*</font></label>
+                                <input type="text" class="form-control" id="subject" name="subject" placeholder="{{$phrase->subject}}" required="" aria-required="true">
                             </div>
                             <!-- <div class="form-group">
                                 <label for="field-2" class="control-label">Message <font color="red">*</font></label>
@@ -725,8 +725,8 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-info waves-effect waves-light">Send</button>
+                    <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">{{$phrase->close}}</button>
+                    <button type="submit" class="btn btn-info waves-effect waves-light">{{$phrase->send}}</button>
                 </div>
             </form>
         </div>

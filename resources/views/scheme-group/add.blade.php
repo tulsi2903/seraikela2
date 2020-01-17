@@ -7,9 +7,9 @@
                         <div class="col-md-12">
                                 <div class="card-header">
                                     <div class="card-head-row card-tools-still-right" style="background:#fff;">
-                                        <h4 class="card-title">Scheme Group</h4>
+                                        <h4 class="card-title">{{$phrase->scheme_group}}</h4>
                                         <div class="card-tools">
-                                        <a href="{{url('scheme-group')}}" class="btn btn-sm btn-secondary" style="float:right;"><i class="fas fa-arrow-left"></i>&nbsp;&nbsp;Back</a>
+                                        <a href="{{url('scheme-group')}}" class="btn btn-sm btn-secondary" style="float:right;"><i class="fas fa-arrow-left"></i>&nbsp;&nbsp;{{$phrase->back}}</a>
                                         </div>
                                     </div>
                                 </div>
@@ -21,7 +21,7 @@
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label for="group_name">Group Name<span style="color:red;margin-left:5px;">*</span></label>
+                                        <label for="group_name">{{$phrase->group_name}}<span style="color:red;margin-left:5px;">*</span></label>
                                         <input type="text" name="group_name" id="group_name" class="form-control" value="{{$results->scheme_group_name}}" autocomplete="off">
                                         <div class="invalid-feedback" id="group_name_error_msg"></div>
                                     </div>
@@ -29,7 +29,7 @@
                                     
                                 <div class="col-md-4"> 
                                     <div class="form-group">
-                                        <label for="is_active">Is Active<span style="color:red;margin-left:5px;">*</span></label>
+                                        <label for="is_active">{{$phrase->is_active}}<span style="color:red;margin-left:5px;">*</span></label>
                                         <select name="is_active" id="is_active" name="is_active" class="form-control">
                                             <option value="">-Select-</option>
                                             <option value="1" <?php if($results->is_active=='1'){ echo "selected"; } ?>>Active</option>
@@ -43,8 +43,8 @@
                                     <div class="form-group">
                                         <input type="hidden" name="hidden_input_purpose" value="{{$hidden_input_purpose}}" >
                                         <input type="hidden" name="hidden_input_id" value="{{$hidden_input_id}}" >
-                                        <button type="submit" class="btn btn-primary" onclick="return submitForm()">Save&nbsp;&nbsp;<i class="fas fa-check"></i></button>
-                                        <button type="reset" class="btn btn-secondary">Reset&nbsp;&nbsp;<i class="fas fa-undo"></i></button>
+                                        <button type="submit" class="btn btn-primary" onclick="return submitForm()">{{$phrase->submit}}&nbsp;&nbsp;<i class="fas fa-check"></i></button>
+                                        <button type="reset" class="btn btn-secondary">{{$phrase->reset}}&nbsp;&nbsp;<i class="fas fa-undo"></i></button>
                                     </div>
                                 </div>
                             </div>

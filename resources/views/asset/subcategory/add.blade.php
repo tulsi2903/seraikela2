@@ -8,9 +8,9 @@
             
                 <div class="card-header">
                     <div class="card-head-row card-tools-still-right" style="background:#fff;">
-                        <h4 class="card-title">Resource Sub Category</h4>
+                        <h4 class="card-title">{{$phrase->resourcesub_catagory}}</h4>
                         <div class="card-tools">
-                        <a href="{{url('asset')}}" class="btn btn-sm btn-secondary" style="float:right;"><i class="fas fa-arrow-left"></i>&nbsp;&nbsp;Back</a>
+                        <a href="{{url('asset')}}" class="btn btn-sm btn-secondary" style="float:right;"><i class="fas fa-arrow-left"></i>&nbsp;&nbsp;{{$phrase->back}}</a>
                         </div>
                     </div>
                 </div>
@@ -23,7 +23,7 @@
             <div class="row">
                     <div class="col-md-3">
                     <div class="form-group">
-                            <label for="dept_id">Resource Category Name<span style="color:red;margin-left:5px;">*</span></label>
+                            <label for="dept_id">{{$phrase->resource_category_name}} <span style="color:red;margin-left:5px;">*</span></label>
                             <select name="asset_cat_id"  class="form-control">
                                 <option value="">---Select---</option>
                                 @foreach( $asset_cat as $asset_cats )
@@ -36,7 +36,7 @@
 
                         <div class="col-md-3">
                     <div class="form-group">
-                        <label for="asset_name">Resource Sub Category Name<span style="color:red;margin-left:5px;">*</span></label>
+                        <label for="asset_name">{{$phrase->resource_subcategory_name}}<span style="color:red;margin-left:5px;">*</span></label>
                         <input type="text" name="asset_sub_cat_name" id="asset_name" class="form-control" value="{{$data->asset_sub_cat_name}}" autocomplete="off">
                          <div class="invalid-feedback" id="asset_name_error_msg"></div>
                         </div>
@@ -44,7 +44,7 @@
 
                         <div class="col-md-3">
                         <div class="form-group">
-                                <label for="asset_name">Resource Sub Category Description<span style="color:red;margin-left:5px;"></span></label>
+                                <label for="asset_name">{{$phrase->resource_subcategory_description}}<span style="color:red;margin-left:5px;"></span></label>
                                 <input type="textarea" name="asset_sub_cat_description"  class="form-control" value="{{$data->asset_sub_cat_description}}" autocomplete="off">
                                 </div>
                                 </div>
@@ -63,8 +63,8 @@
                         <div class="form-group">
                             <input type="text" name="hidden_input_purpose" value="{{$hidden_input_purpose}}" hidden>
                             <input type="text" name="hidden_input_id" value="{{$hidden_input_id}}" hidden>
-                            <button type="submit" class="btn btn-primary" onclick="return submitForm()">Save&nbsp;&nbsp;<i class="fas fa-check"></i></button>
-                            <button type="reset" class="btn btn-secondary">Reset&nbsp;&nbsp;<i class="fas fa-undo"></i></button>
+                            <button type="submit" class="btn btn-primary" onclick="return submitForm()">{{$phrase->save}}&nbsp;&nbsp;<i class="fas fa-check"></i></button>
+                            <button type="reset" class="btn btn-secondary">{{$phrase->reset}}&nbsp;&nbsp;<i class="fas fa-undo"></i></button>
                         </div>
                     </div>
                     </form>

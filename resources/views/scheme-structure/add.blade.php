@@ -16,9 +16,9 @@
     <div class="col-md-12">
         <div class="card-header">
             <div class="card-head-row card-tools-still-right" style="background:#fff;">
-                <h4 class="card-title">Define Schemes</h4>
+                <h4 class="card-title">{{$phrase->define_scheme}}</h4>
                 <div class="card-tools">
-                    <a href="{{url('scheme-structure')}}" class="btn btn-sm btn-secondary" style="float:right;"><i class="fas fa-arrow-left"></i>&nbsp;&nbsp;Back</a>
+                    <a href="{{url('scheme-structure')}}" class="btn btn-sm btn-secondary" style="float:right;"><i class="fas fa-arrow-left"></i>&nbsp;&nbsp;{{$phrase->back}}</a>
                 </div>
             </div>
         </div>
@@ -34,22 +34,22 @@
                         @if($data->scheme_is==1)
                         <div class="custom-control custom-radio custom-control-inline">
                             <input type="radio" id="scheme_is_independent" name="scheme_is" value="1" class="custom-control-input" checked>
-                            <label class="custom-control-label" for="scheme_is_independent">Single Asset</label>
+                            <label class="custom-control-label" for="scheme_is_independent">{{$phrase->single_asset}}</label>
                         </div>
                         @else
                         <div class="custom-control custom-radio custom-control-inline">
                             <input type="radio" id="scheme_is_under_a_group" name="scheme_is" value="2" checked class="custom-control-input">
-                            <label class="custom-control-label" for="scheme_is_under_a_group">Muitiple Asset</label>
+                            <label class="custom-control-label" for="scheme_is_under_a_group">{{$phrase->muitiple_asset}}</label>
                         </div>
                         @endif
                         @else
                         <div class="custom-control custom-radio custom-control-inline">
                             <input type="radio" id="scheme_is_independent" name="scheme_is" value="1" class="custom-control-input" checked>
-                            <label class="custom-control-label" for="scheme_is_independent">Single Asset</label>
+                            <label class="custom-control-label" for="scheme_is_independent">{{$phrase->single_asset}}</label>
                         </div>
                         <div class="custom-control custom-radio custom-control-inline">
                             <input type="radio" id="scheme_is_under_a_group" name="scheme_is" value="2" class="custom-control-input">
-                            <label class="custom-control-label" for="scheme_is_under_a_group">Muitiple Asset</label>
+                            <label class="custom-control-label" for="scheme_is_under_a_group">{{$phrase->muitiple_asset}}</label>
                         </div>
                         @endif
                         <hr />
@@ -61,21 +61,21 @@
                 <div class="row">
                     <div class="col-md-4 scheme-form-elements">
                         <div class="form-group">
-                            <label for="scheme_name">Scheme Name<span style="color:red;margin-left:5px;">*</span></label>
+                            <label for="scheme_name">{{$phrase->scheme_name}}<span style="color:red;margin-left:5px;">*</span></label>
                             <input type="text" name="scheme_name" id="scheme_name" class="form-control" value="{{$data->scheme_name}}" autocomplete="off" maxlength="300">
                             <div class="invalid-feedback" id="scheme_name_error_msg"></div>
                         </div>
                     </div>
                     <div class="col-md-2 scheme-form-elements">
                         <div class="form-group">
-                            <label for="scheme_short_name">Short Name<span style="color:red;margin-left:5px;">*</span></label>
+                            <label for="scheme_short_name">{{$phrase->short_name}}<span style="color:red;margin-left:5px;">*</span></label>
                             <input type="text" name="scheme_short_name" id="scheme_short_name" class="form-control" value="{{$data->scheme_short_name}}" autocomplete="off" maxlength="100">
                             <div class="invalid-feedback" id="scheme_short_name_error_msg"></div>
                         </div>
                     </div>
                     <div class="col-md-2 scheme-form-elements">
                         <div class="form-group">
-                            <label for="scheme_type_id">Scheme Type<span style="color:red;margin-left:5px;">*</span></label>
+                            <label for="scheme_type_id">{{$phrase->scheme_type}}<span style="color:red;margin-left:5px;">*</span></label>
                             <select name="scheme_type_id" id="scheme_type_id" class="form-control">
                                 <option value="">--Select--</option>
                                 @foreach( $scheme_type_datas as $scheme_type )
@@ -121,7 +121,7 @@
                     </div> -->
                     <div class="col-md-2 scheme-form-elements">
                         <div class="form-group">
-                            <label for="dept_id">Department<span style="color:red;margin-left:5px;">*</span></label>
+                            <label for="dept_id">{{$phrase->department}}<span style="color:red;margin-left:5px;">*</span></label>
                             <select name="dept_id" id="dept_id" class="form-control">
                                 <option value="">--Select--</option>
                                 @foreach( $department_datas as $department)
@@ -133,7 +133,7 @@
                     </div>
                     <div class="col-md-2 scheme-form-elements">
                         <div class="form-group">
-                            <label for="status">Status<span style="color:red;margin-left:5px;">*</span></label>
+                            <label for="status">{{$phrase->sts}}<span style="color:red;margin-left:5px;">*</span></label>
                             <select name="status" id="status" class="form-control">
                                 <option value="">--Select--</option>
                                 <option value="1" <?php if ($data->status == '1') { echo "selected"; } ?>>Active</option>
@@ -143,7 +143,7 @@
                         </div>
                     </div>
                     <div class="col-2 scheme-form-elements  ind_att " style="display: none;" >
-                        <label for="scheme_asset_id">Select Asset<span style="color:red;margin-left:5px;">*</span></label>
+                        <label for="scheme_asset_id">{{$phrase->select_asset}}<span style="color:red;margin-left:5px;">*</span></label>
                         <select name="scheme_asset_id"  class="form-control">
                             <option value="">--Select--</option>
                             @foreach($scheme_asset_datas as $scheme_asset_data)
@@ -159,7 +159,7 @@
                 <div class="row">
                     <div class="col-6 scheme-form-elements">
                         <div class="form-group">
-                            <label for="" style="text-transform: uppercase;">attributes</label>
+                            <label for="" style="text-transform: uppercase;">{{$phrase->attributes}}</label>
                             <!-- <div class="card-body" style="background: white; min-height: 250px; border-radius: 3px; border: 1px solid #adadad;" id="ind_att" style="display: none;">
                                 <div class="row">
                                     
@@ -172,8 +172,8 @@
                                 <table class="table order-list" style="margin-top: 10px;">
                                     <thead style="background: #cedcff">
                                         <tr>
-                                            <th>Name<span style="color:red;margin-left:5px;">*</span></th>
-                                            <th width="130px;">Action</th>
+                                            <th>{{$phrase->name}}<span style="color:red;margin-left:5px;">*</span></th>
+                                            <th width="130px;">{{$phrase->action}}</th>
                                         </tr>
                                     </thead>
                                     <tbody id="append-name-uom">
@@ -200,7 +200,7 @@
                                     <tbody>
                                         <tr>
                                             <td colspan="1"></td>
-                                            <td><button type="button" onclick="append_table_data('add',null);" class="btn btn-secondary btn-sm btn-circle">Add <i class="fa fa-plus-circle" aria-hidden="true"></i></button></td>
+                                            <td><button type="button" onclick="append_table_data('add',null);" class="btn btn-secondary btn-sm btn-circle">{{$phrase->add}} <i class="fa fa-plus-circle" aria-hidden="true"></i></button></td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -209,7 +209,7 @@
                     </div>
                     <div class="col-6 scheme-form-elements">
                         <div class="form-group">
-                            <label for="description">Description</label>
+                            <label for="description">{{$phrase->description}}</label>
                             <textarea class="form-control" id="description" style="min-height: 250px;" name="description">{{$data->description}}</textarea>
                             <div class="invalid-feedback" id="description_error_msg"></div>
                         </div>
@@ -221,7 +221,7 @@
                 <div class="row">
                     <div class="col-md-4 scheme-form-elements">
                         <div class="form-group">
-                            <label for="attachment">Attachment</label>
+                            <label for="attachment">{{$phrase->attachment}}</label>
                             <input type="file" class="form-control" name="attachment" id="attachment">
                             <div class="invalid-feedback" id="attachment_error_msg"></div>
                             @if($hidden_input_purpose=="edit" && $data->attachment)
@@ -239,7 +239,7 @@
 
                     <div class="col-md-4 scheme-form-elements">
                         <div class="form-group">
-                            <label for="scheme_logo">Scheme Logo</label>
+                            <label for="scheme_logo">{{$phrase->scheme_logo}}</label>
                             <input type="file" name="scheme_logo" id="scheme_logo" class="form-control">
                             <div class="invalid-feedback" id="scheme_logo_error_msg"></div>
                             @if($hidden_input_purpose=="edit"&&$data->scheme_logo)
@@ -256,7 +256,7 @@
                     </div>
                     <div class="col-md-4 scheme-form-elements ind_att">
                         <div class="form-group">
-                            <label for="scheme_map_marker">Map Marker Icon</label>
+                            <label for="scheme_map_marker">{{$phrase->map_marker_icon}}</label>
                             <input type="file" name="scheme_map_marker" id="scheme_map_marker" class="form-control">
                             <div class="invalid-feedback" id="scheme_map_marker_error_msg"></div>
                             @if($hidden_input_purpose=="edit"&&$data->scheme_map_marker)
@@ -282,7 +282,7 @@
                             <input type="text" name="hidden_input_map_marker" id="hidden_input_map_marker" value="{{$data->scheme_map_marker}}" hidden>
                             <input type="text" name="hidden_input_purpose" id="hidden_input_purpose" value="{{$hidden_input_purpose}}" hidden>
                             <input type="text" name="hidden_input_id" value="{{$hidden_input_id}}" hidden>
-                            <button type="submit" class="btn btn-secondary" id="submit-button" onclick="return submitForm()">Save&nbsp;<i class="fas fa-check"></i></button>
+                            <button type="submit" class="btn btn-secondary" id="submit-button" onclick="return submitForm()">{{$phrase->save}}&nbsp;<i class="fas fa-check"></i></button>
                         </div>
                     </div>
                 </div>

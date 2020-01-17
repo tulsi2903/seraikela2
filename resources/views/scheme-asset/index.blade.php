@@ -13,13 +13,13 @@
         <div class="col-md-12">
             <div class="card-header">
                 <div class="card-head-row card-tools-still-right" style="background:#fff;">
-                    <h4 class="card-title">Scheme Assets</h4>
+                    <h4 class="card-title">{{$phrase->scheme_assets}} </h4>
                     <div class="card-tools">
-                        <a href="#" data-toggle="tooltip" title="Send Mail"><button type="button" class="btn btn-icon btn-round btn-success" data-target="#create-email" data-toggle="modal" ><i class="fa fa-envelope" aria-hidden="true"></i></button></a>
-                        <a href="#" data-toggle="tooltip" title="Print"><button type="button" class="btn btn-icon btn-round btn-default" id="print-button" onclick="printView();"><i class="fa fa-print" aria-hidden="true"></i></button></a>
-                        <a href="#" data-toggle="tooltip" title="Export to PDF"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button></a>
-                        <a href="#" data-toggle="tooltip" title="Export to Excel"><button type="button" class="btn btn-icon btn-round btn-primary" ><i class="fas fa-file-excel"></i></button></a>
-                        <a class="btn btn-secondary" href="{{url('scheme-asset/add')}}" role="button"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;Add</a>
+                        <a href="#" data-toggle="tooltip" title="{{$phrase->send_email}} "><button type="button" class="btn btn-icon btn-round btn-success" data-target="#create-email" data-toggle="modal" ><i class="fa fa-envelope" aria-hidden="true"></i></button></a>
+                        <a href="#" data-toggle="tooltip" title="{{$phrase->print}}"><button type="button" class="btn btn-icon btn-round btn-default" id="print-button" onclick="printView();"><i class="fa fa-print" aria-hidden="true"></i></button></a>
+                        <a href="#" data-toggle="tooltip" title="{{$phrase->export_pdf}}"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button></a>
+                        <a href="#" data-toggle="tooltip" title="{{$phrase->export_excel}}"><button type="button" class="btn btn-icon btn-round btn-primary" ><i class="fas fa-file-excel"></i></button></a>
+                        <a class="btn btn-secondary" href="{{url('scheme-asset/add')}}" role="button"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;{{$phrase->add}}</a>
 
                     </div>
                 </div>
@@ -34,11 +34,11 @@
                             <thead style="background: #d6dcff;color: #000;">
                                 <tr>
                                     <th>#</th>
-                                    <th>Name</th>
-                                    <th>Icon</th>
-                                    <th>Geo Related</th>
-                                    <th>Multiple Geo Tags</th>
-                                    <th>Actions</th>
+                                    <th>{{$phrase->name}}</th>
+                                    <th>{{$phrase->icon}}</th>
+                                    <th>{{$phrase->geo_related}}</th>
+                                    <th>{{$phrase->multiple_geo_tags}}</th>
+                                    <th>{{$phrase->action}}</th>
                                 </tr>
                             </thead>
                             <?php $count=1; ?>
@@ -91,7 +91,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title mt-0">Send Email</h4>
+                <h4 class="modal-title mt-0">{{$phrase->send_email}}</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -107,15 +107,15 @@
                                 <!-- <input type="text" name="from" class="form-control" placeholder="From" required=""> -->
                             </div> 
                             <div class="form-group">  
-                                <input type="email" name="to" class="form-control" placeholder="To" required="">
+                                <input type="email" name="to" class="form-control" placeholder="{{$phrase->to}}" required="">
                             </div>
                             <div class="form-group">                           
-                                <input type="text" name="cc" class="form-control" placeholder="CC">
+                                <input type="text" name="cc" class="form-control" placeholder="{{$phrase->cc}}">
                             </div>
                            
                             <div class="form-group">
-                                <label for="subject" class="control-label">Subject <font color="red">*</font></label>
-                                <input type="text" class="form-control" id="subject" name="subject" placeholder="Subject"  required=""  aria-required="true">
+                                <label for="subject" class="control-label">{{$phrase->subject}} <font color="red">*</font></label>
+                                <input type="text" class="form-control" id="subject" name="subject" placeholder="{{$phrase->subject}}"  required=""  aria-required="true">
                             </div>
                             <!-- <div class="form-group">
                                 <label for="field-2" class="control-label">Message <font color="red">*</font></label>
@@ -127,8 +127,8 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-info waves-effect waves-light">Send</button>
+                    <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">{{$phrase->close}}</button>
+                    <button type="submit" class="btn btn-info waves-effect waves-light">{{$phrase->send}}</button>
                 </div>
             </form>
         </div>
