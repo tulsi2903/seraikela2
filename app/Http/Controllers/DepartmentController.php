@@ -297,6 +297,8 @@ class DepartmentController extends Controller
     }
     public function view_diffrent_formate(Request $request)
     {
+
+        $dept_id = explode(',',$request->department_id); // array
         // return $request;
         $department=array();
         if($request->print=="print_pdf")
@@ -307,7 +309,7 @@ class DepartmentController extends Controller
 
                
 
-                $department = Department::whereIn('dept_id',$request->department_id)
+                $department = Department::whereIn('dept_id',$dept_id)
                 ->join('organisation','department.org_id','=','organisation.org_id')
                 ->select('department.dept_id','department.dept_name','organisation.org_name','department.is_active','department.created_at')->get();
 
@@ -382,7 +384,7 @@ class DepartmentController extends Controller
                 $data[] = array('Sl. No.', 'Department Name', 'Organization Name', 'Status', 'Date');
         
                 $items =  DB::table('department')
-                    ->whereIn('dept_id',$request->department_id)
+                    ->whereIn('dept_id',$dept_id)
                     ->join('organisation', 'department.org_id', '=', 'organisation.org_id')
                     ->select('department.dept_id as slId', 'department.dept_name', 'organisation.org_name', 'department.is_active', 'department.created_at')->get();
         

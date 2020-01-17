@@ -91,8 +91,6 @@
 <?php  $desig_permissions = session()->get('desig_permission'); // assigning desig_permission so we can use ?>
 
     <div class="card">
-        <form action="{{url('department/view_diffrent_formate')}}" method="POST" enctype="multipart/form-data"> <!-- for for edit, if inline edit form append then this form action/method will triggered -->
-
         <div class="col-md-12">
                 <div class="card-header">
 
@@ -101,11 +99,9 @@
                         <div class="card-tools">
                             <button type="button" class="btn btn-icon btn-round btn-success"  onclick="openmodel();" ><i class="fa fa-envelope" aria-hidden="true"></i></button>
                             <button type="button" class="btn btn-icon btn-round btn-default" onclick="printViewone();"><i class="fa fa-print" aria-hidden="true"></i></button>
-                            <!-- <a href="{{url('department/export/excelURL')}}"><button type="button" class="btn btn-icon btn-round btn-success" ><i class="fas fa-file-excel"></i></button></a> -->
-                            <!-- <a href="{{url('department/export/excelURL')}}"><button type="button" class="btn btn-icon btn-round btn-success" ><i class="fas fa-file-excel"></i></button></a> -->
-                            <!-- <a href="{{url('department/pdf/pdfURL')}}"  target="_BLANK"><button  type="submit" name="print_pdf" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button></a> -->
-                            <button type="submit" name="print" value="excel_sheet" class="btn btn-icon btn-round btn-success" ><i class="fas fa-file-excel"></i></button>
-                            <button  type="submit" name="print" value="print_pdf" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button>
+                            <button type="button" onclick="exportSubmit('print_pdf');" class="btn btn-icon btn-round btn-warning"><i class="fas fa-file-export"></i></button>
+                            <button type="button" onclick="exportSubmit('excel_sheet');" class="btn btn-icon btn-round btn-success"><i class="fas fa-file-excel"></i></button>
+
                             <a href="{{url('department/changeView')}}" data-toggle="tooltip" title="Import From Excel"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fa fa-upload"></i></button></a>
 
                             @if($desig_permissions["mod2"]["add"])
@@ -186,7 +182,7 @@
                                         @foreach($datas as $data)
                                        
                                         <tr data-row-id="{{$data->dept_id}}" data-row-values="{{$data->dept_icon}},{{$data->dept_name}},{{$data->org_name}},{{$data->is_active}}">
-                                            <td>{{$count}} <input type="hidden" value="{{$data->dept_id}}" name="department_id[]" ></td>
+                                            <td>{{$count}} <input type="text" value="{{$data->dept_id}}" name="desig_id_to_export[]" hidden ></td>
                                             <td> @if($data->dept_icon) <img src="{{$data->dept_icon}}" style="height: 50px;"> @endif</td>
                                           
                                             <td>{{$data->dept_name}}</td>
@@ -217,6 +213,10 @@
                 </div>
             </div>
         </div>
+        <form action="{{url('department/view_diffrent_formate')}}" method="POST" enctype="multipart/form-data" id="export-form"> <!-- for for edit, if inline edit form append then this form action/method will triggered -->
+        @csrf
+            <input type="text" name="department_id" hidden >
+            <input type="text" name="print" hidden > <!-- hidden input for export (pdf/excel) -->
         </form>
         </div>
 
@@ -226,7 +226,14 @@
               window.print();
             }
         </script>
-        
+        <script>
+            function exportSubmit(type){
+                $("input[name='print']").val(type);
+                var values = $("input[name='desig_id_to_export[]']").map(function(){return $(this).val();}).get();
+                $("input[name='department_id']").val(values);
+                document.getElementById('export-form').submit();
+            }
+        </script>
 <script>
     /*
     *

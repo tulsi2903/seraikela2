@@ -70,8 +70,6 @@
 
 @section('page-content')
     <div class="card">
-        <form action="{{url('module/view_diffrent_formate')}}" method="POST" enctype="multipart/form-data"> <!-- for for edit, if inline edit form append then this form action/method will triggered -->
-            @csrf
         <div class="col-md-12">
                 <div class="card-header">
                     <div class="card-head-row card-tools-still-right" style="background:#fff;">
@@ -79,10 +77,9 @@
                         <div class="card-tools">
                             <!-- <a href="#" data-toggle="tooltip" title="Send Mail"><button type="button" class="btn btn-icon btn-round btn-success" data-target="#create-email" data-toggle="modal"><i class="fa fa-envelope" aria-hidden="true"></i></button></a> -->
                             <button type="button" class="btn btn-icon btn-round btn-success"  onclick="openmodel();" ><i class="fa fa-envelope" aria-hidden="true"></i></button>
+                            <button type="button" onclick="exportSubmit('print_pdf');" class="btn btn-icon btn-round btn-warning"><i class="fas fa-file-export"></i></button>
+                            <button type="button" onclick="exportSubmit('excel_sheet');" class="btn btn-icon btn-round btn-success"><i class="fas fa-file-excel"></i></button>
 
-                            <button  type="submit" name="print" value="print_pdf" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button>
-
-                            <button type="submit" name="print" value="excel_sheet" class="btn btn-icon btn-round btn-success" ><i class="fas fa-file-excel"></i></button>
                             <button type="button" class="btn btn-icon btn-round btn-default" onclick="printViewone();"><i class="fa fa-print" aria-hidden="true"></i></button>
 
 
@@ -123,7 +120,7 @@
                         </form>
                     </div>
                     <div class="table-responsive table-hover table-sales">
-                        <!-- <form action="{{url('module/store')}}" method="POST"> for for edit, if inline edit form append then this form action/method will triggered -->
+                        <form action="{{url('module/store')}}" method="POST"> for for edit, if inline edit form append then this form action/method will triggered
                         @csrf
                             <div id="printable-info-details">
                                 <p class="card-title-print-1">Title: Module
@@ -144,7 +141,7 @@
                                     @if(isset($datas))
                                         @foreach($datas as $data)
                                             <tr data-row-id="{{$data->mod_id}}" data-row-values="{{$data->mod_name}}">
-                                                <td width="40px;">{{$count++}} <input type="hidden" value="{{$data->mod_id}}" name="mod_id[]"></td>
+                                                <td width="40px;">{{$count++}} <input type="hidden" value="{{$data->mod_id}}" name="desig_id_to_export[]" hidden></td>
                                                 <td>{{$data->mod_name}}</td>
                                                 <td class="action-buttons">
                                                     <a href="{{url('module/delete')}}/{{$data->mod_id}}" class="btn btn-danger btn-sm delete-button"><i class="fas fa-trash-alt"></i></a>
@@ -160,14 +157,27 @@
                                     @endif
                                 </tbody>
                             </table>
-                        <!-- </form> -->
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
-        </form>
+    <!-- export starts -->
+    <form action="{{url('module/view_diffrent_formate')}}" method="POST" enctype="multipart/form-data" id="export-form"> <!-- for for edit, if inline edit form append then this form action/method will triggered -->
+        @csrf
+        <input type="text" name="mod_id" hidden >
+        <input type="text" name="print" hidden > <!-- hidden input for export (pdf/excel) -->
+    </form>
+    <!-- export ends -->
     </div>
-
+<script>
+    function exportSubmit(type){
+        $("input[name='print']").val(type);
+        var values = $("input[name='desig_id_to_export[]']").map(function(){return $(this).val();}).get();
+        $("input[name='mod_id']").val(values);
+        document.getElementById('export-form').submit();
+    }
+</script>
 <script>
     function printViewone()
     {

@@ -183,6 +183,7 @@ class ModuleController extends Controller
         public function view_diffrent_formate(Request $request)
         {
             
+            $module_id = explode(',',$request->mod_id); // array
             // return $request;
             $department=array();
             if($request->print=="print_pdf")
@@ -192,7 +193,7 @@ class ModuleController extends Controller
                 {
     
                         
-                    $Moduledata =  Module::whereIn('mod_id',$request->mod_id)->orderBy('mod_id','desc')->get();
+                    $Moduledata =  Module::whereIn('mod_id',$module_id)->orderBy('mod_id','desc')->get();
                     foreach ($Moduledata as $key => $value) {
                         $value->createdDate = date('d/m/Y',strtotime($value->created_at));
                     }
@@ -244,7 +245,7 @@ class ModuleController extends Controller
             
     
                 }
-                return $request;
+                // return $request;
             }
             elseif($request->print=="excel_sheet")
             {
@@ -255,7 +256,7 @@ class ModuleController extends Controller
                     $data = array(1 => array("Module Sheet"));
                     $data[] = array('Sl. No.','Module Name','Date');
             
-                    $items =  Module::whereIn('mod_id',$request->mod_id)->orderBy('mod_id','desc')->select('mod_id', 'mod_name', 'created_at as createdDate')->get();
+                    $items =  Module::whereIn('mod_id',$module_id)->orderBy('mod_id','desc')->select('mod_id', 'mod_name', 'created_at as createdDate')->get();
             
                     foreach ($items as $key => $value) {
             
@@ -283,7 +284,7 @@ class ModuleController extends Controller
                     })->download('xls');
     
                 }
-                return $request;
+                // return $request;
             }
         }
     

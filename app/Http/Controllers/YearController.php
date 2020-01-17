@@ -185,6 +185,7 @@ class YearController extends Controller
      // abhishek 
      public function view_diffrent_formate(Request $request)
      {
+        $year_id = explode(',',$request->year_id); // array
         // return "akf";
          $department=array();
          if($request->print=="print_pdf")
@@ -194,7 +195,7 @@ class YearController extends Controller
              {
  
                    
-                        $year =  Year::whereIn('year_id',$request->year_id)->orderBy('year_id','desc')->get();
+                        $year =  Year::whereIn('year_id',$year_id)->orderBy('year_id','desc')->get();
                         foreach ($year as $key => $value) {
                             $value->createdDate = date('d/m/Y',strtotime($value->created_at));
                             if($value->status == 1){
@@ -265,7 +266,7 @@ class YearController extends Controller
                 $data[] = array( 'Sl. No.','Year','Status','Date');
         
         
-                $yearValue = Year::whereIn('year_id', $request->year_id)->orderBy('year_id','desc')->select('year_id as slId', 'year_value', 'status', 'created_at as createdDate')->get();
+                $yearValue = Year::whereIn('year_id', $year_id)->orderBy('year_id','desc')->select('year_id as slId', 'year_value', 'status', 'created_at as createdDate')->get();
         
                 foreach ($yearValue as $key => $value) {
                     if($value->status == 1) {

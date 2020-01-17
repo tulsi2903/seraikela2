@@ -8,6 +8,7 @@ use App\Organisation;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\DesignationSectionExport;
 use PDF;
+use Auth;
 
 class DesignationController extends Controller
 {
@@ -178,4 +179,118 @@ class DesignationController extends Controller
 
 
     }
+
+     // abhishek 
+     public function view_diffrent_formate(Request $request)
+     {
+         
+        $desig_id = explode(',',$request->designation_id); // array
+         $department=array();
+         if($request->print=="print_pdf")
+         {
+ 
+             if($request->designation_id!="")
+             {
+ 
+                     $Designationdata = Designation::leftJoin('organisation', 'designation.org_id', '=', 'organisation.org_id')
+                                     ->whereIn('desig_id',$desig_id)
+                                     ->select('designation.*','organisation.org_name')
+                                     ->orderBy('designation.desig_id','desc')
+                                     ->get();
+                     foreach ($Designationdata as $key => $value) {
+                         $value->createdDate = date('d/m/Y',strtotime($value->created_at));
+                     }
+ 
+                     $doc_details = array(
+                         "title" => "Designation",
+                         "author" => 'IT-Scient',
+                         "topMarginValue" => 10,
+                         "mode" => 'P'
+                     );
+                     date_default_timezone_set('Asia/Kolkata');
+                     $currentDateTime = date('d-m-Y H:i:s'); 
+                     $user_name=Auth::user()->first_name;
+                     $user_last_name=Auth::user()->last_name;
+                     $pdfbuilder = new \PdfBuilder($doc_details);
+ 
+                     $content = "<table cellspacing=\"0\" cellpadding=\"4\" border=\"1\" ><tr>";
+                     $content .= "<th style='border: solid 1px #000000;' colspan=\"4\" align=\"left\" ><b>Designation</b></th></tr>";
+                     $content .= "<p style=\"border: solid 1px #000000;width: 50px;\" padding:\"100px;\">"."<b>"."<span>Title: </span>&nbsp;&nbsp;&nbsp;Designation"."<br>"."<span>Date & Time: </span>&nbsp;&nbsp;&nbsp;".$currentDateTime."<br>"."<span>User Name:</span>&nbsp;&nbsp;&nbsp;" . $user_name."&nbsp;".$user_last_name.
+                     "</b>"."</p>";
+ 
+                     /* ========================================================================= */
+                     /*             Total width of the pdf table is 1017px lanscape               */
+                     /*             Total width of the pdf table is 709px portrait                */
+                     /* ========================================================================= */
+                     $content .= "<thead>";
+                     $content .= "<tr>";
+                     $content .= "<th style=\"border: solid 1px #000000;width: 50px;\" align=\"center\"><b>Sl.No.</b></th>";
+                     $content .= "<th style=\"border: solid 1px #000000;width: 429px;\" align=\"center\"><b>Name</b></th>";
+                     $content .= "<th style=\"border: solid 1px #000000;width: 140px;\" align=\"center\"><b>Organisation Name</b></th>";
+                     $content .= "<th style=\"border: solid 1px #000000;width: 90px;\" align=\"center\"><b>Date</b></th>";
+                     $content .= "</tr>";
+                     $content .= "</thead>";
+                     $content .= "<tbody>";
+                     foreach ($Designationdata as $key => $row) {            $index = $key+1;
+                         $content .= "<tr>";
+                         $content .= "<td style=\"border: solid 1px #000000;width: 50px;\" align=\"right\">" . $index . "</td>";
+                         $content .= "<td style=\"border: solid 1px #000000;width: 429px;\" align=\"left\">" . $row->name . "</td>";
+                         $content .= "<td style=\"border: solid 1px #000000;width: 140px;\" align=\"left\">" . $row->org_name . "</td>";
+                         $content .= "<td style=\"border: solid 1px #000000;width: 90px;\" align=\"center\">" . $row->createdDate. "</td>";
+                         $content .= "</tr>";
+                     }
+                     $content .= "</tbody></table>";
+                     $pdfbuilder->table($content, array('border' => '1', 'align' => ''));
+                     $pdfbuilder->output('Designation.pdf');
+                     exit;
+ 
+             }
+            //  return $request;
+         }
+         elseif($request->print=="excel_sheet")
+         {
+ 
+             if($request->designation_id!="")
+             {
+ 
+                 $data = array(1 => array("Designation Detail Sheet"));
+                 $data[] = array('Sl. No.','Name','Organisation Name','Date');
+         
+                 $items = Designation::leftJoin('organisation', 'designation.org_id', '=', 'organisation.org_id')
+                         ->whereIn('desig_id',$desig_id)
+                         ->select('designation.desig_id as slId','designation.name','organisation.org_name','designation.created_at as createdDate')
+                         ->orderBy('designation.desig_id','desc')
+                         ->get();
+         
+                 foreach ($items as $key => $value) {
+                     $value->createdDate = date('d/m/Y',strtotime($value->createdDate));
+                     $data[] = array(
+                         $key + 1,
+                         $value->name,
+                         $value->org_name,
+                         $value->createdDate,
+                     );
+                 }
+                 \Excel::create('Designation sheet ', function ($excel) use ($data) {
+         
+                     // Set the title
+                     $excel->setTitle('Designation-Sheet');
+         
+                     // Chain the setters
+                     $excel->setCreator('Seraikela')->setCompany('Seraikela');
+         
+                     $excel->sheet('Fees', function ($sheet) use ($data) {
+                         $sheet->freezePane('A3');
+                         $sheet->mergeCells('A1:I1');
+                         $sheet->fromArray($data, null, 'A1', true, false);
+                         $sheet->setColumnFormat(array('I1' => '@'));
+                     });
+                 })->download('xls');
+                 
+ 
+             }
+            //  return $request;
+         }
+     }
+ 
 }

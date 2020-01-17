@@ -85,8 +85,6 @@
 <?php  $desig_permissions = session()->get('desig_permission'); // assigning desig_permission so we can use ?>
 
 <div class="card">
-    <form action="{{url('designation/view_diffrent_formate')}}" method="POST" enctype="multipart/form-data"> <!-- for for edit, if inline edit form append then this form action/method will triggered -->
-
         <div class="col-md-12">
                 <div class="card-header">
                     <div class="card-head-row card-tools-still-right" style="background:#fff;">
@@ -99,10 +97,8 @@
 
                             <button type="button" class="btn btn-icon btn-round btn-default" onclick="printViewone();"><i class="fa fa-print" aria-hidden="true"></i></button>
 
-                            <button  type="submit" name="print" value="print_pdf" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button>
-
-                            <button type="submit" name="print" value="excel_sheet" class="btn btn-icon btn-round btn-success" ><i class="fas fa-file-excel"></i></button>
-
+                            <button type="button" onclick="exportSubmit('print_pdf');" class="btn btn-icon btn-round btn-warning"><i class="fas fa-file-export"></i></button>
+                            <button type="button" onclick="exportSubmit('excel_sheet');" class="btn btn-icon btn-round btn-success"><i class="fas fa-file-excel"></i></button>
 
                             
                             <!-- <a href="{{url('designation/pdf/pdfURL')}}" target="_BLANK" data-toggle="tooltip" title="Export to PDF"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button></a> -->
@@ -142,8 +138,8 @@
                         </form>
                     </div>
                     <div class="table-responsive table-hover table-sales">
-                        <!-- <form action="{{url('designation/store')}}" method="POST"> for for edit, if inline edit form append then this form action/method will triggered -->
-                        @csrf
+                    <form action="{{url('designation/store')}}" method="POST"> 
+                    @csrf
 
                         <div id="printable-info-details">
                             <p class="card-title-print-1">Title: Define Designation </p>
@@ -164,7 +160,9 @@
                                 @if(isset($datas))
                                     @foreach($datas as $data)
                                         <tr data-row-id="{{$data->desig_id}}" data-row-values="{{$data->name}}">
-                                            <td width="40px;">{{$count++}} <input type="hidden" value="{{$data->desig_id}}" name="designation_id[]" ></td>
+                                            <td width="40px;">{{$count++}} 
+                                                <input type="text" value="{{$data->desig_id}}" name="desig_id_to_export[]" hidden>
+                                            </td>
                                             <td>{{$data->name}}</td>
                                             @if($desig_permissions["mod5"]["del"] ||$desig_permissions["mod5"]["edit"] ) 
                                             <td class="action-buttons">
@@ -181,13 +179,31 @@
                                     </tr>
                                 @endif
                             </table>
-                        <!-- </form> -->
+                    </form>
                     </div>
                 </div>
             </div>
         </div>
-    </form>
+        <!-- export starts -->
+<form action="{{url('designation/view_diffrent_formate')}}" method="POST" enctype="multipart/form-data" id="export-form"> 
+    @csrf
+        <input type="text" name="designation_id" hidden>
+        <input type="text" name="print" hidden> <!-- hidden input for export (pdf/excel) -->
+</form>
+<!-- export ends -->
 </div>
+
+
+
+<script>
+    function exportSubmit(type){
+        $("input[name='print']").val(type);
+        var values = $("input[name='desig_id_to_export[]']").map(function(){return $(this).val();}).get();
+        $("input[name='designation_id']").val(values);
+        document.getElementById('export-form').submit();
+    }
+</script>
+
 <script>
     function printViewone()
     {
