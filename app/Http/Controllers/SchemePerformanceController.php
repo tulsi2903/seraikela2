@@ -131,10 +131,24 @@ class SchemePerformanceController extends Controller
                 $to_append_tbody .= '<input type="hidden" name="scheme_performance_id[]" value="' . $value_SchemePerformance['scheme_performance_id'] . '">';
                 if ($scheme_data->scheme_is == 2) {
                     $to_append_tbody .= '<td> <select name="assest_name[]" class="form-control">';
-                    foreach ($scheme_asset_data as $key_asset => $value_assest) {
-                        if ($value_SchemePerformance['assest_name'] == $value_assest["scheme_asset_id"])
+                    if ($value_SchemePerformance['scheme_asset_id'] != "") {
+                        // $to_append_tbody .= "<option  value=''>--Select--</option>";
+                        foreach ($scheme_asset_data as $key_asset => $value_assest) {
+                            if ($value_SchemePerformance['scheme_asset_id'] == $value_assest["scheme_asset_id"]) {
+                                $to_append_tbody .= "<option  value=\"" . $value_assest["scheme_asset_id"] . "\">" . $value_assest["scheme_asset_name"] . "</option>";
+                            }
                             $to_append_tbody .= "<option  value=\"" . $value_assest["scheme_asset_id"] . "\">" . $value_assest["scheme_asset_name"] . "</option>";
-                        $to_append_tbody .= "<option  value=\"" . $value_assest["scheme_asset_id"] . "\">" . $value_assest["scheme_asset_name"] . "</option>";
+                        }
+                    } else {
+                        $to_append_tbody .= "<option  value=''>--Select--</option>";
+
+                        foreach ($scheme_asset_data as $key_asset => $value_assest) {
+                            if ($value_SchemePerformance['scheme_asset_id'] == $value_assest["scheme_asset_id"]) {
+                                $to_append_tbody .= "<option  value=\"" . $value_assest["scheme_asset_id"] . "\">" . $value_assest["scheme_asset_name"] . "</option>";
+                            }
+
+                            $to_append_tbody .= "<option  value=\"" . $value_assest["scheme_asset_id"] . "\">" . $value_assest["scheme_asset_name"] . "</option>";
+                        }
                     }
                     $to_append_tbody .= '</select>';
                 }
@@ -154,7 +168,7 @@ class SchemePerformanceController extends Controller
                     $to_append_tbody .= '<option value="1">Completed</option>';
                 $to_append_tbody .= '</select></td>';
                 $to_append_tbody .= '<td><input type="text" name="comments[]" value="' . $value_SchemePerformance['comments'] . '" class="form-control" placeholder="comments"></td>';
-                $to_append_tbody .= '<td><button type="button" class="btn btn-danger btn-xs" onclick="delete_row(this,'.$value_SchemePerformance['scheme_performance_id'].')"><i class="fas fa-trash-alt"></i></button></td>';
+                $to_append_tbody .= '<td><button type="button" class="btn btn-danger btn-xs" onclick="delete_row(this,' . $value_SchemePerformance['scheme_performance_id'] . ')"><i class="fas fa-trash-alt"></i></button></td>';
                 $to_append_tbody .= '</tr>';
             }
         }
@@ -179,6 +193,7 @@ class SchemePerformanceController extends Controller
         $to_append_row .= '<input type="hidden" name="scheme_performance_id[]" value="new_scheme_performance"> ';
         if ($scheme_data->scheme_is == 2) {
             $to_append_row .= '<td><select name="assest_name[]" class="form-control">';
+            $to_append_row .="<option  value=''>--Select--</option>";
             foreach ($scheme_asset_data as $key_asset => $value_assest) {
                 $to_append_row .= "<option value=\"" . $value_assest["scheme_asset_id"] . "\">" . $value_assest["scheme_asset_name"] . "</option>";
             }
@@ -233,8 +248,7 @@ class SchemePerformanceController extends Controller
         $form_attributes_data_array = array();
         // return $attributes;
         foreach ($attributes as $key_id => $value_id) {
-            if($request->input($value_id['id'])!="")
-            {
+            if ($request->input($value_id['id']) != "") {
                 foreach ($request->input($value_id['id']) as $key => $value) {
                     $form_request_id[$key][$key_id][$value_id['id']] = $value;
                 }
@@ -284,12 +298,11 @@ class SchemePerformanceController extends Controller
             }
             // echo "<br>";
         }
-        if($request->to_delete!="")
-        {
-        $for_delete_record=explode(',',rtrim($request->to_delete,','));
-        // return $for_delete_record;
-        // $diff_result = array_diff($tmp_array, $delete_check_array);
-        // foreach ($diff_result as $key => $value_diff) {
+        if ($request->to_delete != "") {
+            $for_delete_record = explode(',', rtrim($request->to_delete, ','));
+            // return $for_delete_record;
+            // $diff_result = array_diff($tmp_array, $delete_check_array);
+            // foreach ($diff_result as $key => $value_diff) {
             $pcc_enitity_record = SchemePerformance::whereIn('scheme_performance_id', $for_delete_record)->delete();
         }
         session()->put('alert-class', 'alert-success');
@@ -336,12 +349,11 @@ class SchemePerformanceController extends Controller
         if ($_FILES['excelcsv']['tmp_name']) {
             $readExcel = \Excel::load($_FILES['excelcsv']['tmp_name'], function ($reader) { })->get()->toArray();
             $readExcelHeader = \Excel::load($_FILES['excelcsv']['tmp_name'])->get();
-            if(count($readExcelHeader) != 0){
+            if (count($readExcelHeader) != 0) {
                 $excelSheetHeadings = $readExcelHeader->first()->keys()->toArray(); /* this is for excel sheet heading */
             }
 
-            if(count($readExcel) != 0)
-            {
+            if (count($readExcel) != 0) {
                 if (count($readExcel) <= 250) {
                     sort($tableHeadingsAndAtributes);
                     sort($excelSheetHeadings);
@@ -372,8 +384,8 @@ class SchemePerformanceController extends Controller
                             $panchayat_name =   ucwords($row['panchayat_name']);
                             $status =   ucwords($row['status']);
 
-                            $fetch_block_id = GeoStructure::where('geo_name', $block_name)->where('level_id','3')->value('geo_id'); /* for block ID */
-                            $fetch_panchayat_id = GeoStructure::where('geo_name', $panchayat_name)->where('level_id','4')->value('geo_id'); /* for Panchayat ID */
+                            $fetch_block_id = GeoStructure::where('geo_name', $block_name)->where('level_id', '3')->value('geo_id'); /* for block ID */
+                            $fetch_panchayat_id = GeoStructure::where('geo_name', $panchayat_name)->where('level_id', '4')->value('geo_id'); /* for Panchayat ID */
                             $fetch_subdivision_id = GeoStructure::where('geo_id', $fetch_block_id)->value('sd_id'); /* for subdivision_id ID */
                             $fetch_year_id = Year::where('year_value', $row['work_start_fin_year'])->value('year_id'); /* for Year ID */
 
@@ -386,14 +398,11 @@ class SchemePerformanceController extends Controller
                                 $scheme_performance->panchayat_id = $fetch_panchayat_id;
                                 $scheme_performance->subdivision_id = $fetch_subdivision_id;
                                 $scheme_performance->attribute = serialize($unserializedAtributesData[$key]);
-                                if($status == "Completed")
-                                {
+                                if ($status == "Completed") {
                                     $scheme_performance->status = 1;
-                                }
-                                elseif ($status == "Incompleted") {
+                                } elseif ($status == "Incompleted") {
                                     $scheme_performance->status = 0;
-                                } 
-                                elseif ($status != "Incompleted" && $status != "Completed") {
+                                } elseif ($status != "Incompleted" && $status != "Completed") {
                                     $scheme_performance->status = "";
                                 }
                                 $scheme_performance->created_by = Session::get('user_id');
@@ -447,9 +456,7 @@ class SchemePerformanceController extends Controller
                     session()->put('alert-content', 'You Have Excited Maximum No. of Row at a Time');
                     return back();
                 }
-            }
-            else
-            {
+            } else {
                 session()->put('alert-class', 'alert-danger');
                 session()->put('alert-content', 'Please Fill At Least One Row in Excel Sheet');
                 return back();
@@ -472,8 +479,8 @@ class SchemePerformanceController extends Controller
         foreach ($unserialDatas as $key_un => $value_un) {
             array_push($data, $value_un['name']);
         }
-        array_push($data,'Status');
-        \Excel::create($scheme_datas->scheme_short_name.' Scheme-Format-'.date("d-m-Y"), function ($excel) use ($data) {
+        array_push($data, 'Status');
+        \Excel::create($scheme_datas->scheme_short_name . ' Scheme-Format-' . date("d-m-Y"), function ($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Scheme-Format');
@@ -808,16 +815,11 @@ class SchemePerformanceController extends Controller
 
         session()->put('alert-class', 'alert-success');
         session()->put('alert-content', 'Location Gallery have been successfully submitted !');
-        // echo "done";
-        // exit;
         return redirect('scheme-performance');
-        // return redirect('asset-numbers/add?purpose=edit&id=' . $request->asset_number_image_id);
     }
     public function get_gallery_image($id = "")
     {
-        $toArray = array();
         $SchemePerformance_fetch_gallery = SchemePerformance::where('scheme_performance_id', $id)->first('gallery');
-        // if()
         $gallery_details = array();
         if ($SchemePerformance_fetch_gallery->gallery != "") {
             $gallery_details = unserialize($SchemePerformance_fetch_gallery->gallery);
@@ -828,12 +830,15 @@ class SchemePerformanceController extends Controller
     public function save_coordinate(Request $request)
     {
         if ($request->coordinates_lat_value != "" && $request->coordinates_lang_value != "") {
-            // echo "<pre>";
             $SchemePerformance_alldetails = SchemePerformance::get('coordinates')->toArray();
             if ($SchemePerformance_alldetails != "") {
                 foreach ($SchemePerformance_alldetails as $key_scheme => $value_scheme) {
                     // print_r($value_scheme['coordinates']);
-                    $coordinate = array('latitude' => $request->coordinates_lat_value, 'longitude' => $request->coordinates_lang_value);
+                    $coordinate = array();
+                    foreach ($request->coordinates_lat_value as $key_coordinates => $value_coordinates) {
+                        $coordinate[] = array('latitude' => $request->coordinates_lat_value[$key_coordinates], 'longitude' => $request->coordinates_lang_value[$key_coordinates]);
+                    }
+                    // return $coordinate;
                     if ($value_scheme['coordinates'] != serialize($coordinate)) {
                         // print_r($value_scheme['coordinates']);
                         if ($request->scheme_performance_id != null) {
@@ -860,7 +865,7 @@ class SchemePerformanceController extends Controller
         session()->put('alert-content', 'Asset latitudes longitudes have been successfully submitted !');
         //  exit;
         return redirect('scheme-performance');
-        return $SchemePerformance_edit;
+        // return $SchemePerformance_edit;
     }
     public function get_coordinates_details($id = "")
     {
@@ -868,8 +873,14 @@ class SchemePerformanceController extends Controller
         $coordinates_details = array();
         if ($SchemePerformance_fetch_coordinates->coordinates != "") {
             $coordinates_details = unserialize($SchemePerformance_fetch_coordinates->coordinates);
+            // echo"<pre>";
+            // print_r($coordinates_details);
+            // exit;
             return ["coordinates" => $coordinates_details];
         }
+        // echo"<pre>";
+        // print_r($coordinates_details);
+        // exit;
         return ["coordinates" => $coordinates_details];
     }
 }
