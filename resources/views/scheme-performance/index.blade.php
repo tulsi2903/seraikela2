@@ -16,7 +16,7 @@
             <div class="card-head-row card-tools-still-right" style="background:#fff;">
                 <h4 class="card-title">Scheme Performance</h4>
                 <div class="card-tools">
-                    <a href="{{url('scheme-geo-target')}}" class="btn btn-sm btn-secondary" style="float:right;"><i class="fas fa-arrow-left"></i>&nbsp;&nbsp;Back</a>
+                    <!-- <a href="{{url('scheme-geo-target')}}" class="btn btn-sm btn-secondary" style="float:right;"><i class="fas fa-arrow-left"></i>&nbsp;&nbsp;Back</a> -->
                 </div>
             </div>
         </div>
@@ -102,7 +102,6 @@
                             @csrf
                             <table class="table">
                                 <thead id="to_append_thead" style="background: #cedcff">
-
                                 </thead>
                                 <tbody id="to_append_tbody">
                                     <!-- append details -->
@@ -116,7 +115,7 @@
                             <input type="hidden" name="scheme_id" id="scheme_id_hidden">
                             <input type="hidden" name="year_id" id="year_id_hidden">
                             <input type="hidden" name="panchayat_id" id="panchayat_id_hidden">
-                            <input type="hidden" name="to_delete" id="to_delete" >
+                            <input type="hidden" name="to_delete" id="to_delete">
                             <!-- hidden inputs -->
                             <button type="submit" class="btn btn-secondary"><i class="fas fa-check"></i>&nbsp;&nbsp;Save</button>
                         </form>
@@ -155,8 +154,8 @@
                     </div>
                 </div>
 
-                <input type="hidden" class="form-control" name="scheme_performance_id" id="scheme_performance_id" > <!--  scheme_performance_id -->
-               
+                <input type="hidden" class="form-control" name="scheme_performance_id" id="scheme_performance_id"> <!--  scheme_performance_id -->
+
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn btn-info waves-effect waves-light">Save</button>
@@ -169,7 +168,7 @@
 
 
 <div id="create-coordinates" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title mt-0">Coordinates</h4>
@@ -181,24 +180,54 @@
                 @csrf
                 <div class="modal-body">
                     <div class="row">
-                        <div class="card-body p-t-30" style="padding: 11px;">
-                            <div class="form-group">
-                                <label for="coordinates_lang_value">Longitude</label>
-                                <input type="text" name="coordinates_lang_value" id="coordinates_lang_value" placeholder="Longitude" class="form-control" Required >
-                                <label for="coordinates_lang_value">Longitude</label>
+                        <table class="table">
+                            <thead>
+                                <th>SI.No</th>
+                                <th>Longitude</th>
+                                <th>Longitude</th>
+                                <th>Action</th>
+                            </thead>
+                            <tbody id="append_coordinate_section">
+                                <!-- append details -->
+                            </tbody>
+                            <tbody>
+                                <tr>
+                                    <td colspan="4">
+                                        <div style="text-align: right;">
+                                            <button type="button" class="btn btn-secondary btn-sm btn-circle" onclick="appendcoordinates()">Add&nbsp;&nbsp;<i class="fa fa-plus-circle" aria-hidden="true"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
 
-                                <input type="text" name="coordinates_lat_value" id="coordinates_lat_value" placeholder="Latitude" class="form-control" Required >
-                                
+                        <!-- <div class="card-body p-t-30" style="padding: 11px;">
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-1">
+                                        <label >SI.No</label>
+                                        <span>1</span>
+                                    </div>
+                                    <div class="col-5">
+                                        <label for="coordinates_lang_value">Longitude</label>
+                                        <input type="text" name="coordinates_lang_value" id="coordinates_lang_value" placeholder="Longitude" class="form-control" Required >
+                                    </div>
+                                    <div class="col-5">
+                                        <label for="coordinates_lang_value">Longitude</label>
+                                        <input type="text" name="coordinates_lat_value" id="coordinates_lat_value" placeholder="Latitude" class="form-control" Required >        
+                                    </div>
+                                </div>
+                               
                             </div>
-                        </div>
+                        </div> -->
                         <div id="cordinates_details">
                             <!-- append images -->
                         </div>
                     </div>
                 </div>
 
-                <input type="hidden" class="form-control" name="scheme_performance_id" id="scheme_performance_id_for_coordinates" > <!--  scheme_performance_id -->
-               
+                <input type="hidden" class="form-control" name="scheme_performance_id" id="scheme_performance_id_for_coordinates"> <!--  scheme_performance_id -->
+
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn btn-info waves-effect waves-light">Save</button>
@@ -389,9 +418,9 @@
     function appendRow() {
         $("#to_append_tbody").append(to_append_row);
     }
-
+    
     // delete rows (not working)
-    function delete_row(e,id) {
+    function delete_row(e, id) {
         swal({
             title: 'Are you sure?',
             // text: "You won't be able to revert this!",
@@ -408,9 +437,9 @@
                 }
             }
         }).then((willDelete) => {
-            if(id){
-                    $("#to_delete").val($("#to_delete").val()+id+",");
-                }
+            if (id) {
+                $("#to_delete").val($("#to_delete").val() + id + ",");
+            }
             if (willDelete) {
                 $(e).closest("tr").remove();
             }
@@ -427,111 +456,164 @@
 </script>
 <script>
     function update_image(id) {
-        var scheme_performance=$('#scheme_performance_id').val(id);
+        var scheme_performance = $('#scheme_performance_id').val(id);
         $('#create-gallery').modal('show');
         $.ajax({
-                url: "{{url('scheme-performance/get-gallery/')}}"+"/"+id,
-                method: "GET",
-                contentType: 'application/json',
-                dataType: "json",
-                beforeSend: function (data) {
-                    $(".custom-loader").fadeIn(300);
-                },
-                error: function (xhr) {
-                    alert("error" + xhr.status + "," + xhr.statusText);
-                    $(".custom-loader").fadeOut(300);
-                },
-                success: function (data) {
-                    console.log(data);
-                    $("#show_image_for_location").html(""); // append=html
-                    // for(var i=0;i>data.length; i++)
-                    // $("#panchayat_id").html('<option value="">--Select--</option>');
-                    // for (var i = 0; i < data.length; i++) {
-                    //     $("#panchayat_id").append('<option value="' + data[i].geo_id + '">' + data[i].geo_name + '</option>');
-                    // }
-                    if (data.gallery.length>0) {
-                        var to_append = `<div class="row">
+            url: "{{url('scheme-performance/get-gallery/')}}" + "/" + id,
+            method: "GET",
+            contentType: 'application/json',
+            dataType: "json",
+            beforeSend: function (data) {
+                $(".custom-loader").fadeIn(300);
+            },
+            error: function (xhr) {
+                alert("error" + xhr.status + "," + xhr.statusText);
+                $(".custom-loader").fadeOut(300);
+            },
+            success: function (data) {
+                console.log(data);
+                $("#show_image_for_location").html(""); // append=html
+                // for(var i=0;i>data.length; i++)
+                // $("#panchayat_id").html('<option value="">--Select--</option>');
+                // for (var i = 0; i < data.length; i++) {
+                //     $("#panchayat_id").append('<option value="' + data[i].geo_id + '">' + data[i].geo_name + '</option>');
+                // }
+                if (data.gallery.length > 0) {
+                    var to_append = `<div class="row">
                                 <div class="col-12">
                                     <div><label>Previous Images</label></div>
                                      <div class="form-group">
                                    `;
-                        for (var i = 0; i < data.gallery.length; i++) {
-                            to_append += `<div class="images-delete-block" style="margin-right:5px; display:inline-block; position:relative; padding:3px;border:1px solid #c4c4c4;border-radious:3px;">
+                    for (var i = 0; i < data.gallery.length; i++) {
+                        to_append += `<div class="images-delete-block" style="margin-right:5px; display:inline-block; position:relative; padding:3px;border:1px solid #c4c4c4;border-radious:3px;">
                                 <img src="{{url('`+ data.gallery[i] + `')}}" style="height:90px; min-height:90px; min-width:80px;">
                                 <span style="position:absolute; top:3px; left:3px; border-radius: 3px; background: rgba(0,0,0,0.5); cursor: pointer; padding: 3px 6px;" class="text-white" onclick="to_delete('`+ data.gallery[i] + `',this)"><i class="fas fa-trash" style="text-shadow: 0px 0px 2px black;"></i></span>
                             </div>`;
-                        }
+                    }
 
-                        to_append += `</div>
+                    to_append += `</div>
                             </div>
                         <input type="text" class="form-control" name="gallery_images_delete" id="gallery_images_delete" value="" hidden> 
                         </div>`;
 
-                        $("#show_image_for_location").html(to_append); // append=html
-                    }
-                    $(".custom-loader").fadeOut(300);
+                    $("#show_image_for_location").html(to_append); // append=html
                 }
-            });
+                $(".custom-loader").fadeOut(300);
+            }
+        });
 
     }
 
     var images_delete_val = new Array(); // array_stored fto append in hidden input for delete purpose
-        function to_delete(image_path, e) {
-            swal({
-                title: 'Are you sure?',
-                // text: "You won't be able to revert this!",
-                type: 'warning',
-                buttons: {
-                    cancel: {
-                        visible: true,
-                        text: 'No, cancel!',
-                        className: 'btn btn-danger'
-                    },
-                    confirm: {
-                        text: 'Yes, delete it!',
-                        className: 'btn btn-success'
-                    }
+    function to_delete(image_path, e) {
+        swal({
+            title: 'Are you sure?',
+            // text: "You won't be able to revert this!",
+            type: 'warning',
+            buttons: {
+                cancel: {
+                    visible: true,
+                    text: 'No, cancel!',
+                    className: 'btn btn-danger'
+                },
+                confirm: {
+                    text: 'Yes, delete it!',
+                    className: 'btn btn-success'
                 }
-            }).then((willDelete) => {
-                if (willDelete) {
-                    images_delete_val.push(image_path);
-                    $("#gallery_images_delete").val(images_delete_val);
-                    $(e).closest(".images-delete-block").fadeOut(500);
-                }
-            });
-        }
+            }
+        }).then((willDelete) => {
+            if (willDelete) {
+                images_delete_val.push(image_path);
+                $("#gallery_images_delete").val(images_delete_val);
+                $(e).closest(".images-delete-block").fadeOut(500);
+            }
+        });
+    }
 </script>
 <script>
-function coordinates_details(id)
-{
-    var scheme_performance=$('#scheme_performance_id_for_coordinates').val(id);
-        $('#create-coordinates').modal('show');
-        $.ajax({
-                url: "{{url('scheme-performance/get-coordinates/')}}"+"/"+id,
-                method: "GET",
-                contentType: 'application/json',
-                dataType: "json",
-                beforeSend: function (data) {
-                    $(".custom-loader").fadeIn(300);
+    var append_no = 1;
+    var to_append;
+    function appendcoordinates() {
+        // $("#append_coordinate_section").html("");
+        // var si_no = append_no + 1;
+        append_no++;
+        to_append = `<tr>
+            <td>  <span>`+ append_no + `</span></td>
+            <td><input type="text" name="coordinates_lang_value[]" id="coordinates_lang_value" placeholder="Longitude" class="form-control" Required >
+                </td>
+                <td> <input type="text" name="coordinates_lat_value[]" id="coordinates_lat_value" placeholder="Latitude" class="form-control" Required >        
+                    </td>
+                    <td><button type="button" class="btn btn-danger btn-xs" onclick="delete_lat_lon(this)"><i class="fas fa-trash-alt"></i></button></td>
+                    </tr>`;
+                    $("#append_coordinate_section").append(to_append);
+                    // si_no++;
+    }
+
+    function delete_lat_lon(e) {
+
+        swal({
+            title: 'Are you sure?',
+            // text: "You won't be able to revert this!",
+            icon: 'warning',
+            buttons: {
+                cancel: {
+                    visible: true,
+                    text: 'No, cancel!',
+                    className: 'btn btn-danger'
                 },
-                error: function (xhr) {
-                    alert("error" + xhr.status + "," + xhr.statusText);
-                    $(".custom-loader").fadeOut(300);
-                },
-                success: function (data) {
-                    // console.log(data.coordinates.latitude);
-                    $("#coordinates_lang_value").val("");
-                        $("#coordinates_lat_value").val("");
-                    if(data.coordinates!="")
-                    {
-                        $("#coordinates_lang_value").val(data.coordinates.longitude);
-                        $("#coordinates_lat_value").val(data.coordinates.latitude);
-                        
-                    }
-                    $(".custom-loader").fadeOut(300);
+                confirm: {
+                    text: 'Yes, delete it!',
+                    className: 'btn btn-success'
                 }
-            });
-}
+            }
+        }).then((willDelete) => {
+
+            if (willDelete) {
+                $(e).closest("tr").remove();
+                append_no--;
+            }
+        });
+    }
+    function coordinates_details(id) {
+        
+        var scheme_performance = $('#scheme_performance_id_for_coordinates').val(id);
+        $('#create-coordinates').modal('show');
+        $("#append_coordinate_section").html("");
+        $.ajax({
+            url: "{{url('scheme-performance/get-coordinates/')}}" + "/" + id,
+            method: "GET",
+            contentType: 'application/json',
+            dataType: "json",
+            beforeSend: function (data) {
+                $(".custom-loader").fadeIn(300);
+            },
+            error: function (xhr) {
+                alert("error" + xhr.status + "," + xhr.statusText);
+                $(".custom-loader").fadeOut(300);
+            },
+            success: function (data) {
+                console.log(data.coordinates);
+                
+                if (data.coordinates.length > 0) {
+                    append_no = 1;
+                    var to_append;
+                    for (i = 0; i<data.coordinates.length; i++) {
+                        append_no = append_no+i ; //2
+                      to_append  += `<tr>
+                            <td>  <span>`+ append_no+ `</span></td>
+                            <td><input type="text" name="coordinates_lang_value[]" value="`+data.coordinates[i].latitude+ `"  placeholder="Longitude" class="form-control" Required >
+                            </td>
+                            <td> <input type="text" name="coordinates_lat_value[]" value="`+data.coordinates[i].longitude+ `" placeholder="Latitude" class="form-control" Required >        
+                            </td>
+                            <td><button type="button" class="btn btn-danger btn-xs" onclick="delete_lat_lon(this)"><i class="fas fa-trash-alt"></i></button></td>
+                        </tr>`;
+                    }
+                    $("#append_coordinate_section").html(to_append);
+                }
+                $(".custom-loader").fadeOut(300);
+            }
+        });
+    }
 </script>
 
 
