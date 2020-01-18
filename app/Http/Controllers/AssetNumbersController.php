@@ -7,6 +7,7 @@ use App\AssetNumbers;
 use App\GeoStructure;
 use App\Asset;
 use App\Year;
+use App\User;
 use DB;
 use App\AssetGeoLocation;
 use App\AssetBlockCount;
@@ -158,6 +159,7 @@ class AssetNumbersController extends Controller
 
     public function store(Request $request)
     {
+        // echo count($request->delete_asset_geo_loc_id);
         // return $request;
         $asset_number = new AssetNumbers;
 
@@ -220,7 +222,8 @@ class AssetNumbersController extends Controller
                 }
                 
             }
-        } else if (isset($request->delete_asset_geo_loc_id)) {
+        } 
+         if (isset($request->delete_asset_geo_loc_id)) {
             $asset_geo_loc_id = $request->delete_asset_geo_loc_id;
             for ($i = 0; $i < count($asset_geo_loc_id); $i++) {
                 if (AssetGeoLocation::find($asset_geo_loc_id[$i])) {
@@ -292,17 +295,19 @@ class AssetNumbersController extends Controller
 
         if ($asset_number->save()) {
 
+            if ($request->hidden_input_purpose == "edit" && count($request->delete_asset_geo_loc_id) != 0) {
+                $edit_asset_value = AssetNumbers::find($asset_number->asset_numbers_id);
+                $edit_asset_value->current_value = $edit_asset_value->current_value - count($request->delete_asset_geo_loc_id);
+                $edit_asset_value->pre_value = $edit_asset_value->current_value;
+                $edit_asset_value->save();
+            }
             if ($request->hidden_input_purpose == "add") {
-                # code...
                 $checkStatus = Asset::where('asset_id', $request->asset_id)->value('movable');
             }
             session()->put('alert-class', 'alert-success');
             session()->put('alert-content', 'Asset details have been successfully submitted !');
             if ($request->hidden_input_purpose == "add" && $checkStatus == 0) {
                 session()->put('message', $asset_number->asset_numbers_id);
-
-                // session()->put('alert-class', 'alert-success');
-                // session()->put('alert-content', 'Asset details have been successfully submitted !');
             }
         } else {
             session()->put('alert-class', 'alert-danger');
@@ -702,7 +707,7 @@ class AssetNumbersController extends Controller
     public function downloadFormatwithLocation()
     {
         # code...
-        $data[] = array('SNo.', 'Year', 'Resource Name', 'Panchayat Name', 'Location/Landmark', 'Latitude', 'Longitude');
+        $data[] = array('SNo.', 'Year', 'Resource Name','Main Resource SNo','Count', 'Panchayat Name', 'Location/Landmark', 'Latitude', 'Longitude');
 
         \Excel::create('Resource_Number_Location-Format', function ($excel) use ($data) {
 
@@ -736,8 +741,10 @@ class AssetNumbersController extends Controller
             if(count($readExcelHeader) != 0){
                 $excelSheetHeadings = $readExcelHeader->first()->keys()->toArray(); /* this is for excel sheet heading */
             }
+            // $childdatasValue = Asset::where('parent_id', 6)->get();
             // echo "<pre>";
-            // print_r(($readExcel));
+            // // echo $readExcel[1]['main_resource_sno'];
+            // print_r($childdatasValue[0]->asset_id);
             // exit;
             try {
             
@@ -745,8 +752,13 @@ class AssetNumbersController extends Controller
                 {
                     if(count($readExcel)<=250)
                     { 
+                        $getUserName = User::where('id',Session::get('user_id'))->first();
+                        date_default_timezone_set('Asia/Kolkata');
                         $filename = "ResourceNumber ErrorLog.txt"; /* error file name */
                         $myfile = fopen($filename, "w"); /* open error file name by using fopen function */
+                        $noOfSuccess = 0;
+                        $noOfFails = 0;
+                        $ErrorTxt = "";
 
                         foreach ($readExcel as $key => $row) { /* Insert Data By using for each one by one */
                             // preg_replace('/[^\w]/', '', ucwords($row['panchayat_name']));
@@ -761,54 +773,131 @@ class AssetNumbersController extends Controller
                             $year_value = ucwords(preg_replace('/[^0-9-]/', '', $row['year'])); //replace ASCII form year
 
                             $fetch_panchayat_id = GeoStructure::where('geo_name', $panchayat_name)->where('level_id','4')->value('geo_id'); /* for Panchayat ID */
-                            $fetch_asset_id = Asset::where('asset_name', $asset_name)->where('parent_id',-1)->value('asset_id'); /* for asset ID */ 
+                            $fetch_asset_id = Asset::where('asset_name', $asset_name)->value('asset_id'); /* for asset ID */ 
                             $fetch_year_id = Year::where('year_value', $year_value)->value('year_id'); /* for Year ID */
                             $fetch_asset_number_edit = AssetNumbers::where('asset_id', $fetch_asset_id)->where('geo_id', $fetch_panchayat_id)->first();
+                            $fetch_asset_loc_edit = AssetGeoLocation::where('asset_id', $fetch_asset_id)->where('geo_id', $fetch_panchayat_id)->where('location_name', $row['locationlandmark'])->where('year', $fetch_year_id)->first();
+                            
                             if ($row['sno.'] != null && $fetch_panchayat_id != null && $fetch_year_id != null && $fetch_asset_id != null) {
-
+                                $noOfSuccess++;
                                 /* Condition for Add And edit Location Latitude And longitude */
-                                if((isset($row['latitude']) AND $row['latitude'] != null) || (isset($row['longitude']) AND $row['longitude'] != null) || (isset($row['locationlandmark']) AND $row['locationlandmark'] != null)){
-                                    if($fetch_asset_number_edit->asset_numbers_id != null)
-                                    {
-                                        $AssetNumbers = AssetNumbers::find($fetch_asset_number_edit->asset_numbers_id);
-                                        $AssetNumbers->pre_value = $fetch_asset_number_edit->current_value;
-                                        $AssetNumbers->current_value = $fetch_asset_number_edit->current_value + 1;
-                                        $AssetNumbers->updated_by = Session::get('user_id');
-                                        $AssetNumbers->save();
-                                    }
-                                    else {
-                                        $asset_number = new AssetNumbers;
-                                        $asset_number->year = $fetch_year_id;
-                                        $asset_number->asset_id = $fetch_asset_id;
-                                        $asset_number->geo_id = $fetch_panchayat_id;
-                                        $asset_number->pre_value = 0;
-                                        $asset_number->current_value = 1;
-                        
-                                        $asset_number->created_by = Session::get('user_id');
+                                if($excelSheetHeadings[6] == "locationlandmark" || $excelSheetHeadings[7] == "latitude" || $excelSheetHeadings[8] == "longitude"){
+                                    if ($row['main_resource_sno'] == null && $row['count'] == null) {
+                                        // echo "1";
+                                        // echo "<br>";
+                                        if($fetch_asset_number_edit->asset_numbers_id != null)
+                                        {
+                                            $AssetNumbers = AssetNumbers::find($fetch_asset_number_edit->asset_numbers_id);
+                                            $AssetNumbers->pre_value = $fetch_asset_number_edit->current_value;
+                                            $AssetNumbers->current_value = $fetch_asset_number_edit->current_value + 1;
+                                            $AssetNumbers->updated_by = Session::get('user_id');
+                                            $AssetNumbers->save();
+                                        }
+                                        else {
+                                            $asset_number = new AssetNumbers;
+                                            $asset_number->year = $fetch_year_id;
+                                            $asset_number->asset_id = $fetch_asset_id;
+                                            $asset_number->geo_id = $fetch_panchayat_id;
+                                            $asset_number->pre_value = 0;
+                                            $asset_number->current_value = 1;
+                            
+                                            $asset_number->created_by = Session::get('user_id');
+                                            
+                                            $asset_number->save();
+                                        }
+                                        if ($fetch_asset_loc_edit->asset_geo_loc_id != null) {
+                                            $ASSET_geo_LOC_location = AssetGeoLocation::find($fetch_asset_loc_edit->asset_geo_loc_id);
+                                            if (isset($row['locationlandmark'])) {
+                                                $ASSET_geo_LOC_location->location_name = $row['locationlandmark'];
+                                            } else {
+                                                $ASSET_geo_LOC_location->location_name = "";
+                                            }
+    
+                                            if (isset($row['latitude']) && isset($row['longitude'])) {
+                                                $ASSET_geo_LOC_location->latitude = $row['latitude'];
+                                                $ASSET_geo_LOC_location->longitude = $row['longitude'];
+                                            } else {
+                                                $ASSET_geo_LOC_location->latitude = "";
+                                                $ASSET_geo_LOC_location->longitude = "";
+                                            }
+                                            $ASSET_geo_LOC_location->updated_by = Session::get('user_id');
+                                            $ASSET_geo_LOC_location->save();
+                                        } else {
+                                            $asset_geo_location = new AssetGeoLocation;
+                                            $asset_geo_location->year = $fetch_year_id;
+                                            $asset_geo_location->asset_id = $fetch_asset_id;
+                                            $asset_geo_location->geo_id = $fetch_panchayat_id; // panchayat
+                                            if (isset($row['locationlandmark'])) {
+                                                $asset_geo_location->location_name = $row['locationlandmark'];
+                                            } else {
+                                                $asset_geo_location->location_name = "";
+                                            }
+    
+                                            if (isset($row['latitude']) && isset($row['longitude'])) {
+                                                $asset_geo_location->latitude = $row['latitude'];
+                                                $asset_geo_location->longitude = $row['longitude'];
+                                            } else {
+                                                $asset_geo_location->latitude = "";
+                                                $asset_geo_location->longitude = "";
+                                            }
+                            
+                                            $asset_geo_location->created_by = Session::get('user_id');
+                                            $asset_geo_location->updated_by = '1';
+                                            $asset_geo_location->save();
+                                        }
                                         
-                                        $asset_number->save();
                                     }
-                                    $asset_geo_location = new AssetGeoLocation;
-                                    $asset_geo_location->year = $fetch_year_id;
-                                    $asset_geo_location->asset_id = $fetch_asset_id;
-                                    $asset_geo_location->geo_id = $fetch_panchayat_id; // panchayat
-                                    if (isset($row['locationlandmark'])) {
-                                        $asset_geo_location->location_name = $row['locationlandmark'];
-                                    } else {
-                                        $asset_geo_location->location_name = "";
+                                    if ($row['main_resource_sno'] != null || $row['count'] != null) {
+                                        // echo "2";
+                                        // echo "<br>";
+                                        $aseetNo = $row['main_resource_sno'];
+                                        $fetch_panchayat_id1 = GeoStructure::where('geo_name', $readExcel[$aseetNo - 1]['panchayat_name'])->where('level_id', '4')->value('geo_id'); /* for Panchayat ID */
+                                        $fetch_asset_id1 = Asset::where('asset_name', $readExcel[$aseetNo - 1]['resource_name'])->value('asset_id'); /* for asset ID */
+                                        $fetch_year_id1 = Year::where('year_value', $readExcel[$aseetNo - 1]['year'])->value('year_id'); /* for Year ID */
+                                        $fetch_asset_loc_id = AssetGeoLocation::where('year', $fetch_year_id1)
+                                                ->where('asset_id', $fetch_asset_id1)
+                                                ->where('geo_id', $fetch_panchayat_id1)
+                                                ->where('location_name', $readExcel[$aseetNo - 1]['locationlandmark'])
+                                                ->first();
+                                        $childdatasValue = Asset::where('parent_id', $fetch_asset_id1)->get();
+                                        $fetch_asset_number_edit_child = AssetNumbers::where('asset_id', $fetch_asset_id1)->where('asset_geo_loc_id',$fetch_asset_loc_id->asset_geo_loc_id)->where('geo_id', $fetch_panchayat_id1)->first();
+                                        foreach ($childdatasValue as $kee => $value1) {
+                                            # code...
+                                            if($fetch_asset_number_edit_child->asset_numbers_id != null)
+                                            {
+                                                $AssetNumbers = AssetNumbers::find($fetch_asset_number_edit_child->asset_numbers_id);
+                                                $AssetNumbers->pre_value = $fetch_asset_number_edit_child->current_value;
+                                                if ($fetch_asset_id == $childdatasValue[$kee]->asset_id) {
+                                                    $AssetNumbers->current_value = $row['count'];
+                                                } else {
+                                                    $AssetNumbers->current_value = 0;
+                                                }
+                                                $AssetNumbers->updated_by = Session::get('user_id');
+                                                $AssetNumbers->save();
+                                            }
+                                            else {
+                                                $asset_number = new AssetNumbers;
+                                                $asset_number->year = $fetch_year_id;
+                                                $asset_number->asset_id = $childdatasValue[$kee]->asset_id;
+                                                $asset_number->geo_id = $fetch_panchayat_id;
+                                                if ($fetch_asset_loc_id != null) {
+                                                    $asset_number->asset_geo_loc_id = $fetch_asset_loc_id->asset_geo_loc_id;
+                                                } 
+                                                
+                                                $asset_number->pre_value = 0;
+                                                if ($fetch_asset_id == $childdatasValue[$kee]->asset_id) {
+                                                    $asset_number->current_value = $row['count'];
+                                                } else {
+                                                    $asset_number->current_value = 0;
+                                                }
+                                                
+                                
+                                                $asset_number->created_by = Session::get('user_id');
+                                                
+                                                $asset_number->save();
+                                            }
+                                        }
                                     }
-
-                                    if (isset($row['latitude']) && isset($row['longitude'])) {
-                                        $asset_geo_location->latitude = $row['latitude'];
-                                        $asset_geo_location->longitude = $row['longitude'];
-                                    } else {
-                                        $asset_geo_location->latitude = "";
-                                        $asset_geo_location->longitude = "";
-                                    }
-                    
-                                    $asset_geo_location->created_by = Session::get('user_id');
-                                    $asset_geo_location->updated_by = '1';
-                                    $asset_geo_location->save();
                                 }
                                 else {
                                     if($fetch_asset_number_edit->asset_numbers_id != null)
@@ -833,28 +922,22 @@ class AssetNumbersController extends Controller
                                     }
                                 }
                             }else {  /* Else find id and error write on the notepad */
+                                $noOfFails++;
                                 if ($row['sno.'] != null) {
                                     if ($fetch_asset_id == null && $fetch_panchayat_id != null && $fetch_year_id != null) {
-                                        $txt = " ON row sno. " . $row['sno.'] . " Resources Not Found \n";
-                                        fwrite($myfile, $txt);
+                                        $ErrorTxt .= " ON row sno. " . $row['sno.'] . " Resources Not Found \n";
                                     } elseif ($fetch_panchayat_id == null && $fetch_asset_id != null && $fetch_year_id != null) {
-                                        $txt = " ON row sno. " . $row['sno.'] . " Panchayat Not Found \n";
-                                        fwrite($myfile, $txt);
+                                        $ErrorTxt .= " ON row sno. " . $row['sno.'] . " Panchayat Not Found \n";
                                     } elseif ($fetch_year_id == null && $fetch_panchayat_id != null && $fetch_asset_id != null) {
-                                        $txt = " ON row sno. " . $row['sno.'] . " Year Not Found \n";
-                                        fwrite($myfile, $txt);
+                                        $ErrorTxt .= " ON row sno. " . $row['sno.'] . " Year Not Found \n";
                                     } elseif ($fetch_year_id == null && $fetch_panchayat_id == null && $fetch_asset_id != null) {
-                                        $txt = " ON row sno. " . $row['sno.'] . " Year And Panchayat Not Found \n";
-                                        fwrite($myfile, $txt);
+                                        $ErrorTxt .= " ON row sno. " . $row['sno.'] . " Year And Panchayat Not Found \n";
                                     } elseif ($fetch_year_id != null && $fetch_panchayat_id == null && $fetch_asset_id == null) {
-                                        $txt = " ON row sno. " . $row['sno.'] . " Resources And Panchayat Not Found \n";
-                                        fwrite($myfile, $txt);
+                                        $ErrorTxt .= " ON row sno. " . $row['sno.'] . " Resources And Panchayat Not Found \n";
                                     } elseif ($fetch_year_id == null && $fetch_panchayat_id != null && $fetch_asset_id == null) {
-                                        $txt = " ON row sno. " . $row['sno.'] . " Resources And Year Not Found \n";
-                                        fwrite($myfile, $txt);
+                                        $ErrorTxt .= " ON row sno. " . $row['sno.'] . " Resources And Year Not Found \n";
                                     } elseif ($fetch_year_id == null && $fetch_panchayat_id == null && $fetch_asset_id == null) {
-                                        $txt = " ON row sno. " . $row['sno.'] . " Year Resources And Panchayat Not Found \n";
-                                        fwrite($myfile, $txt);
+                                        $ErrorTxt .= " ON row sno. " . $row['sno.'] . " Year Resources And Panchayat Not Found \n";
                                     }
                                 } 
                                 // else {
@@ -864,7 +947,25 @@ class AssetNumbersController extends Controller
                             }
                         }
 
+                        $txt = "District Resource and Scheme Management\n";
+                        $txt .= "----------------------------------------------------------------------------------------------------------------------------------\n";
+                        $txt .= "DATE: ". date('d/m/Y h:i A')."\n";
+                        $txt .= "TOTAL RECORD COUNT: ". count($readExcel)."\n";
+                        $txt .= "TOTAL SUCCESS COUNT: ".$noOfSuccess."\n";
+                        $txt .= "TOTAL FAIL COUNT: ".$noOfFails."\n";
+                        $txt .= "USER NAME: ". $getUserName->first_name." ". $getUserName->middle_name." ". $getUserName->last_name." \n";
+                        $txt .= "----------------------------------------------------------------------------------------------------------------------------------\n";
+                        if ($noOfFails == 0) {
+                            $txt .= "No Error Found";
+                        } else {
+                            $txt .= $ErrorTxt;
+                        }
+                        
+                        fwrite($myfile, $txt);
+                        // exit;
+
                         fclose($myfile); //close file
+
                         if (file_get_contents($filename) == null) //if error file does not exit ant data then popup message success
                         {
                             session()->put('alert-class', 'alert-success');
@@ -880,6 +981,7 @@ class AssetNumbersController extends Controller
                             readfile($filename);
                             exit;
                         }
+                        
                     }
                     else
                     {
