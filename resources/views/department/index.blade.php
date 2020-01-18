@@ -170,7 +170,7 @@
                                         <th>{{$phrase->icon}}</th>
                                         <th>{{$phrase->department_name}}</th>
                                         <th>{{$phrase->organisation}}</th>
-                                        <th>{{$phrase->sttus}}</th>  
+                                        <th>{{$phrase->sts}}</th>  
                                         @if($desig_permissions["mod2"]["del"] ||$desig_permissions["mod2"]["edit"] ) 
                                         <th class="action-buttons">{{$phrase->action}}</th>  
                                         @endif
