@@ -18,9 +18,9 @@ class Language
      */
     public function handle($request, Closure $next)
     {
-        // $lang = Languages::where('status',1)->first();
-        // $final_lang=json_decode($lang->languagePhrases);
-        // \Illuminate\Support\Facades\View::share('phrase',$final_lang);
+        $lang = Languages::where('status',1)->first();
+        $final_lang=json_decode($lang->languagePhrases);
+        \Illuminate\Support\Facades\View::share('phrase',$final_lang);
         return $next($request);
     }
 }
