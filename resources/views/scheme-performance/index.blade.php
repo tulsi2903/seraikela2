@@ -16,6 +16,7 @@
             <div class="card-head-row card-tools-still-right" style="background:#fff;">
                 <h4 class="card-title">Scheme Performance</h4>
                 <div class="card-tools">
+
                     <!-- <a href="{{url('scheme-geo-target')}}" class="btn btn-sm btn-secondary" style="float:right;"><i class="fas fa-arrow-left"></i>&nbsp;&nbsp;Back</a> -->
                 </div>
             </div>
@@ -30,7 +31,7 @@
                         <div class="col-md-2">
                             <div class="form-group">
                                 <label for="scheme_id">Scheme<span style="color:red;margin-left:5px;">*</span></label>
-                                <select name="scheme_id" id="scheme_id" class="form-control">
+                                <select name="scheme_id" id="scheme_id" onchange="get_scheme_value(this);" class="form-control">
                                     <option value="">---Select---</option>
                                     @foreach($scheme_datas as $scheme )
                                     <option value="{{ $scheme->scheme_id }}">({{$scheme->scheme_short_name}}) {{ $scheme->scheme_name }}</option>
@@ -79,6 +80,16 @@
                                 <button type="button" class="btn btn-secondary go-button" onclick="go()"><i class="fas fa-search"></i>&nbsp;&nbsp;Go</button>
                             </div>
                         </div>
+                        <div class="col-md-2" style="display: none;" id="import_section">
+                            <div class="form-group">
+                                <div style="height:30px;"></div>
+                                <button type="submit" class="btn btn-primary" onclick="location.href='\ scheme-performance/downloadFormat?scheme_id='+ document.getElementById('scheme_id').value+'&year_id={{$year_data->year_id}}&block_id={{$block_data->geo_id}}'" style="float:right; background: #349601; color: white;" title="Download Excel Format"><i class="fas fa-file-import"></i>&nbsp;&nbsp;Download Format</button>
+                            </div>
+                            <div class="form-group ">
+                                <div style="height:30px;"></div>
+                                <button type="submit" class="btn btn-primary" onclick="location.href='\ scheme-performance/viewimport?scheme_id='+ document.getElementById('scheme_id').value+'&year_id={{$year_data->year_id}}&block_id={{$block_data->geo_id}}'" style="float:right; background: #349601; color: white;margin-right: 10px;" title="Import Excel"><i class="fas fa-file-import"></i>&nbsp;&nbsp;Import</button>
+                            </div>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -91,8 +102,6 @@
                             <b>Data Saved:</b> 0
                         </div>
                         <span style="display: none;" id="excelformat">
-                            <!-- <a href="\{{url('scheme-performance/downloadFormat')}}?scheme_id={{$scheme->scheme_id}}&year_id={{$year_data->year_id}}&block_id={{$block_data->geo_id}}" class="btn" style="float:right; background: #349601; color: white;" title="Download Excel Format"><i class="fas fa-file-import"></i>&nbsp;&nbsp;Import Format</a>
-                            <a href="{{url('scheme-performance/viewimport')}}?scheme_id={{$scheme->scheme_id}}&year_id={{$year_data->year_id}}&block_id={{$block_data->geo_id}}" class="btn" style="float:right; background: #349601; color: white;margin-right: 10px;" ><i class="fas fa-file-import"></i>&nbsp;&nbsp;Import</a> -->
                             <button type="submit" class="btn btn-primary" onclick="location.href='\ scheme-performance/downloadFormat?scheme_id='+ document.getElementById('scheme_id').value+'&year_id={{$year_data->year_id}}&block_id={{$block_data->geo_id}}'" style="float:right; background: #349601; color: white;" title="Download Excel Format"><i class="fas fa-file-import"></i>&nbsp;&nbsp;Excel Format</button>
                             <button type="submit" class="btn btn-primary" onclick="location.href='\ scheme-performance/viewimport?scheme_id='+ document.getElementById('scheme_id').value+'&year_id={{$year_data->year_id}}&block_id={{$block_data->geo_id}}'" style="float:right; background: #349601; color: white;;margin-right: 10px;" title="Import Excel"><i class="fas fa-file-import"></i>&nbsp;&nbsp;Import</button>
                         </span>
@@ -139,7 +148,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form action="{{url('scheme_performance/galleryFile_update')}}" method="post" id="FormsaveImagesforLoacation" enctype="multipart/form-data" autocomplete="off">
+            <form action="{{url('scheme_performance/galleryFile_update')}}" method="post" id="FormsavegalleryforLoacation" enctype="multipart/form-data" autocomplete="off">
                 @csrf
                 <div class="modal-body">
                     <div class="row">
@@ -153,12 +162,11 @@
                         </div>
                     </div>
                 </div>
-
                 <input type="hidden" class="form-control" name="scheme_performance_id" id="scheme_performance_id"> <!--  scheme_performance_id -->
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-info waves-effect waves-light">Save</button>
+                    <button type="button" class="btn btn-info waves-effect waves-light" onclick="submitgalleryAjax()">Save</button>
                 </div>
             </form>
         </div>
@@ -176,7 +184,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form action="{{url('scheme_performance/coordinatesupdate')}}" method="post" id="FormsaveImagesforLoacation" enctype="multipart/form-data" autocomplete="off">
+            <form action="{{url('scheme_performance/coordinatesupdate')}}" method="post" id="FormsaveImagescoordinatesLoacation" enctype="multipart/form-data" autocomplete="off">
                 @csrf
                 <div class="modal-body">
                     <div class="row">
@@ -200,26 +208,6 @@
                                 </tr>
                             </tbody>
                         </table>
-
-                        <!-- <div class="card-body p-t-30" style="padding: 11px;">
-                            <div class="form-group">
-                                <div class="row">
-                                    <div class="col-1">
-                                        <label >SI.No</label>
-                                        <span>1</span>
-                                    </div>
-                                    <div class="col-5">
-                                        <label for="coordinates_lang_value">Longitude</label>
-                                        <input type="text" name="coordinates_lang_value" id="coordinates_lang_value" placeholder="Longitude" class="form-control" Required >
-                                    </div>
-                                    <div class="col-5">
-                                        <label for="coordinates_lang_value">Longitude</label>
-                                        <input type="text" name="coordinates_lat_value" id="coordinates_lat_value" placeholder="Latitude" class="form-control" Required >        
-                                    </div>
-                                </div>
-                               
-                            </div>
-                        </div> -->
                         <div id="cordinates_details">
                             <!-- append images -->
                         </div>
@@ -227,10 +215,9 @@
                 </div>
 
                 <input type="hidden" class="form-control" name="scheme_performance_id" id="scheme_performance_id_for_coordinates"> <!--  scheme_performance_id -->
-
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-info waves-effect waves-light">Save</button>
+                    <button type="button" id="coordinate_save" onclick="submitcoordinateAjax();" class="btn btn-info waves-effect waves-light">Save</button>
                 </div>
             </form>
         </div>
@@ -418,7 +405,7 @@
     function appendRow() {
         $("#to_append_tbody").append(to_append_row);
     }
-    
+
     // delete rows (not working)
     function delete_row(e, id) {
         swal({
@@ -531,11 +518,9 @@
     }
 </script>
 <script>
-    var append_no = 1;
+   var append_no;
     var to_append;
     function appendcoordinates() {
-        // $("#append_coordinate_section").html("");
-        // var si_no = append_no + 1;
         append_no++;
         to_append = `<tr>
             <td>  <span>`+ append_no + `</span></td>
@@ -545,12 +530,11 @@
                 </td>
                     <td><button type="button" class="btn btn-danger btn-xs" onclick="delete_lat_lon(this)"><i class="fas fa-trash-alt"></i></button></td>
                     </tr>`;
-                    $("#append_coordinate_section").append(to_append);
-                    // si_no++;
+        $("#append_coordinate_section").append(to_append);
+        // si_no++;
     }
 
     function delete_lat_lon(e) {
-
         swal({
             title: 'Are you sure?',
             // text: "You won't be able to revert this!",
@@ -575,10 +559,10 @@
         });
     }
     function coordinates_details(id) {
-        
         var scheme_performance = $('#scheme_performance_id_for_coordinates').val(id);
         $('#create-coordinates').modal('show');
         $("#append_coordinate_section").html("");
+        append_no = 0;
         $.ajax({
             url: "{{url('scheme-performance/get-coordinates/')}}" + "/" + id,
             method: "GET",
@@ -593,21 +577,22 @@
             },
             success: function (data) {
                 console.log(data.coordinates);
-                
+                $("#append_coordinate_section").html("");
                 if (data.coordinates.length > 0) {
                     append_no = 1;
                     var to_append;
-                    for (i = 0; i<data.coordinates.length; i++) {
-                        append_no = append_no+i ; //2
-                      to_append  += `<tr>
-                            <td>  <span>`+ append_no+ `</span></td>
-                            <td> <input type="text" name="coordinates_lat_value[]" value="`+data.coordinates[i].latitude+ `" placeholder="Latitude" class="form-control" Required >        
-                            </td>
-                            <td><input type="text" name="coordinates_lang_value[]" value="`+data.coordinates[i].longitude+ `"  placeholder="Longitude" class="form-control" Required >
-                            </td>
-                            
-                            <td><button type="button" class="btn btn-danger btn-xs" onclick="delete_lat_lon(this)"><i class="fas fa-trash-alt"></i></button></td>
-                        </tr>`;
+                    for (i = 0; i < data.coordinates.length; i++) {
+                        append_no = i+1;
+                        // alert(append_no);
+                        to_append += `<tr>
+                                <td>  <span>`+ append_no + `</span></td>
+                                <td> <input type="text" name="coordinates_lat_value[]" value="`+ data.coordinates[i].latitude + `" placeholder="Latitude" class="form-control" Required >        
+                                </td>
+                                <td><input type="text" name="coordinates_lang_value[]" value="`+ data.coordinates[i].longitude + `"  placeholder="Longitude" class="form-control" Required >
+                                </td>
+                                
+                                <td><button type="button" class="btn btn-danger btn-xs" onclick="delete_lat_lon(this)"><i class="fas fa-trash-alt"></i></button></td>
+                            </tr>`;
                     }
                     $("#append_coordinate_section").html(to_append);
                 }
@@ -616,6 +601,123 @@
         });
     }
 </script>
+<script>
+    function submitcoordinateAjax() {
+        var formElement = $('#FormsaveImagescoordinatesLoacation')[0];
+        var form_data = new FormData(formElement);
 
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        $.ajax({
+            url: "{{url('scheme_performance/coordinatesupdate')}}",
+            data: form_data,
+            method: "POST",
+            dataType: 'json',
+            processData: false,
+            contentType: false,
+            beforeSend: function (data) {
+                $(".custom-loader").fadeIn(300);
+            },
+            error: function (xhr) {
+                alert("error" + xhr.status + ", " + xhr.statusText);
+                $(".custom-loader").fadeOut(300);
+            },
+            success: function (data) {
+                if (data.message == "success") {
+                    swal("Success!", "New latitudes longitudes  has been added successfully.", {
+                        icon: "success",
+                        buttons: {
+                            confirm: {
+                                className: 'btn btn-success'
+                            }
+                        },
+                    }).then((ok) => {
+                        $('#create-coordinates').modal('hide');
+                    });
+                }
+                else {
+                    // error occured
+                    swal("Error Occured!", data.message, {
+                        icon: "error",
+                        buttons: {
+                            confirm: {
+                                className: 'btn btn-danger'
+                            }
+                        },
+                    });
+                }
 
+                $(".custom-loader").fadeOut(300);
+            }
+        });
+    }
+</script>
+<script>
+    function submitgalleryAjax() {
+        var formElement = $('#FormsavegalleryforLoacation')[0];
+        var form_data = new FormData(formElement);
+
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        $.ajax({
+            url: "{{url('scheme_performance/galleryFile_update')}}",
+            data: form_data,
+            method: "POST",
+            dataType: 'json',
+            processData: false,
+            contentType: false,
+            beforeSend: function (data) {
+                $(".custom-loader").fadeIn(300);
+            },
+            error: function (xhr) {
+                alert("error" + xhr.status + ", " + xhr.statusText);
+                $(".custom-loader").fadeOut(300);
+            },
+            success: function (data) {
+                if (data.message == "success") {
+                    swal("Success!", "Location Gallery have been successfully submitted !", {
+                        icon: "success",
+                        buttons: {
+                            confirm: {
+                                className: 'btn btn-success'
+                            }
+                        },
+                    }).then((ok) => {
+                        $('#create-gallery').modal('hide');
+                    });
+                }
+                else {
+                    // error occured
+                    swal("Error Occured!", data.message, {
+                        icon: "error",
+                        buttons: {
+                            confirm: {
+                                className: 'btn btn-danger'
+                            }
+                        },
+                    });
+                }
+
+                $(".custom-loader").fadeOut(300);
+            }
+        });
+    }
+</script>
+<script>
+    function get_scheme_value(e) {
+        var scheme_id = $(e).val();
+        if (scheme_id != "") {
+            $("#import_section").css('display', 'block');
+            // $("#id").css("display", "block");
+
+        }
+        // alert(scheme_id);
+    }
+</script>
 @endsection

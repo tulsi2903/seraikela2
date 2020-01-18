@@ -10,6 +10,7 @@ use App\Asset;
 use App\SchemeStructure;
 use App\Department;
 use App\DesignationPermission;
+use App\SchemePerformance;
 use DB;
 use App\Languages;
 
@@ -78,6 +79,8 @@ class DashboardController extends Controller
         // TO DO:  Remove level_id  && org_id hardcoding
         $subdivision_count = GeoStructure::where('level_id','2')->where('org_id','1')->count();
         $block_count = GeoStructure::where('level_id','3')->where('org_id','1')->count();
+        $block_details = GeoStructure::where('level_id','3')->where('org_id','1')->get();
+        
         $panchayat_count =GeoStructure::where('level_id','4')->where('org_id','1')->count();
         $villages_count = GeoStructure::where('level_id','4')->where('org_id','1')->sum('no_of_villages');
 
@@ -96,8 +99,9 @@ class DashboardController extends Controller
         $social_welfare_count = SchemeStructure::where('dept_id','8')->count();
         $drinking_water_and_sanitation_count = SchemeStructure::where('dept_id','9')->count();
         $social_security_scheme_count = SchemeStructure::where('dept_id','10')->count();
+        $scheme_performance_details=SchemePerformance::get()->toArray();
 
-        return view('dashboard.dc_dashboard')->with(compact('subdivision_count','block_count','panchayat_count','asset_count','scheme_count','villages_count','get_schemes','departments','health_scheme_count','land_revenue_count','welfare_count','education_count','land_acquisition_count','election_count','agriculture_count','social_welfare_count','drinking_water_and_sanitation_count','social_security_scheme_count'));
+        return view('dashboard.dc_dashboard')->with(compact('subdivision_count','block_count','panchayat_count','asset_count','scheme_count','block_details','scheme_performance_details','villages_count','get_schemes','departments','health_scheme_count','land_revenue_count','welfare_count','education_count','land_acquisition_count','election_count','agriculture_count','social_welfare_count','drinking_water_and_sanitation_count','social_security_scheme_count'));
     }
 
     public function get_department_wise_asset_data(){
@@ -130,6 +134,6 @@ class DashboardController extends Controller
                 'status' => 0
             ));          
         }
-    return redirect('/'); 
+    return back(); 
     }
 }

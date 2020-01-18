@@ -130,7 +130,7 @@ class SchemePerformanceController extends Controller
                 $scheme_asset_data = SchemeAsset::get();
                 $to_append_tbody .= '<input type="hidden" name="scheme_performance_id[]" value="' . $value_SchemePerformance['scheme_performance_id'] . '">';
                 if ($scheme_data->scheme_is == 2) {
-                    $to_append_tbody .= '<td> <select name="assest_name[]" class="form-control" required>';
+                    $to_append_tbody .= '<td> <select name="assest_name[]" class="form-control">';
                     if ($value_SchemePerformance['scheme_asset_id'] != "") {
                         // $to_append_tbody .= "<option  value=''>--Select--</option>";
                         foreach ($scheme_asset_data as $key_asset => $value_assest) {
@@ -158,19 +158,24 @@ class SchemePerformanceController extends Controller
                 $to_append_tbody .= '<br/><a  onclick="coordinates_details(' . $value_SchemePerformance['scheme_performance_id'] . ');" href="javascript:void();"><i class="fas fa-plus"></i>Coordinates</a>';
                 $to_append_tbody .= '</td>';
                 $to_append_tbody .= '<td><select name="status[]"  class="form-control">';
-                if ($value_SchemePerformance['status'] != "") {
-                    if ($value_SchemePerformance['status'] == 0) {
+                if($value_SchemePerformance['status']!="")
+                {
+                    if ($value_SchemePerformance['status'] == 0)
+                    {
                         $to_append_tbody .= '<option value="1">Completed</option>';
                         $to_append_tbody .= '<option value="0" selected>Incomplete</option>';
                     }
-                    if ($value_SchemePerformance['status'] == 1) {
+                    if ($value_SchemePerformance['status'] == 1)
+                    {
                         $to_append_tbody .= '<option value="1" selected >Completed</option>';
                         $to_append_tbody .= '<option value="0">Incomplete</option>';
                     }
-                } else {
+                }
+                else
+                {
                     // $to_append_tbody .= '<option value=" " selected>--select--</option>';
                     $to_append_tbody .= '<option value="1">Completed</option>';
-                    $to_append_tbody .= '<option value="0" selected>Incomplete</option>';
+                    $to_append_tbody .= '<option value="0">Incomplete</option>';
                 }
 
 
@@ -200,8 +205,8 @@ class SchemePerformanceController extends Controller
         }
         $to_append_row .= '<input type="hidden" name="scheme_performance_id[]" value="new_scheme_performance"> ';
         if ($scheme_data->scheme_is == 2) {
-            $to_append_row .= '<td><select name="assest_name[]" class="form-control" required>';
-            $to_append_row .= "<option  value=''>--Select--</option>";
+            $to_append_row .= '<td><select name="assest_name[]" class="form-control">';
+            $to_append_row .="<option  value=''>--Select--</option>";
             foreach ($scheme_asset_data as $key_asset => $value_assest) {
                 $to_append_row .= "<option value=\"" . $value_assest["scheme_asset_id"] . "\">" . $value_assest["scheme_asset_name"] . "</option>";
             }
@@ -228,7 +233,7 @@ class SchemePerformanceController extends Controller
         $to_append_thead .= '<th>Status</th>';
         $to_append_row .= '<td>
                             <select name="status[]" class="form-control">
-                                <option value="0" selected>Incomplete</option>
+                                <option value="0">Incomplete</option>
                                 <option value="1">Completed</option>
                             </select>
                         </td>';
@@ -262,9 +267,12 @@ class SchemePerformanceController extends Controller
                 }
             }
         }
+        // exit;
+        // echo "<pre>";
         $tmp_array = array();
         $delete_check_array = array();
         foreach ($form_request_id as $key_request => $value_request) {
+            // $SchemePerformance_get=SchemePerformance::where('scheme_id',$scheme_id)->get('scheme_performance_id')->toArray();
             $SchemePerformance_get = SchemePerformance::where('scheme_id', $scheme_id)->where('year_id', $year_id)->where('panchayat_id', $panchayat_id)->get()->toArray();
             foreach ($SchemePerformance_get as $tmp) {
                 array_push($tmp_array, $tmp['scheme_performance_id']);
@@ -301,11 +309,63 @@ class SchemePerformanceController extends Controller
                 $scheme_performance->updated_by = Auth::user()->id;
                 $scheme_performance->save();
             }
+            // echo "<br>";
         }
         if ($request->to_delete != "") {
             $for_delete_record = explode(',', rtrim($request->to_delete, ','));
-            $SchemePerformance_record = SchemePerformance::whereIn('scheme_performance_id', $for_delete_record)->delete();
+            // return $for_delete_record;
+            // $diff_result = array_diff($tmp_array, $delete_check_array);
+            // foreach ($diff_result as $key => $value_diff) {
+            $pcc_enitity_record = SchemePerformance::whereIn('scheme_performance_id', $for_delete_record)->delete();
         }
+        $SchemePerformance=SchemePerformance::where('scheme_id',$scheme_id)->where('year_id',$year_id)->get();
+        $incomplete_count=$complete_count=$total_count=0;
+        foreach($SchemePerformance as $key_performance => $value_performance)
+        {
+            if($value_performance['status']==0)
+            {
+                $incomplete_count=$incomplete_count+1;
+            }
+            if($value_performance['status']==1)
+            {
+                $complete_count=$complete_count+1;
+            }
+            $total_count=$total_count+1;
+        }
+        // // echo $incomplete_count;
+        // // echo "<br>";
+        // // echo $complete_count;
+        // echo "<pre>";
+        // echo count($SchemePerformance);
+        // exit;
+        // return $SchemePerformance;
+        $scheme_block_performance_details=scheme_block_performance::where('scheme_id',$scheme_id)->where('block_id',$block_id)->where('year_id',$year_id)->first();
+       if($scheme_block_performance_details!="")
+       {
+        scheme_block_performance::where('scheme_block_performance_id',$scheme_block_performance_details->scheme_block_performance_id)->update(array('total_count'=>$total_count,'complete_count'=>$complete_count,'incomplete_count'=>$incomplete_count));
+        // $scheme_block_performance_details;
+        }
+        else
+        {
+            $scheme_block_performance=new scheme_block_performance();
+            $scheme_block_performance->year_id=$year_id;
+            $scheme_block_performance->scheme_id=$scheme_id;
+            $scheme_block_performance->block_id=$block_id;
+            $scheme_block_performance->total_count=$total_count;
+            // $scheme_block_performance->complete_count=2;
+            $scheme_block_performance->complete_count=$complete_count;
+            $scheme_block_performance->incomplete_count=$incomplete_count;
+             $scheme_block_performance->created_by=Auth::user()->id;
+            $scheme_block_performance->update_by=Auth::user()->id;
+            $scheme_block_performance->stutas=1;
+            $scheme_block_performance->save();
+            // return $scheme_block_performance;
+        }
+        // return $scheme_block_performance_details;
+        
+        
+        
+        
         session()->put('alert-class', 'alert-success');
         session()->put('alert-content', 'New performance data(s) has been saved successfully!');
         // return back();
@@ -315,10 +375,12 @@ class SchemePerformanceController extends Controller
 
     public function viewimport(Request $request)
     {
+        // return $request;
         if (!$request->scheme_id || !$request->year_id || !$request->block_id) {
             return redirect("scheme-performance");
         }
 
+        // received datas
         $scheme_id = $request->scheme_id;
         $year_id = $request->year_id;
         $block_id = $request->block_id;
@@ -390,41 +452,22 @@ class SchemePerformanceController extends Controller
 
                             /* if those id avilable then insert data on the base */
                             if ($row['sno.'] != null && $fetch_block_id != null && $fetch_panchayat_id != null && $fetch_year_id != null && $fetch_subdivision_id != null) {
-                                $flag=0;
-                                $scheme_performance_id="";
-                                $scheme_performance_details=SchemePerformance::get()->toArray();
-                                foreach($scheme_performance_details as $key_edit=> $value_edit)
-                                {
-                                    $add_atributes=serialize($unserializedAtributesData[$key]);
-                                    if($value_edit['attribute']==$add_atributes)
-                                    {
-                                        $flag=1;
-                                        $scheme_performance_id=$value_edit['scheme_performance_id'];
-                                    }
+                                $scheme_performance = new SchemePerformance;
+                                $scheme_performance->year_id = $fetch_year_id;
+                                $scheme_performance->scheme_id = $request->scheme_id;
+                                $scheme_performance->block_id = $fetch_block_id;
+                                $scheme_performance->panchayat_id = $fetch_panchayat_id;
+                                $scheme_performance->subdivision_id = $fetch_subdivision_id;
+                                $scheme_performance->attribute = serialize($unserializedAtributesData[$key]);
+                                if ($status == "Completed") {
+                                    $scheme_performance->status = 1;
+                                } elseif ($status == "Incompleted") {
+                                    $scheme_performance->status = 0;
+                                } elseif ($status != "Incompleted" && $status != "Completed") {
+                                    $scheme_performance->status = "";
                                 }
-                                if($flag==1)
-                                {
-                                    $edit_scheme_performance=SchemePerformance::where('scheme_performance_id',$scheme_performance_id)->update(array('status'=>1));
-                                }
-                                else
-                                {                    
-                                    $scheme_performance = new SchemePerformance;
-                                    $scheme_performance->year_id = $fetch_year_id;
-                                    $scheme_performance->scheme_id = $request->scheme_id;
-                                    $scheme_performance->block_id = $fetch_block_id;
-                                    $scheme_performance->panchayat_id = $fetch_panchayat_id;
-                                    $scheme_performance->subdivision_id = $fetch_subdivision_id;
-                                    $scheme_performance->attribute = serialize($unserializedAtributesData[$key]);
-                                    if (strtolower($status) == strtolower("Completed")) {
-                                        $scheme_performance->status = 1;
-                                    } elseif (strtolower($status) == strtolower("Incompleted")) {
-                                        $scheme_performance->status = 0;
-                                    } elseif (strtolower($status)!= strtolower("Incompleted") && strtolower($status) != strtolower("Completed")) {
-                                        $scheme_performance->status = "";
-                                    }
-                                    $scheme_performance->created_by = Session::get('user_id');
-                                    $scheme_performance->save();
-                                }
+                                $scheme_performance->created_by = Session::get('user_id');
+                                $scheme_performance->save();
                             } else {  /* Else find id and error write on the notepad */
                                 if ($row['sno.'] != null) {
                                     if ($fetch_block_id == null && $fetch_panchayat_id != null) {
@@ -437,7 +480,7 @@ class SchemePerformanceController extends Controller
                                         $txt = " ON row sno. " . $row['sno.'] . " Both Panchayat And Block Not Found \n";
                                         fwrite($myfile, $txt);
                                     } elseif ($fetch_subdivision_id == null || $fetch_year_id == null) {
-                                        $txt = " ON row sno. " . $row['sno.'] . "Both Subdivision And Year Not Found \n";
+                                        $txt = " ON row sno. " . $row['sno.'] . " Something Error \n";
                                         fwrite($myfile, $txt);
                                     }
                                 } else {
@@ -515,6 +558,277 @@ class SchemePerformanceController extends Controller
         })->download('xls');
     }
 
+    // public function add(Request $request){
+    //     $hidden_input_purpose = "add";
+    //     $hidden_input_id= "NA";
+    //     $bl_id = "";
+
+
+    //     $schemes = SchemeStructure::orderBy('scheme_name','asc')->get();
+    //     $panchayats = GeoStructure::orderBy('geo_name','asc')->get();
+    //     $indicators = SchemeIndicator::orderBy('indicator_name','asc')->get();
+    //     $years = Year::orderBy('year_value','asc')->get();
+    //     // $groups = Group::orderBy('scheme_group_name','asc')->get();
+    //     $blocks = GeoStructure::orderBy('geo_name','asc')->where('level_id','=','3')->get();
+    //     $districts = GeoStructure::orderBy('geo_name','asc')->where('level_id','=','1')->get();
+    //     $subdivisions = GeoStructure::orderBy('geo_name','asc')->where('level_id','=','2')->get();
+
+
+    //     $data = new SchemePerformance;
+
+    //     if(isset($request->purpose)&&isset($request->id)){
+    //         $hidden_input_purpose=$request->purpose;
+    //         $hidden_input_id=$request->id;
+    //         $data = $data->find($request->id);
+
+    //         if($data){
+    //             $tmp = GeoStructure::select('geo_id')->whereIn('geo_id', GeoStructure::select('bl_id')->where('geo_id', $data->geo_id)->first())->first();
+    //             $bl_id = $tmp->geo_id;
+
+    //             $tmp_dist = GeoStructure::select('geo_id')->whereIn('geo_id',GeoStructure::select('dist_id')->where('geo_id',$data->geo_id)->first())->first();
+    //             $dist_id =$tmp_dist->geo_id;
+
+    //             $tmp_sd = GeoStructure::select('geo_id')->whereIn('geo_id',GeoStructure::select('sd_id')->where('geo_id',$data->geo_id)->first())->first();
+    //             $sd_id =$tmp_sd->geo_id;
+
+    //             $dist = GeoStructure::orderBy('geo_name','asc')->where('dist_id',$dist_id)->get();
+    //             $sd = GeoStructure::orderBy('geo_name','asc')->where('sd_id',$sd_id)->get();
+
+
+
+    //             $indicators = SchemeIndicator::orderBy('indicator_name','asc')->where('scheme_id',$data->scheme_id)->get();
+
+
+    //             $panchayats = GeoStructure::orderBy('geo_name','asc')->where('bl_id', $bl_id)->get();
+    //         }
+    //     }
+
+    //     return view('scheme-performance.add')->with(compact('hidden_input_purpose','hidden_input_id','data','bl_id','dist_id','sd_id','dist','sd','schemes','panchayats','indicators','years','groups','blocks','districts','subdivisions'));
+    // }
+
+    // public function data_geo_target(Request $request)
+    // {
+    //     $geo_target_data = SchemeGeoTarget::where('geo_id',$request->panchayat)->where('scheme_id',$request->scheme_name)->get();
+    //     return ["geo_target_data"=>$geo_target_data];
+
+    //    return view('scheme-performance.index');
+
+
+    // }
+
+
+    // public function get_subdivision_name(Request $request)
+    // {
+    // 	$data = GeoStructure::where('dist_id',$request->dist_id)->where('level_id','=','2')->get();
+    // 	return["subdivision_data"=>$data,"id"=>$request->dist_id];
+
+    // }
+    // public function get_block_name(Request $request)
+    // {
+    // 	$data = GeoStructure::where('sd_id',$request->sd_id)->where('level_id','=','3')->get();
+    // 	return["block_data"=>$data,"id"=>$request->sd_id];
+    // }
+
+
+    // public function get_indicator_name(Request $request)
+    // {
+    //     $data = SchemeIndicator::where('scheme_id',$request->scheme_id)->get();
+    //     return ["scheme_indicator_data"=>$data];
+    // }
+
+
+    // public function get_target(Request $request)
+    // {
+    //     $tmp = SchemeGeoTarget::where('scheme_id',$request->scheme_id)->where('geo_id',$request->geo_id)->where('indicator_id',$request->indicator_id)->where('year_id', $request->year_id)->first();  
+    //   $scheme_geo_target_id="";
+    //   $pre_value="";
+    //     if(count($tmp)>0)
+    //     {
+
+    //         $scheme_geo_target_id = $tmp->scheme_geo_target_id;
+
+    //         $target=$tmp->target;
+
+    //         $get_pre_value = SchemePerformance::where('scheme_geo_target_id',$tmp->scheme_geo_target_id)
+    //                                            ->orderBy('scheme_performance_id', 'desc')
+    //                                            ->first();
+
+    //           if($get_pre_value)
+    //           {
+    //             $pre_value = $get_pre_value->current_value;
+    //           }
+    //           else
+    //           {
+    //             $pre_value = 0;
+    //           }
+
+    //     }
+    //   else{
+    //     $target = -1;
+    //   }
+
+    //     return ["target_get_data"=>$target,"id"=>$scheme_geo_target_id,"pre_value"=>$pre_value]; 
+    // }
+
+    // public function store(Request $request){
+    //     // received datas
+    //     $scheme_indicator_id = $request->scheme_sanction_id;
+    //     $scheme_performance_id=[];
+    //     $scheme_performance_id = $request->scheme_performance_id; // array type
+    //     $completion_percentage=[];
+    //     $completion_percentage=$request->completion_percentage;
+    //     $status=[];
+    //     $status=$request->status;
+
+    //     $upload_path = "public/uploaded_documents/scheme_performance";
+
+    //     for($i=0;$i<count($scheme_performance_id);$i++)
+    //     {
+    //         $scheme_performance_save = SchemePerformance2::find($scheme_performance_id[$i]);
+    //         $scheme_performance_save->completion_percentage = $completion_percentage[$i];
+    //         $scheme_performance_save->status = $status[$i];
+
+    //         $scheme_performance_save->images = "";
+    //         if($request->hasFile('images_'.$scheme_performance_id[$i]))
+    //         {
+    //             $image = $request->file('images_'.$scheme_performance_id[$i]);
+    //             // $image_name = $scheme_performance_id[$i]."-".time().".".strtolower($images[$i]->getClientOriginalExtension());
+    //             // $images[$i]->move($upload_path, $image_name);
+    //             $image_name = $scheme_performance_id[$i]."-".time().".".strtolower($image->getClientOriginalExtension());
+    //             $image->move($upload_path, $image_name);
+    //             $scheme_performance_save->images = $upload_path."/".$image_name; 
+    //         }
+
+    //         $scheme_performance_save->save();
+    //     }
+
+    //     return ["response"=>"success","first_file"=>$request->hasFile('images_25')];
+    // }
+
+    // public function store(Request $request)
+    // {
+    //     $scheme_performance = new SchemePerformance;
+    //     $scheme_performance->scheme_geo_target_id = $request->scheme_geo_target_id;
+    //     $scheme_performance->pre_value = $request->pre_value;
+    //     $scheme_performance->current_value = $request->current_value;
+
+    //      $scheme_performance->attachment = "";
+
+
+
+    //      $i = 0;
+    //      if($request->hasFile('attachment'))
+    //      {
+
+
+    //         foreach($request->file('attachment') as $file){
+
+    //             $imageName = time() . $i . '.' . $file->getClientOriginalExtension();
+
+    //             // move the file to desired folder
+    //             $file->move('public/uploaded_documents/', $imageName);
+
+    //             // assign the location of folder to the model
+    //             $scheme_performance->attachment.=":".$imageName;
+
+
+    //             $i++;
+
+    //         } 
+
+    //         $scheme_performance->attachment = ltrim($scheme_performance->attachment,":");
+    //     }
+    //     $scheme_performance->created_by =1;
+    //     $scheme_performance->updated_by =1;
+
+
+    //    return $scheme_performance;
+
+    //     if($scheme_performance->save()){
+    //         session()->put('alert-class','alert-success');
+    //         session()->put('alert-content','Scheme performance have been successfully submitted !');
+    //     }
+    //     return redirect('scheme-performance/add');
+    // }
+
+    // to send all datas from scheme_performance of scheme_sanction_id (scheme_geo_target)
+    // public function get_scheme_performance_datas(Request $request){
+    //     // $to_return
+    //     $to_return = [];
+
+    //     // received datas
+    //     $scheme_sanction_id = $request->scheme_sanction_id;
+
+    //     $scheme_geo_target_datas = SchemeGeoTarget2::where('scheme_sanction_id', $scheme_sanction_id)->get();
+    //     if(count($scheme_geo_target_datas)>0){
+    //         $unique_scheme_geo_target_ids = [];
+    //         foreach($scheme_geo_target_datas as $scheme_geo_target_data){
+    //             if(!in_array($scheme_geo_target_data->scheme_geo_target_id, $unique_scheme_geo_target_ids)){
+    //                 array_push($unique_scheme_geo_target_ids, $scheme_geo_target_data->scheme_geo_target_id);
+    //             }
+    //         }
+
+    //         $indicator_datas = SchemeIndicator::where('scheme_id', $scheme_geo_target_datas[0]->scheme_id)->get();
+
+    //         // getting all rows/columns
+    //         foreach($indicator_datas as $indicator_data)
+    //         {
+    //             $to_return_tmp = [];
+    //             $found = false; //data found in geo target i.e. already assigned targets
+    //             foreach($scheme_geo_target_datas as $scheme_geo_target_data){
+    //                 if($indicator_data->indicator_id==$scheme_geo_target_data->indicator_id)
+    //                 {
+    //                     $to_return_tmp["indicator_id"] = $indicator_data->indicator_id;
+    //                     $to_return_tmp["indicator_name"] = $indicator_data->indicator_name;
+    //                     $to_return_tmp["geo_related"] = $scheme_geo_target_data->geo_related;
+    //                     $to_return_tmp["target"] = $scheme_geo_target_data->target;
+    //                     $to_return_tmp["indicator_datas"] = [];
+
+    //                     // scheme_performance datas in ["indicator_datas] starts
+    //                     $to_return_indicator_datas_tmp = [];
+    //                     $scheme_performance_datas = SchemePerformance2::where('scheme_geo_target_id', $scheme_geo_target_data->scheme_geo_target_id)->get();
+    //                     foreach($scheme_performance_datas as $scheme_performance_data){
+    //                         $tmp_to_push["scheme_performance_id"] = $scheme_performance_data->scheme_performance_id;
+    //                         $tmp_to_push["indicator_sanction_id"] = $scheme_performance_data->indicator_sanction_id;
+    //                         $tmp_to_push["latitude"] = $scheme_performance_data->latitude;
+    //                         $tmp_to_push["longitude"] = $scheme_performance_data->longitude;
+    //                         $tmp_to_push["completion_percentage"] = $scheme_performance_data->completion_percentage;
+    //                         $tmp_to_push["status"] = $scheme_performance_data->status;
+    //                         $tmp_to_push["images"] = $scheme_performance_data->images;
+    //                         $tmp_to_push["comments"] = $scheme_performance_data->comments;
+    //                         array_push($to_return_indicator_datas_tmp, $tmp_to_push);
+    //                     }
+    //                     if($to_return_indicator_datas_tmp){
+    //                         $to_return_tmp["indicator_datas"] = $to_return_indicator_datas_tmp;
+    //                     }
+    //                     // scheme_performance_datas ends
+
+    //                     $found = true; // if data found in geo target i.e. already assigned targets
+    //                     array_push($to_return, $to_return_tmp);
+    //                 }
+    //             }
+
+    //             // no data data found in geo target i.e. already assigned targets
+    //             if(!$found){
+    //                 $to_return_tmp["indicator_id"] = $indicator_data->indicator_id;
+    //                 $to_return_tmp["indicator_name"] = $indicator_data->indicator_name;
+    //                 $to_return_tmp["geo_related"] = '0';
+    //                 $to_return_tmp["target"] = '0';
+    //                 $to_return_tmp["indicator_datas"] = [];
+    //                 array_push($to_return, $to_return_tmp);
+    //             }
+    //         }
+    //     }
+
+    //     if(count($to_return)!=0){
+    //         $response = "success";
+    //     }
+    //     else{
+    //         $response = "no_data";
+    //     }
+
+    //     return ["response"=>$response, "data"=>$to_return];
+    // }
 
     public function saveImagesofscheme_performance(Request $request)
     {
@@ -529,6 +843,7 @@ class SchemePerformanceController extends Controller
                 $previous_images_array = unserialize($SchemePerformance_edit->gallery);
             }
             if ($request->hasFile('galleryFile')) {
+
                 foreach ($request->file('galleryFile') as $file) {
                     $images_tmp_name = "scheme_performance-" . time() . rand(1000, 5000) . '.' . strtolower($file->getClientOriginalExtension());
                     $file->move($upload_directory, $images_tmp_name);   // move the file to desired folder
@@ -536,7 +851,9 @@ class SchemePerformanceController extends Controller
                 }
                 $SchemePerformance_edit->gallery = serialize($previous_images_array);    // assign the location of folder to the model
             }
-            $SchemePerformance_edit->save(); // Sava the Gallery Image
+
+
+            $SchemePerformance_edit->save();
             # code...
             $schemeperformance_gallery = SchemePerformance::select("scheme_performance_id", "gallery")->where('scheme_performance_id', $request->scheme_performance_id)->first();
             if ($schemeperformance_gallery) {
@@ -550,17 +867,19 @@ class SchemePerformanceController extends Controller
                     if ($schemeperformance_gallery) {
                         $scheme_per_gallery_delete = SchemePerformance::find($schemeperformance_gallery->scheme_performance_id);
                         $scheme_per_gallery_delete->gallery = serialize(array_values(array_diff(unserialize($scheme_per_gallery_delete->gallery), $to_delete_image_arr))); //array_diff remove matching elements from 1, array_values changes index starting from 0
-                        $scheme_per_gallery_delete->save(); // Saving New gallery Image
+                        $scheme_per_gallery_delete->save();
                     }
                 }
             }
         }
         // }
-        return ["message" => "success"];
+
+        // session()->put('alert-class', 'alert-success');
+        // session()->put('alert-content', 'Location Gallery have been successfully submitted !');
+        return ["message"=>"success"];
     }
     public function get_gallery_image($id = "")
     {
-        // geting The Gallery Image
         $SchemePerformance_fetch_gallery = SchemePerformance::where('scheme_performance_id', $id)->first('gallery');
         $gallery_details = array();
         if ($SchemePerformance_fetch_gallery->gallery != "") {
@@ -589,14 +908,15 @@ class SchemePerformanceController extends Controller
                             $SchemePerformance_edit->save();
                         }
                     } else {
-                        return ["message" => "Scheme latitudes longitudes You Have  Already entered"];
+                        return ["message"=>"Scheme latitudes longitudes You Have  Already entered"];
                     }
+                    // }
                 }
             }
         } else {
-            return ["message" => "Plz enter  Scheme latitudes longitudes Value"];
+            return ["message"=>"Plz enter  Scheme latitudes longitudes Value"];
         }
-        return ["message" => "success"];
+        return ["message"=>"success"];
     }
     public function get_coordinates_details($id = "")
     {
@@ -604,7 +924,14 @@ class SchemePerformanceController extends Controller
         $coordinates_details = array();
         if ($SchemePerformance_fetch_coordinates->coordinates != "") {
             $coordinates_details = unserialize($SchemePerformance_fetch_coordinates->coordinates);
+            // echo"<pre>";
+            // print_r($coordinates_details);
+            // exit;
+            return ["coordinates" => $coordinates_details];
         }
+        // echo"<pre>";
+        // print_r($coordinates_details);
+        // exit;
         return ["coordinates" => $coordinates_details];
     }
 }
