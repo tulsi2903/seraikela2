@@ -525,7 +525,7 @@ function openmodel()
                                 <input type="text" name="to" class="form-control" placeholder="To" required="">
                             </div>
                             <div class="form-group">                           
-                                <input type="text" name="cc" class="form-control" placeholder="CC" required="">
+                                <input type="text" name="cc" class="form-control" placeholder="CC">
                             </div>
                            
                             <div class="form-group">

@@ -121,7 +121,7 @@
                         </div><br><br> -->
                         <div class="table-responsive table-hover table-sales">
                             <div id="printable-info-details">
-                                <p class="card-title-print-1">Title: Asset Sub Category</p>
+                                <p class="card-title-print-1">Title: Resource Sub Category</p>
                                 <p class="card-title-print-2">Date & Time: <?php $currentDateTime = date('d-m-Y H:i:s'); echo $currentDateTime; ?>
                                 <p class="card-title-print-3">User Name: {{session()->get('user_full_name')}}</p>
                             </div>

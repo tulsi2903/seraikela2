@@ -41,30 +41,30 @@ class EmailController extends Controller
             // // echo $data;
             // // die;
 
-            // Mail::send('mail.departs',['user'=> $user], function($message) use ($user)
-            // {
-            //     $email_to=explode(',',$user['email_to']);
-            //     foreach($email_to as $key=>$value)
-            //     {
-            //     $message->to($email_to[$key]);
-            //     }
+            Mail::send('mail.departs',['user'=> $user], function($message) use ($user)
+            {
+                $email_to=explode(',',$user['email_to']);
+                foreach($email_to as $key=>$value)
+                {
+                $message->to($email_to[$key]);
+                }
 
-            //     if(@$user['cc'])
-            //     {
-            //     $email_cc=explode(',',$user['cc']);
-            //     foreach($email_cc as $key=>$value)
-            //     {
-            //         $message->cc($email_cc[$key]);
-            //     }
-            //     } 
+                if(@$user['cc'])
+                {
+                $email_cc=explode(',',$user['cc']);
+                foreach($email_cc as $key=>$value)
+                {
+                    $message->cc($email_cc[$key]);
+                }
+                } 
             
-            //     // $message->attachData($pdf->output(), "department.pdf");
-            //     $message->subject($user['subject']);
-            //     $message->from('dsrm.skla@gmail.com','seraikela'); 
-            //     session()->put('alert-class','alert-success');
-            //     session()->put('alert-content','Email send');
-            // });
-            return view('mail.departs')->with('user',$user);
+                // $message->attachData($pdf->output(), "department.pdf");
+                $message->subject($user['subject']);
+                $message->from('dsrm.skla@gmail.com','seraikela'); 
+                session()->put('alert-class','alert-success');
+                session()->put('alert-content','Email send');
+            });
+            // return view('mail.departs')->with('user',$user);
             return redirect('department');
 
         }

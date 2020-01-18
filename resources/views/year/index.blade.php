@@ -241,7 +241,7 @@
                                         <!-- <input type="text" name="from" class="form-control" placeholder="From" required=""> -->
                                     </div>
                                     <div class="form-group">
-                                        <input type="email" name="to" class="form-control" placeholder="To">
+                                        <input type="email" name="to" class="form-control" placeholder="To" required="">
                                     </div>
                                     <div class="form-group">
                                         <input type="text" name="cc" class="form-control" placeholder="CC">
