@@ -89,7 +89,7 @@
            
                 <div class="card-header">
                     <div class="card-head-row card-tools-still-right" style="background:#fff;">
-                        <h4 class="card-title">Resource Category</h4>
+                        <h4 class="card-title">{{$phrase->resource_catagory}}</h4>
                         <div class="card-tools">
                             
                             <!-- <a href="#" data-toggle="tooltip" title="Send Mail"><button type="button" class="btn btn-icon btn-round btn-success" data-target="#create-email" data-toggle="modal" ><i class="fa fa-envelope" aria-hidden="true"></i></button></a> -->
@@ -103,7 +103,7 @@
                             <!-- <a href="{{url('assetcat/pdf/pdfURL')}}"  target="_BLANK" data-toggle="tooltip" title="Export to PDF"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button></a> -->
                             <!-- <a href="{{url('assetcat/export/excelURL')}}" data-toggle="tooltip" title="Export to Excel"><button type="button" class="btn btn-icon btn-round btn-primary" ><i class="fas fa-file-excel"></i></button></a> -->
                             @if($desig_permissions["mod8"]["add"])
-                                <a class="btn btn-secondary" href="{{url('assetcat/add')}}" role="button"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;Add</a>
+                                <a class="btn btn-secondary" href="{{url('assetcat/add')}}" role="button"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;{{$phrase->add}}</a>
                             @endif
                         </div>
                     </div>
@@ -126,12 +126,12 @@
                             <thead style="background: #d6dcff;color: #000;">
                                 <tr>
                                     <th>#</th>
-                                    <th>Name</th>
-                                    <th>Category Description</th>
-                                    <th>Type</th>    
+                                    <th>{{$phrase->name}}</th>
+                                    <th>{{$phrase->resource_category_description}}</th>
+                                    <th>{{$phrase->type}}</th>    
                                     @if($desig_permissions["mod8"]["del"] ||$desig_permissions["mod8"]["edit"])                                 
                               
-                                    <th class="action-buttons">Action</th>
+                                    <th class="action-buttons">{{$phrase->action}}</th>
                                     @endif
 
                                 </tr>
@@ -195,7 +195,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title mt-0">Send Email</h4>
+                <h4 class="modal-title mt-0">{{$phrase->send_email}}</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -219,7 +219,7 @@
                             </div>
                            
                             <div class="form-group">
-                                <label for="subject" class="control-label">Subject <font color="red">*</font></label>
+                                <label for="subject" class="control-label">{{$phrase->subject}} <font color="red">*</font></label>
                                 <input type="text" class="form-control" id="subject" name="subject" placeholder="Subject"  required=""  aria-required="true">
                             </div>
                             <!-- <div class="form-group">
@@ -232,8 +232,8 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-info waves-effect waves-light">Send</button>
+                    <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">{{$phrase->close}}</button>
+                    <button type="submit" class="btn btn-info waves-effect waves-light">{{$phrase->send}}</button>
                 </div>
             </form>
         </div>

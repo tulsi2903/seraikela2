@@ -90,7 +90,7 @@
         <div class="col-md-12">
                 <div class="card-header">
                     <div class="card-head-row card-tools-still-right" style="background:#fff;">
-                        <h4 class="card-title">Scheme Type</h4>
+                        <h4 class="card-title">{{$phrase->scheme_type}}</h4>
                         <div class="card-tools">
                             <!-- <a href="#" data-toggle="tooltip" title="Send Mail"><button type="button" class="btn btn-icon btn-round btn-success" data-target="#create-email" data-toggle="modal" ><i class="fa fa-envelope" aria-hidden="true"></i></button></a> -->
                             <button type="button" class="btn btn-icon btn-round btn-success"  onclick="openmodel();" ><i class="fa fa-envelope" aria-hidden="true"></i></button>
@@ -131,9 +131,9 @@
                             <thead style="background: #d6dcff;color: #000;">
                                 <tr>
                                     <th>#</th>
-                                    <th>Name</th>
+                                    <th>{{$phrase->name}}</th>
                                     @if($desig_permissions["mod6"]["del"] || $desig_permissions["mod6"]["edit"])
-                                    <th class="action-buttons">Actions</th>
+                                    <th class="action-buttons">{{$phrase->action}}</th>
                                     @endif
                                 </tr>
                             </thead>
@@ -187,7 +187,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title mt-0">Send Email</h4>
+                <h4 class="modal-title mt-0">{{$phrase->send_email}}</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -211,7 +211,7 @@
                             </div>
                            
                             <div class="form-group">
-                                <label for="subject" class="control-label">Subject <font color="red">*</font></label>
+                                <label for="subject" class="control-label">{{$phrase->subject}} <font color="red">*</font></label>
                                 <input type="text" class="form-control" id="subject" name="subject" placeholder="Subject"  required=""  aria-required="true">
                             </div>
                             <!-- <div class="form-group">
@@ -224,8 +224,8 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-info waves-effect waves-light">Send</button>
+                    <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">{{$phrase->close}}</button>
+                    <button type="submit" class="btn btn-info waves-effect waves-light">{{$phrase->send}}</button>
                 </div>
             </form>
         </div>

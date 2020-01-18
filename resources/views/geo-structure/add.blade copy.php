@@ -7,7 +7,7 @@
     <div class="col-md-12">
         <div class="card-header">
             <div class="card-head-row card-tools-still-right" style="background:#fff;">
-                <h4 class="card-title">Geo Structure</h4>
+                <h4 class="card-title">{{$phrase->geo_struture}}</h4>
                 <div class="card-tools">
                     <a href="{{url('geo-structure')}}" class="btn btn-sm btn-secondary" style="float:right;"><i class="fas fa-arrow-left"></i>&nbsp;&nbsp;Back</a>
                 </div>
@@ -22,7 +22,7 @@
             <div class="row">
                 <div class="col-md-4">
                     <div class="form-group">
-                        <label for="name">Geo Name<span style="color:red;margin-left:5px;">*</span></label>
+                        <label for="name">{{$phrase->geo_name}}<span style="color:red;margin-left:5px;">*</span></label>
                         <input type="text" name="geo_name" id="geo_name" class="form-control" value="{{$data->geo_name}}">
                         <div class="invalid-feedback" id="geo_name_error_msg"></div>
                     </div>
@@ -30,7 +30,7 @@
 
                 <div class="col-md-4">
                     <div class="form-group">
-                        <label for="org_id">Organisation<span style="color:red;margin-left:5px;">*</span></label>
+                        <label for="org_id">{{$phrase->organisation}}<span style="color:red;margin-left:5px;">*</span></label>
                         <select name="org_id" id="org_id" class="form-control">
                             <option value="">-Select-</option>
                             @foreach($organisation_datas as $organisation_data)
@@ -43,7 +43,7 @@
 
                 <div class="col-md-4">
                     <div class="form-group">
-                        <label for="level_id">Level<span style="color:red;margin-left:5px;">*</span></label>
+                        <label for="level_id">{{$phrase->level}}<span style="color:red;margin-left:5px;">*</span></label>
                         <select name="level_id" id="level_id" class="form-control">
                             <option value="">-Select-</option>
                             <option value="1" <?php if($data->level_id=='1'){ echo "selected"; } ?>>District</option>
@@ -57,7 +57,7 @@
 
                 <div class="col-md-4" id="number_of_villages">
                     <div class="form-group">
-                        <label for="name">Number Of Villages</label>
+                        <label for="name">{{$phrase->no_of_viilage}}</label>
                         <input type="text" name="no_of_villages" id="no_of_villages" class="form-control" value="">
                         <div class="invalid-feedback" id="no_of_villages_error_msg"></div>
                     </div>
@@ -65,7 +65,7 @@
 
                 <div class="col-md-4" id="select-div-district">
                     <div class="form-group">
-                        <label for="dist_id">District</label>
+                        <label for="dist_id">{{$phrase->district}}</label>
                         <select name="dist_id" id="dist_id" class="form-control">
                             <option value="">-Select-</option>
                             @foreach($geo_structure_datas as $geo_structure_data)
@@ -80,7 +80,7 @@
 
                 <div class="col-md-4" id="select-div-sub-division">
                     <div class="form-group">
-                        <label for="sd_id">Sub Division</label>
+                        <label for="sd_id">{{$phrase->sub_divisin}}</label>
                         <select name="sd_id" id="sd_id" class="form-control">
                             <option value="">-Select-</option>
                             @foreach($geo_structure_datas as $geo_structure_data)
@@ -95,7 +95,7 @@
 
                 <div class="col-md-4" id="select-div-block">
                     <div class="form-group">
-                        <label for="bl_id">Block</label>
+                        <label for="bl_id">{{$phrase->block}}</label>
                         <select name="bl_id" id="bl_id" class="form-control">
                             <option value="">-Select-</option>
                             @foreach($geo_structure_datas as $geo_structure_data)
@@ -110,7 +110,7 @@
 
                 <div class="col-md-4">
                     <div class="form-group">
-                        <label for="officer_id">Officer<span style="color:red;margin-left:5px;">*</span></label>
+                        <label for="officer_id">{{$phrase->officer}}<span style="color:red;margin-left:5px;">*</span></label>
                         <select name="officer_id" id="officer_id" class="form-control">
                             <option value="">-Select-</option>
                             @foreach($user_datas as $user_data)
@@ -125,8 +125,8 @@
                     <div class="form-group">
                         <input type="text" name="hidden_input_purpose" value="{{$hidden_input_purpose}}" hidden>
                         <input type="text" name="hidden_input_id" value="{{$hidden_input_id}}" hidden>
-                        <button type="submit" class="btn btn-primary" onclick="return submitForm()">Save&nbsp;&nbsp;<i class="fas fa-check"></i></button>
-                        <button type="button" class="btn btn-secondary" onclick="initialize()">Reset&nbsp;&nbsp;<i class="fas fa-undo"></i></button>
+                        <button type="submit" class="btn btn-primary" onclick="return submitForm()">{{$phrase->save}}&nbsp;&nbsp;<i class="fas fa-check"></i></button>
+                        <button type="button" class="btn btn-secondary" onclick="initialize()">{{$phrase->reset}}&nbsp;&nbsp;<i class="fas fa-undo"></i></button>
                     </div>
                 </div>
         </form>

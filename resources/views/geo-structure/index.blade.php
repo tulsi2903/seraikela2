@@ -75,7 +75,7 @@
         <div class="col-md-12">         
                 <div class="card-header">
                     <div class="card-head-row card-tools-still-right" style="background:#fff;">
-                        <h4 class="card-title">Geo Structure</h4>
+                        <h4 class="card-title">{{$phrase->geo_struture}}</h4>
                         <div class="card-tools">
                             <a href="#" data-toggle="tooltip" title="Send Mail"><button type="button" class="btn btn-icon btn-round btn-success" data-target="#create-email" data-toggle="modal" ><i class="fa fa-envelope" aria-hidden="true"></i></button></a>
 
@@ -89,7 +89,7 @@
                             <a href="{{url('geo-structure/export/excelURL')}}" data-toggle="tooltip" title="Export to Excel"><button type="button" class="btn btn-icon btn-round btn-primary" ><i class="fas fa-file-excel"></i></button></a>
                             <a href="{{url('geo-structure/pdf/pdfURL')}}" data-toggle="tooltip" target="_BLANK" title="Export to PDF"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="far fa-file-pdf" style="color: #850000;"></i></button></a> -->
                             @if($desig_permissions["mod12"]["add"])
-                            <a class="btn btn-secondary department-add-button" href="{{url('geo-structure/add')}}" role="button"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;Add</a>
+                            <a class="btn btn-secondary department-add-button" href="{{url('geo-structure/add')}}" role="button"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;{{$phrase->add}}</a>
                             @endif
                         </div>
                     </div>
@@ -100,16 +100,16 @@
                 <div class="col-md-12">
                     <ul class="nav nav-pills nav-secondary nav-pills-no-bd" id="pills-tab-without-border" role="tablist">
                         <li class="nav-item">
-                            <a class="nav-link active" id="pills-home-tab-nobd" data-toggle="pill" href="#pills-home-nobd" role="tab" aria-controls="pills-home-nobd" aria-orientation="true">District</a>
+                            <a class="nav-link active" id="pills-home-tab-nobd" data-toggle="pill" href="#pills-home-nobd" role="tab" aria-controls="pills-home-nobd" aria-orientation="true">{{$phrase->district}}</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" id="pills-profile-tab-nobd" data-toggle="pill" href="#pills-profile-nobd" role="tab" aria-controls="pills-profile-nobd" aria-selected="false">Sub Division</a>
+                            <a class="nav-link" id="pills-profile-tab-nobd" data-toggle="pill" href="#pills-profile-nobd" role="tab" aria-controls="pills-profile-nobd" aria-selected="false">{{$phrase->sub_divisin}}</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" id="pills-contact-tab-nobd" data-toggle="pill" href="#pills-contact-nobd" role="tab" aria-controls="pills-contact-nobd" aria-selected="false">Block</a>
+                            <a class="nav-link" id="pills-contact-tab-nobd" data-toggle="pill" href="#pills-contact-nobd" role="tab" aria-controls="pills-contact-nobd" aria-selected="false">{{$phrase->block}}</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" id="pills-panchayat-tab-nobd" data-toggle="pill" href="#pills-panchayat-nobd" role="tab" aria-controls="pills-panchayat-nobd" aria-selected="false">Panchayat</a>
+                            <a class="nav-link" id="pills-panchayat-tab-nobd" data-toggle="pill" href="#pills-panchayat-nobd" role="tab" aria-controls="pills-panchayat-nobd" aria-selected="false">{{$phrase->panchayat}}</a>
                         </li>
                     </ul>
                     <div class="tab-content mt-2 mb-3" id="pills-without-border-tabContent">
@@ -125,13 +125,13 @@
                                     <thead style="background: #d6dcff;color: #000;">
                                         <tr>
                                             <th>#</th>
-                                            <th>Name</th>
-                                            <th>Level</th>
-                                            <th>Villages</th>
-                                            <th>Parent</th>
-                                            <th>Organisation</th>
+                                            <th>{{$phrase->name}}</th>
+                                            <th>{{$phrase->level}}</th>
+                                            <th>{{$phrase->village}}</th>
+                                            <th>{{$phrase->parent}}</th>
+                                            <th>{{$phrase->organisation}}</th>
                                             @if($desig_permissions["mod12"]["edit"] || $desig_permissions["mod12"]["del"] )
-                                            <th class="action-buttons">Action</th>
+                                            <th class="action-buttons">{{$phrase->action}}</th>
                                             @endif
                                         </tr>
                                     </thead>
@@ -180,12 +180,12 @@
                                     <thead style="background: #d6dcff;color: #000;">
                                         <tr>
                                             <th>#</th>
-                                            <th>Name</th>
-                                            <th>Level</th>
-                                            <th>Villages</th>
-                                            <th>Parent</th>
-                                            <th>Organisation</th>
-                                            <th class="action-buttons">Action</th>
+                                            <th>{{$phrase->name}}</th>
+                                            <th>{{$phrase->level}}</th>
+                                            <th>{{$phrase->village}}</th>
+                                            <th>{{$phrase->parent}}</th>
+                                            <th>{{$phrase->organisation}}</th>
+                                            <th class="action-buttons">{{$phrase->action}}</th>
                                         </tr>
                                     </thead>
                                     <?php $count=1; ?>
@@ -234,12 +234,12 @@
                                     <thead style="background: #d6dcff;color: #000;">
                                         <tr>
                                             <th>#</th>
-                                            <th>Name</th>
-                                            <th>Level</th>
-                                            <th>Villages</th>
-                                            <th>Parent</th>
-                                            <th>Organisation</th>
-                                            <th class="action-buttons">Action</th>
+                                            <th>{{$phrase->name}}</th>
+                                            <th>{{$phrase->level}}</th>
+                                            <th>{{$phrase->village}}</th>
+                                            <th>{{$phrase->parent}}</th>
+                                            <th>{{$phrase->organisation}}</th>
+                                            <th class="action-buttons">{{$phrase->action}}</th>
                                         </tr>
                                     </thead>
                                     <?php $count=1; ?>
@@ -285,12 +285,12 @@
                                     <thead style="background: #d6dcff;color: #000;">
                                         <tr>
                                             <th>#</th>
-                                            <th>Name</th>
-                                            <th>Level</th>
-                                            <th>Villages</th>
-                                            <th>Parent</th>
-                                            <th>Organisation</th>
-                                            <th class="action-buttons">Action</th>
+                                            <th>{{$phrase->name}}</th>
+                                            <th>{{$phrase->level}}</th>
+                                            <th>{{$phrase->village}}</th>
+                                            <th>{{$phrase->parent}}</th>
+                                            <th>{{$phrase->organisation}}</th>
+                                            <th class="action-buttons">{{$phrase->action}}</th>
                                         </tr>
                                     </thead>
                                     <?php $count=1; ?>
@@ -369,7 +369,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title mt-0">Send Email</h4>
+                <h4 class="modal-title mt-0">{{$phrase->send_email}}</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -392,7 +392,7 @@
                             </div>
                            
                             <div class="form-group">
-                                <label for="subject" class="control-label">Subject <font color="red">*</font></label>
+                                <label for="subject" class="control-label">{{$phrase->subject}} <font color="red">*</font></label>
                                 <input type="text" class="form-control" id="subject" name="subject" placeholder="Subject"  required=""  aria-required="true">
                             </div>
                             <!-- <div class="form-group">
@@ -405,8 +405,8 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-info waves-effect waves-light">Send</button>
+                    <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">{{$phrase->close}}</button>
+                    <button type="submit" class="btn btn-info waves-effect waves-light">{{$phrase->send}}</button>
                 </div>
             </form>
         </div>

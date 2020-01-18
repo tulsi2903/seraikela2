@@ -13,7 +13,7 @@
         <div class="col-md-12"> 
                 <div class="card-header">
                     <div class="card-head-row card-tools-still-right" style="background:#fff;">
-                        <h4 class="card-title">Designation Permission</h4>
+                        <h4 class="card-title">{{$phrase->designation_permission}}</h4>
                         <!-- <div class="card-tools">
                             <a href="#" data-toggle="tooltip" title="Send Mail"><button type="button" class="btn btn-icon btn-round btn-success"><i class="fa fa-envelope" aria-hidden="true"></i></button></a>
                             <a href="#" data-toggle="tooltip" title="Print"><button type="button" class="btn btn-icon btn-round btn-default" id="print-button" onclick="printView();"><i class="fa fa-print" aria-hidden="true"></i></button></a>
@@ -51,11 +51,11 @@
                                             <thead style="background: #d6dcff;color: #000;">
                                                 <tr>
                                                     <th>#</th>
-                                                    <th>Module Name</th>
-                                                    <th>Add</th>
-                                                    <th>Edit</th>
-                                                    <th>View</th>
-                                                    <th>Delete</th>
+                                                    <th>{{$phrase->module_name}}</th>
+                                                    <th>{{$phrase->add}}</th>
+                                                    <th>{{$phrase->edit}}</th>
+                                                    <th>{{$phrase->view}}</th>
+                                                    <th>{{$phrase->delete}}</th>
                                                 </tr>
                                             </thead>
                                             <tbody style="text-transform: capitalize;">
@@ -77,7 +77,7 @@
                                             </tbody>
                                         </table>
                                         <input type="text" name="desig_id" value="{{$to_return[$i][0]->desig_id}}" hidden>
-                                        <div style="text-align:right"><button type="submit" class="btn btn-secondary">Save Changes&nbsp;<i class="fas fa-check"></i></button></div>
+                                        <div style="text-align:right"><button type="submit" class="btn btn-secondary">{{$phrase->save}}&nbsp;<i class="fas fa-check"></i></button></div>
                                     </form>
                                 </div>
                             <?php
