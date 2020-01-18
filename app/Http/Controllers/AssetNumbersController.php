@@ -860,9 +860,9 @@ class AssetNumbersController extends Controller
                                                 ->where('location_name', $readExcel[$aseetNo - 1]['locationlandmark'])
                                                 ->first();
                                         $childdatasValue = Asset::where('parent_id', $fetch_asset_id1)->get();
-                                        $fetch_asset_number_edit_child = AssetNumbers::where('asset_id', $fetch_asset_id1)->where('asset_geo_loc_id',$fetch_asset_loc_id->asset_geo_loc_id)->where('geo_id', $fetch_panchayat_id1)->first();
+                                        $fetch_asset_number_edit_child = AssetNumbers::where('asset_id', $fetch_asset_id)->where('asset_geo_loc_id',$fetch_asset_loc_id->asset_geo_loc_id)->where('geo_id', $fetch_panchayat_id)->first();
                                         foreach ($childdatasValue as $kee => $value1) {
-                                            # code...
+                                            
                                             if($fetch_asset_number_edit_child->asset_numbers_id != null)
                                             {
                                                 $AssetNumbers = AssetNumbers::find($fetch_asset_number_edit_child->asset_numbers_id);
