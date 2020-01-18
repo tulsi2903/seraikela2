@@ -95,7 +95,7 @@
                 <div class="card-header">
 
                     <div class="card-head-row card-tools-still-right" style="background:#fff;">
-                        <h4 class="card-title no-print">Department</h4>
+                        <h4 class="card-title no-print">{{$phrase->department}}</h4>
                         <div class="card-tools">
                             <button type="button" class="btn btn-icon btn-round btn-success"  onclick="openmodel();" ><i class="fa fa-envelope" aria-hidden="true"></i></button>
                             <button type="button" class="btn btn-icon btn-round btn-default" onclick="printViewone();"><i class="fa fa-print" aria-hidden="true"></i></button>
@@ -105,7 +105,7 @@
                             <a href="{{url('department/changeView')}}" data-toggle="tooltip" title="Import From Excel"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fa fa-upload"></i></button></a>
 
                             @if($desig_permissions["mod2"]["add"])
-                                <a id="toggle1" class="btn btn-secondary department-add-button" href="javascript:void();" role="button"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;Add</a>
+                                <a id="toggle1" class="btn btn-secondary department-add-button" href="javascript:void();" role="button"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;{{$phrase->add}}</a>
                             @endif
                         </div>
                     </div>
@@ -123,21 +123,21 @@
                             <div class="row">
                                 <div class="col-md-3">
                                     <div class="form-group">
-                                        <label for="dept_name">Department Name<span style="color:red;margin-left:5px;">*</span></label>
+                                        <label for="dept_name">{{$phrase->department_name}}<span style="color:red;margin-left:5px;">*</span></label>
                                         <input type="text" name="dept_name" id="dept_name" class="form-control" value="">
                                         <div class="invalid-feedback" id="dept_name_error_msg"></div>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
                                     <div class="form-group">
-                                        <label for="dept_icon">Icon</label>
+                                        <label for="dept_icon">{{$phrase->icon}}</label>
                                         <input type="file" name="dept_icon" id="dept_icon" class="form-control" placeholder="">
                                         <div class="invalid-feedback" id="dept_icon_error_msg"></div>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
                                     <div class="form-group">
-                                        <label for="is_active">Is Active<span style="color:red;margin-left:5px;">*</span></label>
+                                        <label for="is_active">{{$phrase->is_active}}<span style="color:red;margin-left:5px;">*</span></label>
                                         <select name="is_active" id="is_active" class="form-control">
                                             <option value="">-Select-</option>
                                             <option value="1">Active</option>
@@ -149,8 +149,8 @@
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <div style="height:30px;"></div>
-                                        <button type="submit" class="btn btn-primary" onclick="return submitForm()">Save&nbsp;&nbsp;<i class="fas fa-check"></i></button>
-                                        <button type="reset" class="btn btn-secondary">Reset&nbsp;&nbsp;<i class="fas fa-undo"></i></button>
+                                        <button type="submit" class="btn btn-primary" onclick="return submitForm()">{{$phrase->save}}&nbsp;&nbsp;<i class="fas fa-check"></i></button>
+                                        <button type="reset" class="btn btn-secondary">{{$phrase->reset}}&nbsp;&nbsp;<i class="fas fa-undo"></i></button>
                                     </div>
                                 </div>
                             </div>
@@ -167,12 +167,12 @@
                                 <thead class="print-thead" style="background: #d6dcff;color: #000;"> 
                                     <tr>
                                         <th>#</th>
-                                        <th>Icon</th>
-                                        <th>Department Name</th>
-                                        <th>Organisation</th>
-                                        <th>Status</th>  
+                                        <th>{{$phrase->icon}}</th>
+                                        <th>{{$phrase->department_name}}</th>
+                                        <th>{{$phrase->organisation}}</th>
+                                        <th>{{$phrase->sttus}}</th>  
                                         @if($desig_permissions["mod2"]["del"] ||$desig_permissions["mod2"]["edit"] ) 
-                                        <th class="action-buttons">Action</th>  
+                                        <th class="action-buttons">{{$phrase->action}}</th>  
                                         @endif
                                     </tr>
                                 </thead>

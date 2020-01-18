@@ -77,7 +77,7 @@
         <div class="col-md-12">
             <div class="card-header">
                 <div class="card-head-row card-tools-still-right" style="background:#fff;">
-                    <h4 class="card-title">Year</h4>
+                    <h4 class="card-title">{{$phrase->year}}</h4>
                     <div class="card-tools">
                         <!-- <a href="#" data-toggle="tooltip" title="Send Mail"><button type="button" class="btn btn-icon btn-round btn-success" data-target="#create-email" data-toggle="modal"><i class="fa fa-envelope" aria-hidden="true"></i></button></a> -->
                         <button type="button" class="btn btn-icon btn-round btn-success" onclick="openmodel();"><i class="fa fa-envelope" aria-hidden="true"></i></button>
@@ -89,7 +89,7 @@
                             <a href="{{url('year/pdf/pdfURL')}}" target="_BLANK" data-toggle="tooltip" title="Export to PDF"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button></a>
                             <a href="{{url('year/export/excelURL')}}" data-toggle="tooltip" title="Export to Excel"><button type="button" class="btn btn-icon btn-round btn-primary" ><i class="fas fa-file-excel"></i></button></a> -->
                         @if($desig_permissions["mod3"]["add"])
-                        <a id="toggle1" class="btn btn-secondary year-add-button" href="javascript:void();" role="button"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;Add</a> 
+                        <a id="toggle1" class="btn btn-secondary year-add-button" href="javascript:void();" role="button"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;{{$phrase->add}}</a> 
                         @endif
                     </div>
                 </div>
@@ -111,7 +111,7 @@
                             <div class="row">
                                 <div class="col-md-3">
                                     <div class="form-group">
-                                        <label for="year_value">From<span style="color:red;margin-left:5px;">*</span></label>
+                                        <label for="year_value">{{$phrase->from}}<span style="color:red;margin-left:5px;">*</span></label>
                                         <select name="from_value" id="from_value" class="form-control">
                                             <option value="">--Select---</option>
                                             @for ($from=2015; $from
@@ -123,7 +123,7 @@
                                 </div>
                                 <div class="col-md-3">
                                     <div class="form-group">
-                                        <label for="year_value">To<span style="color:red;margin-left:5px;">*</span></label>
+                                        <label for="year_value">{{$phrase->to}}<span style="color:red;margin-left:5px;">*</span></label>
                                         <select name="to_value" id="to_value" class="form-control">
                                             <option value="">--Select---</option>
                                             @for ($to=2015; $to
@@ -135,7 +135,7 @@
                                 </div>
                                 <div class="col-md-3">
                                     <div class="form-group">
-                                        <label for="status">Is Active<span style="color:red;margin-left:5px;">*</span></label>
+                                        <label for="status">{{$phrase->is_active}}<span style="color:red;margin-left:5px;">*</span></label>
                                         <select name="status" id="status" class="form-control">
                                             <option value="">---Select---</option>
                                             <option value="1">Active</option>
@@ -147,8 +147,8 @@
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <div style="height:30px;"></div>
-                                        <button type="submit" class="btn btn-primary" onclick="return submitForm()">Save&nbsp;&nbsp;<i class="fas fa-check"></i></button>
-                                        <button type="reset" class="btn btn-secondary">Reset&nbsp;&nbsp;<i class="fas fa-undo"></i></button>
+                                        <button type="submit" class="btn btn-primary" onclick="return submitForm()">{{$phrase->save}}&nbsp;&nbsp;<i class="fas fa-check"></i></button>
+                                        <button type="reset" class="btn btn-secondary">{{$phrase->reset}}&nbsp;&nbsp;<i class="fas fa-undo"></i></button>
                                     </div>
                                 </div>
                             </div>
@@ -167,10 +167,10 @@
                                 <thead style="background: #d6dcff;color: #000;">
                                     <tr>
                                         <th>#</th>
-                                        <th>Year</th>
-                                        <th>is Active</th>
+                                        <th>{{$phrase->year}}</th>
+                                        <th>{{$phrase->is_active}}</th>
                                         @if($desig_permissions["mod3"]["del"] ||$desig_permissions["mod3"]["edit"] )
-                                        <th class="action-buttons">Actions</th>
+                                        <th class="action-buttons">{{$phrase->action}}</th>
                                         @endif
                                     </tr>
                                 </thead>
@@ -224,7 +224,7 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title mt-0">Send Email</h4>
+                        <h4 class="modal-title mt-0">{{$phrase->action}}</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -248,7 +248,7 @@
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="subject" class="control-label">Subject <font color="red">*</font></label>
+                                        <label for="subject" class="control-label">{{$phrase->subject}} <font color="red">*</font></label>
                                         <input type="text" class="form-control" id="subject" name="subject" placeholder="Subject" aria-required="true">
                                     </div>
                                     <!-- <div class="form-group">
@@ -261,8 +261,8 @@
                         </div>
 
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-info waves-effect waves-light">Send</button>
+                            <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">{{$phrase->subject}}</button>
+                            <button type="submit" class="btn btn-info waves-effect waves-light">{{$phrase->send}}</button>
                         </div>
                     </form>
                 </div>
