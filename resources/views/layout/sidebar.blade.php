@@ -70,7 +70,7 @@
 					</a>
 					<div class="collapse" id="Import">
 						<ul class="nav nav-collapse">
-							<li class="nav-item"><a href="{{url('import/resource')}}"><i class="fas fa-receipt"></i><p>Resources Import</p></a></li>
+							<!-- <li class="nav-item"><a href="{{url('import/resource')}}"><i class="fas fa-receipt"></i><p>Resources Import</p></a></li> -->
 							<li class="nav-item"><a href="{{url('import/scheme')}}"><i class="fas fa-receipt"></i><p>Scheme Import</p></a></li>
 					</div>
 				</li>

@@ -47,7 +47,13 @@
                             <p style="color: rgba(235, 225, 224, 0.932);font-weight: 500;font-family: 'Bree Serif', serif;margin-top: 5px;">Language :<i class="fas fa-sort-alpha-down"></i></p>
                         </a>
                         <div class="dropdown-menu quick-actions quick-actions-info animated fadeIn">
-                       
+                            <?php $one=1;
+                            $two=2; ?>
+                      <div class="quick-actions-header">
+                          <a href="{{url('lang/english/'.$one)}}"><span class="title mb-1">English</span></a>
+                          <a href="{{url('lang/hindi/'.$two)}}"><span class="title mb-1">Hindi</span></a>
+                      </div>
+                  </div>
                     </li>
 
                         <li class="nav-item dropdown hidden-caret">
