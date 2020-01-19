@@ -155,6 +155,158 @@ class Scheme_Asset_Controller extends Controller
         return redirect('scheme-asset');    
     }
     
+         // abhishek 
+         public function view_diffrent_formate(Request $request)
+         {
+            // return $request;
+            // return "akf";
+            $scheme_asset_id = explode(',',$request->scheme_asset_id); // array
+             $department=array();
+             if($request->print=="print_pdf")
+             {
+                  
+                 if($request->scheme_asset_id!="")
+                 {
+     
+                       
+                            $scheme_structure =  SchemeAsset::whereIn('scheme_asset_id',$scheme_asset_id)->get();
+                            // return $scheme_structure;
+    
+                            // $year =  Year::whereIn('year_id',$year_id)->orderBy('year_id','desc')->get();
 
+                            foreach ($scheme_structure as $key => $value) {
+                                // $value->createdDate = date('d/m/Y',strtotime($value->created_at));
+                                if($value->geo_related == 1){
+                                    $value->geo_related= "yes";
+                                }
+                                else 
+                                {
+                                    $value->geo_related= "no";
+                                }
+                            }
+
+                            foreach ($scheme_structure as $key => $value) {
+                                
+                                if($value->multiple_geo_tags == 1){
+                                    $value->multiple_geo_tags= "yes";
+                                }
+                                else 
+                                {
+                                    $value->multiple_geo_tags= "no";
+                                }
+                            }
+    
+                            $doc_details = array(
+                                "title" => "Scheme",
+                                "author" => 'IT-Scient',
+                                "topMarginValue" => 10,
+                                "mode" => 'P'
+                            );
+    
+                            date_default_timezone_set('Asia/Kolkata');
+                            $currentDateTime = date('d-m-Y H:i:s'); 
+                            $user_name=Auth::user()->first_name;
+                            $user_last_name=Auth::user()->last_name;
+                            $pdfbuilder = new \PdfBuilder($doc_details);
+                            $content = "<table cellspacing=\"0\" cellpadding=\"4\" border=\"1\" ><tr>";
+                            $content .= "<th style='border: solid 1px #000000;' colspan=\"4\" align=\"left\" ><b>Scheme Asset Details</b></th></tr>";
+                            $content .= "<p style=\"border: solid 1px #000000;width: 50px;\" padding:\"100px;\">"."<b>"."<span>Title: </span>&nbsp;&nbsp;&nbsp;Scheme Asset Details
+                            "."<br>"."<span>Date & Time: </span>&nbsp;&nbsp;&nbsp;".$currentDateTime."<br>"."<span>User Name:</span>&nbsp;&nbsp;&nbsp;" . $user_name."&nbsp;".$user_last_name.
+                            "</b>"."</p>";
+    
+                            /* ========================================================================= */
+                            /*             Total width of the pdf table is 1017px lanscape               */
+                            /*             Total width of the pdf table is 709px portrait                */
+                            /* ========================================================================= */
+                            $content .= "<thead>";
+                            $content .= "<tr>";
+                            $content .= "<th style=\"border: solid 1px #000000;width: 50px;\" align=\"center\"><b>Sl.No.</b></th>";
+                            $content .= "<th style=\"border: solid 1px #000000;width: 429px;\" align=\"center\"><b>Scheme Asset Name</b></th>";
+                            $content .= "<th style=\"border: solid 1px #000000;width: 140px;\" align=\"center\"><b>Geo Related</b></th>";
+                            $content .= "<th style=\"border: solid 1px #000000;width: 90px;\" align=\"center\"><b>Multi Geo Related</b></th>";
+                            $content .= "</tr>";
+                            $content .= "</thead>";
+                            $content .= "<tbody>";
+                            foreach ($scheme_structure as $key => $row) {
+                                $index = $key+1;
+                                $content .= "<tr>";
+                                $content .= "<td style=\"border: solid 1px #000000;width: 50px;\" align=\"right\">" . $index . "</td>";
+                                $content .= "<td style=\"border: solid 1px #000000;width: 429px;\" align=\"left\">" . $row->scheme_asset_name . "</td>";
+                                $content .= "<td style=\"border: solid 1px #000000;width: 110px;\" align=\"left\">" . $row->geo_related . "</td>";
+                                $content .= "<td style=\"border: solid 1px #000000;width: 120px;\" align=\"left\">" . $row->multiple_geo_tags . "</td>";
+                                
+                                $content .= "</tr>";
+                            }
+                            $content .= "</tbody></table>";
+                            $pdfbuilder->table($content, array('border' => '1', 'align' => ''));
+                            $pdfbuilder->output('Year.pdf');
+                            exit;
+    
+    
+                         
+    
+     
+                 }
+                //  return $request;
+             }
+             elseif($request->print=="excel_sheet")
+             {
+                    // return $request;
+                 if($request->scheme_asset_id!="")
+                 {
+     
+                    $data = array(1 => array("Year-Sheet"));
+                    $data[] = array( 'Sl. No.','Scheme Asset Name','Geo Related','Multi Geo Related');
+            
+                    $scheme_structure =  SchemeAsset::whereIn('scheme_asset_id',$scheme_asset_id)->get();
+                    // return $scheme_structure;
+                    // $yearValue = Year::whereIn('year_id', $year_id)->orderBy('year_id','desc')->select('year_id as slId', 'year_value', 'status', 'created_at as createdDate')->get();
+            
+                    foreach ($scheme_structure as $key => $value) {
+                        if($value->geo_related == 1){
+                            $value->geo_related= "yes";
+                        }
+                        else 
+                        {
+                            $value->geo_related= "no";
+                        }
+
+                        if($value->multiple_geo_tags == 1){
+                            $value->multiple_geo_tags= "yes";
+                        }
+                        else 
+                        {
+                            $value->multiple_geo_tags= "no";
+                        }
+                        $value->createdDate = date('d/m/Y',strtotime($value->createdDate));
+                        $data[] = array(
+                            $key + 1,
+                            $value->scheme_asset_name,
+                            $value->geo_related,
+                            $value->multiple_geo_tags,
+                        );
+                    }
+                    
+                    \Excel::create('Year-Sheet', function ($excel) use ($data) {
+            
+                        // Set the title
+                        $excel->setTitle('Year-Sheet');
+            
+                        // Chain the setters
+                        $excel->setCreator('Paatham')->setCompany('Paatham');
+            
+                        $excel->sheet('Fees', function ($sheet) use ($data) {
+                            $sheet->freezePane('A3');
+                            $sheet->mergeCells('A1:I1');
+                            $sheet->fromArray($data, null, 'A1', true, false);
+                            $sheet->setColumnFormat(array('I1' => '@'));
+                        });
+                    })->download('xls');
+            
+     
+                 }
+                 return $request;
+             }
+         }
 
 }

@@ -141,29 +141,29 @@ class EmailController extends Controller
               // exit;
 
             $user = array('email_from'=>$email_from,'email_to'=>$email_to, 'cc'=>$email_cc, 'subject'=>$request->subject, 'content'=>$request->message,'results'=>$details_scheme_type);
-            Mail::send('mail.scheme_type',['user'=> $user], function($message) use ($user)
-            {
-                $email_to=explode(',',$user['email_to']);
-                foreach($email_to as $key=>$value)
-                {
-                $message->to($email_to[$key]);
-                }
+            // Mail::send('mail.scheme_type',['user'=> $user], function($message) use ($user)
+            // {
+            //     $email_to=explode(',',$user['email_to']);
+            //     foreach($email_to as $key=>$value)
+            //     {
+            //     $message->to($email_to[$key]);
+            //     }
 
-                if(@$user['cc'])
-                {
-                $email_cc=explode(',',$user['cc']);
-                foreach($email_cc as $key=>$value)
-                {
-                    $message->cc($email_cc[$key]);
-                }
-                }
-                $message->subject($user['subject']);
-                $message->from('dsrm.skla@gmail.com','seraikela'); 
-                session()->put('alert-class','alert-success');
-                session()->put('alert-content','Email send');
-            });
-            // return view('mail.scheme_type')->with('user',$user);
-            return redirect('scheme_type');
+            //     if(@$user['cc'])
+            //     {
+            //     $email_cc=explode(',',$user['cc']);
+            //     foreach($email_cc as $key=>$value)
+            //     {
+            //         $message->cc($email_cc[$key]);
+            //     }
+            //     }
+            //     $message->subject($user['subject']);
+            //     $message->from('dsrm.skla@gmail.com','seraikela'); 
+            //     session()->put('alert-class','alert-success');
+            //     session()->put('alert-content','Email send');
+            // });
+            return view('mail.scheme_type')->with('user',$user);
+            // return redirect('scheme_type');
         }
         elseif($request->asset_numbers=="asset_numbers"){
             $email_from=$request->from;
@@ -266,30 +266,53 @@ class EmailController extends Controller
             $email_cc=$request->cc;
             $send_subject=$request->subject;
             $details=json_decode($request->data);
+            //    return $request->scheme_structure;
 
-            $user = array('email_from'=>$email_from,'email_to'=>$email_to, 'cc'=>$email_cc, 'subject'=>$request->subject, 'content'=>$request->message,'results'=>$details);
-             Mail::send('mail.scheme-structure',['user'=> $user], function($message) use ($user)
+
+             //   return $request->search_query;
+             $details_scheme_structure= DB::table('scheme_structure')->join('department','scheme_structure.dept_id','=','department.dept_id')->select('scheme_structure.*','department.dept_name');
+             if($request->search_query!="")
              {
-                 $email_to=explode(',',$user['email_to']);
-                 foreach($email_to as $key=>$value)
-                {
-                    $message->to($email_to[$key]);
-                }
+               $details_scheme_structure = $details_scheme_structure->where('scheme_structure.scheme_name', 'LIKE', "%{$request->search_query}%")->get();
+             return $details_scheme_structure;
 
-                if(@$user['cc'])
-                {
-                 $email_cc=explode(',',$user['cc']);
-                    foreach($email_cc as $key=>$value)
-                    {
-                        $message->cc($email_cc[$key]);
-                    }
-                }
-                $message->subject($user['subject']);
-                $message->from('dsrm.skla@gmail.com','seraikela'); 
-                 session()->put('alert-class','alert-success');
-                 session()->put('alert-content','Email send');
-             });
-              return redirect('scheme-structure');
+             }
+             else
+             {
+                 $details_scheme_structure=$details_scheme_structure->get();
+             }
+            //  return $details_scheme_structure;
+             // exit;
+
+
+
+
+            $user = array('email_from'=>$email_from,'email_to'=>$email_to, 'cc'=>$email_cc, 'subject'=>$request->subject, 'content'=>$request->message,'results'=>$details_scheme_structure);
+            //  Mail::send('mail.scheme-structure',['user'=> $user], function($message) use ($user)
+            //  {
+            //      $email_to=explode(',',$user['email_to']);
+            //      foreach($email_to as $key=>$value)
+            //     {
+            //         $message->to($email_to[$key]);
+            //     }
+
+            //     if(@$user['cc'])
+            //     {
+            //      $email_cc=explode(',',$user['cc']);
+            //         foreach($email_cc as $key=>$value)
+            //         {
+            //             $message->cc($email_cc[$key]);
+            //         }
+            //     }
+            //     $message->subject($user['subject']);
+            //     $message->from('dsrm.skla@gmail.com','seraikela'); 
+            //      session()->put('alert-class','alert-success');
+            //      session()->put('alert-content','Email send');
+            //  });
+            // return $user;
+             return view('mail.scheme-structure')->with('user',$user);
+            
+            //   return redirect('scheme-structure');
         }
         elseif($request->group=="group"){
             

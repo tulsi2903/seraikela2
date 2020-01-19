@@ -237,7 +237,7 @@
                                     <div class="form-group">
                                         <input type="hidden" name="year" value="year">
                                         <input type="hidden" name="data" value="{{$datas}}">
-                                        <input type="text" name="search_query" id="dept_search">
+                                        <input type="hidden" name="search_query" id="dept_search">
                                         <!-- <input type="text" name="from" class="form-control" placeholder="From" required=""> -->
                                     </div>
                                     <div class="form-group">

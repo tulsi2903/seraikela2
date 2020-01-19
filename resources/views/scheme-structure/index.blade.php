@@ -4,6 +4,68 @@
 
 @section('page-style')
 <style>
+     #printable-info-details {
+        visibility: hidden;
+        height: 0px;
+        /* position: fixed;
+        left: 0;
+        top: 20px;
+        width: 100vw !important; */
+    }
+    
+    @media print {
+        #printable-area {
+            margin-top: 250px !important;
+        }
+        .no-print,
+        .no-print * {
+            display: none !important;
+        }
+        #printable-info-details {
+            visibility: visible;
+            position: fixed;
+        }
+        #print-button,
+        #print-button * {
+            visibility: hidden;
+        }
+        .card-title-print-1 {
+            visibility: visible !important;
+            position: fixed;
+            color: #147785;
+            font-size: 30px;
+            ;
+            left: 0;
+            top: 50px;
+            width: 100vw !important;
+            height: 100vw !important;
+        }
+        .card-title-print-2 {
+            visibility: visible !important;
+            position: fixed;
+            color: #147785;
+            font-size: 30px;
+            ;
+            left: 0;
+            top: 100px;
+            width: 100vw !important;
+            height: 100vw !important;
+        }
+        .card-title-print-3 {
+            visibility: visible !important;
+            position: fixed;
+            color: #147785;
+            font-size: 30px;
+            ;
+            left: 0;
+            top: 140px;
+            width: 100vw !important;
+            height: 100vw !important;
+        }
+        .action-buttons {
+            display: none;
+        }
+    }
     .logo-header .logo {
         color: #575962;
         opacity: 1;
@@ -27,10 +89,15 @@
             <div class="card-head-row card-tools-still-right" style="background:#fff;">
                 <h4 class="card-title">{{$phrase->scheme}}</h4>
                 <div class="card-tools">
-                    <a href="#" data-toggle="tooltip" title="{{$phrase->send_email}}"><button type="button" class="btn btn-icon btn-round btn-success" data-target="#create-email" data-toggle="modal"><i class="fa fa-envelope" aria-hidden="true"></i></button></a>
-                    <a href="#" data-toggle="tooltip" title="{{$phrase->print}}"><button type="button" class="btn btn-icon btn-round btn-default" id="print-button" onclick="printView();"><i class="fa fa-print" aria-hidden="true"></i></button></a>
-                    <a href="{{url('scheme-structure/pdf/pdfURL')}}" data-toggle="tooltip" title="{{$phrase->export_pdf}}"><button type="button" class="btn btn-icon btn-round btn-warning"><i class="fas fa-file-export"></i></button></a>
-                    <a href="{{url('scheme-structure/export/excelURL')}}" data-toggle="tooltip" title="{{$phrase->export_excel}}"><button type="button" class="btn btn-icon btn-round btn-primary"><i class="fas fa-file-excel"></i></button></a>
+                    <button type="button" class="btn btn-icon btn-round btn-success"  onclick="openmodel();" ><i class="fa fa-envelope" aria-hidden="true"></i></button>
+
+                    <!-- <a href="#" data-toggle="tooltip" title="{{$phrase->send_email}}"><button type="button" class="btn btn-icon btn-round btn-success" data-target="#create-email" data-toggle="modal"><i class="fa fa-envelope" aria-hidden="true"></i></button></a> -->
+                    <!-- <a href="#" data-toggle="tooltip" title="{{$phrase->print}}"><button type="button" class="btn btn-icon btn-round btn-default" id="print-button" onclick="printView();"><i class="fa fa-print" aria-hidden="true"></i></button></a> -->
+                    <button type="button" class="btn btn-icon btn-round btn-default" onclick="printViewone();"><i class="fa fa-print" aria-hidden="true"></i></button>
+                    <button type="button" onclick="exportSubmit('print_pdf');" class="btn btn-icon btn-round btn-warning"><i class="fas fa-file-export"></i></button>
+                    <button type="button" onclick="exportSubmit('excel_sheet');" class="btn btn-icon btn-round btn-success"><i class="fas fa-file-excel"></i></button>
+                    <!-- <a href="{{url('scheme-structure/pdf/pdfURL')}}" data-toggle="tooltip" title="{{$phrase->export_pdf}}"><button type="button" class="btn btn-icon btn-round btn-warning"><i class="fas fa-file-export"></i></button></a>
+                    <a href="{{url('scheme-structure/export/excelURL')}}" data-toggle="tooltip" title="{{$phrase->export_excel}}"><button type="button" class="btn btn-icon btn-round btn-primary"><i class="fas fa-file-excel"></i></button></a> -->
                     @if($desig_permissions["mod15"]["add"])
                     <a class="btn btn-secondary" href="{{url('scheme-structure/add')}}" role="button"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;{{$phrase->add}}  </a>
                     @endif
@@ -46,6 +113,12 @@
                         <a class="btn btn-secondary" href="{{url('scheme-structure/add')}}" role="button"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;Add</a>
                     </div><br><br> -->
                 <div class="table-responsive table-hover table-sales">
+                    <div id="printable-info-details">
+                        <p class="card-title-print-1">Title: Scheme Details </p>
+                        <p class="card-title-print-2">Date & Time:
+                            <?php $currentDateTime = date('d-m-Y H:i:s'); echo $currentDateTime; ?>
+                                <p class="card-title-print-3">User Name: {{session()->get('user_full_name')}}</p>
+                    </div>
                     <table class="table table-datatable" id="printable-area">
                         <thead style="background: #d6dcff;color: #000;">
                             <tr>
@@ -63,7 +136,11 @@
                         @if(isset($datas))
                         @foreach($datas as $data)
                         <tr>
-                            <td width="40px;">{{$count++}}</td>
+                            <td width="40px;">{{$count++}}
+
+                                <input type="text" value="{{$data->scheme_id}}" name="scheme_id_to_export[]" hidden >
+
+                            </td>
                             <td>@if($data->scheme_logo) <img src="{{$data->scheme_logo}}" style="height: 50px;"> @endif</td>
                             <td>({{$data->scheme_short_name}}) {{$data->scheme_name}}</td>
                             <td>{{$data->dept_name}}</td>
@@ -100,9 +177,48 @@
                 </div>
             </div>
         </div>
+
+        <!-- export starts -->
+            <form action="{{url('scheme-structure/view_diffrent_formate')}}" method="POST" enctype="multipart/form-data" id="export-form"> <!-- for for edit, if inline edit form append then this form action/method will triggered -->
+            @csrf
+            <input type="text" name="scheme_id" hidden >
+            <input type="text" name="print" hidden > <!-- hidden input for export (pdf/excel) -->
+            </form>
+        <!-- export ends -->
+
+
     </div>
 
     @endsection
+
+<script>
+    function printViewone() {
+        window.print();
+    }
+</script>
+
+<script>
+    function exportSubmit(type)
+    {
+        $("input[name='print']").val(type);
+        var values = $("input[name='scheme_id_to_export[]']").map(function(){return $(this).val();}).get();
+        $("input[name='scheme_id']").val(values);
+        document.getElementById('export-form').submit();
+    }
+</script>
+
+<script>
+    function openmodel()
+    {
+        // alert("afj;l");
+        var search_element=$( "input[type=search]" ).val();
+        $('#create-email').modal('show');
+        $('#dept_search').val(search_element);
+        // alert(search_element);
+    }
+    
+    </script>
+
     <!-- email -->
     <div id="create-email" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none">
         <div class="modal-dialog">
@@ -119,8 +235,9 @@
                         <div class="row">
                             <div class="card-body p-t-30" style="padding: 11px;">
                                 <div class="form-group">
-                                    <input type="hidden" name="group" value="group">
+                                    <input type="hidden" name="scheme_structure" value="scheme_structure">
                                     <input type="hidden" name="result" value="{{$datas}}">
+                                    <input type="text" name="search_query" id="dept_search" >
                                     <!-- <input type="text" name="from" class="form-control" placeholder="From" required=""> -->
                                 </div>
                                 <div class="form-group">
@@ -151,6 +268,4 @@
             </div>
         </div>
     </div>
-
-
     <!-- /.modal -->

@@ -185,6 +185,7 @@ class YearController extends Controller
      // abhishek 
      public function view_diffrent_formate(Request $request)
      {
+  
         $year_id = explode(',',$request->year_id); // array
         // return "akf";
          $department=array();

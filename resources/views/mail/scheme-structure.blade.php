@@ -25,9 +25,9 @@
             @foreach($user['results'] as $data)
                 <tr>
                     <td width="40px;">{{$count++}}</td>
-                    <td>{{$data->scheme_name}}</td>
-                    <td>{{$data->scheme_short_name}}</td>
-                    <td>{{$data->dept_name}}</td>
+                    <td>{{@$data->scheme_name}}</td>
+                    <td>{{@$data->scheme_short_name}}</td>
+                    <td>{{@$data->dept_name}}</td>
                 </tr>
             @endforeach
     </table>

@@ -92,6 +92,9 @@ Route::get('scheme-structure/pdf/pdfURL','SchemeStructureController@exportPDF_Sc
 Route::get('scheme-structure/get-panchayat-datas', 'SchemeStructureController@get_panchayat_datas');
 Route::get('scheme-structure/get-attributes-details', 'SchemeStructureController@get_attributes_details');
 
+Route::post('scheme-structure/view_diffrent_formate','SchemeStructureController@view_diffrent_formate');
+
+
 
 /*Scheme Geo Target*/
 Route::get('scheme-geo-target','SchemeGeoTargetController@index');
@@ -208,6 +211,10 @@ Route::post('scheme-asset/store','Scheme_Asset_Controller@store');
 Route::get('scheme-asset/view/{scheme_asset_id}','Scheme_Asset_Controller@view');
 Route::get('scheme-asset/delete/{scheme_asset_id}','Scheme_Asset_Controller@delete');
 
+Route::post('scheme-asset/view_diffrent_formate','Scheme_Asset_Controller@view_diffrent_formate');
+
+
+
 /*Scheme Performance*/
 // Route::get('scheme-performance/add','SchemePerformanceController@add');
 // Route::post('scheme-performance/store','SchemePerformanceController@store');
@@ -316,3 +323,5 @@ Route::post('asset_subcat/view_diffrent_formate','AssetController@view_diffrent_
 Route::post('scheme-type/view_diffrent_formate','SchemeTypeController@view_diffrent_formate');
 Route::post('scheme-group/view_diffrent_formate','GroupController@view_diffrent_formate');
 Route::post('module/view_diffrent_formate','ModuleController@view_diffrent_formate');
+
+
