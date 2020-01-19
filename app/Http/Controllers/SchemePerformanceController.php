@@ -121,8 +121,10 @@ class SchemePerformanceController extends Controller
         $SchemePerformance_details = SchemePerformance::where('scheme_id', $scheme_id)->where('year_id', $year_id)->where('panchayat_id', $panchayat_id)->get()->toArray();
         // print_r($SchemePerformance_details);
         $to_append_tbody = '';
+        $total_count_record = "";
         if (count($SchemePerformance_details != 0)) {
             foreach ($SchemePerformance_details as $key_SchemePerformance => $value_SchemePerformance) {
+
                 $to_append_tbody .= '<tr>';
                 $SchemePerformance_attributes = unserialize($value_SchemePerformance['attribute']);
                 // print_r($SchemePerformance_attributes);
@@ -132,9 +134,7 @@ class SchemePerformanceController extends Controller
                 if ($scheme_data->scheme_is == 2) {
                     $to_append_tbody .= '<td> <select name="assest_name[]" class="form-control" required>';
                     if ($value_SchemePerformance['scheme_asset_id'] != "") {
-                        // $to_append_tbody .= "<option  value=''>--Select--</option>";
                         foreach ($scheme_asset_data as $key_asset => $value_assest) {
-                            // $to_append_tbody.="<option  value=\"" . $value_assest["scheme_asset_id"] . "\">" . $value_SchemePerformance['scheme_asset_id'] . "</option>";
                             if ($value_SchemePerformance['scheme_asset_id'] == $value_assest["scheme_asset_id"]) {
                                 $to_append_tbody .= "<option  value=\"" . $value_assest["scheme_asset_id"] . "\" selected>" . $value_assest["scheme_asset_name"] . "  </option>";
                             }
@@ -148,15 +148,11 @@ class SchemePerformanceController extends Controller
                     }
                     $to_append_tbody .= '</select>';
                 }
-
                 $attributes  = unserialize($scheme_data->attributes);
                 foreach ($attributes as $key_att => $attribute) {
-                    $to_append_tbody .= '<td><input type="text" name="' . $attribute['id'] . '[]" class="form-control" value="' . $SchemePerformance_attributes[$key_att][$attribute['id']] . '" placeholder="' . $attribute['name'] . '"></td>';
+                    $to_append_tbody .= '<td><input type="text" name="' . $attribute['id'] . '[]" class="form-control" value="'.@$SchemePerformance_attributes[$key_att][$attribute['id']].'" placeholder="' . $attribute['name'] . '"></td>';
                 }
-                $to_append_tbody .= '<td><a  onclick="update_image(' . $value_SchemePerformance['scheme_performance_id'] . ');" href="javascript:void()"> <i class="fas fa-plus"></i>Images</a>';
-                // $to_append_tbody.='<td><button type="button" class="btn btn-danger btn-xs" onclick="delete_row(this)"><i class="fas fa-trash-alt"></i></button></td>';
-                $to_append_tbody .= '<br/><a  onclick="coordinates_details(' . $value_SchemePerformance['scheme_performance_id'] . ');" href="javascript:void();"><i class="fas fa-plus"></i>Coordinates</a>';
-                $to_append_tbody .= '</td>';
+              
                 $to_append_tbody .= '<td><select name="status[]"  class="form-control">';
                 if ($value_SchemePerformance['status'] != "") {
                     if ($value_SchemePerformance['status'] == 0) {
@@ -172,12 +168,17 @@ class SchemePerformanceController extends Controller
                     $to_append_tbody .= '<option value="1">Completed</option>';
                     $to_append_tbody .= '<option value="0" selected>Incomplete</option>';
                 }
-
-
                 $to_append_tbody .= '</select></td>';
                 $to_append_tbody .= '<td><input type="text" name="comments[]" value="' . $value_SchemePerformance['comments'] . '" class="form-control" placeholder="comments"></td>';
+                            // for gallery & coordinates
+
+                $to_append_tbody .= '<td><a  onclick="update_image(' . $value_SchemePerformance['scheme_performance_id'] . ');" href="javascript:void()"> <i class="fas fa-plus"></i>Images</a>';
+                // $to_append_tbody.='<td><button type="button" class="btn btn-danger btn-xs" onclick="delete_row(this)"><i class="fas fa-trash-alt"></i></button></td>';
+                $to_append_tbody .= '<br/><a  onclick="coordinates_details(' . $value_SchemePerformance['scheme_performance_id'] . ');" href="javascript:void();"><i class="fas fa-plus"></i>Coordinates</a>';
+                $to_append_tbody .= '</td>';
                 $to_append_tbody .= '<td><button type="button" class="btn btn-danger btn-xs" onclick="delete_row(this,' . $value_SchemePerformance['scheme_performance_id'] . ')"><i class="fas fa-trash-alt"></i></button></td>';
                 $to_append_tbody .= '</tr>';
+                $total_count_record = $key_SchemePerformance + 1;
             }
         }
         // exit;
@@ -216,15 +217,8 @@ class SchemePerformanceController extends Controller
         // return $to_append_row;
 
 
-        // for gallery & coordinates
-        $to_append_thead .= '<th>Others</th>';
-        $to_append_row .= '<td><a  href="javascript:void();"><i class="fas fa-plus"></i>Images</a>';
-        // for coordinates
-        // if($scheme_data->geo_related==1){
-        $to_append_row .= '<br/><a   href="javascript:void();"><i class="fas fa-plus"></i>Coordinates</a>';
-        // }
-        $to_append_row .= '</td>';
-
+    
+    
         $to_append_thead .= '<th>Status</th>';
         $to_append_row .= '<td>
                             <select name="status[]" class="form-control">
@@ -232,15 +226,23 @@ class SchemePerformanceController extends Controller
                                 <option value="1">Completed</option>
                             </select>
                         </td>';
-
         $to_append_thead .= '<th>Comments</th>';
         $to_append_row .= '<td><input type="text" name="comments[]" class="form-control" placeholder="comments"></td>';
+        $to_append_thead .= '<th>Others</th>';
+            // for gallery & coordinates
+        $to_append_row .= '<td><a  href="javascript:void();"><i class="fas fa-plus"></i>Images</a>';
+        // for coordinates
+        // if($scheme_data->geo_related==1){
+        $to_append_row .= '<br/><a   href="javascript:void();"><i class="fas fa-plus"></i>Coordinates</a>';
+        // }
+        $to_append_row .= '</td>';
+
         $to_append_thead .= '<th>Actions</th>';
         $to_append_row .= '<td><button type="button" class="btn btn-danger btn-xs" onclick="delete_row(this)"><i class="fas fa-trash-alt"></i></button></td>';
         $to_append_thead .= '</tr>';
         $to_append_row .= '</tr>';
 
-        return ['to_append_thead' => $to_append_thead, 'to_append_row' => $to_append_row, 'to_append_tbody' => $to_append_tbody];
+        return ['to_append_thead' => $to_append_thead, 'to_append_row' => $to_append_row, 'to_append_tbody' => $to_append_tbody, 'total_count_record' => $total_count_record];
     }
     public function store(Request $request)
     {
@@ -306,6 +308,54 @@ class SchemePerformanceController extends Controller
             $for_delete_record = explode(',', rtrim($request->to_delete, ','));
             $SchemePerformance_record = SchemePerformance::whereIn('scheme_performance_id', $for_delete_record)->delete();
         }
+        $SchemePerformance=SchemePerformance::where('scheme_id',$scheme_id)->where('year_id',$year_id)->where('block_id',$block_id)->get();
+        $incomplete_count=$complete_count=$total_count=0;
+        foreach($SchemePerformance as $key_performance => $value_performance)
+        {
+            if($value_performance['status']==0)
+            {
+                $incomplete_count=$incomplete_count+1;
+            }
+            if($value_performance['status']==1)
+            {
+                $complete_count=$complete_count+1;
+            }
+            $total_count=$total_count+1;
+        }
+        // echo $scheme_id;
+        // echo "<br>";
+        // echo $year_id;
+        // echo "<br>";
+        // echo $block_id;
+        // echo $incomplete_count;
+        // echo "<br>";
+        // echo $complete_count;
+        // echo "<pre>";
+        // echo count($SchemePerformance);
+        // exit;
+        // return $SchemePerformance;
+        $scheme_block_performance_details=scheme_block_performance::where('scheme_id',$scheme_id)->where('block_id',$block_id)->where('year_id',$year_id)->first();
+       if($scheme_block_performance_details!="")
+       {
+        scheme_block_performance::where('scheme_block_performance_id',$scheme_block_performance_details->scheme_block_performance_id)->update(array('total_count'=>$total_count,'complete_count'=>$complete_count,'incomplete_count'=>$incomplete_count));
+        // $scheme_block_performance_details;
+        }
+        else
+        {
+            $scheme_block_performance=new scheme_block_performance();
+            $scheme_block_performance->year_id=$year_id;
+            $scheme_block_performance->scheme_id=$scheme_id;
+            $scheme_block_performance->block_id=$block_id;
+            $scheme_block_performance->total_count=$total_count;
+            // $scheme_block_performance->complete_count=2;
+            $scheme_block_performance->complete_count=$complete_count;
+            $scheme_block_performance->incomplete_count=$incomplete_count;
+             $scheme_block_performance->created_by=Auth::user()->id;
+            $scheme_block_performance->update_by=Auth::user()->id;
+            $scheme_block_performance->save();
+            // return $scheme_block_performance;
+        }
+        // return $scheme_block_performance_details;
         session()->put('alert-class', 'alert-success');
         session()->put('alert-content', 'New performance data(s) has been saved successfully!');
         // return back();
@@ -315,15 +365,12 @@ class SchemePerformanceController extends Controller
 
     public function viewimport(Request $request)
     {
-        if (!$request->scheme_id || !$request->year_id || !$request->block_id) {
+        if (!$request->scheme_id) {
             return redirect("scheme-performance");
         }
 
         $scheme_id = $request->scheme_id;
-        $year_id = $request->year_id;
-        $block_id = $request->block_id;
-
-        return view('scheme-performance.importExcel')->with(compact('scheme_id', 'year_id', 'block_id'));
+        return view('scheme-performance.importExcel')->with(compact('scheme_id'));
     }
 
     public function Import_from_Excel(Request $request)
@@ -343,21 +390,18 @@ class SchemePerformanceController extends Controller
             array_push($tableHeadingsAndAtributes, strtolower(str_replace(" ", "_", $value_un['name'])));
             $schemeAtributes[$value_un['id']] =  strtolower(str_replace(" ", "_", $value_un['name']));
         }
-        array_push($tableHeadingsAndAtributes, 0);
-
+        // array_push($tableHeadingsAndAtributes, 0);
         if ($_FILES['excelcsv']['tmp_name']) {
             $readExcel = \Excel::load($_FILES['excelcsv']['tmp_name'], function ($reader) { })->get()->toArray();
             $readExcelHeader = \Excel::load($_FILES['excelcsv']['tmp_name'])->get();
             if (count($readExcelHeader) != 0) {
                 $excelSheetHeadings = $readExcelHeader->first()->keys()->toArray(); /* this is for excel sheet heading */
             }
-
             if (count($readExcel) != 0) {
                 if (count($readExcel) <= 250) {
                     sort($tableHeadingsAndAtributes);
                     sort($excelSheetHeadings);
                     $unserializedAtributesData = array();
-
                     /* validation for matching of headings */
                     if ($tableHeadingsAndAtributes == $excelSheetHeadings) { /* Check for missmatch headings*/
 
@@ -366,7 +410,6 @@ class SchemePerformanceController extends Controller
                                 foreach ($schemeAtributes as $attribute_key => $attribute_value) {
 
                                     if ($attribute_value === $key) {
-
                                         $unserializedAtributesData[$excel_key][][$attribute_key] = $value;
                                     }
                                 }
@@ -390,24 +433,19 @@ class SchemePerformanceController extends Controller
 
                             /* if those id avilable then insert data on the base */
                             if ($row['sno.'] != null && $fetch_block_id != null && $fetch_panchayat_id != null && $fetch_year_id != null && $fetch_subdivision_id != null) {
-                                $flag=0;
-                                $scheme_performance_id="";
-                                $scheme_performance_details=SchemePerformance::get()->toArray();
-                                foreach($scheme_performance_details as $key_edit=> $value_edit)
-                                {
-                                    $add_atributes=serialize($unserializedAtributesData[$key]);
-                                    if($value_edit['attribute']==$add_atributes)
-                                    {
-                                        $flag=1;
-                                        $scheme_performance_id=$value_edit['scheme_performance_id'];
+                                $flag = 0;
+                                $scheme_performance_id = "";
+                                $scheme_performance_details = SchemePerformance::get()->toArray();
+                                foreach ($scheme_performance_details as $key_edit => $value_edit) {
+                                    $add_atributes = serialize($unserializedAtributesData[$key]);
+                                    if ($value_edit['attribute'] == $add_atributes) {
+                                        $flag = 1;
+                                        $scheme_performance_id = $value_edit['scheme_performance_id'];
                                     }
                                 }
-                                if($flag==1)
-                                {
-                                    $edit_scheme_performance=SchemePerformance::where('scheme_performance_id',$scheme_performance_id)->update(array('status'=>1));
-                                }
-                                else
-                                {                    
+                                if ($flag == 1) {
+                                    $edit_scheme_performance = SchemePerformance::where('scheme_performance_id', $scheme_performance_id)->update(array('status' => 1));
+                                } else {
                                     $scheme_performance = new SchemePerformance;
                                     $scheme_performance->year_id = $fetch_year_id;
                                     $scheme_performance->scheme_id = $request->scheme_id;
@@ -419,7 +457,7 @@ class SchemePerformanceController extends Controller
                                         $scheme_performance->status = 1;
                                     } elseif (strtolower($status) == strtolower("Incompleted")) {
                                         $scheme_performance->status = 0;
-                                    } elseif (strtolower($status)!= strtolower("Incompleted") && strtolower($status) != strtolower("Completed")) {
+                                    } elseif (strtolower($status) != strtolower("Incompleted") && strtolower($status) != strtolower("Completed")) {
                                         $scheme_performance->status = "";
                                     }
                                     $scheme_performance->created_by = Session::get('user_id');
@@ -487,7 +525,7 @@ class SchemePerformanceController extends Controller
         # code...
         $scheme_datas = SchemeStructure::where('scheme_id', $request->scheme_id)->first();
         $unserialDatas = unserialize($scheme_datas->attributes);
-        $data = array();
+        // $data = array();
         $data = array(
             'SNo.',
             'Block Name',
@@ -510,7 +548,7 @@ class SchemePerformanceController extends Controller
                 // $sheet->freezePane('A3');
                 // $sheet->mergeCells('A1:I1');
                 $sheet->fromArray($data, null, 'A1', true, false);
-                $sheet->setColumnFormat(array('I1' => '@'));
+                // $sheet->setColumnFormat(array('I1' => '@'));
             });
         })->download('xls');
     }
