@@ -193,7 +193,7 @@ class DashboardController extends Controller
                             $performance_data->total_count = 0;
                             $per = 0;
                         }
-                        array_push($performance_table_datas_tmp, $performance_data->incomplete_count.":".$per, $performance_data->completed_count.":".$per, $performance_data->total_count.":".$per);
+                        array_push($performance_table_datas_tmp, $performance_data->incomplete_count.":".$per, $performance_data->completed_count.":".$per, "<a href='scheme-review?review_for=block&scheme=".$scheme_id."&geo=".$geo_id."&year=4&initiate=initiate'>".$performance_data->total_count."</a>:".$per);
                     }
                     else if(session()->get('user_designation')==2){ // sdo
                         $performance_data = scheme_block_performance::where('block_id', $geo_id)
@@ -229,6 +229,7 @@ class DashboardController extends Controller
                             $total_count = 0;
                             $per = 0;
                         }
+                        // array_push($performance_table_datas_tmp, $incomplete_count.":".$per, $completed_count.":".$per, "<a href='scheme-review?review_for=block&scheme=".$scheme_id."&geo=".$geo_id."&year=4&initiate=initiate'>".$total_count."</a>:".$per);
                         array_push($performance_table_datas_tmp, $incomplete_count.":".$per, $completed_count.":".$per, $total_count.":".$per);
                     }
                     else if(session()->get('user_designation')==4){ // bdo

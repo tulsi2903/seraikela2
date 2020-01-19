@@ -1002,7 +1002,7 @@
 <!-- for review-for (block, punchayat) radio buttons -->
 <script>
     var to_export_datas = ""; // export datas
-    var review_for = 'panchayat';
+    var review_for = 'block';
 
     $(document).ready(function () {
         $("input[name=review_for]").change(function () {
@@ -1114,7 +1114,7 @@
             marquee_string = "";
             var keyNames = Object.keys(selected_geo_name);
             for(var i=0; i<keyNames.length; i++){
-                marquee_string+='<b>'+keyNames[i]+':</b> '+selected_geo_name[keyNames[i]];
+                marquee_string+=' &bull; <b>'+keyNames[i]+':</b> '+selected_geo_name[keyNames[i]];
 
                 // to select blocks of 
                 $(".block-map-content g[data-info='"+keyNames[i]+"'").find("path").addClass("active");

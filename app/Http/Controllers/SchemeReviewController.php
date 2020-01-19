@@ -23,7 +23,35 @@ class SchemeReviewController extends Controller
         $year_datas = Year::select('year_id','year_value')->where('status', 1)->get();
         $scheme_datas = SchemeStructure::select('scheme_id','scheme_asset_id','scheme_name','scheme_is','scheme_short_name')->where('status', 1)->get();
         $scheme_asset_datas = SchemeAsset::select('scheme_asset_id','scheme_asset_name')->get();
-        return view('scheme-review.index')->with(compact('year_datas','scheme_datas','scheme_asset_datas'));
+
+        $data["review_for"] = null;
+        $data["scheme_id"] = null;
+        $data["geo_id"] = null;
+        $data["year_id"] = null;
+
+        if($request->initiate){
+            $initiate = $request->initiate;
+            if($initiate=="initiate"){
+                $data["review_for"] = $request->review_for;
+                $data["scheme_id"]= $request->scheme;
+                $data["geo_id"] = $request->geo;
+                $data["year_id"] = $request->year;
+                if(!$data["review_for"]||!data["scheme_id"]||!data["geo_id"]||!data["year_id"]){
+                    $initiate="no";
+                }
+                else{
+                    $initiate="initiate";
+                }
+            }
+            else{
+                $initiate="no";
+            }
+        }
+        else{
+            $initiate="no";
+        }
+
+        return view('scheme-review.index')->with(compact('year_datas','scheme_datas','scheme_asset_datas','initiate','data'));
     }
 
     public function get_panchayat_data(Request $request){

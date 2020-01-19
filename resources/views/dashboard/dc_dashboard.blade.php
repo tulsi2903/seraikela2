@@ -162,6 +162,9 @@
         border: 1px solid black;
         padding: 5px !important;
     }
+    #scheme-performane-table tr td:first-child, #scheme-performane-table td a{
+        font-weight: bold;
+    }
 
 </style>
 
