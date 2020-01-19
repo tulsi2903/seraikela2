@@ -11,6 +11,9 @@ use App\SchemeStructure;
 use App\Department;
 use App\DesignationPermission;
 use App\SchemePerformance;
+use App\Fav_Scheme;
+use App\Fav_Block;
+use App\scheme_block_performance;
 use DB;
 use App\Languages;
 
@@ -101,7 +104,161 @@ class DashboardController extends Controller
         $social_security_scheme_count = SchemeStructure::where('dept_id','10')->count();
         $scheme_performance_details=SchemePerformance::get()->toArray();
 
-        return view('dashboard.dc_dashboard')->with(compact('subdivision_count','block_count','panchayat_count','asset_count','scheme_count','block_details','scheme_performance_details','villages_count','get_schemes','departments','health_scheme_count','land_revenue_count','welfare_count','education_count','land_acquisition_count','election_count','agriculture_count','social_welfare_count','drinking_water_and_sanitation_count','social_security_scheme_count'));
+        
+        /** dc dashboard scheme performance **/
+        $dashboard_scheme_performance_has_datas = "success";
+        //=> to decide rows
+        $geo_ids = [];
+        if(session()->get('user_designation')==1) // dc
+        {
+            $geo_ids = GeoStructure::where('level_id', 3)->pluck(geo_id); // decide rows
+        }
+        else if(session()->get('user_designation')==2){ // sdo
+            // get block id from geo structure where officer id is assigned
+            // then get all panchayat od that block
+            $subdivision_id_tmp = GeoStructure::where('officer_id', Auth::user()->id)->first()->geo_id;
+            $geo_ids = GeoStructure::where('sd_id', $subdivision_id_tmp)->where('level_id','3')->pluck(geo_id); // decide rows (blocks)
+        }
+        else if(session()->get('user_designation')==3){ // bdo
+            // get block id from geo structure where officer id is assigned
+            // then get all panchayat od that block
+            $block_id_tmp = GeoStructure::where('officer_id', Auth::user()->id)->first()->geo_id;
+            $geo_ids = GeoStructure::where('bl_id', $block_id_tmp)->where('level_id','4')->pluck(geo_id); // decide rows (panchayat)
+        }
+        else if(session()->get('user_designation')==4){ //po
+            $panchayat_id_tmp = GeoStructure::where('officer_id', Auth::user()->id)->first()->geo_id;
+            $geo_ids = GeoStructure::where('geo_id', $panchayat_id_tmp)->where('level_id','4')->pluck(geo_id); // decide rows (panchayat)
+        }
+        else{
+            $dashboard_scheme_performance_has_datas = "no_data";
+        }
+        // no datas
+        if(count($geo_ids)==0){
+            $dashboard_scheme_performance_has_datas = "You are not assigned to any ";
+            if(session()->get('user_designation')==1){
+                $dashboard_scheme_performance_has_datas.="district";
+            }
+            if(session()->get('user_designation')==2){
+                $dashboard_scheme_performance_has_datas.="subdivision";
+            }
+            if(session()->get('user_designation')==3){
+                $dashboard_scheme_performance_has_datas.="block";
+            }
+            if(session()->get('user_designation')==4){
+                $dashboard_scheme_performance_has_datas.="panchayat";
+            }
+        }
+        //=> to decvide column
+        $scheme_ids = Fav_Scheme::where('user_id', session()->get('user_id'))->pluck(scheme_id); // decide columns
+        // $scheme_ids = SchemeStructure::get()->pluck(scheme_id); // decide columns
+        if(count($scheme_ids)==0){
+            $dashboard_scheme_performance_has_datas = "No favourite scheme selected";
+        }
+        //=>to pass datas
+        $performance_table_heading_1 = [""];
+        $performance_table_heading_2 = [""];
+        $performance_table_datas = [];
+        
+        if($dashboard_scheme_performance_has_datas)
+        {
+            //=> for headings
+            foreach($scheme_ids as $scheme_id)
+            {
+                $scheme_data = SchemeStructure::find($scheme_id);
+                array_push($performance_table_heading_1, $scheme_data->scheme_short_name."::".$scheme_data->scheme_logo);
+                array_push($performance_table_heading_2, "Incomplete", "Completed", "Total");
+            }
+            //=> for datas
+            foreach($geo_ids as $geo_id)
+            {
+                $performance_table_datas_tmp = [];
+
+                $tmp = GeoStructure::where('geo_id', $geo_id)->first()->geo_name;
+                array_push($performance_table_datas_tmp, $tmp);
+
+                foreach($scheme_ids as $scheme_id)
+                {
+                    if(session()->get('user_designation')==1) // dc
+                    {
+                        $performance_data = scheme_block_performance::where('block_id', $geo_id)
+                                                            ->where('scheme_id', $scheme_id)
+                                                            ->first();
+                        if($performance_data){
+                            $per = (($performance_data->completed_count) / ($performance_data->total_count))*100;
+                            $per = round($per);
+                        }
+                        else{
+                            $performance_data->incomplete_count = 0;
+                            $performance_data->completed_count = 0;
+                            $performance_data->total_count = 0;
+                            $per = 0;
+                        }
+                        array_push($performance_table_datas_tmp, $performance_data->incomplete_count.":".$per, $performance_data->completed_count.":".$per, $performance_data->total_count.":".$per);
+                    }
+                    else if(session()->get('user_designation')==2){ // sdo
+                        $performance_data = scheme_block_performance::where('block_id', $geo_id)
+                                                            ->where('scheme_id', $scheme_id)
+                                                            ->first();
+                        if($performance_data){
+                            $per = (($performance_data->completed_count) / ($performance_data->total_count))*100;
+                            $per = round($per);
+                        }
+                        else{
+                            $performance_data->incomplete_count = 0;
+                            $performance_data->completed_count = 0;
+                            $performance_data->total_count = 0;
+                            $per = 0;
+                        }
+                        array_push($performance_table_datas_tmp, $performance_data->incomplete_count.":".$per, $performance_data->completed_count.":".$per, $performance_data->total_count.":".$per);
+                    }
+                    else if(session()->get('user_designation')==3){ // bdo
+                        $performance_datas = SchemePerformance::where('panchayat_id', $geo_id)
+                                                            ->where('scheme_id', $scheme_id)
+                                                            ->get();
+
+                        if($performance_datas){
+                            $per = (($performance_datas->where('status','1')->count()) / ($performance_datas->count()))*100;
+                            $per = round($per);
+                            $incomplete_count =  $performance_datas->where('status','0')->count();
+                            $completed_count = $performance_datas->where('status','1')->count();
+                            $total_count = $performance_datas->count();
+                        }
+                        else{
+                            $incomplete_count =  0;
+                            $completed_count = 0;
+                            $total_count = 0;
+                            $per = 0;
+                        }
+                        array_push($performance_table_datas_tmp, $incomplete_count.":".$per, $completed_count.":".$per, $total_count.":".$per);
+                    }
+                    else if(session()->get('user_designation')==4){ // bdo
+                        $performance_datas = SchemePerformance::where('panchayat_id', $geo_id)
+                                                            ->where('scheme_id', $scheme_id)
+                                                            ->get();
+
+                        if($performance_datas){
+                            $per = (($performance_datas->where('status','1')->count()) / ($performance_datas->count()))*100;
+                            $per = round($per);
+                            $incomplete_count =  $performance_datas->where('status','0')->count();
+                            $completed_count = $performance_datas->where('status','1')->count();
+                            $total_count = $performance_datas->count();
+                        }
+                        else{
+                            $incomplete_count =  0;
+                            $completed_count = 0;
+                            $total_count = 0;
+                            $per = 0;
+                        }
+                        array_push($performance_table_datas_tmp, $incomplete_count.":".$per, $completed_count.":".$per, $total_count.":".$per);
+                    }
+                }
+
+                array_push($performance_table_datas, $performance_table_datas_tmp);
+            }
+        }
+        /** for dc dashboard ends **/
+        // return $performance_table_datas;
+        return view('dashboard.dc_dashboard')->with(compact('subdivision_count','block_count','panchayat_count','asset_count','scheme_count','block_details','scheme_performance_details','villages_count','get_schemes','departments','health_scheme_count','land_revenue_count','welfare_count','education_count','land_acquisition_count','election_count','agriculture_count','social_welfare_count','drinking_water_and_sanitation_count','social_security_scheme_count','dashboard_scheme_performance_has_datas','performance_table_heading_1','performance_table_heading_2','performance_table_datas'));
     }
 
     public function get_department_wise_asset_data(){

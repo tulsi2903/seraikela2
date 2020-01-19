@@ -157,6 +157,12 @@
         stroke-width: 2px;
     }
 
+
+    #scheme-performane-table th, #scheme-performane-table td{
+        border: 1px solid black;
+        padding: 5px !important;
+    }
+
 </style>
 
 
@@ -286,80 +292,105 @@
 </div>
 <!--end of first row-->
 <div class="row">
+    <div class="col-md-12" style="margin-top:1em;">
+        <div class="card">
+            <div class="card-head-row card-tools-still-right" style="background:#fff;">
+                <h4 style="color: #000;font-size: 1.2em;float: left;padding: 1em;">Scheme Performance <!-- (monthly) --></h4>
+            </div>
+            <hr style="margin-top: -12px;">
+            <div class="card-body">
+                <div style="max-height: 520px; padding-bottom: 15px; overflow: auto;">
+                    @if($dashboard_scheme_performance_has_datas=="success")
+                        <table class="table" id="scheme-performane-table">
+                            <thead style="background: #d6dcff;color: #000;">
+                                <tr>
+                                <?php 
+                                for($i=0; $i<count($performance_table_heading_1); $i++)
+                                {
+                                    if($i!=0){
+                                        echo "<th colspan='3' style='text-align: center'>";
+                                    }
+                                    else{
+                                        echo "<th style='text-align: center'>";
+                                    }
 
-    <!--<div class="col-md-12" style="margin-top:1em;">
-        <div class="card" style="border-top: 2px solid #617cbf;">
-            <div class="card-body" style="    background: #fff;">
-                <ul class="nav nav-pills nav-secondary nav-pills-no-bd" id="pills-tab-without-border" role="tablist" style="margin-top: -15px;">
-                    <li class="nav-item"><a class="nav-link active" id="pills-home-tab-nobd" data-toggle="pill" href="#pills-home-nobd" role="tab" aria-controls="pills-home-nobd" aria-selected="true">Scheme Performance (monthly)</a></li>
-                    <li class="nav-item"><a class="nav-link" id="pills-profile-tab-nobd" data-toggle="pill" href="#pills-profile-nobd" role="tab" aria-controls="pills-profile-nobd" aria-selected="false">Department Performance (monthly)</a></li>
-                </ul>
-                <br><hr class="new2">
-                <div class="tab-content mt-2 mb-3" id="pills-without-border-tabContent">
-                    <div class="tab-pane fade show active" id="pills-home-nobd" role="tabpanel" aria-labelledby="pills-home-tab-nobd">                                    
-                        <div class="m-b-15">
-                        @foreach($get_schemes as $get_scheme)
-                            <h5>{{$get_scheme->scheme_name}}({{$get_scheme->scheme_short_name}})<span class="pull-right">60%</span></h5>
-                            <div class="progress progress-sm">
-                                <div class="progress-bar bg-info w-75" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
-                        @endforeach
-                        </div>
-                    </div>
-            <div class="tab-pane fade" id="pills-profile-nobd" role="tabpanel" aria-labelledby="pills-profile-tab-nobd"> 
-                <div class="m-b-15">
-                    @foreach($departments as $department)
-                        <h5>{{$department->dept_name}}<span class="pull-right">60%</span></h5>
-                        <div class="progress progress-sm">
-                            <div class="progress-bar bg-info w-75" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
-                        </div>
-                    @endforeach
-                    </div>
+                                    $value = explode("::", $performance_table_heading_1[$i]);
+
+                                    echo "<img src='".$value[1]."' style='height: 35px;margin-right: 15px;'>".$value[0]."</th>";
+                                } 
+                                ?>
+                                </tr>
+                                <tr>
+                                <?php 
+                                for($i=0; $i<count($performance_table_heading_2); $i++)
+                                {
+                                    echo "<th>".$performance_table_heading_2[$i]."</th>";
+                                } 
+                                ?>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                foreach($performance_table_datas as $key=>$performance_table_data){
+                                    echo "<tr>";
+                                        foreach($performance_table_data as $key_2=>$value_before){
+                                            $value = explode(":", $value_before);
+                                            if(count($value)==2)
+                                            {
+                                                $value[1] = (int)$value[1];
+                                                if($value[1]==0){
+                                                    echo "<td style='background: #ffcfcf;'>";
+                                                }
+                                                else if($value[1]<30){
+                                                    echo "<td style='background: #ff9999;'>";
+                                                }
+                                                else if($value[1]<70){
+                                                    echo "<td style='background: #ffcfcf;'>";
+                                                }
+                                                else if($value[1]==100){
+                                                    echo "<td style='background: #2cbd36;'>";
+                                                }
+                                                else {
+                                                    echo "<td style='background: #87f387;'>";
+                                                }   
+                                            }
+                                            else{
+                                                echo "<td>";
+                                            }
+
+                                            if($value[0]){
+                                                echo $value[0];
+                                            }
+                                            else{
+                                                echo "0";
+                                            }
+
+                                            echo "</td>";
+                                        }
+                                    echo "</tr>";
+                                }
+                                ?>
+                            </tbody>
+                        </table>
+                    @else
+                    <h4><span style="color: #09c521;"><i class="fas fa-info"></i></span>&nbsp;&nbsp;{{$dashboard_scheme_performance_has_datas}}</h4>
+                    @endif
                 </div>
             </div>
         </div>
     </div>
-</div> -->
-    <div class="col-md-6" style="margin-top:1em;">
-        <div class="card">
-            <div class="card-head-row card-tools-still-right" style="background:#fff;">
-                <h4 style="color: #000;font-size: 1.2em;float: left;padding: 1em;">Scheme Performance (monthly)</h4>
 
-            </div>
-            <hr style="margin-top: -12px;">
-            <div class="card-body">
-                <!-- <div class="m-b-15">
-                    @foreach($get_schemes as $get_scheme)
-                    <h5>{{$get_scheme->scheme_name}}({{$get_scheme->scheme_short_name}})<span class="pull-right">60%</span></h5>
-                    <div class="progress progress-sm">
-                        <div class="progress-bar bg-info w-75" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                    @endforeach
-                </div> -->
-                <h2><strong><span style="color: #09c521;"><i class="fas fa-wrench"></i></span>&nbsp;&nbsp;Under Development</strong></h2>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-6" style="margin-top:1em;">
+    <!-- <div class="col-md-6" style="margin-top:1em;">
         <div class="card">
             <div class="card-head-row card-tools-still-right" style="background:#fff;">
                 <h4 style="color: #000;font-size: 1.2em;float: left;padding: 1em;">Department Performance (monthly)</h4>
             </div>
             <hr style="margin-top: -12px;">
-            <div class="card-body" >
-                <!-- <div class="m-b-15">
-                    @foreach($departments as $department)
-                    <h5>{{$department->dept_name}}<span class="pull-right">60%</span></h5>
-                    <div class="progress progress-sm">
-                        <div class="progress-bar bg-info w-75" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                    @endforeach
-                </div> -->
+            <div class="card-body">
                 <h2><strong><span style="color: #09c521;"><i class="fas fa-wrench"></i></span>&nbsp;&nbsp;Under Development</strong></h2>
             </div> 
         </div>
-    </div>
+    </div> -->
 </div>
 <!--enf of row-->
 

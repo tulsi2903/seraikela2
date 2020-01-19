@@ -88,7 +88,7 @@
                                                     @csrf
                                         <div class="card-body" style="margin-top:-32px;">											
                                             <div class="table-responsive">
-                                                <table class="table table-datatable"   >
+                                                <table class="table">
                                                     <thead style="background: #d6dcff;color: #000;">
                                                         <tr>
                                                             <th>#</th>
