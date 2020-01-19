@@ -62,6 +62,18 @@
 							@endif
 					</div>
 				</li>
+				<li class="nav-item">
+					<a data-toggle="collapse" href="#Import" class="collapsed" aria-expanded="false">
+							<i class="fas fa-receipt"></i>
+						<p>Import</p>
+						<span class="caret"></span>
+					</a>
+					<div class="collapse" id="Import">
+						<ul class="nav nav-collapse">
+							<li class="nav-item"><a href="{{url('import/resource')}}"><i class="fas fa-receipt"></i><p>Resources Import</p></a></li>
+							<li class="nav-item"><a href="{{url('import/scheme')}}"><i class="fas fa-receipt"></i><p>Scheme Import</p></a></li>
+					</div>
+				</li>
 				@if(array_key_exists("mod22", $desig_permissions))
 				<li class="nav-item"><a href="{{url('favourites')}}"><i class="fa fa-bookmark" aria-hidden="true"></i><p>Favourite</p></a></li>
 				@endif<!-- <li class="nav-item"><a href="{{url('mgnrega')}}"><i class="fa fa-bookmark" aria-hidden="true"></i><p>Mgnrega</p></a></li> -->
@@ -88,6 +100,7 @@
 							@if(array_key_exists("mod4", $desig_permissions))
 								<!-- <li class="nav-item"><a href="{{url('uom')}}"><i class="fas fa-list-ol"></i><p>UoM</p></a></li> -->
 							@endif
+
 							@if(array_key_exists("mod5", $desig_permissions))
 								<li class="nav-item"><a href="{{url('designation')}}"><i class="fas fa-user-check"></i><p>Designation</p></a></li>
 							@endif

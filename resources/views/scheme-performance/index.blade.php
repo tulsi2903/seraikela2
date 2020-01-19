@@ -77,7 +77,7 @@
                         <div class="row" style="display: contents;">
                             <div class="col-md-12">
                                 <button type="button" class="btn btn-secondary pull-right go-button" onclick="go()" style="margin-left:0.5em;"><i class="fas fa-search"></i>&nbsp;&nbsp;Go</button>
-                                <div id="import_section" style="display: none; margin-top: -4em;">
+                                <div id="import_section_old" style="display: none; margin-top: -4em;">
                                     <div class="form-group">
                                         <button type="submit" class="btn btn-primary  pull-right" onclick="location.href='\ scheme-performance/downloadFormat?scheme_id='+ document.getElementById('scheme_id').value+'&year_id={{$year_data->year_id}}&block_id={{$block_data->geo_id}}'" style="float:right; background: #349601; color: white;" title="Download Excel Format"><i class="fas fa-file-import"></i>&nbsp;&nbsp;Download Format</button>
                                     </div>

@@ -402,6 +402,10 @@ class SchemePerformanceController extends Controller
                     sort($tableHeadingsAndAtributes);
                     sort($excelSheetHeadings);
                     $unserializedAtributesData = array();
+                    // print_r($excelSheetHeadings);
+                    // echo "<br>";
+                    // print_r($tableHeadingsAndAtributes);
+                    // exit;
                     /* validation for matching of headings */
                     if ($tableHeadingsAndAtributes == $excelSheetHeadings) { /* Check for missmatch headings*/
 
@@ -644,5 +648,14 @@ class SchemePerformanceController extends Controller
             $coordinates_details = unserialize($SchemePerformance_fetch_coordinates->coordinates);
         }
         return ["coordinates" => $coordinates_details];
+    }
+
+    public function view_import_forscheme()
+    {
+        $scheme_datas = SchemeStructure::select('scheme_id', 'scheme_name', 'scheme_short_name')->orderBy('scheme_id', 'DESC')->get(); // only independent scheme (scheme_is == 1)
+        $year_datas = Year::select('year_id', 'year_value')->orderBy('year_value', 'asc')->get();
+        $block_datas = GeoStructure::select('geo_id', 'geo_name')->orderBy('geo_name', 'asc')->where('level_id', '=', '3')->get();
+
+        return view('scheme-performance.schemeimport')->with(compact('scheme_datas', 'year_datas', 'block_datas'));
     }
 }

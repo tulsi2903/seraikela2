@@ -323,5 +323,7 @@ Route::post('asset_subcat/view_diffrent_formate','AssetController@view_diffrent_
 Route::post('scheme-type/view_diffrent_formate','SchemeTypeController@view_diffrent_formate');
 Route::post('scheme-group/view_diffrent_formate','GroupController@view_diffrent_formate');
 Route::post('module/view_diffrent_formate','ModuleController@view_diffrent_formate');
+//For Scheme Import
+Route::get('import/scheme','SchemePerformanceController@view_import_forscheme');
 
 
