@@ -36,7 +36,7 @@ class FavController extends Controller
                 ->orderBy('department.dept_id','asc')->get();
  
             for($i=0;$i<count($datas_dept);$i++){
-                $fav_dept_tmp = Fav_Dept::select('favourite_department_id')->where('user_id',1)->where('dept_id',$datas_dept[$i]->dept_id)->first();
+                $fav_dept_tmp = Fav_Dept::select('favourite_department_id')->where('user_id', session()->get('user_id'))->where('dept_id',$datas_dept[$i]->dept_id)->first();
 
                 if($fav_dept_tmp){
                     $datas_dept[$i]->checked=1;
@@ -50,7 +50,7 @@ class FavController extends Controller
             $datas_scheme = SchemeStructure::select('scheme_id','scheme_name','scheme_short_name')->get();
             for($i=0;$i<count($datas_scheme);$i++)
             {
-                $fav_scheme_tmp = Fav_Scheme::select('favourite_scheme_id')->where('user_id',1)->where('scheme_id',$datas_scheme[$i]->scheme_id)->first();
+                $fav_scheme_tmp = Fav_Scheme::select('favourite_scheme_id')->where('user_id', session()->get('user_id'))->where('scheme_id',$datas_scheme[$i]->scheme_id)->first();
                 if($fav_scheme_tmp){
                     $datas_scheme[$i]->checked=1;
                 }
@@ -65,7 +65,7 @@ class FavController extends Controller
                         ->orderBy('geo_structure.geo_id','asc')->get();
             
             for($i=0;$i<count($datas_block);$i++){
-                $fav_block_tmp = Fav_Block::select('favourite_block_id')->where('user_id',1)->where('block_id',$datas_block[$i]->geo_id)->first();
+                $fav_block_tmp = Fav_Block::select('favourite_block_id')->where('user_id', session()->get('user_id'))->where('block_id',$datas_block[$i]->geo_id)->first();
                 if($fav_block_tmp){
                     $datas_block[$i]->checked=1;
                 }
@@ -78,7 +78,7 @@ class FavController extends Controller
             $datas_panchayat = GeoStructure::select('geo_id','geo_name')->where('level_id','4')
                                 ->orderBy('geo_structure.geo_id','asc')->get();
             for($i=0;$i<count($datas_panchayat);$i++){
-                $fav_panchayat_tmp = Fav_Panchayat::select('favourite_panchayat_id')->where('user_id',1)->where('panchayat_id',$datas_panchayat[$i]->geo_id)->first();
+                $fav_panchayat_tmp = Fav_Panchayat::select('favourite_panchayat_id')->where('user_id', session()->get('user_id'))->where('panchayat_id',$datas_panchayat[$i]->geo_id)->first();
                 if($fav_panchayat_tmp){
                     $datas_panchayat[$i]->checked=1;
                 }
@@ -94,7 +94,7 @@ class FavController extends Controller
             
             for($i=0;$i<count($datas_define_asset);$i++)
             {
-                $fav_define_tmp = Fav_Define_Assets::select('favourite_asset_id')->where('user_id',1)->where('asset_id',$datas_define_asset[$i]->asset_id)->first();
+                $fav_define_tmp = Fav_Define_Assets::select('favourite_asset_id')->where('user_id', session()->get('user_id'))->where('asset_id',$datas_define_asset[$i]->asset_id)->first();
 
                 if($fav_define_tmp){
                     $datas_define_asset[$i]->checked=1;
@@ -114,17 +114,17 @@ class FavController extends Controller
         if(($request->dept_id)!=0)
         {           
             // delete previous entries
-            $delete_query = Fav_Dept::where('user_id',1)->delete();
+            $delete_query = Fav_Dept::where('user_id', session()->get('user_id'))->delete();
             
             $count_id = $request->dept_id;
             foreach ($count_id as $department_id) 
             {                       
                 $fav_department= new Fav_Dept();
                 $fav_department->dept_id = $department_id;              
-                $fav_department->user_id =1;
-                $fav_department->org_id = 1;
-                $fav_department->created_by =1;
-                $fav_department->updated_by = 1;
+                $fav_department->user_id = session()->get('user_id');
+                $fav_department->org_id = session()->get('user_org_id');
+                $fav_department->created_by = session()->get('user_id');
+                $fav_department->updated_by = session()->get('user_id');
                 $fav_department->save();                
             }
             session()->put('alert-class','alert-success');
@@ -144,16 +144,16 @@ class FavController extends Controller
         if(($request->scheme_id)!=0){ 
             
             // delete previous entries
-            $delete_query = Fav_Scheme::where('user_id',1)->delete();
+            $delete_query = Fav_Scheme::where('user_id', session()->get('user_id'))->delete();
 
             $count_id = $request->scheme_id;           
             foreach ($count_id as $scheme_id) {        
                 $fav_scheme= new Fav_Scheme();
                 $fav_scheme->scheme_id = $scheme_id; 
-                $fav_scheme->user_id =1;
-                $fav_scheme->org_id = 1;
-                $fav_scheme->created_by =1;
-                $fav_scheme->updated_by = 1;
+                $fav_scheme->user_id = session()->get('user_id');
+                $fav_scheme->org_id = session()->get('user_org_id');
+                $fav_scheme->created_by = session()->get('user_id');
+                $fav_scheme->updated_by = session()->get('user_id');
                 $fav_scheme->save();                
             }
             session()->put('alert-class','alert-success');
@@ -172,16 +172,16 @@ class FavController extends Controller
         if(($request->block_id)!=0){   
 
             // delete previous entries
-            $delete_query = Fav_Block::where('user_id',1)->delete();
+            $delete_query = Fav_Block::where('user_id', session()->get('user_id'))->delete();
 
             $count_id = $request->block_id;           
             foreach ($count_id as $block_id) {        
                 $fav_block= new Fav_Block();
                 $fav_block->block_id = $block_id; 
-                $fav_block->user_id =1;
-                $fav_block->org_id = 1;
-                $fav_block->created_by =1;
-                $fav_block->updated_by = 1;
+                $fav_block->user_id = session()->get('user_id');
+                $fav_block->org_id = session()->get('user_org_id');
+                $fav_block->created_by = session()->get('user_id');
+                $fav_block->updated_by = session()->get('user_id');
                 $fav_block->save();                
             }
             session()->put('alert-class','alert-success');
@@ -201,16 +201,16 @@ class FavController extends Controller
         if(($request->panchayat_id)!=0){
 
              // delete previous entries
-            $delete_query = Fav_Panchayat::where('user_id',1)->delete(); 
+            $delete_query = Fav_Panchayat::where('user_id', session()->get('user_id'))->delete(); 
 
             $count_id = $request->panchayat_id;           
             foreach ($count_id as $panchayat_id) {        
                 $fav_block= new Fav_Panchayat();
                 $fav_block->panchayat_id = $panchayat_id; 
-                $fav_block->user_id =1;
-                $fav_block->org_id = 1;
-                $fav_block->created_by =1;
-                $fav_block->updated_by = 1;
+                $fav_block->user_id = session()->get('user_id');
+                $fav_block->org_id = session()->get('user_org_id');
+                $fav_block->created_by = session()->get('user_id');
+                $fav_block->updated_by = session()->get('user_id');
                 $fav_block->save();                
             }
             session()->put('alert-class','alert-success');
@@ -229,16 +229,16 @@ class FavController extends Controller
         if(($request->asset_id)!=0)
         {            
             // delete previous entries
-            $delete_query = Fav_Define_Assets::where('user_id',1)->delete();
+            $delete_query = Fav_Define_Assets::where('user_id', session()->get('user_id'))->delete();
 
             $count_id = $request->asset_id; 
             foreach ($count_id as $asset_id) {     
                 $fav_define_asset= new Fav_Define_Assets();
                 $fav_define_asset->asset_id = $asset_id;              
-                $fav_define_asset->user_id =1;
-                $fav_define_asset->org_id = 1;
-                $fav_define_asset->created_by =1;
-                $fav_define_asset->updated_by = 1;
+                $fav_define_asset->user_id = session()->get('user_id');
+                $fav_define_asset->org_id = session()->get('user_org_id');
+                $fav_define_asset->created_by = session()->get('user_id');
+                $fav_define_asset->updated_by = session()->get('user_id');
                 $fav_define_asset->save();
             }
             session()->put('alert-class','alert-success');
@@ -269,7 +269,7 @@ class FavController extends Controller
             ->get();
     
             foreach ($items as $key => $value) {
-                    $fav_dept_tmp = Fav_Dept::where('user_id',1)->where('dept_id',$items[$key]->slId)->first();
+                    $fav_dept_tmp = Fav_Dept::where('user_id', session()->get('user_id'))->where('dept_id',$items[$key]->slId)->first();
                     if($fav_dept_tmp!=""){
                         $value->checked="Yes";
                     }
@@ -312,7 +312,7 @@ class FavController extends Controller
                             ->get();                 
           foreach ($departmentpdf as $key => $value) {
             $value->createdDate = date('d/m/Y',strtotime($value->created_at));
-            $fav_dept_tmp = Fav_Dept::select('favourite_department_id')->where('user_id',1)->where('dept_id',$departmentpdf[$key]->dept_id)->first();
+            $fav_dept_tmp = Fav_Dept::select('favourite_department_id')->where('user_id', session()->get('user_id'))->where('dept_id',$departmentpdf[$key]->dept_id)->first();
                 if($fav_dept_tmp){
                     $departmentpdf[$key]->checked="Yes";
                 }
@@ -371,7 +371,7 @@ class FavController extends Controller
         $items = SchemeStructure::select('scheme_id as slId','scheme_name','scheme_short_name','created_at as createdDate')->get();
 
         foreach ($items as $key => $value) {
-            $fav_scheme_tmp = Fav_Scheme::where('user_id',1)->where('scheme_id',$items[$key]->slId)->first();
+            $fav_scheme_tmp = Fav_Scheme::where('user_id', session()->get('user_id'))->where('scheme_id',$items[$key]->slId)->first();
                 if($fav_scheme_tmp!=""){
                     $value->checked="Yes";
                 }
@@ -411,7 +411,7 @@ class FavController extends Controller
     {
         $Scheme_pdf = SchemeStructure::select('scheme_id','scheme_name','scheme_short_name','created_at as createdDate')->get();
         foreach ($Scheme_pdf as $key => $value) {
-            $fav_scheme_tmp = Fav_Scheme::select('favourite_scheme_id')->where('user_id',1)->where('scheme_id',$Scheme_pdf[$key]->scheme_id)->first();
+            $fav_scheme_tmp = Fav_Scheme::select('favourite_scheme_id')->where('user_id', session()->get('user_id'))->where('scheme_id',$Scheme_pdf[$key]->scheme_id)->first();
             if($fav_scheme_tmp){
                 $Scheme_pdf[$key]->checked="Yes";
             }
@@ -478,7 +478,7 @@ class FavController extends Controller
     
             foreach ($items as $key => $value) 
             {
-                $fav_block_tmp = Fav_Block::select('favourite_block_id')->where('user_id',1)->where('block_id',$items[$key]->slId)->first();
+                $fav_block_tmp = Fav_Block::select('favourite_block_id')->where('user_id', session()->get('user_id'))->where('block_id',$items[$key]->slId)->first();
                     if($fav_block_tmp!=""){
                         $value->checked="Yes";
                     }
@@ -519,7 +519,7 @@ class FavController extends Controller
         $block_pdf = GeoStructure::select('geo_id','geo_name','created_at as createdDate')->where('level_id','3')->orderBy('geo_structure.geo_id','asc')->get();
           foreach ($block_pdf as $key => $value) {
             $value->createdDate = date('d/m/Y',strtotime($value->createdDate));
-            $fav_block_tmp = Fav_Block::select('favourite_block_id')->where('user_id',1)->where('block_id',$block_pdf[$key]->geo_id)->first();
+            $fav_block_tmp = Fav_Block::select('favourite_block_id')->where('user_id', session()->get('user_id'))->where('block_id',$block_pdf[$key]->geo_id)->first();
                 if($fav_block_tmp){
                     $block_pdf[$key]->checked="Yes";
                 }
@@ -580,7 +580,7 @@ class FavController extends Controller
        
         foreach ($items as $key => $value) 
         {
-            $fav_panchayat_tmp = Fav_Panchayat::where('user_id',1)->where('panchayat_id',$items[$key]->slId)->first();
+            $fav_panchayat_tmp = Fav_Panchayat::where('user_id', session()->get('user_id'))->where('panchayat_id',$items[$key]->slId)->first();
                 if($fav_panchayat_tmp!=""){
                     $value->checked="Yes";
                 }
@@ -620,7 +620,7 @@ class FavController extends Controller
         $panchayat_pdf = GeoStructure::select('geo_id','geo_name','created_at as createdDate')->where('level_id','4')->orderBy('geo_structure.geo_id','asc')->get();
         foreach ($panchayat_pdf as $key => $value) {
             $value->createdDate = date('d/m/Y',strtotime($value->createdDate));
-            $fav_panchayat_tmp = Fav_Panchayat::select('favourite_panchayat_id')->where('user_id',1)->where('panchayat_id',$panchayat_pdf[$key]->geo_id)->first();          
+            $fav_panchayat_tmp = Fav_Panchayat::select('favourite_panchayat_id')->where('user_id', session()->get('user_id'))->where('panchayat_id',$panchayat_pdf[$key]->geo_id)->first();          
               if($fav_panchayat_tmp){
                   $panchayat_pdf[$key]->checked="Yes";
               }
@@ -682,7 +682,7 @@ class FavController extends Controller
         
          foreach ($items as $key => $value) 
          {
-            $fav_define_tmp = Fav_Define_Assets::where('user_id',1)->where('asset_id',$items[$key]->slId)->first();
+            $fav_define_tmp = Fav_Define_Assets::where('user_id', session()->get('user_id'))->where('asset_id',$items[$key]->slId)->first();
                  if($fav_define_tmp!=""){
                      $value->checked="Yes";
                  }
@@ -724,7 +724,7 @@ class FavController extends Controller
         $asset_pdf = Asset::leftJoin('department', 'asset.dept_id', '=', 'department.dept_id')
                     ->select('asset.*','department.dept_name')->orderBy('asset.asset_id','asc')->get();
         foreach ($asset_pdf as $key => $value) {
-            $fav_define_tmp = Fav_Define_Assets::select('favourite_asset_id')->where('user_id',1)->where('asset_id',$asset_pdf[$key]->asset_id)->first();
+            $fav_define_tmp = Fav_Define_Assets::select('favourite_asset_id')->where('user_id', session()->get('user_id'))->where('asset_id',$asset_pdf[$key]->asset_id)->first();
             if($fav_define_tmp){
                 $asset_pdf[$key]->checked="Yes";
             }
