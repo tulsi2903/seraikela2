@@ -16,6 +16,7 @@
                 <h4 class="card-title">Scheme Performance</h4>
                 <div class="card-tools">
                     <!-- <a href="{{url('scheme-geo-target')}}" class="btn btn-sm btn-secondary" style="float:right;"><i class="fas fa-arrow-left"></i>&nbsp;&nbsp;Back</a> -->
+                    <!-- <a href="{{url('scheme-performance/download_error_log')}}" class="btn btn-sm btn-secondary" style="float:right;"><i class="fas fa-download"></i>&nbsp;&nbsp;Download Errorlog</a> -->
                 </div>
             </div>
         </div>
@@ -58,6 +59,60 @@
                 </div>
             </div>
         </form>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">   
+                        @if(session()->get('to-download') == "yes")
+                            <?php session()->forget('to-download'); ?>
+                            <h4 style="color: #147785;text-align: center;margin-bottom: -24px;">Error Summary</h4>
+                            <table class="table table-datatable" id="printable-area">
+                                <tr>
+                                    <th colspan="2" style="text-align:center">District Resource and Scheme Management</th>
+                                </tr>
+                                <tr>
+                                    <td>Date</td>
+                                    <td>{{session()->get('currentdate')}}</td>
+                                </tr>
+                                <tr>
+                                    <td>TOTAL RECORD COUNT</td>
+                                    <td>{{session()->get('totalCount')}}</td>
+                                </tr>
+                                <tr>
+                                    <td>TOTAL SUCCESS COUNT</td>
+                                    <td>{{session()->get('totalsuccess')}}</td>
+                                </tr>
+                                <tr>
+                                    <td>TOTAL FAIL COUNT</td>
+                                    <td>{{session()->get('totalfail')}}</td>
+                                </tr>
+                            </table>
+                            <a href="{{url('scheme-performance/download_error_log')}}" class="btn btn-sm btn-secondary"><i class="fas fa-download"></i>&nbsp;&nbsp;Download Error-Log</a>
+                        @endif
+                    <!-- <p class="text-center"> 
+                        <?php
+                        if(session()->exists('to-download'))
+                        {
+                            if(session()->get('to-download')=="yes")
+                            {
+                                session()->forget('to-download');
+                                $myfile = fopen("public/uploaded_documents/error_log/SchemePerformance-errorLog".session()->get('user_id').".txt", "r");
+                                while(!feof($myfile)) {
+                                    echo fgets($myfile) . "<br>";
+                                }
+                                fclose($myfile);
+                            }
+                            else{
+                                session()->forget('to-download');
+                            }
+                        }
+                        else{
+                            session()->forget('to-download');
+                        }
+                        ?>
+                    </p>  -->
+                </div>
+            </div>
         </div>
     </div>
 </div><!--end of card-->

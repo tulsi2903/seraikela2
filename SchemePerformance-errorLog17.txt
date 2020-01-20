@@ -1,9 +1,8 @@
 District Resource and Scheme Management
 ----------------------------------------------------------------------------------------------------------------------------------
-DATE: 20/01/2020 11:33 AM
-TOTAL RECORD COUNT: 1
-TOTAL SUCCESS COUNT: 1
+DATE: 20/01/2020 06:07 PM
+TOTAL RECORD COUNT: 4
+TOTAL SUCCESS COUNT: 4
 TOTAL FAIL COUNT: 0
-USER NAME: Raj  Gupta 
 ----------------------------------------------------------------------------------------------------------------------------------
 No Error Found
