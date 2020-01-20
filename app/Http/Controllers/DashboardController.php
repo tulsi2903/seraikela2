@@ -194,12 +194,17 @@ class DashboardController extends Controller
         $performance_table_heading_2 = [""];
         $performance_table_datas = [];
 
-        if ($dashboard_scheme_performance_has_datas) {
+        if($dashboard_scheme_performance_has_datas) {
             //=> for headings
-            foreach ($scheme_ids as $scheme_id) {
+            foreach ($scheme_ids as $key=>$scheme_id) {
                 $scheme_data = SchemeStructure::find($scheme_id);
-                array_push($performance_table_heading_1, $scheme_data->scheme_short_name . "::" . $scheme_data->scheme_logo);
-                array_push($performance_table_heading_2, "Incomplete", "Completed", "Total");
+                if($scheme_data){
+                    array_push($performance_table_heading_1, $scheme_data->scheme_short_name ."::". $scheme_data->scheme_logo);
+                    array_push($performance_table_heading_2, "Incomplete", "Completed", "Total");
+                }
+                else{
+                    unset($scheme_ids[$key]);
+                }
             }
             //=> for datas
             foreach ($geo_ids as $geo_id) {
@@ -378,10 +383,15 @@ class DashboardController extends Controller
 
         if ($dashboard_scheme_performance_has_datas) {
             //=> for headings
-            foreach ($scheme_ids as $scheme_id) {
+            foreach ($scheme_ids as $key=>$scheme_id) {
                 $scheme_data = SchemeStructure::find($scheme_id);
-                array_push($performance_table_heading_1, $scheme_data->scheme_short_name . "::" . $scheme_data->scheme_logo);
-                array_push($performance_table_heading_2, "Incomplete", "Completed", "Total");
+                if($scheme_data){
+                    array_push($performance_table_heading_1, $scheme_data->scheme_short_name ."::". $scheme_data->scheme_logo);
+                    array_push($performance_table_heading_2, "Incomplete", "Completed", "Total");
+                }
+                else{
+                    unset($scheme_ids[$key]);
+                }
             }
             //=> for datas
             foreach ($geo_ids as $geo_id) {

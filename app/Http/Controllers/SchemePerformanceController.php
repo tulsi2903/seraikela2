@@ -150,9 +150,9 @@ class SchemePerformanceController extends Controller
                 }
                 $attributes  = unserialize($scheme_data->attributes);
                 foreach ($attributes as $key_att => $attribute) {
-                    $to_append_tbody .= '<td><input type="text" name="' . $attribute['id'] . '[]" class="form-control" value="'.@$SchemePerformance_attributes[$key_att][$attribute['id']].'" placeholder="' . $attribute['name'] . '"></td>';
+                    $to_append_tbody .= '<td><input type="text" name="' . $attribute['id'] . '[]" class="form-control" value="' . @$SchemePerformance_attributes[$key_att][$attribute['id']] . '" placeholder="' . $attribute['name'] . '"></td>';
                 }
-              
+
                 $to_append_tbody .= '<td><select name="status[]"  class="form-control">';
                 if ($value_SchemePerformance['status'] != "") {
                     if ($value_SchemePerformance['status'] == 0) {
@@ -170,7 +170,7 @@ class SchemePerformanceController extends Controller
                 }
                 $to_append_tbody .= '</select></td>';
                 $to_append_tbody .= '<td><input type="text" name="comments[]" value="' . $value_SchemePerformance['comments'] . '" class="form-control" placeholder="comments"></td>';
-                            // for gallery & coordinates
+                // for gallery & coordinates
 
                 $to_append_tbody .= '<td><a  onclick="update_image(' . $value_SchemePerformance['scheme_performance_id'] . ');" href="javascript:void()"> <i class="fas fa-plus"></i>Images</a>';
                 // $to_append_tbody.='<td><button type="button" class="btn btn-danger btn-xs" onclick="delete_row(this)"><i class="fas fa-trash-alt"></i></button></td>';
@@ -217,8 +217,8 @@ class SchemePerformanceController extends Controller
         // return $to_append_row;
 
 
-    
-    
+
+
         $to_append_thead .= '<th>Status</th>';
         $to_append_row .= '<td>
                             <select name="status[]" class="form-control">
@@ -229,7 +229,7 @@ class SchemePerformanceController extends Controller
         $to_append_thead .= '<th>Comments</th>';
         $to_append_row .= '<td><input type="text" name="comments[]" class="form-control" placeholder="comments"></td>';
         $to_append_thead .= '<th>Others</th>';
-            // for gallery & coordinates
+        // for gallery & coordinates
         $to_append_row .= '<td><a  href="javascript:void();"><i class="fas fa-plus"></i>Images</a>';
         // for coordinates
         // if($scheme_data->geo_related==1){
@@ -308,19 +308,16 @@ class SchemePerformanceController extends Controller
             $for_delete_record = explode(',', rtrim($request->to_delete, ','));
             $SchemePerformance_record = SchemePerformance::whereIn('scheme_performance_id', $for_delete_record)->delete();
         }
-        $SchemePerformance=SchemePerformance::where('scheme_id',$scheme_id)->where('year_id',$year_id)->where('block_id',$block_id)->get();
-        $incomplete_count=$complete_count=$total_count=0;
-        foreach($SchemePerformance as $key_performance => $value_performance)
-        {
-            if($value_performance['status']==0)
-            {
-                $incomplete_count=$incomplete_count+1;
+        $SchemePerformance = SchemePerformance::where('scheme_id', $scheme_id)->where('year_id', $year_id)->where('block_id', $block_id)->get();
+        $incomplete_count = $complete_count = $total_count = 0;
+        foreach ($SchemePerformance as $key_performance => $value_performance) {
+            if ($value_performance['status'] == 0) {
+                $incomplete_count = $incomplete_count + 1;
             }
-            if($value_performance['status']==1)
-            {
-                $complete_count=$complete_count+1;
+            if ($value_performance['status'] == 1) {
+                $complete_count = $complete_count + 1;
             }
-            $total_count=$total_count+1;
+            $total_count = $total_count + 1;
         }
         // echo $scheme_id;
         // echo "<br>";
@@ -334,23 +331,20 @@ class SchemePerformanceController extends Controller
         // echo count($SchemePerformance);
         // exit;
         // return $SchemePerformance;
-        $scheme_block_performance_details=scheme_block_performance::where('scheme_id',$scheme_id)->where('block_id',$block_id)->where('year_id',$year_id)->first();
-       if($scheme_block_performance_details!="")
-       {
-        scheme_block_performance::where('scheme_block_performance_id',$scheme_block_performance_details->scheme_block_performance_id)->update(array('total_count'=>$total_count,'completed_count'=>$complete_count,'incomplete_count'=>$incomplete_count));
-        // $scheme_block_performance_details;
-        }
-        else
-        {
-            $scheme_block_performance=new scheme_block_performance();
-            $scheme_block_performance->year_id=$year_id;
-            $scheme_block_performance->scheme_id=$scheme_id;
-            $scheme_block_performance->block_id=$block_id;
-            $scheme_block_performance->total_count=$total_count;
-            $scheme_block_performance->completed_count=$complete_count;
-            $scheme_block_performance->incomplete_count=$incomplete_count;
-             $scheme_block_performance->created_by=Auth::user()->id;
-            $scheme_block_performance->update_by=Auth::user()->id;
+        $scheme_block_performance_details = scheme_block_performance::where('scheme_id', $scheme_id)->where('block_id', $block_id)->where('year_id', $year_id)->first();
+        if ($scheme_block_performance_details != "") {
+            scheme_block_performance::where('scheme_block_performance_id', $scheme_block_performance_details->scheme_block_performance_id)->update(array('total_count' => $total_count, 'completed_count' => $complete_count, 'incomplete_count' => $incomplete_count));
+            // $scheme_block_performance_details;
+        } else {
+            $scheme_block_performance = new scheme_block_performance();
+            $scheme_block_performance->year_id = $year_id;
+            $scheme_block_performance->scheme_id = $scheme_id;
+            $scheme_block_performance->block_id = $block_id;
+            $scheme_block_performance->total_count = $total_count;
+            $scheme_block_performance->completed_count = $complete_count;
+            $scheme_block_performance->incomplete_count = $incomplete_count;
+            $scheme_block_performance->created_by = Auth::user()->id;
+            $scheme_block_performance->update_by = Auth::user()->id;
             $scheme_block_performance->save();
             // return $scheme_block_performance;
         }
@@ -396,7 +390,7 @@ class SchemePerformanceController extends Controller
             if (count($readExcelHeader) != 0) {
                 $excelSheetHeadings = $readExcelHeader->first()->keys()->toArray(); /* this is for excel sheet heading */
             }
-            
+
             if (count($readExcel) != 0) {
                 if (count($readExcel) <= 250) {
                     sort($tableHeadingsAndAtributes);
@@ -424,13 +418,13 @@ class SchemePerformanceController extends Controller
                             // $unserializedAtributesData = [];
                         }
 
-                        $filename = "SchemePerformance-errorLog".session()->get('user_id').".txt";   /* error file name */
+                        $filename = "SchemePerformance-errorLog" . session()->get('user_id') . ".txt";   /* error file name */
                         // session()->put('filename',$filename);
                         $myfile = fopen($filename, "w"); /* open error file name by using fopen function */
                         $noOfSuccess = 0;
                         $noOfFails = 0;
                         $ErrorTxt = "";
-                                         foreach ($readExcel as $key => $row) { /* Insert Data By using for each one by one */
+                        foreach ($readExcel as $key => $row) { /* Insert Data By using for each one by one */
                             $block_name =  ucwords($row['block_name']);
                             $panchayat_name =   ucwords($row['panchayat_name']);
                             $status =   ucwords($row['status']);
@@ -448,6 +442,7 @@ class SchemePerformanceController extends Controller
                                 $scheme_performance_details = SchemePerformance::get()->toArray();
                                 foreach ($scheme_performance_details as $key_edit => $value_edit) {
                                     $add_atributes = serialize($unserializedAtributesData[$key]);
+                                    // echo $key_edit;
                                     if ($value_edit['attribute'] == $add_atributes) {
                                         $flag = 1;
                                         $scheme_performance_id = $value_edit['scheme_performance_id'];
@@ -478,30 +473,58 @@ class SchemePerformanceController extends Controller
                                 if ($row['sno.'] != null) {
                                     if ($fetch_block_id == null && $fetch_panchayat_id != null) {
                                         $ErrorTxt .= " ON row sno. " . $row['sno.'] . " Block Not Found \n";
-                                        
                                     } elseif ($fetch_panchayat_id == null && $fetch_block_id != null) {
                                         $ErrorTxt .= " ON row sno. " . $row['sno.'] . " Panchayat Not Found \n";
-                                        
                                     } elseif ($fetch_panchayat_id == null && $fetch_block_id == null) {
                                         $ErrorTxt .= " ON row sno. " . $row['sno.'] . " Both Panchayat And Block Not Found \n";
-                                        
                                     } elseif ($fetch_subdivision_id == null || $fetch_year_id == null) {
                                         $ErrorTxt .= " ON row sno. " . $row['sno.'] . "Both Subdivision And Year Not Found \n";
-                                        
                                     }
-                                // } else {
-                                //     $txt = " Serial Number Not Available \n";
-                                //     fwrite($myfile, $txt);
+                                    // } else {
+                                    //     $txt = " Serial Number Not Available \n";
+                                    //     fwrite($myfile, $txt);
                                 }
                             }
                         }
-                        
+                        $SchemePerformance_forblock = SchemePerformance::get();
+                        foreach ($SchemePerformance_forblock as $key_get => $value_get) {
+                            $SchemePerformance = SchemePerformance::where('scheme_id', $value_get['scheme_id'])->where('year_id', $value_get['year_id'])->where('block_id', $value_get['block_id'])->get();
+                            $incomplete_count = $complete_count = $total_count = 0;
+                            foreach ($SchemePerformance as $key_performance => $value_performance) {
+                                if ($value_performance['status'] == 0) {
+                                    $incomplete_count = $incomplete_count + 1;
+                                }
+                                if ($value_performance['status'] == 1) {
+                                    $complete_count = $complete_count + 1;
+                                }
+                                $total_count = $total_count + 1;
+                            }
+                            $scheme_block_performance_details = scheme_block_performance::where('scheme_id', $value_get['scheme_id'])->where('block_id', $value_get['block_id'])->where('year_id', $value_get['year_id'])->first();
+                            if ($scheme_block_performance_details != "") {
+                                scheme_block_performance::where('scheme_block_performance_id', $scheme_block_performance_details->scheme_block_performance_id)->update(array('total_count' => $total_count, 'completed_count' => $complete_count, 'incomplete_count' => $incomplete_count));
+                                // $scheme_block_performance_details;
+                            } else {
+                                $scheme_block_performance = new scheme_block_performance();
+                                $scheme_block_performance->year_id = $value_get['year_id'];
+                                $scheme_block_performance->scheme_id = $value_get['scheme_id'];
+                                $scheme_block_performance->block_id = $value_get['block_id'];
+                                $scheme_block_performance->total_count = $total_count;
+                                $scheme_block_performance->completed_count = $complete_count;
+                                $scheme_block_performance->incomplete_count = $incomplete_count;
+                                $scheme_block_performance->created_by = Auth::user()->id;
+                                $scheme_block_performance->update_by = Auth::user()->id;
+                                $scheme_block_performance->save();
+                                // return $scheme_block_performance;
+                            }
+                        }
+
                         $txt = "District Resource and Scheme Management\n";
                         $txt .= "----------------------------------------------------------------------------------------------------------------------------------\n";
-                        $txt .= "DATE: ". date('d/m/Y h:i A')."\n";
-                        $txt .= "TOTAL RECORD COUNT: ". count($readExcel)."\n";
-                        $txt .= "TOTAL SUCCESS COUNT: ".$noOfSuccess."\n";
-                        $txt .= "TOTAL FAIL COUNT: ".$noOfFails."\n";
+                        $txt .= "DATE: " . date('d/m/Y h:i A') . "\n";
+                        $txt .= "TOTAL RECORD COUNT: " . count($readExcel) . "\n";
+                        $txt .= "TOTAL SUCCESS COUNT: " . $noOfSuccess . "\n";
+                        $txt .= "TOTAL FAIL COUNT: " . $noOfFails . "\n";
+                        // $txt .= "USER NAME: ". $getUserName->first_name." ". $getUserName->middle_name." ". $getUserName->last_name." \n";
                         $txt .= "----------------------------------------------------------------------------------------------------------------------------------\n";
                         if ($noOfFails == 0) {
                             $txt .= "No Error Found";
@@ -510,7 +533,7 @@ class SchemePerformanceController extends Controller
                         }
                         fwrite($myfile, $txt);
                         // exit;
-                        
+
                         fclose($myfile); //close file
 
                         if (file_get_contents($filename) == null) //if error file does not exit ant data then popup message success
@@ -519,18 +542,19 @@ class SchemePerformanceController extends Controller
                             session()->put('alert-content', 'Scheme details has been saved');
                             return back();
                         } else { //Else download the error notepad file
-                            header("Cache-Control: public");
-                            header("Content-Description: File Transfer");
-                            header("Content-Length: " . filesize("$filename") . ";");
-                            header("Content-Disposition: attachment; filename=$filename");
-                            header("Content-Type: application/octet-stream; ");
-                            header("Content-Transfer-Encoding: binary");
-                            $this->saveFile($filename,file_get_contents($filename));
+                            // header("Cache-Control: public");
+                            // header("Content-Description: File Transfer");
+                            // header("Content-Length: " . filesize("$filename") . ";");
+                            // header("Content-Disposition: attachment; filename=$filename");
+                            // header("Content-Type: application/octet-stream; ");
+                            // header("Content-Transfer-Encoding: binary");
+                            $this->saveFile($filename, file_get_contents($filename));
                             session()->put('currentdate', date('d/m/Y h:i:sa'));
                             session()->put('totalCount', count($readExcel));
                             session()->put('totalsuccess', $noOfSuccess);
                             session()->put('totalfail', $noOfFails);
                             session()->put('scheme_name',$scheme_datas['scheme_name']);
+
                             // readfile($filename);
                             session()->put('alert-class', 'alert-success');
                             // session()->put('alert-content', 'Scheme details has been saved');
@@ -555,15 +579,16 @@ class SchemePerformanceController extends Controller
             }
         }
     }
-    public function saveFile($filename,$filecontent){
-        if (strlen($filename)>0){
+    public function saveFile($filename, $filecontent)
+    {
+        if (strlen($filename) > 0) {
             $folderPath = 'public/uploaded_documents/error_log';
             if (!file_exists($folderPath)) {
                 mkdir($folderPath);
             }
-            $file = @fopen($folderPath . DIRECTORY_SEPARATOR . $filename,"w");
-            if ($file != false){
-                fwrite($file,$filecontent);
+            $file = @fopen($folderPath . DIRECTORY_SEPARATOR . $filename, "w");
+            if ($file != false) {
+                fwrite($file, $filecontent);
                 fclose($file);
                 return 1;
             }
@@ -575,7 +600,7 @@ class SchemePerformanceController extends Controller
     public function download_error_log()
     {
         # code...
-        $filename = "SchemePerformance-errorLog".session()->get('user_id').".txt";   /* error file name */
+        $filename = "SchemePerformance-errorLog" . session()->get('user_id') . ".txt";   /* error file name */
 
         header("Cache-Control: public");
         header("Content-Description: File Transfer");
@@ -602,8 +627,8 @@ class SchemePerformanceController extends Controller
             array_push($data, $value_un['name']);
         }
         array_push($data, 'Status');
-        $asset_data=SchemeAsset::get();
-        \Excel::create($scheme_datas->scheme_short_name . ' Scheme-Format-' . date("d-m-Y"), function ($excel) use ($asset_data,$data) {
+        $asset_data = SchemeAsset::get();
+        \Excel::create($scheme_datas->scheme_short_name . ' Scheme-Format-' . date("d-m-Y"), function ($excel) use ($asset_data, $data) {
 
             // Set the title
             $excel->setTitle('Scheme-Format');
@@ -618,15 +643,13 @@ class SchemePerformanceController extends Controller
                 // $sheet->setColumnFormat(array('I1' => '@'));
             });
 
-            $excel->sheet('Second sheet', function($sheet)  use ($asset_data) {
-                foreach($asset_data as $key_asset => $value_asset)
-                {
-                $sheet->row($key_asset, $value_asset['scheme_asset_name']);
+            $excel->sheet('Second sheet', function ($sheet)  use ($asset_data) {
+                foreach ($asset_data as $key_asset => $value_asset) {
+                    $sheet->row($key_asset, $value_asset['scheme_asset_name']);
                 }
                 #
                 // $sheet->fromArray($asset_data, null, 'A1', false, false);
             });
-        
         })->download('xls');
     }
 
