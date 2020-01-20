@@ -337,7 +337,7 @@ class SchemePerformanceController extends Controller
         $scheme_block_performance_details=scheme_block_performance::where('scheme_id',$scheme_id)->where('block_id',$block_id)->where('year_id',$year_id)->first();
        if($scheme_block_performance_details!="")
        {
-        scheme_block_performance::where('scheme_block_performance_id',$scheme_block_performance_details->scheme_block_performance_id)->update(array('total_count'=>$total_count,'complete_count'=>$complete_count,'incomplete_count'=>$incomplete_count));
+        scheme_block_performance::where('scheme_block_performance_id',$scheme_block_performance_details->scheme_block_performance_id)->update(array('total_count'=>$total_count,'completed_count'=>$complete_count,'incomplete_count'=>$incomplete_count));
         // $scheme_block_performance_details;
         }
         else
@@ -391,11 +391,12 @@ class SchemePerformanceController extends Controller
         }
         // array_push($tableHeadingsAndAtributes, 0);
         if ($_FILES['excelcsv']['tmp_name']) {
-            $readExcel = \Excel::load($_FILES['excelcsv']['tmp_name'], function ($reader) { })->get()->toArray();
-            $readExcelHeader = \Excel::load($_FILES['excelcsv']['tmp_name'])->get();
+            $readExcel = \Excel::selectSheets('Scheme-Format')->load($_FILES['excelcsv']['tmp_name'], function ($reader) { })->get()->toArray();
+            $readExcelHeader = \Excel::selectSheets('Scheme-Format')->load($_FILES['excelcsv']['tmp_name'])->get();
             if (count($readExcelHeader) != 0) {
                 $excelSheetHeadings = $readExcelHeader->first()->keys()->toArray(); /* this is for excel sheet heading */
             }
+            
             if (count($readExcel) != 0) {
                 if (count($readExcel) <= 250) {
                     sort($tableHeadingsAndAtributes);
@@ -539,7 +540,8 @@ class SchemePerformanceController extends Controller
             array_push($data, $value_un['name']);
         }
         array_push($data, 'Status');
-        \Excel::create($scheme_datas->scheme_short_name . ' Scheme-Format-' . date("d-m-Y"), function ($excel) use ($data) {
+        $asset_data=SchemeAsset::get();
+        \Excel::create($scheme_datas->scheme_short_name . ' Scheme-Format-' . date("d-m-Y"), function ($excel) use ($asset_data,$data) {
 
             // Set the title
             $excel->setTitle('Scheme-Format');
@@ -553,6 +555,16 @@ class SchemePerformanceController extends Controller
                 $sheet->fromArray($data, null, 'A1', true, false);
                 // $sheet->setColumnFormat(array('I1' => '@'));
             });
+
+            $excel->sheet('Second sheet', function($sheet)  use ($asset_data) {
+                foreach($asset_data as $key_asset => $value_asset)
+                {
+                $sheet->row($key_asset, $value_asset['scheme_asset_name']);
+                }
+                #
+                // $sheet->fromArray($asset_data, null, 'A1', false, false);
+            });
+        
         })->download('xls');
     }
 
