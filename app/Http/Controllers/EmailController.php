@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Mail;
 use PDF;
 use DB;
+use App\GeoStructure;
 
 
 
@@ -172,29 +173,46 @@ class EmailController extends Controller
             $send_subject=$request->subject;
             $details=json_decode($request->data);
 
-            $user = array('email_from'=>$email_from,'email_to'=>$email_to, 'cc'=>$email_cc, 'subject'=>$request->subject, 'content'=>$request->message,'results'=>$details);
-            Mail::send('mail.asset_numbers',['user'=> $user], function($message) use ($user)
-            {
-                $email_to=explode(',',$user['email_to']);
-                foreach($email_to as $key=>$value)
-                {
-                $message->to($email_to[$key]);
-                }
+             //   return $request->search_query;
+             $details_scheme_type= DB::table('asset_numbers')->join('year','asset_numbers.year','=','year.year_id')->join('asset','asset_numbers.asset_id','=','asset.asset_id')->join('geo_structure','asset_numbers.geo_id','=','geo_structure.geo_id')
+                                ->select('asset_numbers.*','year.year_value','asset.asset_name','geo_structure.geo_name');
+             if($request->search_query!="")
+             {
+               $details_scheme_type = $details_scheme_type->where('asset_numbers_id', 'LIKE', "%{$request->search_query}%")->get();
+             }
+             else
+             {
+                 $details_scheme_type=$details_scheme_type->get();
+             }
+             foreach($details_scheme_type as $value){
+                $value->block_name = GeoStructure::find(GeoStructure::find($value->geo_id)->bl_id)->geo_name;
+             }
+             // return $details_designation;
+             // exit;
+            $user = array('email_from'=>$email_from,'email_to'=>$email_to, 'cc'=>$email_cc, 'subject'=>$request->subject, 'content'=>$request->message,'results'=>$details_scheme_type);
+            // Mail::send('mail.asset_numbers',['user'=> $user], function($message) use ($user)
+            // {
+            //     $email_to=explode(',',$user['email_to']);
+            //     foreach($email_to as $key=>$value)
+            //     {
+            //     $message->to($email_to[$key]);
+            //     }
 
-                if(@$user['cc'])
-                {
-                $email_cc=explode(',',$user['cc']);
-                foreach($email_cc as $key=>$value)
-                {
-                    $message->cc($email_cc[$key]);
-                }
-                }
-                $message->subject($user['subject']);
-                $message->from('dsrm.skla@gmail.com','seraikela'); 
-                session()->put('alert-class','alert-success');
-                session()->put('alert-content','Email send');
-            });
-            return redirect('asset_numbers');
+            //     if(@$user['cc'])
+            //     {
+            //     $email_cc=explode(',',$user['cc']);
+            //     foreach($email_cc as $key=>$value)
+            //     {
+            //         $message->cc($email_cc[$key]);
+            //     }
+            //     }
+            //     $message->subject($user['subject']);
+            //     $message->from('dsrm.skla@gmail.com','seraikela'); 
+            //     session()->put('alert-class','alert-success');
+            //     session()->put('alert-content','Email send');
+            // });
+            // return redirect('asset_numbers');
+            return view('mail.asset_numbers')->with('user',$user);
         }
         elseif($request->geo_structure=="geo_structure"){
             $email_from=$request->from;
@@ -336,31 +354,31 @@ class EmailController extends Controller
          
 
             $user = array('email_from'=>$email_from,'email_to'=>$email_to, 'cc'=>$email_cc, 'subject'=>$request->subject, 'content'=>$request->message,'results'=>$details_scheme_assets);
-             Mail::send('mail.scheme-asset',['user'=> $user], function($message) use ($user)
-             {
-                 $email_to=explode(',',$user['email_to']);
-                 foreach($email_to as $key=>$value)
-                {
-                    $message->to($email_to[$key]);
-                }
+            //  Mail::send('mail.scheme-asset',['user'=> $user], function($message) use ($user)
+            //  {
+            //      $email_to=explode(',',$user['email_to']);
+            //      foreach($email_to as $key=>$value)
+            //     {
+            //         $message->to($email_to[$key]);
+            //     }
 
-                if(@$user['cc'])
-                {
-                 $email_cc=explode(',',$user['cc']);
-                    foreach($email_cc as $key=>$value)
-                    {
-                        $message->cc($email_cc[$key]);
-                    }
-                }
-                $message->subject($user['subject']);
-                $message->from('dsrm.skla@gmail.com','seraikela'); 
-                 session()->put('alert-class','alert-success');
-                 session()->put('alert-content','Email send');
-             });
-                return $user;
-            //  return view('mail.scheme-asset')->with('user',$user);
+            //     if(@$user['cc'])
+            //     {
+            //      $email_cc=explode(',',$user['cc']);
+            //         foreach($email_cc as $key=>$value)
+            //         {
+            //             $message->cc($email_cc[$key]);
+            //         }
+            //     }
+            //     $message->subject($user['subject']);
+            //     $message->from('dsrm.skla@gmail.com','seraikela'); 
+            //      session()->put('alert-class','alert-success');
+            //      session()->put('alert-content','Email send');
+            //  });
+            //     return $user;
+             return view('mail.scheme-asset')->with('user',$user);
             
-              return redirect('scheme-asset');
+            //   return redirect('scheme-asset');
         }
         elseif($request->group=="group"){
             

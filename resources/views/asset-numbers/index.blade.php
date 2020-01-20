@@ -16,6 +16,80 @@
         color: #fff !important;
         margin-top: 1em;
     }
+    #printable-info-details {
+        visibility: hidden;
+        height: 0px;
+        /* position: fixed;
+        left: 0;
+        top: 20px;
+        width: 100vw !important; */
+    }
+    
+    @media print {
+        #printable-area {
+            margin-top: 250px !important;
+        }
+        .no-print,
+        .no-print * {
+            display: none !important;
+        }
+        #printable-info-details {
+            visibility: visible;
+            position: fixed;
+        }
+        #print-button,
+        #print-button * {
+            visibility: hidden;
+        }
+        .card-title-print-1 {
+            visibility: visible !important;
+            position: fixed;
+            color: #147785;
+            font-size: 30px;
+            ;
+            left: 0;
+            top: 50px;
+            width: 100vw !important;
+            height: 100vw !important;
+        }
+        .card-title-print-2 {
+            visibility: visible !important;
+            position: fixed;
+            color: #147785;
+            font-size: 30px;
+            ;
+            left: 0;
+            top: 100px;
+            width: 100vw !important;
+            height: 100vw !important;
+        }
+        .card-title-print-3 {
+            visibility: visible !important;
+            position: fixed;
+            color: #147785;
+            font-size: 30px;
+            ;
+            left: 0;
+            top: 140px;
+            width: 100vw !important;
+            height: 100vw !important;
+        }
+        .action-buttons {
+            display: none;
+        }
+    }
+    .logo-header .logo {
+        color: #575962;
+        opacity: 1;
+        position: relative;
+        height: 100%;
+        margin-top: 1em;
+    }
+
+    .btn-toggle {
+        color: #fff !important;
+        margin-top: 1em;
+    }
 </style>
 @endsection
 
@@ -29,10 +103,16 @@
             <div class="card-head-row card-tools-still-right" style="background:#fff;">
                 <h4 class="card-title">Resources Number</h4>
                 <div class="card-tools">
-                    <a href="#" data-toggle="tooltip" title="Send Mail"><button type="button" class="btn btn-icon btn-round btn-success" data-target="#create-email" data-toggle="modal"><i class="fa fa-envelope" aria-hidden="true"></i></button></a>
-                    <a href="#" data-toggle="tooltip" title="Print"><button type="button" class="btn btn-icon btn-round btn-default" id="print-button" onclick="printView();"><i class="fa fa-print" aria-hidden="true"></i></button></a>
-                    <a href="{{url('asset_Numbers/pdf/pdfURL')}}" target="_blank" data-toggle="tooltip" title="Export to PDF"><button type="button" class="btn btn-icon btn-round btn-warning"><i class="fas fa-file-export"></i></button></a>
-                    <a href="{{url('asset_Numbers/export/excelURL')}}" data-toggle="tooltip" title="Export to Excel"><button type="button" class="btn btn-icon btn-round btn-primary"><i class="fas fa-file-excel"></i></button></a>
+                    <!-- <a href="#" data-toggle="tooltip" title="Send Mail"><button type="button" class="btn btn-icon btn-round btn-success" data-target="#create-email" data-toggle="modal"><i class="fa fa-envelope" aria-hidden="true"></i></button></a> -->
+                    
+                    <button type="button" class="btn btn-icon btn-round btn-success"  onclick="openmodel();" ><i class="fa fa-envelope" aria-hidden="true"></i></button>
+                    <button type="button" class="btn btn-icon btn-round btn-default" onclick="printViewone();"><i class="fa fa-print" aria-hidden="true"></i></button>
+
+                    <!-- <a href="#" data-toggle="tooltip" title="Print"><button type="button" class="btn btn-icon btn-round btn-default" id="print-button" onclick="printView();"><i class="fa fa-print" aria-hidden="true"></i></button></a> -->
+                    <button type="button" onclick="exportSubmit('print_pdf');" class="btn btn-icon btn-round btn-warning"><i class="fas fa-file-export"></i></button>
+                    <button type="button" onclick="exportSubmit('excel_sheet');" class="btn btn-icon btn-round btn-success"><i class="fas fa-file-excel"></i></button>
+                    <!-- <a href="{{url('asset_Numbers/pdf/pdfURL')}}" target="_blank" data-toggle="tooltip" title="Export to PDF"><button type="button" class="btn btn-icon btn-round btn-warning"><i class="fas fa-file-export"></i></button></a>
+                    <a href="{{url('asset_Numbers/export/excelURL')}}" data-toggle="tooltip" title="Export to Excel"><button type="button" class="btn btn-icon btn-round btn-primary"><i class="fas fa-file-excel"></i></button></a> -->
                     @if($desig_permissions["mod14"]["add"])
                     <a href="{{url('asset_Numbers/downloadFormat')}}" data-toggle="tooltip" title="Download Excel Format"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fa fa-download"></i></button></a>
                     <a href="{{url('asset_Numbers/downloadFormatwithLocation')}}" data-toggle="tooltip" title="Download Location Excel Format"><button type="button" class="btn btn-icon btn-round btn-primary" ><i class="fa fa-download"></i></button></a>
@@ -51,6 +131,12 @@
                         <a class="btn btn-secondary" href="{{url('asset-numbers/add')}}" role="button"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;Add</a>
                     </div><br><br> -->
                 <div class="table-responsive table-hover table-sales">
+                    <div id="printable-info-details">
+                        <p class="card-title-print-1">Title: Resources Number</p>
+                        <p class="card-title-print-2">Date & Time:
+                            <?php  date_default_timezone_set('Asia/Kolkata'); $currentDateTime = date('d-m-Y H:i:s'); echo $currentDateTime; ?>
+                                <p class="card-title-print-3">User Name: {{session()->get('user_full_name')}}</p>
+                    </div>
                     <table class="table table-datatable" id="printable-area">
                         <thead style="background: #d6dcff;color: #000;">
                             <tr>
@@ -71,7 +157,12 @@
                             @if(isset($datas))
                             @foreach($datas as $data)
                             <tr>
-                                <td width="40px;">{{$count++}}</td>
+                                <td width="40px;">{{$count++}}
+
+                                    <input type="text" value="{{$data->asset_numbers_id }}" name="asset_numbers_id_to_export[]" hidden >
+
+
+                                </td>
                                 <td>{{$data->year_value}}</td>
                                 <td>{{$data->asset_name}}</td>
                                 <td>{{$data->block_name}}</td>
@@ -106,6 +197,14 @@
                 </div>
             </div>
         </div>
+         <!-- export starts -->
+         <form action="{{url('asset-numbers/view_diffrent_formate')}}" method="POST" enctype="multipart/form-data" id="export-form"> <!-- for for edit, if inline edit form append then this form action/method will triggered -->
+            @csrf
+            <input type="text" name="asset_numbers_id"  hidden>
+            <input type="text" name="print" hidden > <!-- hidden input for export (pdf/excel) -->
+            </form>
+        <!-- export ends -->
+    
     </div>
     @if(@session()->get('message')!="")
     <?php 
@@ -158,6 +257,7 @@
                                 <div class="form-group">
                                     <input type="hidden" name="asset_numbers" value="asset_numbers">
                                     <input type="hidden" name="data" value="{{$datas}}">
+                                    <input type="text" name="search_query" id="dept_search" hidden>
                                     <!-- <input type="text" name="from" class="form-control" placeholder="From" required=""> -->
                                 </div>
                                 <div class="form-group">
@@ -189,3 +289,30 @@
         </div>
     </div>
     <!-- end model> -->
+
+    
+    <script>
+        function exportSubmit(type)
+        {
+            $("input[name='print']").val(type);
+            var values = $("input[name='asset_numbers_id_to_export[]']").map(function(){return $(this).val();}).get();
+            $("input[name='asset_numbers_id']").val(values);
+            document.getElementById('export-form').submit();
+        }
+    </script>
+      <script>
+        function openmodel()
+        {
+            // alert("afj;l");
+            var search_element=$( "input[type=search]" ).val();
+            $('#create-email').modal('show');
+            $('#dept_search').val(search_element);
+            // alert(search_element);
+        }
+        
+        </script>
+<script>
+    function printViewone() {
+        window.print();
+    }
+</script>

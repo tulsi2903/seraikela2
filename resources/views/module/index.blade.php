@@ -120,7 +120,7 @@
                         </form>
                     </div>
                     <div class="table-responsive table-hover table-sales">
-                        <form action="{{url('module/store')}}" method="POST"> for for edit, if inline edit form append then this form action/method will triggered
+                        <form action="{{url('module/store')}}" method="POST"> 
                         @csrf
                             <div id="printable-info-details">
                                 <p class="card-title-print-1">Title: Module

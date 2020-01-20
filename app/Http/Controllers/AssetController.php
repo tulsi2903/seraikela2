@@ -736,7 +736,7 @@ class AssetController extends Controller
 
 
     
-      // abhishek 
+    // abhishek  for sub cat 
       public function view_diffrent_formate(Request $request)
       {
         //   return $request;
@@ -819,7 +819,7 @@ class AssetController extends Controller
               if($request->asset_cat_id!="")
               {
                 
-                        $data = array(1 => array("Asset Sub Catagory-Sheet"));
+                        $data = array(1 => array("Resource Catagory-Sheet"));
                         $data[] = array('Sl.No.', 'Sub Category Name', 'Sub Category Description', 'Category Name', 'Date');
 
                         $items =  asset_subcat::leftjoin('asset_cat', 'asset_subcat.asset_cat_id', '=', 'asset_cat.asset_cat_id')
@@ -843,15 +843,15 @@ class AssetController extends Controller
                                 $value->createdDate
                             );
                         }
-                        \Excel::create('AssetSubCatagory', function ($excel) use ($data) {
+                        \Excel::create('Resource Catagory-Sheet', function ($excel) use ($data) {
 
                             // Set the title
-                            $excel->setTitle('AssetSubCatagory-Sheet');
+                            $excel->setTitle('Resource Catagory-Sheet');
 
                             // Chain the setters
                             $excel->setCreator('Seraikela')->setCompany('Seraikela');
 
-                            $excel->sheet('Fees', function ($sheet) use ($data) {
+                            $excel->sheet('Resource Catagory-Sheet', function ($sheet) use ($data) {
                                 $sheet->freezePane('A3');
                                 $sheet->mergeCells('A1:I1');
                                 $sheet->fromArray($data, null, 'A1', true, false);
@@ -945,7 +945,7 @@ class AssetController extends Controller
             if($request->asset_sub_id!="")
             {
               
-                $data = array(1 => array("Asset Sub Catagory-Sheet"));
+                $data = array(1 => array("Resource Sub Catagory-Sheet"));
                 $data[] = array('Sl.No.', 'Sub Category Name', 'Sub Category Description', 'Category Name', 'Date');
         
                 $items =  asset_subcat::leftjoin('asset_cat', 'asset_subcat.asset_cat_id', '=', 'asset_cat.asset_cat_id')
@@ -968,15 +968,15 @@ class AssetController extends Controller
                         $value->createdDate
                     );
                 }
-                \Excel::create('AssetSubCatagory', function ($excel) use ($data) {
+                \Excel::create('Resource Sub Catagory-Sheet', function ($excel) use ($data) {
         
                     // Set the title
-                    $excel->setTitle('AssetSubCatagory-Sheet');
+                    $excel->setTitle('Resource Sub Catagory-Sheet');
         
                     // Chain the setters
                     $excel->setCreator('Seraikela')->setCompany('Seraikela');
         
-                    $excel->sheet('Fees', function ($sheet) use ($data) {
+                    $excel->sheet('Resource Sub Catagory-Sheet', function ($sheet) use ($data) {
                         $sheet->freezePane('A3');
                         $sheet->mergeCells('A1:I1');
                         $sheet->fromArray($data, null, 'A1', true, false);

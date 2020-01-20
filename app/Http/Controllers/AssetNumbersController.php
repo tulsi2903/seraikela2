@@ -16,6 +16,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\AssetNumberSectionExport;
 use PDF;
 use Session;
+use Auth;
 
 class AssetNumbersController extends Controller
 {
@@ -1049,4 +1050,180 @@ class AssetNumbersController extends Controller
         readfile($filename);
         exit();
     }
+
+         // abhishek 
+         public function view_diffrent_formate(Request $request)
+         {
+            // return $request;
+            // return "akf";
+            $asset_numbers_id = explode(',',$request->asset_numbers_id); // array
+             $department=array();
+             if($request->print=="print_pdf")
+             {
+                  
+                 if($request->asset_numbers_id!="")
+                 {
+     
+                       
+                    $AssetNumberdata = AssetNumbers::whereIn('asset_numbers_id',$asset_numbers_id)->select('geo_id', 'asset_id', 'year', 'created_at as date', DB::raw('MAX(updated_at) AS max_updated'), DB::raw('MAX(asset_numbers_id) as asset_numbers_id'))
+                    ->groupBy('year', 'asset_id', 'geo_id', 'created_at')
+                    // ->format("Y-m-d")
+                    ->get();
+
+                foreach ($AssetNumberdata as $key => $value) {
+                    if (Asset::find($value->asset_id)) {
+                        $value->asset_name = Asset::find($value->asset_id)->asset_name;
+                    }
+                    if (GeoStructure::find($value->geo_id)) {
+                        $panchayat_data_tmp = GeoStructure::find($value->geo_id);
+                        $value->panchayat_name = $panchayat_data_tmp->geo_name;
+                        $block_data_tmp = GeoStructure::find($panchayat_data_tmp->bl_id);
+                        $value->block_name = $block_data_tmp->geo_name;
+                    }
+                    if (Year::find($value->year)) {
+                        $value->year_value = Year::find($value->year)->year_value;
+                    }
+                    $tmp = AssetNumbers::select('asset_numbers_id', 'pre_value', 'current_value')->where('asset_numbers_id', $value->asset_numbers_id)->first();
+                    if (count($tmp) > 0) {
+                        $value->pre_value = $tmp->pre_value;
+                        $value->current_value = $tmp->current_value;
+                        $value->asset_numbers_id = $tmp->asset_numbers_id;
+                    }
+                    $value->date = date("d/m/Y", strtotime($value->date));
+                }
+
+                $doc_details = array(
+                    "title" => "Asset Number Data",
+                    "author" => 'IT-Scient',
+                    "topMarginValue" => 10,
+                    "mode" => 'L'
+                );
+
+                date_default_timezone_set('Asia/Kolkata');
+                            $currentDateTime = date('d-m-Y H:i:s'); 
+                            $user_name=Auth::user()->first_name;
+                            $user_last_name=Auth::user()->last_name;
+                $pdfbuilder = new \PdfBuilder($doc_details);
+
+                $content = "<table cellspacing=\"0\" cellpadding=\"4\" border=\"1\" ><tr>";
+                $content .= "<th style='border: solid 1px #000000;' colspan=\"7\" align=\"left\" ><b>Resources Number</b></th></tr>";
+                $content .= "<p style=\"border: solid 1px #000000;width: 50px;\" padding:\"100px;\">"."<b>"."<span>Title: </span>&nbsp;&nbsp;&nbsp;Resources Number Details
+                "."<br>"."<span>Date & Time: </span>&nbsp;&nbsp;&nbsp;".$currentDateTime."<br>"."<span>User Name:</span>&nbsp;&nbsp;&nbsp;" . $user_name."&nbsp;".$user_last_name.
+                "</b>"."</p>";
+
+                /* ========================================================================= */
+                /*                Total width of the pdf table is 1017px                     */
+                /* ========================================================================= */
+                $content .= "<thead>";
+                $content .= "<tr>";
+                $content .= "<th style=\"width: 50px;\" align=\"center\"><b>Sl. No.</b></th>";
+                $content .= "<th style=\"width: 250px;\" align=\"center\"><b>Year</b></th>";
+                $content .= "<th style=\"width: 160px;\" align=\"center\"><b>Asset</b></th>";
+                $content .= "<th style=\"width: 160px;\" align=\"center\"><b>Block</b></th>";
+                $content .= "<th style=\"width: 160px;\" align=\"center\"><b>Panchyat</b></th>";
+                $content .= "<th style=\"width: 140px;\" align=\"center\"><b>Current Value</b></th>";
+                $content .= "<th style=\"width: 97px;\" align=\"center\"><b>Date</b></th>";
+                $content .= "</tr>";
+                $content .= "</thead>";
+
+                $content .= "<tbody>";
+                foreach ($AssetNumberdata as $key => $row) {
+                    $index = $key + 1;
+                    $content .= "<tr>";
+                    $content .= "<td style=\"width: 50px;\" align=\"right\">" . $index . "</td>";
+                    $content .= "<td style=\"width: 250px;\" align=\"left\">" . $row->year_value . "</td>";
+                    $content .= "<td style=\"width: 160px;\" align=\"left\">" . $row->asset_name . "</td>";
+                    $content .= "<td style=\"width: 160px;\" align=\"left\">" . $row->block_name . "</td>";
+                    $content .= "<td style=\"width: 160px;\" align=\"left\">" . $row->panchayat_name . "</td>";
+                    $content .= "<td style=\"width: 140px;\" align=\"right\">" . $row->current_value . "</td>";
+                    $content .= "<td style=\"width: 97px;\" align=\"right\">" . $row->date . "</td>";
+                    $content .= "</tr>";
+                }
+                $content .= "</tbody></table>";
+                // print_r($content);exit;
+                $pdfbuilder->table($content, array('border' => '1', 'align' => ''));
+                $pdfbuilder->output('AssetNumber.pdf');
+                exit;
+                   
+    
+                         
+    
+     
+                 }
+                //  return $request;
+             }
+             elseif($request->print=="excel_sheet")
+             {
+                    // return $request;
+                 if($request->asset_numbers_id!="")
+                 {
+     
+                                config()->set('database.connections.mysql.strict', false);
+                                \DB::reconnect(); //important as the existing connection if any would be in strict mode
+
+
+                                $data = array(1 => array("Resources Number Details"));
+                                $data[] = array('Sl. No.', 'Year', 'Asset', 'Block', 'Panchyat', 'Current Value', 'Date');
+
+                                $items = DB::table('asset_numbers')
+                                    ->whereIn('asset_numbers_id',$asset_numbers_id)
+                                    ->leftJoin('geo_structure', 'asset_numbers.geo_id', '=', 'geo_structure.geo_id')
+                                    ->leftJoin('asset', 'asset_numbers.asset_id', '=', 'asset.asset_id')
+                                    ->leftJoin('year', 'asset_numbers.year', '=', 'year.year_id')
+                                    ->select(
+                                        'asset_numbers.asset_numbers_id as slNo',
+                                        'year.year_value',
+                                        'asset.asset_name',
+                                        'geo_structure.bl_id as Block',
+                                        'geo_structure.geo_name',
+                                        'asset_numbers.current_value',
+                                        'asset_numbers.created_at as CreatedDate'
+                                    )
+                                    ->groupBy('asset_numbers.year', 'asset_numbers.asset_id', 'asset_numbers.geo_id')->get();
+
+                                //now changing back the strict ON
+                                config()->set('database.connections.mysql.strict', true);
+                                \DB::reconnect();
+
+
+                                foreach ($items as $key => $value) {
+                                    $value->CreatedDate = date('d/m/Y', strtotime($value->CreatedDate));
+                                    $block_data_tmp = GeoStructure::find($value->Block);
+                                    $value->Block = $block_data_tmp->geo_name;
+
+                                    $data[] = array(
+                                        $key + 1,
+                                        $value->year_value,
+                                        $value->asset_name,
+                                        $value->Block,
+                                        $value->geo_name,
+                                        $value->current_value,
+                                        $value->CreatedDate
+                                    );
+                                }
+                                \Excel::create('Resources Number Details', function ($excel) use ($data) {
+
+                                    // Set the title
+                                    $excel->setTitle('Resources Number Details');
+
+                                    // Chain the setters
+                                    $excel->setCreator('Seraikela')->setCompany('Seraikela');
+
+                                    $excel->sheet('Resources Number Details', function ($sheet) use ($data) {
+                                        $sheet->freezePane('A3');
+                                        $sheet->mergeCells('A1:I1');
+                                        $sheet->fromArray($data, null, 'A1', true, false);
+                                        $sheet->setColumnFormat(array('I1' => '@'));
+                                    });
+                                })->download('xls');
+                                return Excel::download(new AssetNumberSectionExport, 'Asset Number-Sheet.xls');
+
+
+
+     
+                 }
+                 return $request;
+             }
+         }
+
 }

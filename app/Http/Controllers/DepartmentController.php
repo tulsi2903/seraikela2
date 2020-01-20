@@ -413,7 +413,7 @@ class DepartmentController extends Controller
                     // Chain the setters
                     $excel->setCreator('Seraikela')->setCompany('Seraikela');
         
-                    $excel->sheet('Fees', function ($sheet) use ($data) {
+                    $excel->sheet('Department-Sheet', function ($sheet) use ($data) {
                         $sheet->freezePane('A3');
                         $sheet->mergeCells('A1:I1');
                         $sheet->fromArray($data, null, 'A1', true, false);

@@ -116,7 +116,7 @@
                     <div id="printable-info-details">
                         <p class="card-title-print-1">Title: Scheme Details </p>
                         <p class="card-title-print-2">Date & Time:
-                            <?php $currentDateTime = date('d-m-Y H:i:s'); echo $currentDateTime; ?>
+                            <?php date_default_timezone_set('Asia/Kolkata'); $currentDateTime = date('d-m-Y H:i:s'); echo $currentDateTime; ?>
                                 <p class="card-title-print-3">User Name: {{session()->get('user_full_name')}}</p>
                     </div>
                     <table class="table table-datatable" id="printable-area">
