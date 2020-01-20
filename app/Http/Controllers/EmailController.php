@@ -705,7 +705,22 @@ class EmailController extends Controller
             $send_subject=$request->subject;
             $details=json_decode($request->data);
 
-            $user = array('email_from'=>$email_from,'email_to'=>$email_to, 'cc'=>$email_cc, 'subject'=>$request->subject, 'content'=>$request->message,'results'=>$details);
+             //   return $request->search_query;
+             $details_asset= DB::table('asset')->join('department','asset.asset_id','=','department.dept_id')->select('asset.*','department.dept_name');
+             if($request->search_query!="")
+             {
+               $details_asset = $details_asset->where('asset.asset_name', 'LIKE', "%{$request->search_query}%")->get();
+            //  return $details_scheme_structure;
+
+             }
+             else
+             {
+                 $details_asset=$details_asset->get();
+             }
+            //  return $details_scheme_structure;
+             // exit;
+
+            $user = array('email_from'=>$email_from,'email_to'=>$email_to, 'cc'=>$email_cc, 'subject'=>$request->subject, 'content'=>$request->message,'results'=>$details_asset);
             
             Mail::send('mail.asset',['user'=> $user], function($message) use ($user)
              {
@@ -729,6 +744,8 @@ class EmailController extends Controller
                  session()->put('alert-content','Email send');
              });
               return redirect('asset');
+            //  return view('mail.asset')->with('user',$user);
+
         }
 
         elseif($request->mgnrega=="mgnrega"){

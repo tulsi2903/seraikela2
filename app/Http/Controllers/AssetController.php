@@ -989,4 +989,145 @@ class AssetController extends Controller
         }
     }
 
+      // for Assert (Resources)
+      public function view_diffrent_formate_for_resources(Request $request)
+      {
+        //  return $request;
+        //  return "akf";
+         $asset_id = explode(',',$request->asset_id); // array
+          $department=array();
+          if($request->print=="print_pdf")
+          {
+               
+              if($request->asset_id!="")
+              {
+  
+                    
+                        $Assetdata = Asset::leftJoin('department', 'asset.dept_id', '=', 'department.dept_id')
+                        ->whereIn('asset.asset_id',$asset_id)
+                        ->leftJoin('asset_cat', 'asset.category_id', '=', 'asset_cat.asset_cat_id')
+                        ->leftJoin('asset_subcat', 'asset.subcategory_id', '=', 'asset_subcat.asset_sub_id')
+                        ->select('asset.*', 'department.dept_name', 'asset_cat.asset_cat_name', 'asset_subcat.asset_sub_cat_name')
+                        ->orderBy('asset.asset_id', 'desc')
+                        ->get();
+                    
+                        foreach ($Assetdata as $key => $value) {
+                            $value->createdDate = date('d/m/Y', strtotime($value->created_at));
+                            if ($value->movable == 1) {
+                                $value->movable = "Movable";
+                            } else {
+                                $value->movable = "Immovable";
+                            }
+                        }
+                
+                        $doc_details = array(
+                            "title" => "Assetdata",
+                            "author" => 'IT-Scient',
+                            "topMarginValue" => 10,
+                            "mode" => 'P'
+                        );
+                        
+                        date_default_timezone_set('Asia/Kolkata');
+                        $currentDateTime = date('d-m-Y H:i:s'); 
+                        $user_name=Auth::user()->first_name;
+                        $user_last_name=Auth::user()->last_name;
+                        $pdfbuilder = new \PdfBuilder($doc_details);
+                
+                        $content = "<table cellspacing=\"0\" cellpadding=\"4\" border=\"1\" ><tr>";
+                        $content .= "<th style='border: solid 1px #000000;' colspan=\"5\" align=\"left\" ><b>Department</b></th></tr>";
+                        $content .= "<p style=\"border: solid 1px #000000;width: 50px;\" padding:\"100px;\">"."<b>"."<span>Title: </span>&nbsp;&nbsp;&nbsp;Department
+                        "."<br>"."<span>Date & Time: </span>&nbsp;&nbsp;&nbsp;".$currentDateTime."<br>"."<span>User Name:</span>&nbsp;&nbsp;&nbsp;" . $user_name."&nbsp;".$user_last_name.
+                        "</b>"."</p>";
+                
+                        /* ========================================================================= */
+                        /*             Total width of the pdf table is 1017px lanscape               */
+                        /*             Total width of the pdf table is 709px portrait                */
+                        /* ========================================================================= */
+                        $content .= "<thead>";
+                        $content .= "<tr>";
+                        $content .= "<th style=\"width: 50px;\" align=\"center\"><b>Sl.No.</b></th>";
+                        $content .= "<th style=\"width: 300px;\" align=\"center\"><b>Name</b></th>";
+                        $content .= "<th style=\"width: 90px;\" align=\"center\"><b>Type</b></th>";
+                        $content .= "<th style=\"width: 179px;\" align=\"center\"><b>Department Name</b></th>";
+                        $content .= "<th style=\"width: 90px;\" align=\"center\"><b>Date</b></th>";
+                        $content .= "</tr>";
+                        $content .= "</thead>";
+                        $content .= "<tbody>";
+                        foreach ($Assetdata as $key => $row) {
+                            $index = $key + 1;
+                            $content .= "<tr>";
+                            $content .= "<td style=\"width: 50px;\" align=\"right\">" . $index . "</td>";
+                            $content .= "<td style=\"width: 300px;\" align=\"left\">" . $row->asset_name . "</td>";
+                            $content .= "<td style=\"width: 90px;\" align=\"left\">" . $row->movable . "</td>";
+                            $content .= "<td style=\"width: 179px;\" align=\"left\">" . $row->dept_name . "</td>";
+                            $content .= "<td style=\"width: 90px;\" align=\"right\">" . $row->createdDate . "</td>";
+                            $content .= "</tr>";
+                        }
+                        $content .= "</tbody></table>";
+                        $pdfbuilder->table($content, array('border' => '1', 'align' => ''));
+                        $pdfbuilder->output('AssetData.pdf');
+                        exit;
+ 
+                      
+ 
+  
+              }
+             //  return $request;
+          }
+          elseif($request->print=="excel_sheet")
+          {
+                 // return $request;
+              if($request->asset_id!="")
+              {
+  
+                            
+                $data = array(1 => array("Resources Data  Sheet"));
+                $data[] = array('Sl. No.', 'Name', 'Type', 'Department Name', 'Date');
+        
+                $items =  Asset::leftJoin('department', 'asset.dept_id', '=', 'department.dept_id')
+                    ->whereIn('asset.asset_id',$asset_id)
+                    ->leftJoin('asset_cat', 'asset.category_id', '=', 'asset_cat.asset_cat_id')
+                    ->leftJoin('asset_subcat', 'asset.subcategory_id', '=', 'asset_subcat.asset_sub_id')
+                    ->select('asset.asset_id as slId', 'asset.asset_name', 'asset.movable', 'department.dept_name', 'asset.created_at as createdDate')
+                    ->orderBy('asset.asset_id', 'desc')
+                    ->get();
+        
+                foreach ($items as $key => $value) {
+                    if ($value->movable == 1) {
+                        $value->movable = "Movable";
+                    } else {
+                        $value->movable = "Immovable";
+                    }
+                    $value->createdDate = date('d/m/Y', strtotime($value->createdDate));
+                    $data[] = array(
+                        $key + 1,
+                        $value->asset_name,
+                        $value->movable,
+                        $value->dept_name,
+                        $value->createdDate,
+                    );
+                }
+                \Excel::create('Resources', function ($excel) use ($data) {
+        
+                    // Set the title
+                    $excel->setTitle('Resources data Sheet');
+        
+                    // Chain the setters
+                    $excel->setCreator('Seraikela')->setCompany('Seraikela');
+        
+                    $excel->sheet('Resources', function ($sheet) use ($data) {
+                        $sheet->freezePane('A3');
+                        $sheet->mergeCells('A1:I1');
+                        $sheet->fromArray($data, null, 'A1', true, false);
+                        $sheet->setColumnFormat(array('I1' => '@'));
+                    });
+                })->download('xls');
+
+  
+              }
+            //   return $request;
+          }
+      }
+
+
 }
