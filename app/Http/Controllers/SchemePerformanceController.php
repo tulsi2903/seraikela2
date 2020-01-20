@@ -502,7 +502,6 @@ class SchemePerformanceController extends Controller
                         $txt .= "TOTAL RECORD COUNT: ". count($readExcel)."\n";
                         $txt .= "TOTAL SUCCESS COUNT: ".$noOfSuccess."\n";
                         $txt .= "TOTAL FAIL COUNT: ".$noOfFails."\n";
-                        // $txt .= "USER NAME: ". $getUserName->first_name." ". $getUserName->middle_name." ". $getUserName->last_name." \n";
                         $txt .= "----------------------------------------------------------------------------------------------------------------------------------\n";
                         if ($noOfFails == 0) {
                             $txt .= "No Error Found";
@@ -531,6 +530,7 @@ class SchemePerformanceController extends Controller
                             session()->put('totalCount', count($readExcel));
                             session()->put('totalsuccess', $noOfSuccess);
                             session()->put('totalfail', $noOfFails);
+                            session()->put('scheme_name',$scheme_datas['scheme_name']);
                             // readfile($filename);
                             session()->put('alert-class', 'alert-success');
                             // session()->put('alert-content', 'Scheme details has been saved');

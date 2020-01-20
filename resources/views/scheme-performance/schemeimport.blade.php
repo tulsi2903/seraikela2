@@ -71,13 +71,13 @@
                                 <div class="invalid-feedback" id="scheme_id_error_msg"></div>
                             </div>
                         </div>
-                        <div class="col-md-4" id="import_section">
+                        <div class="col-md-4 import_section" style="display:none" id="impGort_section">
                             <button  class="btn btn-primary"  type="button" onclick="location.href='../scheme-performance/downloadFormat?scheme_id='+document.getElementById('scheme_id').value" style="float:left;    margin-top: 4px; background: #349601; color: white;" title="Download Excel Format"><i class="fas fa-file-import"></i>&nbsp;&nbsp;Download Template</button>
                         </div>
                         </div>
                     </div>
                     <div class="card-body">
-                        <div class="row" id="import_section">
+                        <div class="row import_section"  style="display:none" id="import_seGction">
                             <div class="col-md-12">
                                 <div class="table-responsive table-hover table-sales">
                                     <table class="table">
@@ -110,17 +110,21 @@
         </div>
         <div class="row">
             <div class="col-md-12">
-                <div class="form-group">   
+                <div class="form-group" id="import_section">   
                         @if(session()->get('to-download') == "yes")
                             <?php session()->forget('to-download'); ?>
-                            <h4 style="color: #147785;text-align: center;margin-bottom: -24px;">Error Summary</h4>
+                            <!-- <h4 style="color: #147785;text-align: center;margin-bottom: -24px;">Import Summary</h4> -->
                             <table class="table table-datatable" id="printable-area">
                                 <tr>
-                                    <th colspan="2" style="text-align:center">District Resource and Scheme Management</th>
+                                    <th colspan="2" style="color: #147785;text-align: center;margin-bottom: -24px;">Import Summary</th>
                                 </tr>
                                 <tr>
-                                    <td>Date</td>
+                                    <td>DATE</td>
                                     <td>{{session()->get('currentdate')}}</td>
+                                </tr>
+                                <tr>
+                                    <td>SCHEME NAME</td>
+                                    <td>{{session()->get('scheme_name')}}</td>
                                 </tr>
                                 <tr>
                                     <td>TOTAL RECORD COUNT</td>
@@ -357,8 +361,9 @@
 <script>
     function get_scheme_value(e) {
         var scheme_id = $(e).val();
+        $("#import_section").html("");
         if (scheme_id != "") {
-            $("#import_section").fadeIn(300);
+            $(".import_section").fadeIn(300);
             // $("#id").css("display", "block");
 
         }
