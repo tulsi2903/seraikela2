@@ -783,7 +783,7 @@ class AssetNumbersController extends Controller
                                 $noOfSuccess++;
                                 /* Condition for Add And edit Location Latitude And longitude */
                                 if($excelSheetHeadings[6] == "locationlandmark" || $excelSheetHeadings[7] == "latitude" || $excelSheetHeadings[8] == "longitude"){
-                                    if ($row['main_resource_sno'] == null && $row['count'] == null) {
+                                    if (($row['main_resource_sno'] == null && $row['count'] == null) && ($row['locationlandmark'] != null)) {
                                         // echo "1";
                                         // echo "<br>";
                                         if($fetch_asset_number_edit->asset_numbers_id != null)
@@ -850,7 +850,7 @@ class AssetNumbersController extends Controller
                                         }
                                         
                                     }
-                                    if ($row['main_resource_sno'] != null || $row['count'] != null) {
+                                    if (($row['main_resource_sno'] != null || $row['count'] != null) && (is_numeric($row['count']))) {
                                         // echo "2";
                                         // echo "<br>";
                                         $aseetNo = $row['main_resource_sno'];
@@ -950,6 +950,12 @@ class AssetNumbersController extends Controller
                                     } elseif ($fetch_year_id == null && $fetch_panchayat_id == null && $fetch_asset_id == null) {
                                         $ErrorTxt .= " ON row sno. " . $row['sno.'] . " Year Resources And Panchayat Not Found \n";
                                     }
+                                    elseif (!is_numeric($row['count'])) {
+                                        $ErrorTxt .= " ON row sno. " . $row['sno.'] . " Count is Not Numeric \n";
+                                    }
+                                    elseif ($row['locationlandmark'] == null) {
+                                        $ErrorTxt .= " ON row sno. " . $row['sno.'] . " Please Fill Landmark/Location \n";
+                                    }
                                 } 
                                 // else {
                                 //     $txt = " Serial Number Not Available \n";
@@ -990,11 +996,15 @@ class AssetNumbersController extends Controller
                             header("Content-Type: application/octet-stream; ");
                             header("Content-Transfer-Encoding: binary");
                             // readfile($filename);
-                            $this->saveFile($filename,file_get_contents($filename));
                             // exit();
+                            $this->saveFile($filename,file_get_contents($filename));
                             session()->put('alert-class', 'alert-success');
                             session()->put('alert-content', 'Resources Numbers details has been saved');
                             session()->put('to-download', 'yes');
+                            session()->put('currentdate', date('d/m/Y h:i A'));
+                            session()->put('totalCount', count($readExcel));
+                            session()->put('totalsuccess', $noOfSuccess);
+                            session()->put('totalfail', $noOfFails);
                             return back();
 
                         }

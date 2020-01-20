@@ -404,6 +404,8 @@ class SchemePerformanceController extends Controller
                     $unserializedAtributesData = array();
                     // print_r($excelSheetHeadings);
                     // echo "<br>";
+                    date_default_timezone_set('Asia/Kolkata');
+
                     // print_r($tableHeadingsAndAtributes);
                     // exit;
                     /* validation for matching of headings */
@@ -422,10 +424,13 @@ class SchemePerformanceController extends Controller
                             // $unserializedAtributesData = [];
                         }
 
-                        $filename = "Error Log.txt"; /* error file name */
+                        $filename = "SchemePerformance-errorLog".session()->get('user_id').".txt";   /* error file name */
+                        // session()->put('filename',$filename);
                         $myfile = fopen($filename, "w"); /* open error file name by using fopen function */
-
-                        foreach ($readExcel as $key => $row) { /* Insert Data By using for each one by one */
+                        $noOfSuccess = 0;
+                        $noOfFails = 0;
+                        $ErrorTxt = "";
+                                         foreach ($readExcel as $key => $row) { /* Insert Data By using for each one by one */
                             $block_name =  ucwords($row['block_name']);
                             $panchayat_name =   ucwords($row['panchayat_name']);
                             $status =   ucwords($row['status']);
@@ -437,6 +442,7 @@ class SchemePerformanceController extends Controller
 
                             /* if those id avilable then insert data on the base */
                             if ($row['sno.'] != null && $fetch_block_id != null && $fetch_panchayat_id != null && $fetch_year_id != null && $fetch_subdivision_id != null) {
+                                $noOfSuccess++;
                                 $flag = 0;
                                 $scheme_performance_id = "";
                                 $scheme_performance_details = SchemePerformance::get()->toArray();
@@ -468,27 +474,44 @@ class SchemePerformanceController extends Controller
                                     $scheme_performance->save();
                                 }
                             } else {  /* Else find id and error write on the notepad */
+                                $noOfFails++;
                                 if ($row['sno.'] != null) {
                                     if ($fetch_block_id == null && $fetch_panchayat_id != null) {
-                                        $txt = " ON row sno. " . $row['sno.'] . " Block Not Found \n";
-                                        fwrite($myfile, $txt);
+                                        $ErrorTxt .= " ON row sno. " . $row['sno.'] . " Block Not Found \n";
+                                        
                                     } elseif ($fetch_panchayat_id == null && $fetch_block_id != null) {
-                                        $txt = " ON row sno. " . $row['sno.'] . " Panchayat Not Found \n";
-                                        fwrite($myfile, $txt);
+                                        $ErrorTxt .= " ON row sno. " . $row['sno.'] . " Panchayat Not Found \n";
+                                        
                                     } elseif ($fetch_panchayat_id == null && $fetch_block_id == null) {
-                                        $txt = " ON row sno. " . $row['sno.'] . " Both Panchayat And Block Not Found \n";
-                                        fwrite($myfile, $txt);
+                                        $ErrorTxt .= " ON row sno. " . $row['sno.'] . " Both Panchayat And Block Not Found \n";
+                                        
                                     } elseif ($fetch_subdivision_id == null || $fetch_year_id == null) {
-                                        $txt = " ON row sno. " . $row['sno.'] . "Both Subdivision And Year Not Found \n";
-                                        fwrite($myfile, $txt);
+                                        $ErrorTxt .= " ON row sno. " . $row['sno.'] . "Both Subdivision And Year Not Found \n";
+                                        
                                     }
-                                } else {
-                                    $txt = " Serial Number Not Available \n";
-                                    fwrite($myfile, $txt);
+                                // } else {
+                                //     $txt = " Serial Number Not Available \n";
+                                //     fwrite($myfile, $txt);
                                 }
                             }
                         }
-
+                        
+                        $txt = "District Resource and Scheme Management\n";
+                        $txt .= "----------------------------------------------------------------------------------------------------------------------------------\n";
+                        $txt .= "DATE: ". date('d/m/Y h:i A')."\n";
+                        $txt .= "TOTAL RECORD COUNT: ". count($readExcel)."\n";
+                        $txt .= "TOTAL SUCCESS COUNT: ".$noOfSuccess."\n";
+                        $txt .= "TOTAL FAIL COUNT: ".$noOfFails."\n";
+                        // $txt .= "USER NAME: ". $getUserName->first_name." ". $getUserName->middle_name." ". $getUserName->last_name." \n";
+                        $txt .= "----------------------------------------------------------------------------------------------------------------------------------\n";
+                        if ($noOfFails == 0) {
+                            $txt .= "No Error Found";
+                        } else {
+                            $txt .= $ErrorTxt;
+                        }
+                        fwrite($myfile, $txt);
+                        // exit;
+                        
                         fclose($myfile); //close file
 
                         if (file_get_contents($filename) == null) //if error file does not exit ant data then popup message success
@@ -503,8 +526,17 @@ class SchemePerformanceController extends Controller
                             header("Content-Disposition: attachment; filename=$filename");
                             header("Content-Type: application/octet-stream; ");
                             header("Content-Transfer-Encoding: binary");
-                            readfile($filename);
-                            exit;
+                            $this->saveFile($filename,file_get_contents($filename));
+                            session()->put('currentdate', date('d/m/Y h:i:sa'));
+                            session()->put('totalCount', count($readExcel));
+                            session()->put('totalsuccess', $noOfSuccess);
+                            session()->put('totalfail', $noOfFails);
+                            // readfile($filename);
+                            session()->put('alert-class', 'alert-success');
+                            // session()->put('alert-content', 'Scheme details has been saved');
+                            session()->put('to-download', 'yes');
+                            // session()->put('text',$check);
+                            return redirect('import/scheme');
                         }
                     } else { //for error message
                         session()->put('alert-class', 'alert-danger');
@@ -523,7 +555,37 @@ class SchemePerformanceController extends Controller
             }
         }
     }
+    public function saveFile($filename,$filecontent){
+        if (strlen($filename)>0){
+            $folderPath = 'public/uploaded_documents/error_log';
+            if (!file_exists($folderPath)) {
+                mkdir($folderPath);
+            }
+            $file = @fopen($folderPath . DIRECTORY_SEPARATOR . $filename,"w");
+            if ($file != false){
+                fwrite($file,$filecontent);
+                fclose($file);
+                return 1;
+            }
+            return -2;
+        }
+        return -1;
+    }
 
+    public function download_error_log()
+    {
+        # code...
+        $filename = "SchemePerformance-errorLog".session()->get('user_id').".txt";   /* error file name */
+
+        header("Cache-Control: public");
+        header("Content-Description: File Transfer");
+        header("Content-Length: " . filesize("$filename") . ";");
+        header("Content-Disposition: attachment; filename=$filename");
+        header("Content-Type: application/octet-stream; ");
+        header("Content-Transfer-Encoding: binary");
+        readfile($filename);
+        exit;
+    }
     public function downloadFormat(Request $request)
     {
         # code...

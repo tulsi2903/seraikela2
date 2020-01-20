@@ -797,7 +797,6 @@
                             <td><input type="text" class="form-control" name="child_name[]" autocomplete="off"></td>
                             <td>
                                 <select name="movable_child[]" id="movable_child" class="form-control">
-                                    <option value="">--Select--</option>
                                     <option value="1">Movable</option>
                                     <option value="0">Immovable</option>
                                 </select>

@@ -239,6 +239,7 @@ Route::post('scheme_performance/galleryFile_update','SchemePerformanceController
 Route::get('scheme-performance/get-gallery/{id}','SchemePerformanceController@get_gallery_image');
 Route::post('scheme_performance/coordinatesupdate','SchemePerformanceController@save_coordinate');
 Route::get('scheme-performance/get-coordinates/{id}','SchemePerformanceController@get_coordinates_details');
+Route::get('scheme-performance/download_error_log','SchemePerformanceController@download_error_log');
 
 /* scheme review */
 Route::get('scheme-review', 'SchemeReviewController@index');
