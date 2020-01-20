@@ -990,11 +990,15 @@ class AssetNumbersController extends Controller
                             header("Content-Type: application/octet-stream; ");
                             header("Content-Transfer-Encoding: binary");
                             // readfile($filename);
-                            $this->saveFile($filename,file_get_contents($filename));
                             // exit();
+                            $this->saveFile($filename,file_get_contents($filename));
                             session()->put('alert-class', 'alert-success');
                             session()->put('alert-content', 'Resources Numbers details has been saved');
                             session()->put('to-download', 'yes');
+                            session()->put('currentdate', date('d/m/Y h:i A'));
+                            session()->put('totalCount', count($readExcel));
+                            session()->put('totalsuccess', $noOfSuccess);
+                            session()->put('totalfail', $noOfFails);
                             return back();
 
                         }
