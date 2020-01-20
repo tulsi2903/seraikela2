@@ -17,7 +17,8 @@
                         <h4 class="card-title">Import From Excel</h4>
                         <div class="card-tools">
                         <!-- <a href="{{url('asset-numbers')}}" class="btn btn-sm btn-secondary" style="float:right;"><i class="fas fa-arrow-left"></i>&nbsp;&nbsp;Back</a> -->
-                        
+                        <a href="{{url('asset_Numbers/downloadFormat')}}" data-toggle="tooltip" title="Download Excel Format"><button style="float:right;" type="button" class="btn btn-warning" ><i class="fa fa-download"></i>Download Format</button></a>
+                    <a href="{{url('asset_Numbers/downloadFormatwithLocation')}}" data-toggle="tooltip" title="Download Location Excel Format"><button style="float:right;" type="button" class="btn btn-primary" ><i class="fa fa-download"></i>Download Format With Location</button></a>
                         </div>
                     </div>
                 </div>
@@ -38,11 +39,13 @@
                             <button type="submit" class="btn btn-primary">Import</button>
                         </div>
                     </form>
+                    <hr>
                 </div>
                 <div class="col-md-12">
                     @if(session()->get('to-download') == "yes")
                         <?php session()->forget('to-download'); ?>
-                        <h4 style="color: #147785;text-align: center;margin-bottom: -24px;">Import Summary</h4>
+                        <h4 style="color: #147785;text-align: left;margin-bottom: -24px;">Import Summary</h4>
+                        <hr style="margin-top: 2rem;">
                         <table class="table table-datatable" id="printable-area">
                             <!-- <tr>
                                 <th colspan="2" style="text-align:center">District Resource and Scheme Management</th>
@@ -68,7 +71,7 @@
                                 <td>{{session()->get('user_full_name')}}</td>
                             </tr> -->
                         </table>
-                        <a href="{{url('asset-numbers/error_log_download')}}" class="btn btn-sm btn-secondary"><i class="fas fa-download"></i>&nbsp;&nbsp;Download Error-Log</a>
+                        <a href="{{url('asset-numbers/error_log_download')}}" class="btn btn-sm btn-secondary"><i class="fas fa-download"></i>&nbsp;&nbsp;Download Import Summary</a>
                     @endif
                 </div>
             </div>

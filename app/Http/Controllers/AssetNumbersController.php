@@ -783,7 +783,7 @@ class AssetNumbersController extends Controller
                                 $noOfSuccess++;
                                 /* Condition for Add And edit Location Latitude And longitude */
                                 if($excelSheetHeadings[6] == "locationlandmark" || $excelSheetHeadings[7] == "latitude" || $excelSheetHeadings[8] == "longitude"){
-                                    if ($row['main_resource_sno'] == null && $row['count'] == null) {
+                                    if (($row['main_resource_sno'] == null && $row['count'] == null) && ($row['locationlandmark'] != null)) {
                                         // echo "1";
                                         // echo "<br>";
                                         if($fetch_asset_number_edit->asset_numbers_id != null)
@@ -850,7 +850,7 @@ class AssetNumbersController extends Controller
                                         }
                                         
                                     }
-                                    if ($row['main_resource_sno'] != null || $row['count'] != null) {
+                                    if (($row['main_resource_sno'] != null || $row['count'] != null) && (is_numeric($row['count']))) {
                                         // echo "2";
                                         // echo "<br>";
                                         $aseetNo = $row['main_resource_sno'];
@@ -949,6 +949,12 @@ class AssetNumbersController extends Controller
                                         $ErrorTxt .= " ON row sno. " . $row['sno.'] . " Resources And Year Not Found \n";
                                     } elseif ($fetch_year_id == null && $fetch_panchayat_id == null && $fetch_asset_id == null) {
                                         $ErrorTxt .= " ON row sno. " . $row['sno.'] . " Year Resources And Panchayat Not Found \n";
+                                    }
+                                    elseif (!is_numeric($row['count'])) {
+                                        $ErrorTxt .= " ON row sno. " . $row['sno.'] . " Count is Not Numeric \n";
+                                    }
+                                    elseif ($row['locationlandmark'] == null) {
+                                        $ErrorTxt .= " ON row sno. " . $row['sno.'] . " Please Fill Landmark/Location \n";
                                     }
                                 } 
                                 // else {
