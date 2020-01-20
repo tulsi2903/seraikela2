@@ -15,7 +15,7 @@ class EmailController extends Controller
 {
     public function sendEmail(Request $request)
     {       
-       
+        // return $request;
   
         if($request->department=="department")
         {
@@ -260,7 +260,7 @@ class EmailController extends Controller
               return redirect('scheme-indicator');
         }
         elseif($request->scheme_structure=="scheme_structure"){
-
+            
             $email_from=$request->from;
             $email_to=$request->to;
             $email_cc=$request->cc;
@@ -309,10 +309,58 @@ class EmailController extends Controller
                  session()->put('alert-class','alert-success');
                  session()->put('alert-content','Email send');
              });
-            return $user;
+            //     return $user;
             //  return view('mail.scheme-structure')->with('user',$user);
             
-            //   return redirect('scheme-structure');
+              return redirect('scheme-structure');
+        }
+        elseif($request->scheme_asset=="scheme_asset"){
+
+          
+            $email_from=$request->from;
+            $email_to=$request->to;
+            $email_cc=$request->cc;
+            $send_subject=$request->subject;
+            $details=json_decode($request->data);
+      
+
+             $details_scheme_assets= DB::table('scheme_assets');
+             if($request->search_query!="")
+             {
+               $details_scheme_assets = $details_scheme_assets->where('scheme_asset_name', 'LIKE', "%{$request->search_query}%")->get();
+             }
+             else
+             {
+                 $details_scheme_assets=$details_scheme_assets->get();
+             }
+         
+
+            $user = array('email_from'=>$email_from,'email_to'=>$email_to, 'cc'=>$email_cc, 'subject'=>$request->subject, 'content'=>$request->message,'results'=>$details_scheme_assets);
+             Mail::send('mail.scheme-asset',['user'=> $user], function($message) use ($user)
+             {
+                 $email_to=explode(',',$user['email_to']);
+                 foreach($email_to as $key=>$value)
+                {
+                    $message->to($email_to[$key]);
+                }
+
+                if(@$user['cc'])
+                {
+                 $email_cc=explode(',',$user['cc']);
+                    foreach($email_cc as $key=>$value)
+                    {
+                        $message->cc($email_cc[$key]);
+                    }
+                }
+                $message->subject($user['subject']);
+                $message->from('dsrm.skla@gmail.com','seraikela'); 
+                 session()->put('alert-class','alert-success');
+                 session()->put('alert-content','Email send');
+             });
+                return $user;
+            //  return view('mail.scheme-asset')->with('user',$user);
+            
+              return redirect('scheme-asset');
         }
         elseif($request->group=="group"){
             

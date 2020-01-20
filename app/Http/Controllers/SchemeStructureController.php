@@ -415,15 +415,15 @@ class SchemeStructureController extends Controller
                     );
                 }
                 
-                \Excel::create('Year-Sheet', function ($excel) use ($data) {
+                \Excel::create('Scheme', function ($excel) use ($data) {
         
                     // Set the title
-                    $excel->setTitle('Year-Sheet');
+                    $excel->setTitle('Scheme');
         
                     // Chain the setters
-                    $excel->setCreator('Paatham')->setCompany('Paatham');
+                    $excel->setCreator('Scheme')->setCompany('Scheme');
         
-                    $excel->sheet('Fees', function ($sheet) use ($data) {
+                    $excel->sheet('Scheme', function ($sheet) use ($data) {
                         $sheet->freezePane('A3');
                         $sheet->mergeCells('A1:I1');
                         $sheet->fromArray($data, null, 'A1', true, false);

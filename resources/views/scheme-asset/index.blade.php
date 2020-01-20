@@ -88,7 +88,9 @@
                 <div class="card-head-row card-tools-still-right" style="background:#fff;">
                     <h4 class="card-title">{{$phrase->scheme_assets}} </h4>
                     <div class="card-tools">
-                        <a href="#" data-toggle="tooltip" title="{{$phrase->send_email}} "><button type="button" class="btn btn-icon btn-round btn-success" data-target="#create-email" data-toggle="modal" ><i class="fa fa-envelope" aria-hidden="true"></i></button></a>
+                        <button type="button" class="btn btn-icon btn-round btn-success"  onclick="openmodel();" ><i class="fa fa-envelope" aria-hidden="true"></i></button>
+
+                        <!-- <a href="#" data-toggle="tooltip" title="{{$phrase->send_email}} "><button type="button" class="btn btn-icon btn-round btn-success" data-target="#create-email" data-toggle="modal" ><i class="fa fa-envelope" aria-hidden="true"></i></button></a> -->
                         <!-- <a href="#" data-toggle="tooltip" title="{{$phrase->print}}"><button type="button" class="btn btn-icon btn-round btn-default" id="print-button" onclick="printView();"><i class="fa fa-print" aria-hidden="true"></i></button></a> -->
                         <button type="button" class="btn btn-icon btn-round btn-default" onclick="printViewone();"><i class="fa fa-print" aria-hidden="true"></i></button>
                         <button type="button" onclick="exportSubmit('print_pdf');" class="btn btn-icon btn-round btn-warning"><i class="fas fa-file-export"></i></button>
@@ -196,7 +198,17 @@
                 window.print();
             }
         </script>
-
+        <script>
+            function openmodel()
+            {
+                // alert("afj;l");
+                var search_element=$( "input[type=search]" ).val();
+                $('#create-email').modal('show');
+                $('#dept_search').val(search_element);
+                // alert(search_element);
+            }
+            
+            </script>
    <!-- email -->
 <div id="create-email" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none">
     <div class="modal-dialog">
@@ -213,8 +225,9 @@
                     <div class="row">
                         <div class="card-body p-t-30" style="padding: 11px;">
                             <div class="form-group">
-                                <input type="hidden" name="uom" value="uom"> 
+                                <input type="hidden" name="scheme_asset" value="scheme_asset"> 
                                 <input type="hidden" name="data" value="{{$datas}}">
+                                <input type="text" name="search_query" id="dept_search" hidden>
                                 <!-- <input type="text" name="from" class="form-control" placeholder="From" required=""> -->
                             </div> 
                             <div class="form-group">  
