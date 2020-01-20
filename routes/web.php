@@ -183,6 +183,7 @@ Route::get('asset_Numbers/downloadFormat','AssetNumbersController@downloadFormat
 Route::get('asset_Numbers/downloadFormatwithLocation','AssetNumbersController@downloadFormatwithLocation'); 
 Route::get('asset_Numbers/changeViewforimport','AssetNumbersController@changeViewforimport'); 
 Route::post('asset-numbers/saveimporttoExcel','AssetNumbersController@saveimporttoExcel'); 
+Route::get('asset-numbers/error_log_download','AssetNumbersController@error_log_download'); 
 /* asset review */
 Route::get('asset-review', 'AssetReviewController@index');
 Route::POST('asset-review/show', 'AssetReviewController@show');

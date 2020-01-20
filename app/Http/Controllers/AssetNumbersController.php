@@ -594,7 +594,7 @@ class AssetNumbersController extends Controller
             }
         }
         session()->put('alert-class', 'alert-success');
-        session()->put('alert-content', 'Child Resources details have been successfully submitted !');
+        session()->put('alert-content', 'Sub Resources details have been successfully submitted !');
         return redirect('asset-numbers/add?purpose=edit&id=' . $request->main_asset_id);
     }
 
@@ -754,7 +754,7 @@ class AssetNumbersController extends Controller
                     { 
                         $getUserName = User::where('id',Session::get('user_id'))->first();
                         date_default_timezone_set('Asia/Kolkata');
-                        $filename = "ResourceNumber ErrorLog.txt"; /* error file name */
+                        $filename = "ResourceNumber-ErrorLog-".Session::get('user_id').".txt"; /* error file name */
                         $myfile = fopen($filename, "w"); /* open error file name by using fopen function */
                         $noOfSuccess = 0;
                         $noOfFails = 0;
@@ -789,7 +789,9 @@ class AssetNumbersController extends Controller
                                         {
                                             $AssetNumbers = AssetNumbers::find($fetch_asset_number_edit->asset_numbers_id);
                                             $AssetNumbers->pre_value = $fetch_asset_number_edit->current_value;
-                                            $AssetNumbers->current_value = $fetch_asset_number_edit->current_value + 1;
+                                            if ($fetch_asset_loc_edit == null) {
+                                                $AssetNumbers->current_value = $fetch_asset_number_edit->current_value + 1;
+                                            }
                                             $AssetNumbers->updated_by = Session::get('user_id');
                                             $AssetNumbers->save();
                                         }
@@ -866,13 +868,13 @@ class AssetNumbersController extends Controller
                                             if($fetch_asset_number_edit_child->asset_numbers_id != null)
                                             {
                                                 $AssetNumbers = AssetNumbers::find($fetch_asset_number_edit_child->asset_numbers_id);
-                                                $AssetNumbers->pre_value = $fetch_asset_number_edit_child->current_value;
-                                                if ($fetch_asset_id == $childdatasValue[$kee]->asset_id) {
-                                                    $AssetNumbers->current_value = $row['count'];
-                                                } else {
-                                                    $AssetNumbers->current_value = 0;
-                                                }
-                                                $AssetNumbers->updated_by = Session::get('user_id');
+                                                // $AssetNumbers->pre_value = $fetch_asset_number_edit_child->current_value;
+                                                // if ($fetch_asset_id == $childdatasValue[$kee]->asset_id) {
+                                                //     $AssetNumbers->current_value = $row['count'];
+                                                // } else {
+                                                //     $AssetNumbers->current_value = 0;
+                                                // }
+                                                // $AssetNumbers->updated_by = Session::get('user_id');
                                                 $AssetNumbers->save();
                                             }
                                             else {
@@ -896,6 +898,14 @@ class AssetNumbersController extends Controller
                                                 
                                                 $asset_number->save();
                                             }
+                                        }
+                                        if($fetch_asset_number_edit_child->asset_numbers_id != null)
+                                        {
+                                            $AssetNumbers1 = AssetNumbers::find($fetch_asset_number_edit_child->asset_numbers_id);
+                                            $AssetNumbers1->pre_value = $fetch_asset_number_edit_child->current_value;
+                                            $AssetNumbers1->current_value = $row['count'];
+                                            $AssetNumbers1->updated_by = Session::get('user_id');
+                                            $AssetNumbers1->save();
                                         }
                                     }
                                 }
@@ -978,8 +988,14 @@ class AssetNumbersController extends Controller
                             header("Content-Disposition: attachment; filename=$filename");
                             header("Content-Type: application/octet-stream; ");
                             header("Content-Transfer-Encoding: binary");
-                            readfile($filename);
-                            exit;
+                            // readfile($filename);
+                            $this->saveFile($filename,file_get_contents($filename));
+                            // exit();
+                            session()->put('alert-class', 'alert-success');
+                            session()->put('alert-content', 'Resources Numbers details has been saved');
+                            session()->put('to-download', 'yes');
+                            return back();
+
                         }
                         
                     }
@@ -1002,5 +1018,35 @@ class AssetNumbersController extends Controller
             }
             
         }
+    }
+
+    public function saveFile($filename,$filecontent){
+        if (strlen($filename)>0){
+            $folderPath = 'public/uploaded_documents/error_log';
+            if (!file_exists($folderPath)) {
+                mkdir($folderPath);
+            }
+            $file = @fopen($folderPath . DIRECTORY_SEPARATOR . $filename,"w");
+            if ($file != false){
+                fwrite($file,$filecontent);
+                fclose($file);
+                return 1;
+            }
+            return -2;
+        }
+        return -1;
+    }
+    public function error_log_download()
+    {
+        # code...
+        $filename = "ResourceNumber-ErrorLog-".Session::get('user_id').".txt";
+        header("Cache-Control: public");
+        header("Content-Description: File Transfer");
+        header("Content-Length: " . filesize("$filename") . ";");
+        header("Content-Disposition: attachment; filename=$filename");
+        header("Content-Type: application/octet-stream; ");
+        header("Content-Transfer-Encoding: binary");
+        readfile($filename);
+        exit();
     }
 }

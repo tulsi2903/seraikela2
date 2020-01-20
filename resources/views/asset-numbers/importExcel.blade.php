@@ -1,6 +1,6 @@
 @extends('layout.layout')
 
-@section('title', 'scheme-performance')
+@section('title', 'Resource Number')
 
 @section('page-style')
     <style>
@@ -16,7 +16,8 @@
                     <div class="card-head-row card-tools-still-right" style="background:#fff;">
                         <h4 class="card-title">Import From Excel</h4>
                         <div class="card-tools">
-                        <a href="{{url('asset-numbers')}}" class="btn btn-sm btn-secondary" style="float:right;"><i class="fas fa-arrow-left"></i>&nbsp;&nbsp;Back</a>
+                        <!-- <a href="{{url('asset-numbers')}}" class="btn btn-sm btn-secondary" style="float:right;"><i class="fas fa-arrow-left"></i>&nbsp;&nbsp;Back</a> -->
+                        <a href="{{url('asset-numbers/error_log_download')}}" class="btn btn-sm btn-secondary" style="float:right;"><i class="fas fa-download"></i>&nbsp;&nbsp;Download Error-Log</a>
                         </div>
                     </div>
                 </div>
@@ -41,6 +42,5 @@
             </div>
         </div>
     </div>
-
 
 @endsection

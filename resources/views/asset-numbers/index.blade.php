@@ -36,7 +36,7 @@
                     @if($desig_permissions["mod14"]["add"])
                     <a href="{{url('asset_Numbers/downloadFormat')}}" data-toggle="tooltip" title="Download Excel Format"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fa fa-download"></i></button></a>
                     <a href="{{url('asset_Numbers/downloadFormatwithLocation')}}" data-toggle="tooltip" title="Download Location Excel Format"><button type="button" class="btn btn-icon btn-round btn-primary" ><i class="fa fa-download"></i></button></a>
-                    <a href="{{url('asset_Numbers/changeViewforimport')}}" data-toggle="tooltip" title="Import From Excel"><button type="button" class="btn btn-icon btn-round btn-default" ><i class="fa fa-upload"></i></button></a>
+                    <!-- <a href="{{url('asset_Numbers/changeViewforimport')}}" data-toggle="tooltip" title="Import From Excel"><button type="button" class="btn btn-icon btn-round btn-default" ><i class="fa fa-upload"></i></button></a> -->
                     <a class="btn btn-secondary" href="{{url('asset-numbers/add')}}" role="button" style="padding: 7px;"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;Enter Value</a>
                     @endif
                 </div>
