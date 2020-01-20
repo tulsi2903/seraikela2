@@ -1024,6 +1024,7 @@
         resetMapContent(); // reset map content, remove active class form all block/panchayat paths, geo_id = null, geo selected = null
 
         review_for = $("input[name=review_for]:checked").val();
+        panchayat_sslection_marguee_changes();
     }
 </script>
 
@@ -1055,6 +1056,7 @@
                     $("#geo_id").val(selected_geo);
                 }
             }
+            panchayat_sslection_marguee_changes();
         });
         $(".panchayat-map-content g").click(function () {
             if (review_for == "panchayat") {
@@ -1233,7 +1235,7 @@
         else {
             $("#dept_id").removeClass('is-invalid');
             dept_id_error = false;
-            }
+        }
 
         // year
         if ($("#year_id").val() == "") {

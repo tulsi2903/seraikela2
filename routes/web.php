@@ -39,6 +39,7 @@ Route::get('my-block','DashboardController@dashboard'); // for Block
 Route::get('my-panchayat','DashboardController@dashboard'); //for panchayat
 Route::get('dashboard/dc_dashboard','DashboardController@index');
 Route::get('dashboard/asset_department_wise','DashboardController@get_department_wise_asset_data');
+Route::get('dashboard/get-block-performance-percentage-data','DashboardController@get_block_performance_percentage_data');
 
 
 //user

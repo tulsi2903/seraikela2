@@ -149,51 +149,6 @@
         overflow: auto;
     }
 
-    .gallery-view-image-thumb {
-        margin-right: 5px;
-        display: inline-block;
-        position: relative;
-        border: 1px solid #383838;
-        border-radius: 3px;
-        overflow: hidden;
-    }
-
-    .gallery-view-image-thumb img {
-        height: 300px;
-        min-height: 300px;
-        min-width: 200px;
-    }
-
-    .gallery-view-image-thumb .gallery-view-image-thumb-labels {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        border-radius: 3px;
-        background: rgba(0, 0, 0, 0.5);
-        font-size: 18px;
-        cursor: pointer;
-        padding: 5px 10px;
-        color: white;
-        text-transform: capitalize;
-        transition: padding 0.3s ease-in-out;
-    }
-
-    .gallery-view-image-thumb-asset-name {
-        font-size: 14px;
-        display: block;
-    }
-
-    .gallery-view-image-thumb-geo-name {
-        font-size: 12px;
-        display: block;
-    }
-
-    .gallery-view-image-thumb:hover .gallery-view-image-thumb-labels {
-        padding-top: 15px;
-        padding-bottom: 15px;
-    }
-
     #search-results-block{
         position: relative;
         overflow: auto;
@@ -240,6 +195,84 @@
         top: 0;
         width: 100%;
     }
+
+    #tabular-view th, #tabular-view td{
+        border: 1px solid black;
+        padding: 5px !important;
+    }
+    #tabular-view tr td:first-child, #tabular-view td a{
+        font-weight: bold;
+    }
+    #map-view{
+        position: relative;
+        overflow: hidden;
+    }
+    #gallery-view-outer{
+        position: absolute;
+        right: -100%;
+        opacity: 0;
+        top: 0;
+        height: 100%;
+        width: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        transition: all 0.3s ease;
+    }
+    #gallery-view-outer.active{
+        right: 0;
+        opacity: 1;
+    }
+    #gallery-view-block{
+        float: right;
+        width: 450px;
+        height: 100%;
+        overflow: auto;
+        background: white;
+        border: 1px solid grey;
+    }
+    #gallery-view-heading, #gallery-view-heading-gallery{
+        border-bottom: 1px solid rgb(182, 182, 182);
+        font-size: 18px;
+        font-weight: bold;
+        padding:15px;
+        color: rgb(42, 12, 111);
+        background: rgb(234, 234, 234);
+    }
+    #gallery-view-heading-gallery{
+        margin: -15px -15px 15px -15px;
+    }
+    #gallery-view-close-button{
+        float:right;
+    }
+    #gallery-view-close-button .btn{
+        border-radius: unset !important;
+    }
+    #gallery-view{
+        padding: 15px;
+    }
+    .gallery-view-thumb{
+        margin-bottom: 15px;
+    }
+    .gallery-view-thumb-info{
+        line-height: 150%;
+        margin-left: -15px;
+        margin-right: -15px;
+        padding: 0 15px 15px 15px;
+        border-bottom: 1px solid rgb(182, 182, 182);
+    }
+    .gallery-view-thumb-img{
+        width: 100%;
+        height: 250px;
+        background-position: center;
+        background-size: auto 100%;
+        background-repeat: no-repeat;
+        background-color: #272727;
+        border: 1px solid #1f1f1f;
+        border-radius: 5px;
+        transition: all 0.3s ease;
+    }
+    .gallery-view-thumb-img:hover{
+        background-size: auto 105%;
+    }
 </style>
 @endsection
 
@@ -260,9 +293,9 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="form-group">
-                            <label for="scheme_id">Scheme<span style="color:red;margin-left:5px;">*</span></label>
+                            <label for="scheme_id">Scheme</label>
                             <select name="scheme_id" id="scheme_id" class="form-control">
-                                <option value="">--Select--</option>
+                                <option value="">All Schemes</option>
                                 @foreach($scheme_datas as $scheme_data)
                                     <option value="{{$scheme_data->scheme_id}}" data-scheme-is="{{$scheme_data->scheme_is}}" data-scheme-asset-id="{{$scheme_data->scheme_asset_id}}" <?php if($data['scheme_id']==$scheme_data->scheme_id){ echo "selected"; } ?>>({{$scheme_data->scheme_short_name}}) {{$scheme_data->scheme_name}}</option>
                                 @endforeach
@@ -948,6 +981,26 @@
                         <!-- <h4>Map View&nbsp;<button type="button" class="btn btn-secondary btn-sm print-button" onclick="printReview('map')">Print&nbsp;<i class="fa fa-print" aria-hidden="true"></i></button></h4> -->
                         <div id="map-view">
                             <div id="mapCanvas" style="width: 100%; height: 600px; border-radius: 3px; border: 1px solid rgb(140, 140, 140); box-shadow: -2px 6px 10px 0px #00000052;"></div>
+                            <div id="gallery-view-outer">
+                                <div id="gallery-view-block">
+                                    <div id="gallery-view-heading">
+                                        Details
+                                        <button id="gallery-view-close-button" class="btn btn-danger btn-sm" onclick="resetGallery();">X</button>
+                                    </div>
+                                    <div id="gallery-view">
+                                        <!-- <div class="gallery-view-thumb gallery-view-thumb-info">
+                                            <b>Sanction No</b>: San/01
+                                            <br><b>Beneficiary Name</b>: Sachin
+                                            <br><b>Asset</b>: House
+                                            <br><b>Block</b>: Ichagarh
+                                            <br><b>Panchayat</b>: Dewaltand
+                                            <br><b>Status</b>: Completed
+                                        </div>
+                                        <div class="gallery-view-thumb gallery-view-thumb-img">
+                                        </div> -->
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div class="no-data" style="width: 100%; height: 400px; border-radius: 8px;">
                             <i class="fas fa-info-circle text-success"></i>&nbsp;&nbsp;No geo locations found
@@ -980,12 +1033,12 @@
         // resetting every view
         resetTabularView();
         resetMapView();
-        resetGalleryView();
         resetCommon(); // to reset common things among all views
 
         resetMapContent(); // reset map content, remove active class form all block/panchayat paths, geo_id = null, geo selected = null
 
         review_for = $("input[name=review_for]:checked").val();
+        panchayat_sslection_marguee_changes();
     }
 </script>
 
@@ -1017,6 +1070,8 @@
                     $("#geo_id").val(selected_geo);
                 }
             }
+
+            panchayat_sslection_marguee_changes();
         });
         $(".panchayat-map-content g").click(function () {
             if (review_for == "panchayat") {
@@ -1161,15 +1216,17 @@
         var scheme_asset_id_error = true;
         var geo_id_error = true;
 
-        // department
-        if ($("#scheme_id").val() == "") {
-            $("#scheme_id").addClass('is-invalid');
-            scheme_id_error = true;
-        }
-        else {
-            $("#scheme_id").removeClass('is-invalid');
-            scheme_id_error = false;
-        }
+        // scheme
+        // if ($("#scheme_id").val() == "") {
+        //     $("#scheme_id").addClass('is-invalid');
+        //     scheme_id_error = true;
+        // }
+        // else {
+        //     $("#scheme_id").removeClass('is-invalid');
+        //     scheme_id_error = false;
+        // }
+        $("#scheme_id").removeClass('is-invalid');
+        scheme_id_error = false;
 
         // year
         if ($("#year_id").val() == "") {
@@ -1182,16 +1239,15 @@
         }
 
         // scheme asset selected
-        $("#scheme_asset_id").removeClass('is-invalid');
-        scheme_asset_id_error = false;
-        // if ($("#scheme_asset_id").val() == "") {
-        //     $("#scheme_asset_id").addClass('is-invalid');
-        //     scheme_asset_id_error = true;
-        // }
-        // else {
-        //     $("#scheme_asset_id").removeClass('is-invalid');
-        //     scheme_asset_id_error = false;
-        // }
+        if ($("#scheme_asset_id").val() == "" && $("#scheme_id").val() =="") {
+            $("#scheme_asset_id").addClass('is-invalid');
+            $("#scheme_asset_id + .invalid-feedback").html("Please select an asset");
+            scheme_asset_id_error = true;
+        }
+        else {
+            $("#scheme_asset_id").removeClass('is-invalid');
+            scheme_asset_id_error = false;
+        }
 
         // geo/block/panchayat selected
         if ($("#geo_id").val() == "") {
@@ -1203,7 +1259,7 @@
             geo_id_error = false;
         }
 
-        if (!scheme_id_error && !year_id_error && !year_id_error && !geo_id_error) {
+        if (!scheme_id_error && !year_id_error && !scheme_asset_id_error && !geo_id_error) {
             // if not error then getting datas from controller
             getDatas(); // all view datas
         }
@@ -1266,9 +1322,7 @@
                     // calling/initialiazing all views
                     to_export_datas = data.tabular_view;
                     initializeTabularView(data.tabular_view);
-                    // intializeGraphicalView(data.chart_labels, data.chart_datasets);
                     initializeMapView(data.map_datas);
-                    // initializeGalleryView(data.gallery_images);
                 }
                 $(".custom-loader").fadeOut(300);
                 $("#search-results-block").removeClass("active-search");
@@ -1277,11 +1331,11 @@
     }
 
 
-    function getAllDatasIndividually(id, name) {
+    function getAllDatasIndividually(id, name, scheme_id) {
         // id = panchayat_id, to get indivisual entry datas, name =  selected panchayat name
 
         // getting datas before send to controller
-        scheme_id_tmp = $("#scheme_id").val();
+        scheme_id_tmp = scheme_id;
         year_id_tmp = $("#year_id").val();
         scheme_asset_id_tmp = $("#scheme_asset_id").val();
         if($("#scheme_id :selected").data('scheme-is')==1){ // sending null data for scheme asset id for single asset scheme
@@ -1370,26 +1424,31 @@
             toShowTabularForm+=`" id="tabluar-view-table-`+(i+1)+`" role="tabpanel">`;
                 toShowTabularForm+=`<table id="target-table" class="table order-list" style="margin-top: 10px;">`;
                     for(var j=0; j<data[i].performance_datas.length; j++){
-                        if (j == 0) { // for first row
-                            toShowTabularForm += `<tr style='background: #d6dcff;color: #000;'>`;
+                        if (j == 0 || j == 1) { // for first row
+                            toShowTabularForm += `<tr style='background: #d6dcff;color: #000; font-weight: bold;'>`;
                         }
                         else { // for others
                             toShowTabularForm += `<tr>`;
                         }
-
-                        for(k=0;k<data[i].performance_datas[j].length;k++){
-                            // console.log(data[i].performance_datas[j][k]);
-                            if (j == 0) {  // for first row i.e th
-                                if (data[i].performance_datas[j][k] == "") { // for first row of first index name by raj
-                                    toShowTabularForm+=`<th></th>`;
-                                } else {
-                                    toShowTabularForm+=`<th>` + data[i].performance_datas[j][k] + `</th>`;
+                        
+                        
+                        if(j==0){
+                            for(k=0;k<data[i].performance_datas[j].length;k++){
+                                // console.log(data[i].performance_datas[j][k]);
+                                if (j == 0) {  // for first row i.e th
+                                    if (data[i].performance_datas[j][k] == "") { // for first row of first index name by raj
+                                        toShowTabularForm+=`<th></th>`;
+                                    } else {
+                                        scheme_name_and_logo_arr = data[i].performance_datas[j][k].split(":");
+                                        toShowTabularForm+=`<th colspan="3"><img src="<?php echo url(''); ?>/`+scheme_name_and_logo_arr[1]+`" style="height: 50px; margin-right: 5px;">` + scheme_name_and_logo_arr[0] + `</th>`;
+                                    }
                                 }
                             }
-                            else { // for others
-                                if(k==0){
-                                    panchayat_name_and_id_arr = data[i].performance_datas[j][k].split(":");
-                                    toShowTabularForm+=`<td><a href="javascript:void();" onclick="getAllDatasIndividually(`+panchayat_name_and_id_arr[0]+`,'`+panchayat_name_and_id_arr[1]+`')">` + panchayat_name_and_id_arr[1] + `</a></td>`;
+                        }
+                        else{
+                            for(k=0;k<data[i].performance_datas[j].length;k++){
+                                if(j==1){
+                                    toShowTabularForm+=`<td></td>`;
                                 }
                                 else{
                                     toShowTabularForm+=`<td>` + data[i].performance_datas[j][k]+ `</td>`;
@@ -1459,6 +1518,7 @@
             $("#map-view").show();
             $("#mapCanvas").show();
             $("#map-view + .no-data").hide();
+            resetGallery(); // ressting gallery tab
             showMap(map_datas); 
         }
     }
@@ -1514,10 +1574,11 @@
                 content: contentString
             });
 
-
+            var data_to_send = this;
 
             marker.addListener('click', function () {
-                infowindow.open(map, marker);
+                // infowindow.open(map, marker);
+                showGallery(data_to_send);
             });
         });
         //map.setCenter(centerLat,centerLng);
@@ -1533,37 +1594,47 @@
 </script>
 
 <script>
-
-    function initializeGalleryView(gallery_images) {
-        if (gallery_images.length != 0) {
-            var to_append_images = "";
-            for (i = 0; i < gallery_images.length; i++) {
-                for (j = 0; j < gallery_images[i].images.length; j++) {
-                    to_append_images += `<div class="gallery-view-image-thumb">
-                            <img src="`+ gallery_images[i].images[j] + `">
-                            <div class="gallery-view-image-thumb-labels">
-                                <span class="gallery-view-image-thumb-asset-name"><b>Resource:</b> `+ gallery_images[i].asset_name + `</span>
-                                <span class="gallery-view-image-thumb-geo-name"><b>Block:</b> `+ gallery_images[i].block_name + `<span>
-                                <span class="gallery-view-image-thumb-geo-name"><b>Panchayat:</b> `+ gallery_images[i].panchayat_name + `<span>
-                            </div>
-                        </div>`;
+    /* for gallery */
+    function showGallery(data){
+        if(data){ // has data
+            var contentString = '<div class="gallery-view-thumb gallery-view-thumb-info">';
+            if(data.attributes){
+                if(data.attributes.length>0)
+                {
+                    data.attributes.forEach(function(element){
+                        contentString+='<b>'+element[0]+'</b>: '+element[1]+'<br/>';
+                    })
                 }
             }
-            $("#gallery-view").html(to_append_images);
-            $("#gallery-view").show();
-            $("#gallery-view + .no-data").hide();
-        }
-        else {
-            resetGalleryView();
-        }
-        console.log(gallery_images);
-    }
+            contentString+='<b>Asset</b>: '+data.asset_name;
+            contentString+='<br/><b>Block</b>: '+data.block_name;
+            contentString+='<br/><b>Panchayat</b>: '+data.panchayat_name;
+            contentString+='<br/><b>Status</b>: '+data.status;
+            contentString+='</div>';
 
-    function resetGalleryView() {
-        $("#gallery-view").hide();
-        $("#gallery-view + .no-data").show();
+            contentString+='<div id="gallery-view-heading-gallery">Gallery</div>';
+            if(data.gallery){ // if gallery
+                data.gallery.forEach(function(element){
+                    contentString+='<div class="gallery-view-thumb gallery-view-thumb-img" style=" background-image: url(<?php echo url(""); ?>/'+element+'); "></div>';
+                });
+            }
+            else{ // no gallery
+                contentString+='<div><i class="fas fa-info-circle"></i>&nbsp;&nbsp;No images found!</div>';
+            }
+            $("#gallery-view").html(contentString);
+            $("#gallery-view-outer").addClass("active");
+        }
+        else{
+            $("#gallery-view-outer").removeClass("active");
+        }
+    }
+    
+    function resetGallery(){
+        $("#gallery-view-outer").removeClass("active");
+        $("#gallery-view").html("");
     }
 </script>
+
 
 <script>
     function resetCommon() {

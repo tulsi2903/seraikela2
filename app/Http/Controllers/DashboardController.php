@@ -230,7 +230,7 @@ class DashboardController extends Controller
                             $performance_data->total_count = 0;
                             $per = 0;
                         }
-                        array_push($performance_table_datas_tmp, $performance_data->incomplete_count . ":" . $per, $performance_data->completed_count . ":" . $per, "<a href='scheme-review?review_for=block&scheme=" . $scheme_id . "&geo=" . $geo_id . "&year=4&initiate=initiate'>" . $performance_data->total_count . "</a>:" . $per);
+                        array_push($performance_table_datas_tmp, $performance_data->incomplete_count . ":" . $per, $performance_data->completed_count . ":" . $per, "<a href='scheme-review?review_for=block&scheme=" . $scheme_id . "&geo=" . $geo_id . "&year=".$year_id."&initiate=initiate'>" . $performance_data->total_count . "</a>:" . $per);
                     } else if (session()->get('user_designation') == 2) { // sdo
                         $performance_data = scheme_block_performance::where('block_id', $geo_id)
                             ->where('scheme_id', $scheme_id)
@@ -417,7 +417,7 @@ class DashboardController extends Controller
                             $performance_data->total_count = 0;
                             $per = 0;
                         }
-                        array_push($performance_table_datas_tmp, $performance_data->incomplete_count . ":" . $per, $performance_data->completed_count . ":" . $per, "<a href='scheme-review?review_for=block&scheme=" . $scheme_id . "&geo=" . $geo_id . "&year=4&initiate=initiate'>" . $performance_data->total_count . "</a>:" . $per);
+                        array_push($performance_table_datas_tmp, $performance_data->incomplete_count . ":" . $per, $performance_data->completed_count . ":" . $per, "<a href='scheme-review?review_for=block&scheme=" . $scheme_id . "&geo=" . $geo_id . "&year=".$year."&initiate=initiate'>" . $performance_data->total_count . "</a>:" . $per);
                     } else if (session()->get('user_designation') == 2) { // sdo
                         $performance_data = scheme_block_performance::where('block_id', $geo_id)
                             ->where('scheme_id', $scheme_id)
@@ -482,5 +482,32 @@ class DashboardController extends Controller
             return ['dashboard_scheme_performance_has_datas' => $dashboard_scheme_performance_has_datas, 'performance_table_heading_1' => $performance_table_heading_1, 'performance_table_heading_2' => $performance_table_heading_2, 'performance_table_datas' => $performance_table_datas];
         }
         /** for dc dashboard ends **/
+    }
+
+    public function get_block_performance_percentage_data(Request $request){
+        $to_send = [];
+    
+        $geo_ids = GeoStructure::where('level_id', 3)->get()->pluck('geo_id');
+    
+        foreach($geo_ids as $geo_id){
+            $performance_data = scheme_block_performance::where('block_id', $geo_id)
+                                                    ->where('scheme_id', 117)
+                                                    ->first();
+    
+            if($performance_data){
+                $per = (($performance_data->completed_count) / ($performance_data->total_count))*100;
+                $per = round($per);
+            }
+            else{
+                $per = 0;
+            }
+    
+            $to_send_tmp["geo_id"] = $geo_id;
+            $to_send_tmp["percentage"] = $per;
+    
+            array_push($to_send, $to_send_tmp);
+        }
+        
+        return $to_send;
     }
 }
