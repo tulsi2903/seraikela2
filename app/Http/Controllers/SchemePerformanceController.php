@@ -347,8 +347,7 @@ class SchemePerformanceController extends Controller
             $scheme_block_performance->scheme_id=$scheme_id;
             $scheme_block_performance->block_id=$block_id;
             $scheme_block_performance->total_count=$total_count;
-            // $scheme_block_performance->complete_count=2;
-            $scheme_block_performance->complete_count=$complete_count;
+            $scheme_block_performance->completed_count=$complete_count;
             $scheme_block_performance->incomplete_count=$incomplete_count;
              $scheme_block_performance->created_by=Auth::user()->id;
             $scheme_block_performance->update_by=Auth::user()->id;
