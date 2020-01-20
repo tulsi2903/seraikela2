@@ -41,7 +41,7 @@
         </div>
     </div>
     <div class="card-body">
-        <div id="show-toggle1" style="border: 1px solid #ababab; padding: 15px; margin-bottom: 25px; border-radius: 3px;">
+        <div id="show-toggle1" style="border: 1px solid #ababab; padding: 15px; margin-bottom: 25px; border-radius: 3px;background: linear-gradient(to top, rgb(255, 255, 255), rgb(233, 236, 255) 70%, rgb(235, 238, 255), rgb(228, 232, 255) 100%);">
             <form action="{{url('asset/store')}}" onsubmit="return false" method="POST" enctype="multipart/form-data" id="asset-form">
                 @csrf
                 <div class="row">
@@ -105,24 +105,12 @@
                             <div class="invalid-feedback" id="subcategory_error_msg"></div>
                         </div>
                     </div>
+               
+              
+                
                 </div>
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label for="asset_icon">{{$phrase->icon}}</label>
-                            <input type="file" name="asset_icon" id="asset_icon" class="form-control">
-                            <div id="asset_icon_delete_div" style="padding:5px 0; display: none;">
-                                <div>{{$phrase->icon}}</div>
-                                <div style="display: inline-block;position:relative;padding:3px;border:1px solid #c4c4c4; border-radius:3px;">
-                                    <img src="" style="height:120px;">
-                                    <span style="position:absolute;top:0;right:0; background: rgba(0,0,0,0.5); font-size: 18px; cursor: pointer; padding: 5px 10px;" class="text-white" onclick=""><i class="fas fa-trash"></i></span>
-                                </div>
-                            </div>
-                            <input type="text" name="asset_icon_delete" id="asset_icon_delete" value="" hidden>
-                            <div class="invalid-feedback" id="asset_icon_error_msg"></div>
-                        </div>
-                    </div>
-                    <div class="col-md-8">
+             
+                     <!-- <div class="col-md-8">
                         <div class="form-group">
                             <label for="asset_icon">{{$phrase->sub_catagory}}</label>
                             <table>
@@ -141,13 +129,82 @@
                                 <tbody>
                                     <tr>
                                         <td colspan="3"></td>
-                                        <td><button type="button" onclick="append_table_data('add',null);" class="btn btn-secondary btn-sm btn-circle">{{$phrase->add}} <i class="fa fa-plus-circle" aria-hidden="true"></i></button></td>
+                                        <td></td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
+                    </div> -->
+            <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="asset_icon">{{$phrase->icon}}</label>
+                            <input type="file" name="asset_icon" id="asset_icon" class="form-control">
+                            <div id="asset_icon_delete_div" style="padding:5px 0; display: none;">
+                                <div>{{$phrase->icon}}</div>
+                                <div style="display: inline-block;position:relative;padding:3px;border:1px solid #c4c4c4; border-radius:3px;">
+                                    <img src="" style="height:120px;">
+                                    <span style="position:absolute;top:0;right:0; background: rgba(0,0,0,0.5); font-size: 18px; cursor: pointer; padding: 5px 10px;" class="text-white" onclick=""><i class="fas fa-trash"></i></span>
+                                </div>
+                            </div>
+                            <input type="text" name="asset_icon_delete" id="asset_icon_delete" value="" hidden>
+                            <div class="invalid-feedback" id="asset_icon_error_msg"></div>
+                        </div>
                     </div>
-                </div>
+                         <div class="col-md-8">
+                            <div class="card-header">
+                                <div class="card-head-row card-tools-still-right">
+                                    <h4 class="card-title" style="margin-left: -20px;">Sub Category</h4>
+                                    <div class="card-tools">
+                                        <button type="button" onclick="append_table_data('add',null);" class="btn btn-secondary btn-sm btn-circle">{{$phrase->add}} <i class="fa fa-plus-circle" aria-hidden="true"></i></button>
+                                    </div>
+                                </div>
+                            </div>  
+                            <!-- <div class="table-responsive table-hover table-sales">
+                                <br>
+                                <table style="width: 100%;">
+                                    <thead>
+                                        <tr>
+                                            <th>{{$phrase->name}} </th>
+                                            <th>{{$phrase->type}} </th>
+                                            <th style="padding: 5px;">{{$phrase->icon}}</th>
+                                            <th></th>
+                                            <th>{{$phrase->action}}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="append-name-child">
+    
+                                    </tbody>
+                                    <tbody>
+                                        <tr>
+                                            <td colspan="3"></td>
+                                            <td></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div> -->
+                            <br>
+                            <div class="table-responsive">
+                                <table class="display table table-striped table-hover" >
+                                    <thead style="    background: #d6dcff;">
+                                        <tr>
+                                            <th>{{$phrase->name}} </th>
+                                            <th>{{$phrase->type}} </th>
+                                            <th style="padding: 5px;">{{$phrase->icon}}</th>
+                                            <th></th>
+                                            <th>{{$phrase->action}}</th>
+                                        </tr>
+                                    </thead>
+                                  
+                                    <tbody id="append-name-child">
+    
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+              
+              
                 <div class="row">
                     <div class="col-md-4">
                         <div class="form-group">
@@ -649,8 +706,8 @@
 
                             to_append += ` <input type="text" name="asset_icon_child_delete" id="asset_icon_child_delete" value="" hidden>
                             </td>
-                            <td><button type="button" class="btn btn-danger btn-xs delete-button-row-child" onclick="delete_child(`+ data.childs_parent[i].asset_id + `);"><i class="fas fa-trash-alt"></i></button></td>
-                            <td><input type="text" name="asset_child_name_id[]" id="asset_child_name_id" value=\"`+ data.childs_parent[i].asset_id + `\" hidden></td>
+                            <td><button type="button" class="btn btn-danger btn-xs delete-button-row-child" onclick="delete_child(`+ data.childs_parent[i].asset_id + `);"><i class="fas fa-trash-alt"></i></button>
+                            <input type="text" name="asset_child_name_id[]" id="asset_child_name_id" value=\"`+ data.childs_parent[i].asset_id + `\" hidden></td>
                             </tr>`;
 
                             $("#append-name-child").append(to_append);
@@ -746,6 +803,7 @@
                                 </select>
                             </td>
                             <td><input type="file" name="child_asset_icon[]" class="form-control"></td> 
+                            <td></td>
                             <td><button type="button" class="btn btn-danger btn-xs delete-button-row-child" onclick="delete_child();"><i class="fas fa-trash-alt"></i></button></td>
                         </tr>`;
         $("#append-name-child").append(to_append);

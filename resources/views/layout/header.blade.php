@@ -8,6 +8,18 @@
             padding: 0.5em;
             border: 1px solid #fff;
         }
+        .quick-actions.quick-actions-info .quick-actions-header {
+         background: #ffffff;
+        }
+        .quick-actions.quick-actions-info:after {
+            border-bottom-color: #ffffff!important;
+        }
+        .navbar-expand-lg .navbar-nav .dropdown-menu {
+            left: auto;
+            right: 0;
+            width: 10px;
+        }
+        
     </style>
 
     <link href="https://fonts.googleapis.com/css?family=Bree+Serif&display=swap" rel="stylesheet">
@@ -16,7 +28,9 @@
             
             <span class="logo" style="padding-top: 10px;">
                 <img src="http://jiada.baba.software/public/form/images/toplogo.png" alt="navbar brand" class="navbar-brand" style="height:50px;">
-                <p style="margin-top:-52px;margin-left: 18px;color: #ffffff;font-weight: 500;font-size: 20px;line-height: 25px;text-align: center;font-family: serif;letter-spacing: 1px;text-shadow: 2px 4px 9px #8BC34A;">Seraikela Kharsawan</p>
+                <div class="heading">
+                    <p style="margin-top:-52px;margin-left: 18px;color: #ffffff;font-weight: 500;font-size: 20px;line-height: 25px;text-align: center;font-family: serif;letter-spacing: 1px;text-shadow: 2px 4px 9px #8BC34A;">Seraikela Kharsawan</p>
+                </div>
             </span>
             <button class="navbar-toggler sidenav-toggler ml-auto" type="button" data-toggle="collapse" data-target="collapse" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon">
