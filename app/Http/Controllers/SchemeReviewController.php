@@ -36,7 +36,7 @@ class SchemeReviewController extends Controller
                 $data["scheme_id"]= $request->scheme;
                 $data["geo_id"] = $request->geo;
                 $data["year_id"] = $request->year;
-                if(!$data["review_for"]||!data["scheme_id"]||!data["geo_id"]||!data["year_id"]){
+                if(!$data["review_for"]||!$data["scheme_id"]||!$data["geo_id"]||!$data["year_id"]){
                     $initiate="no";
                 }
                 else{

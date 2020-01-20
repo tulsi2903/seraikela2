@@ -111,23 +111,23 @@ class DashboardController extends Controller
         $geo_ids = [];
         if(session()->get('user_designation')==1) // dc
         {
-            $geo_ids = GeoStructure::where('level_id', 3)->pluck(geo_id); // decide rows
+            $geo_ids = GeoStructure::where('level_id', 3)->pluck('geo_id'); // decide rows
         }
         else if(session()->get('user_designation')==2){ // sdo
             // get block id from geo structure where officer id is assigned
             // then get all panchayat od that block
             $subdivision_id_tmp = GeoStructure::where('officer_id', Auth::user()->id)->first()->geo_id;
-            $geo_ids = GeoStructure::where('sd_id', $subdivision_id_tmp)->where('level_id','3')->pluck(geo_id); // decide rows (blocks)
+            $geo_ids = GeoStructure::where('sd_id', $subdivision_id_tmp)->where('level_id','3')->pluck('geo_id'); // decide rows (blocks)
         }
         else if(session()->get('user_designation')==3){ // bdo
             // get block id from geo structure where officer id is assigned
             // then get all panchayat od that block
             $block_id_tmp = GeoStructure::where('officer_id', Auth::user()->id)->first()->geo_id;
-            $geo_ids = GeoStructure::where('bl_id', $block_id_tmp)->where('level_id','4')->pluck(geo_id); // decide rows (panchayat)
+            $geo_ids = GeoStructure::where('bl_id', $block_id_tmp)->where('level_id','4')->pluck('geo_id'); // decide rows (panchayat)
         }
         else if(session()->get('user_designation')==4){ //po
             $panchayat_id_tmp = GeoStructure::where('officer_id', Auth::user()->id)->first()->geo_id;
-            $geo_ids = GeoStructure::where('geo_id', $panchayat_id_tmp)->where('level_id','4')->pluck(geo_id); // decide rows (panchayat)
+            $geo_ids = GeoStructure::where('geo_id', $panchayat_id_tmp)->where('level_id','4')->pluck('geo_id'); // decide rows (panchayat)
         }
         else{
             $dashboard_scheme_performance_has_datas = "no_data";
@@ -149,7 +149,7 @@ class DashboardController extends Controller
             }
         }
         //=> to decvide column
-        $scheme_ids = Fav_Scheme::where('user_id', session()->get('user_id'))->pluck(scheme_id); // decide columns
+        $scheme_ids = Fav_Scheme::where('user_id', session()->get('user_id'))->pluck('scheme_id'); // decide columns
         // $scheme_ids = SchemeStructure::get()->pluck(scheme_id); // decide columns
         if(count($scheme_ids)==0){
             $dashboard_scheme_performance_has_datas = "No favourite scheme selected";
@@ -188,6 +188,7 @@ class DashboardController extends Controller
                             $per = round($per);
                         }
                         else{
+                            $performance_data = new scheme_block_performance();
                             $performance_data->incomplete_count = 0;
                             $performance_data->completed_count = 0;
                             $performance_data->total_count = 0;
@@ -258,7 +259,7 @@ class DashboardController extends Controller
             }
         }
         /** for dc dashboard ends **/
-        // return $performance_table_datas;
+        // return $performance_table_heading_1;
         return view('dashboard.dc_dashboard')->with(compact('subdivision_count','block_count','panchayat_count','asset_count','scheme_count','block_details','scheme_performance_details','villages_count','get_schemes','departments','health_scheme_count','land_revenue_count','welfare_count','education_count','land_acquisition_count','election_count','agriculture_count','social_welfare_count','drinking_water_and_sanitation_count','social_security_scheme_count','dashboard_scheme_performance_has_datas','performance_table_heading_1','performance_table_heading_2','performance_table_datas'));
     }
 

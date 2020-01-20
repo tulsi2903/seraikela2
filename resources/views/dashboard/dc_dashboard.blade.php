@@ -311,15 +311,13 @@
                                 for($i=0; $i<count($performance_table_heading_1); $i++)
                                 {
                                     if($i!=0){
-                                        echo "<th colspan='3' style='text-align: center'>";
+                                        echo "<th style='text-align: center'>";
+                                        $value = explode("::", $performance_table_heading_1[$i]);
+                                        echo "<img src='".$value[1]."' style='height: 35px;margin-right: 15px;'>".$value[0]."</th>";
                                     }
                                     else{
-                                        echo "<th style='text-align: center'>";
+                                        echo "<th colspan='3' style='text-align: center'></th>";
                                     }
-
-                                    $value = explode("::", $performance_table_heading_1[$i]);
-
-                                    echo "<img src='".$value[1]."' style='height: 35px;margin-right: 15px;'>".$value[0]."</th>";
                                 } 
                                 ?>
                                 </tr>

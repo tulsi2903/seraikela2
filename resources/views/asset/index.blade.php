@@ -48,7 +48,7 @@
                     <div class="col-md-4">
                         <div class="form-group">
                             <label for="asset_name">{{$phrase->resource}} <span style="color:red;margin-left:5px;">*</span></label>
-                            <input type="text" name="asset_name" id="asset_name" class="form-control" value="{{$data->asset_name}}" autocomplete="off">
+                            <input type="text" name="asset_name" id="asset_name" class="form-control" value="" autocomplete="off">
                             <div class="invalid-feedback" id="asset_name_error_msg"></div>
                         </div>
                     </div>
@@ -57,8 +57,8 @@
                             <label for="movable">{{$phrase->type}}<span style="color:red;margin-left:5px;">*</span></label>
                             <select name="movable" id="movable" class="form-control">
                                 <option value="">--Select--</option>
-                                <option value="1" <?php if($data->movable=='1'){ echo "selected"; } ?>>Movable</option>
-                                <option value="0" <?php if($data->movable=='0'){ echo "selected"; } ?>>Immovable</option>
+                                <option value="1">Movable</option>
+                                <option value="0">Immovable</option>
                             </select>
                             <div class="invalid-feedback" id="movable_error_msg"></div>
                         </div>
@@ -69,7 +69,7 @@
                             <select name="dept_id" id="dept_id" class="form-control">
                                 <option value="">--Select--</option>
                                 @foreach( $departments as $department )
-                                <option value="{{ $department->dept_id }}" <?php if($data->dept_id==$department->dept_id){ echo "selected"; } ?>>
+                                <option value="{{ $department->dept_id }}">
                                     {{ $department->dept_name }}</option>
                                 @endforeach
                             </select>
@@ -84,7 +84,7 @@
                             <select name="category" id="category" class="form-control">
                                 <option value="">--Select--</option>
                                 @foreach( $categories as $category )
-                                <option value="{{ $category->asset_cat_id }}" <?php if($data->category_id==$category->asset_cat_id){ echo "selected"; } ?>>
+                                <option value="{{ $category->asset_cat_id }}">
                                     {{ $category->asset_cat_name }}</option>
                                 @endforeach
                             </select>
@@ -98,7 +98,7 @@
                             <select name="subcategory" id="subcategory" class="form-control">
                                 <option value="">--Select--</option>
                                 @foreach( $sub_categories as $sub_category )
-                                <option value="{{ $sub_category->asset_sub_id }}" <?php if($data->subcategory_id==$sub_category->asset_sub_id){ echo "selected"; } ?>>
+                                <option value="{{ $sub_category->asset_sub_id }}">
                                     {{ $sub_category->asset_sub_cat_name }}</option>
                                 @endforeach
                             </select>
