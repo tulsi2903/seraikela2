@@ -326,5 +326,5 @@ Route::post('scheme-group/view_diffrent_formate','GroupController@view_diffrent_
 Route::post('module/view_diffrent_formate','ModuleController@view_diffrent_formate');
 //For Scheme Import
 Route::get('import/scheme','SchemePerformanceController@view_import_forscheme');
-
+Route::get('dashborad/schemeperformance/{year}','DashboardController@scheme_performance_for_dashborad');
 
