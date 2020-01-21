@@ -18,7 +18,7 @@
                     <a href="{{url('scheme-asset')}}" class="btn btn-sm btn-secondary" style="float:right;"><i class="fas fa-arrow-left"></i>&nbsp;&nbsp;{{$phrase->back}}</a>
                 </div>
             </div>
-        </div>shivani chor  hai amit r se chakar chal rahya hai eska
+        </div>
     </div>
 
     <div class="col-md-12">
