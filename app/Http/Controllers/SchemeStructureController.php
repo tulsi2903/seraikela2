@@ -151,7 +151,10 @@ class SchemeStructureController extends Controller
         $scheme_structure->org_id = "1";
         $scheme_structure->scheme_name = $request->scheme_name;
         $scheme_structure->scheme_short_name = $request->scheme_short_name;
-        $scheme_structure->scheme_asset_id = $request->scheme_asset_id; // for attributes/ report generation etc
+        if($request->scheme_is == "1")
+        {
+        $scheme_structure->scheme_asset_id = $request->scheme_asset_id;
+        } // for attributes/ report generation etc
         $scheme_structure->scheme_is = $request->scheme_is; // 1=independent, 2=under a group
         // initialize values if scheme_as==2 (under a group) else saved as null
         // if ($request->scheme_is == "2") {

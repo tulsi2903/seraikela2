@@ -24,40 +24,23 @@
         <div>
             <form action="{{url('scheme-performance/importtoExcel')}}" method="POST" enctype="multipart/form-data">
                 @csrf
-            <!-- <div class="row" style="padding: 2em;">
-                <div class="col-md-3">
-                    <div class="form-group">
-                        <label for="scheme_id">Scheme<span style="color:red;margin-left:5px;">*</span></label>
-                        <select name="scheme_id" id="scheme_id" onchange="get_scheme_value(this);" class="form-control">
-                            <option value="">---Select---</option>
-                            @foreach($scheme_datas as $scheme )
-                            <option value="{{ $scheme->scheme_id }}">({{$scheme->scheme_short_name}}) {{ $scheme->scheme_name }}</option>
-                            @endforeach
-                        </select>
-                        <div class="invalid-feedback" id="scheme_id_error_msg"></div>
-                    </div>
-                </div>
-            </div> -->
-            <!-- <div class="row" style="display: none;" id="import_section">
-                <div class="col-md-3">
-                        <button  class="btn btn-primary"  type="button" onclick="location.href='../scheme-performance/downloadFormat?scheme_id='+document.getElementById('scheme_id').value" style="float:right; background: #349601; color: white;" title="Download Excel Format"><i class="fas fa-file-import"></i>&nbsp;&nbsp;Download Format</button>
-              
-                </div>
-                <div class="col-md-3">
-                    <div class="form-group">
-                        <label for="dept_name">{{$phrase->file_to_import}}<span style="color:red;margin-left:5px;">*</span></label>
-                    <span>[Maximum no. of entries that can be imported at a time is 250]</span>
-                    <input type="file" name="excelcsv" id="excelcsv" class="form-control" required>
-                    </div> 
-                </div>
-                <div class="col-md-3">
-                    <div class="form-group">
-                        <button type="submit" class="btn btn-primary">{{$phrase->import}} </button>
-                    </div>
-                </div>
-            </div> -->
+           
             <div class="col-md-12">
                     <div class="card-header">
+                        <div class="row">
+                            <div class="col-6">
+                                <h3>Import guide For Scheme</h3>
+                                <p>
+                                   -:  Select Scheme from scheme dropdown.
+                                    <br>
+                                    -:  Click on Download Template button to download the template. Please note, every scheme has a different template.
+                                    <br>
+                                    -:  Enter the data to be imported in the given excel format and save. Make sure, the excel is saved properly.
+                                    <br>
+                                    -:  Choose the saved excel file from File to import section and click on Import button.
+                                </p>
+                            </div>
+                        </div>
                         <div class="card-head-row card-tools-still-right">
                             <div class="col-md-4">
                             <div class="form-group">
