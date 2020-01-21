@@ -1448,7 +1448,7 @@
                         else{
                             for(k=0;k<data[i].performance_datas[j].length;k++){
                                 if(j==1){
-                                    toShowTabularForm+=`<td></td>`;
+                                    toShowTabularForm+=`<td>`+data[i].performance_datas[j][k]+`</td>`;
                                 }
                                 else{
                                     toShowTabularForm+=`<td>` + data[i].performance_datas[j][k]+ `</td>`;
@@ -1687,7 +1687,7 @@
         if(initiate=="initiate"){
             var initiate_review_for='{{$data["review_for"]}}';
             var initiate_geo_id='{{$data["geo_id"]}}';
-
+            
             $(".custom-loader").fadeIn(300);
 
             if(initiate_review_for=="block"){
@@ -1696,9 +1696,9 @@
             else if(initiate_review_for=="panchayat"){
 
             }
-
-            $(".custom-loader").fadeOut();
-            search(); // final search
+            
+            get_scheme_asset();
+            setTimeout(function(){ $(".custom-loader").fadeOut(); search(); }, 3000);
         }
     });
 </script>

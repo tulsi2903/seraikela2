@@ -446,7 +446,7 @@ class SchemeReviewController extends Controller
                     /******** map ends ********/
 
                     $total_count_tmp = "<a href='javascript:void();' onclick=\"getAllDatasIndividually('".$panchayat_data->geo_id."', '".$panchayat_data->geo_name."', '".$scheme_data->scheme_id."')\">".$performance_datas->count()."</a>";
-                    array_push($scheme_wise_tabular_datas, $performance_datas->where('status','0')->count(), $performance_datas->where('status','1')->count(), $total_count_tmp);
+                    array_push($scheme_wise_tabular_datas, $performance_datas->where('status','')->count(), $performance_datas->where('status','1')->count(), $total_count_tmp);
                     
 
                     // // assigning datas to variable that has to be returned (tmp)

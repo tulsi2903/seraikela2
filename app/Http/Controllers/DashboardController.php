@@ -26,12 +26,12 @@ class DashboardController extends Controller
         // session store user details
         if (Auth::check()) {
             session()->put('user_id', Auth::user()->id);
-            session()->put('user_full_name', Auth::user()->first_name . " " . Auth::user()->last_name);
+            session()->put('user_full_name',"Mr ". Auth::user()->first_name . " " . Auth::user()->last_name);
             session()->put('user_org_id', Auth::user()->org_id);
             session()->put('user_designation', Auth::user()->userRole);
             switch (Auth::user()->userRole) {
                 case "1":
-                    session()->put('user_designation_name', "Admin");
+                    session()->put('user_designation_name', "IAS");
                     session()->put('dashboard_title', "My District");
                     session()->put('dashboard_url', "my-district");
                     break;
@@ -490,8 +490,11 @@ class DashboardController extends Controller
         $geo_ids = GeoStructure::where('level_id', 3)->get()->pluck('geo_id');
     
         foreach($geo_ids as $geo_id){
+            // $performance_data = scheme_block_performance::where('block_id', $geo_id)
+            //                                         ->where('scheme_id', 117)
+            //                                         ->first();
             $performance_data = scheme_block_performance::where('block_id', $geo_id)
-                                                    ->where('scheme_id', 117)
+                                                    ->where('scheme_id', 2)
                                                     ->first();
     
             if($performance_data){

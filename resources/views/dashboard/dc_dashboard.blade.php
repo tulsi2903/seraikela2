@@ -302,17 +302,25 @@
     <div class="col-md-12" style="margin-top:1em;">
         <div class="card">
             <div class="card-head-row card-tools-still-right" style="background:#fff;">
-                <h4 style="color: #000;font-size: 1.2em;float: left;padding: 1em;">Scheme Performance
+                <h4 style="color: #000;font-size: 1.2em;padding: 1em; overflow: hidden;">
+                    <div style="display: inline-block; float: left; width:50%;">Scheme Performance</div>
                     <!-- (monthly) -->
+                    <div style="display: inline-block; float:right;left; width:200px; text-align: right;">
+                        <select name="year" id="year_value" onchange="get_year(this);" class="form-control">
+                            @foreach($year_details as $key_year=> $value_year)
+                            <option @if($year_id==$value_year['year_id']) {{"selected"}}  @endif value="{{$value_year['year_id']}}"> {{$value_year['year_value']}}</option>
+                            @endforeach
+                        </select>
+                    </div>
                 </h4>
                 
-                <div class="col-3">
-                    <select name="year" id="year_value" onchange="get_year(this);" style="color: #000;font-size: 1.2em;float: left;padding: 1em;" class="form-control">
-                        @foreach($year_details as $key_year=> $value_year)
-                        <option @if($year_id==$value_year['year_id']) {{"selected"}}  @endif value="{{$value_year['year_id']}}"> {{$value_year['year_value']}}</option>
-                        @endforeach
-                    </select>
-                </div>
+                <!--<div class="col-3">-->
+                <!--    <select name="year" id="year_value" onchange="get_year(this);" style="color: #000;font-size: 1.2em;float: left;padding: 1em;" class="form-control">-->
+                <!--        @foreach($year_details as $key_year=> $value_year)-->
+                <!--        <option @if($year_id==$value_year['year_id']) {{"selected"}}  @endif value="{{$value_year['year_id']}}"> {{$value_year['year_value']}}</option>-->
+                <!--        @endforeach-->
+                <!--    </select>-->
+                <!--</div>-->
             </div>
             <hr style="margin-top: -12px;">
             <div>
@@ -796,6 +804,7 @@ margin-left: 1em;">
                 alert("error" + xhr.status + "," + xhr.statusText);
             },
             success: function (data){
+                console.log(data);
                 data.forEach(function(element){
                     var fill_color = "grey";
 
