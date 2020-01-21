@@ -67,7 +67,7 @@
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="panchayat_id">Panchayat</label>
+                                <label for="panchayat_id">Panchayat <span style="color:red;margin-left:5px;">*</span></label>
                                 <select name="panchayat_id" id="panchayat_id" class="form-control">
                                     <option value="">--Select--</option>
                                 </select>
@@ -94,15 +94,15 @@
                 </form>
             </div>
             <hr />
-            <div class="enter-datas-block">
-                <button type="button" class="btn" style="margin-left:1.5%;background: #0f85e2!important;color:#fff;"><i class="fas fa-location-arrow"></i>&nbsp;&nbsp;Entered Datas</button>
+            <div class="enter-datas-block" id="to_append_table" style="display: none;">
+                <!-- <button type="button" class="btn" style="margin-left:1.5%;background: #0f85e2!important;color:#fff;"><i class="fas fa-location-arrow"></i>&nbsp;&nbsp;Entered Datas</button> -->
                 <div class="card-body" style="background: #f2f6ff; border: 1px solid #a5bbf6;margin-top: -18px;">
                     <div style="padding: 15px 0; overflow: hidden; color: black;">
-                        <div style="display: inline-block; float: left; font-size: 16px;">
+                        <!-- <div style="display: inline-block; float: left; font-size: 16px;">
                             <b>Data Saved:</b> <span id="total_date_count"></span>
-                        </div>
+                        </div> -->
                     </div>
-                    <div id="to_append_table" style="display: none;">
+                    <div >
                         <form action="{{url('scheme-performance/store')}}" method="POST" enctype="multipart/form-data">
                             @csrf
                             <table class="table">
@@ -295,7 +295,7 @@
         if (panchayat_id_val == "") {
             panchayat_id_error = true;
             $("#panchayat_id").addClass('is-invalid');
-            $("#panchayat_id_error_msg").html("Please select block");
+            $("#panchayat_id_error_msg").html("Please select Panchayat");
         }
         else {
             panchayat_id_error = false;
