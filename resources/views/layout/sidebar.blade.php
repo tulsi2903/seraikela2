@@ -75,14 +75,14 @@
 				</li>
 				<li class="nav-item">
 					<a data-toggle="collapse" href="#Import" class="collapsed" aria-expanded="false">
-							<i class="fas fa-receipt"></i>
+							<i class="fas fa-file-import"></i>
 						<p>{{$phrase->import}}</p>
 						<span class="caret"></span>
 					</a>
 					<div class="collapse" id="Import">
 						<ul class="nav nav-collapse">
-							<li class="nav-item"><a href="{{url('asset_Numbers/changeViewforimport')}}"><i class="fas fa-receipt"></i><p> {{$phrase->resource}}  {{$phrase->import}}</p></a></li>
-							<li class="nav-item"><a href="{{url('import/scheme')}}"><i class="fas fa-receipt"></i><p> {{$phrase->scheme}} {{$phrase->import}}</p></a></li>
+							<li class="nav-item"><a href="{{url('asset_Numbers/changeViewforimport')}}"><i class="fas fa-file-import"></i><p> {{$phrase->resource}}  {{$phrase->import}}</p></a></li>
+							<li class="nav-item"><a href="{{url('import/scheme')}}"><i class="fas fa-file-import"></i><p> {{$phrase->scheme}} {{$phrase->import}}</p></a></li>
 					</div>
 				</li>
 				@if(array_key_exists("mod22", $desig_permissions))
