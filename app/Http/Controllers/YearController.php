@@ -59,14 +59,15 @@ class YearController extends Controller
         }
         else{
             session()->put('alert-class','alert-danger');
-            session()->put('alert-content','Something went wrong while adding new details !');
+            session()->put('alert-content','Something went wrong while adding new Year!');
         }
 
         return redirect('year');
     }
 
     public function delete(Request $request){
-        if(Year::find($request->year_id)){
+        if(Year::find($request->year_id))
+        {
             Year::where('year_id',$request->year_id)->delete();
             session()->put('alert-class','alert-success');
             session()->put('alert-content','Deleted successfully !');
@@ -108,7 +109,7 @@ class YearController extends Controller
             $excel->setTitle('Year-Sheet');
 
             // Chain the setters
-            $excel->setCreator('Paatham')->setCompany('Paatham');
+            $excel->setCreator('Year')->setCompany('Year');
 
             $excel->sheet('Fees', function ($sheet) use ($data) {
                 $sheet->freezePane('A3');

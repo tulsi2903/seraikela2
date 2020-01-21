@@ -651,5 +651,4 @@
     }
 </script>
 
-// <!-- </div> -->
 @endsection

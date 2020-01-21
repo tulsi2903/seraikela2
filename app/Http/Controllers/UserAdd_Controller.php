@@ -68,12 +68,12 @@ class UserAdd_Controller extends Controller
         // duplicate entry
         if((User::where('email',$request->email)->exists()||User::where('username',$request->username)->exists()) && $request->hidden_input_purpose=="add"){
             session()->put('alert-class','alert-danger');
-            session()->put('alert-content','This email '.$request->email.' OR username '.$request->username.'is already exists!');
+            session()->put('alert-content','This email '.$request->email.' OR username '.$request->username.' already exists!');
             return redirect('user');
         }
         if($new_user->save()){
             session()->put('alert-class','alert-success');
-            session()->put('alert-content','New user data has been saved');
+            session()->put('alert-content','New User data has been saved');
         }
         return redirect('user');
     }

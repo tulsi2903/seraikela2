@@ -111,15 +111,15 @@ class GeoStructureController extends Controller
 
         if(GeoStructure::where('geo_name',$request->geo_name)->first()&&$request->hidden_input_purpose!="edit"){
             session()->put('alert-class','alert-danger');
-            session()->put('alert-content','This Geo data '.$request->geo_name.' is already exist');
+            session()->put('alert-content','This Geo data '.$request->geo_name.' already exist');
         }
         else if($geo_structure->save()){
             session()->put('alert-class','alert-success');
-            session()->put('alert-content','Geo structure details has been saved');
+            session()->put('alert-content','Geo Structure details has been saved');
         }
         else{
             session()->put('alert-class','alert-danger');
-            session()->put('alert-content','Something went wrong while adding new details');
+            session()->put('alert-content','Something went wrong while adding new Geo Structure');
         }
 
         return redirect('geo-structure');
@@ -134,7 +134,7 @@ class GeoStructureController extends Controller
         if(GeoStructure::find($request->geo_id)){
             GeoStructure::where('geo_id',$request->geo_id)->delete();
             session()->put('alert-class','alert-success');
-            session()->put('alert-content','Deleted successfully');
+            session()->put('alert-content','Data Deleted Successfully');
         }
 
         return redirect('geo-structure');
