@@ -157,6 +157,7 @@
                         </form>
                     </div>
                     <div class="table-responsive table-hover table-sales">
+                        <form action="{{url('department/store')}}" method="POST" enctype="multipart/form-data">
                         @csrf   
                         <div id="printable-info-details">
                             <p class="card-title-print-1">Title: Department</p>
@@ -208,7 +209,7 @@
                                     @endif
                                 </tbody>
                             </table>
-                       
+                        </form>
                     </div>
                 </div>
             </div>
