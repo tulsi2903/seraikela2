@@ -3,6 +3,51 @@
 @section('title', 'Resources Number')
 
 @section('page-content')
+<style>
+    .modal-content {
+    position: relative;
+    display: -webkit-box;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    flex-direction: column;
+    width: 100%;
+    pointer-events: auto;
+    / background-color: #fff; /
+    background-clip: padding-box;
+    border: 1px solid rgba(0, 0, 0, .2);
+    border-radius: .3rem;
+    outline: 0;
+    background: linear-gradient(to bottom, #a5baef, #ffffff 70%, #ffffff, #ffffff 100%);
+}
+.modal-header {
+    display: -webkit-box;
+    display: flex;
+    -webkit-box-align: start;
+    align-items: flex-start;
+    -webkit-box-pack: justify;
+    justify-content: space-between;
+    padding: 1rem;
+    border-bottom: 1px dashed #000;
+    border-top-left-radius: .3rem;
+    border-top-right-radius: .3rem;
+}
+.modal-footer {
+    display: -webkit-box;
+    display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: end;
+    justify-content: flex-end;
+    padding: 1rem;
+    border-bottom: 1px dashed #999999;
+    border-bottom-right-radius: .3rem;
+    border-bottom-left-radius: .3rem;
+    margin-top: -24px;
+}
+
+</style>
+
 <div class="card">
     <div class="col-md-12">
 
@@ -150,9 +195,9 @@
     <!-- for insert image loacation -->
     <div id="create-email" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none">
         <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title mt-0">Gallery</h4>
+            <div class="modal-content" style="margin-top: 11em;">
+                <div class="modal-header" style="border-top: 2px solid #5269a3">
+                    <h4 class="modal-title mt-0" style="font-family: 'Bree Serif', serif;color:#000;">Gallery</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -168,7 +213,7 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div id="show_image_for_location">
+                            <div id="show_image_for_location" style="padding: 2em;">
                                 <!-- append images -->
                             </div>
                         </div>
