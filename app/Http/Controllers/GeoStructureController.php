@@ -115,7 +115,7 @@ class GeoStructureController extends Controller
         }
         else if($geo_structure->save()){
             session()->put('alert-class','alert-success');
-            session()->put('alert-content','Geo Structure details has been saved');
+            session()->put('alert-content','Geo Structure Details has been saved Successfully');
         }
         else{
             session()->put('alert-class','alert-danger');

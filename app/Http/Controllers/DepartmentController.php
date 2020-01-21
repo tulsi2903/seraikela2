@@ -82,11 +82,11 @@ class DepartmentController extends Controller
         }
         else if($dept->save()){ //$purpose == add & no duplicate entry || $purpose == edit
             session()->put('alert-class','alert-success');
-            session()->put('alert-content','Department details has been saved');
+            session()->put('alert-content','Department Details has been saved');
         }
         else{
             session()->put('alert-class','alert-danger');
-            session()->put('alert-content','Something went wrong while adding new details');
+            session()->put('alert-content','Something went wrong while adding new Department');
         }
 
         return redirect('department');
@@ -96,7 +96,7 @@ class DepartmentController extends Controller
         if(Department::find($request->dept_id)){
             Department::where('dept_id',$request->dept_id)->delete();
             session()->put('alert-class','alert-success');
-            session()->put('alert-content','Deleted successfully');
+            session()->put('alert-content','Department Details Deleted Successfully');
         }
         return redirect('department');
     }

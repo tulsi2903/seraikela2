@@ -55,11 +55,11 @@ class ModuleController extends Controller
         }
         else if($module->save()){
             session()->put('alert-class','alert-success');
-            session()->put('alert-content','A new module details have been successfully submitted');
+            session()->put('alert-content','A new module details have been save successfully ');
         }
         else{
             session()->put('alert-class','alert-danger');
-            session()->put('alert-content','Something went wrong while adding new details');
+            session()->put('alert-content','Something went wrong while adding new module');
         }
 
         return redirect('module');
@@ -69,7 +69,7 @@ class ModuleController extends Controller
         if(Module::find($request->mod_id)){
             Module::where('mod_id',$request->mod_id)->delete();
             session()->put('alert-class','alert-success');
-            session()->put('alert-content','Deleted successfully');
+            session()->put('alert-content','Module Details Deleted Successfully');
         }
 
         return redirect('module');

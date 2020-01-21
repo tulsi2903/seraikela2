@@ -62,11 +62,11 @@ class DesignationController extends Controller
         }
         else if($desig->save()){
             session()->put('alert-class','alert-success');
-            session()->put('alert-content','Designation details has been saved');
+            session()->put('alert-content','Designation Details has been saved Successfully');
         }
         else{
             session()->put('alert-class','alert-danger');
-            session()->put('alert-content','Something went wrong while adding new details');
+            session()->put('alert-content','Something went wrong while adding new Designation');
         }
 
         return redirect('designation');
@@ -76,7 +76,7 @@ class DesignationController extends Controller
         if(Designation::find($request->desig_id)){
             Designation::where('desig_id',$request->desig_id)->delete();
             session()->put('alert-class','alert-success');
-            session()->put('alert-content','Deleted successfully');
+            session()->put('alert-content','Designation Details Deleted Successfully');
         }
 
         return redirect('designation');

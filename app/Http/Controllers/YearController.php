@@ -55,7 +55,7 @@ class YearController extends Controller
         }
         else if($year->save()){
             session()->put('alert-class','alert-success');
-            session()->put('alert-content','Year details have been successfully submitted !');
+            session()->put('alert-content','Year Details have been Successfully Saved!');
         }
         else{
             session()->put('alert-class','alert-danger');

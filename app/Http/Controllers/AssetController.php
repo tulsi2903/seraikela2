@@ -349,13 +349,13 @@ class AssetController extends Controller
         $asset_cat->org_id = 1;
         if (asset_cat::where('asset_cat_name', $request->asset_cat_name)->first() && $request->hidden_input_purpose != "edit") {
             session()->put('alert-class', 'alert-danger');
-            session()->put('alert-content', 'This asset ' . $request->asset_cat_name . ' already exist !');
+            session()->put('alert-content', 'This Resource  ' . $request->asset_cat_name . ' already exist !');
         } else if ($asset_cat->save()) {
             session()->put('alert-class', 'alert-success');
-            session()->put('alert-content', 'Asset Category  details have been successfully submitted !');
+            session()->put('alert-content', 'Resource Category Details have been Saved Successfully !');
         } else {
             session()->put('alert-class', 'alert-danger');
-            session()->put('alert-content', 'Something went wrong while adding new details !');
+            session()->put('alert-content', 'Something went wrong while adding new Resource Category !');
         }
         return redirect('assetcat');
     }
@@ -365,7 +365,7 @@ class AssetController extends Controller
         if (asset_cat::find($request->asset_cat_id)) {
             asset_cat::where('asset_cat_id', $request->asset_cat_id)->delete();
             session()->put('alert-class', 'alert-success');
-            session()->put('alert-content', 'Deleted successfully !');
+            session()->put('alert-content', 'Resource Category Details Deleted Successfully !');
         }
         return redirect('assetcat');
     }
@@ -417,10 +417,10 @@ class AssetController extends Controller
             session()->put('alert-content', 'This asset ' . $request->asset_subcat_name . ' already exist !');
         } else if ($asset_subcat->save()) {
             session()->put('alert-class', 'alert-success');
-            session()->put('alert-content', 'Asset Sub Category  details have been successfully submitted !');
+            session()->put('alert-content', 'Resource SubCategory Details have been saved Successfully !');
         } else {
             session()->put('alert-class', 'alert-danger');
-            session()->put('alert-content', 'Something went wrong while adding new details !');
+            session()->put('alert-content', 'Something went wrong while adding new Resource SubCategory !');
         }
         return redirect('asset_subcat');
     }
@@ -431,7 +431,7 @@ class AssetController extends Controller
         if (asset_subcat::find($request->asset_sub_id)) {
             asset_subcat::where('asset_sub_id', $request->asset_sub_id)->delete();
             session()->put('alert-class', 'alert-success');
-            session()->put('alert-content', 'Deleted successfully !');
+            session()->put('alert-content', 'Resource SubCategory Details Deleted Successfully !');
         }
         return redirect('asset_subcat');
     }

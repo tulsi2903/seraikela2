@@ -104,10 +104,10 @@ class DesignationPermissionController extends Controller
 
         if ($designation_permission->save()) {
             session()->put('alert-class', 'alert-success');
-            session()->put('alert-content', 'Designation permission have been successfully submitted !');
+            session()->put('alert-content', 'Designation Permission have been Saved Successfully !');
         } else {
             session()->put('alert-class', 'alert-danger');
-            session()->put('alert-content', 'Something went wrong while adding new details');
+            session()->put('alert-content', 'Something went wrong while adding new Designation Permission');
         }
 
         return redirect('designation-permission');
@@ -230,7 +230,7 @@ class DesignationPermissionController extends Controller
         if (DesignationPermission::find($request->desig_permission_id)) {
             DesignationPermission::where('desig_permission_id', $request->desig_permission_id)->delete();
             session()->put('alert-class', 'alert-success');
-            session()->put('alert-content', 'Deleted successfully');
+            session()->put('alert-content', 'Designation Permission Details Deleted successfully');
         }
         return redirect('designation-permission');
     }

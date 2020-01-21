@@ -43,11 +43,11 @@ class SchemeTypeController extends Controller
 
         if($scheme_type->save()){
             session()->put('alert-class','alert-success');
-            session()->put('alert-content','Scheme submitted successfully !');
+            session()->put('alert-content','Scheme Type  Add Successfully !');
         }
         else{
             session()->put('alert-class','alert-danger');
-            session()->put('alert-content','Something went wrong while adding new details');
+            session()->put('alert-content','Something went wrong while adding new Scheme Type');
         }
 
         return redirect('scheme-type');
@@ -56,7 +56,7 @@ class SchemeTypeController extends Controller
         if(SchemeType::find($request->sch_type_id)){
             SchemeType::where('sch_type_id',$request->sch_type_id)->delete();
             session()->put('alert-class','alert-success');
-            session()->put('alert-content','Deleted successfully !');
+            session()->put('alert-content','Scheme Type Details Deleted successfully !');
         }
 
         return redirect('scheme-type');
