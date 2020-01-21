@@ -242,6 +242,8 @@
                             <input type="text" name="hidden_input_purpose" id="hidden_input_purpose" value="add" hidden>
                             <input type="text" name="hidden_input_id" id="hidden_input_id" value="NA" hidden>
                             <input type="text" name="deleted_asset_child_id" id="deleted_asset_child_id" value="" hidden>
+                            <input type="text" name="delete_asset_icon_child_delete" id="delete_asset_icon_child_delete" value="" hidden>
+                            <input type="text" name="asset_icon_child_delete" id="asset_icon_child_delete" value="" hidden>
                             <button type="button" class="btn btn-secondary" onclick="return submitForm()">{{$phrase->save}}&nbsp;&nbsp;<i class="fas fa-check"></i></button>
                             &nbsp;&nbsp;<button type="button" class="btn btn-dark" onclick="hideForm()">{{$phrase->cancel}} &nbsp;&nbsp;<i class="fas fa-times"></i></button>
                         </div>
@@ -308,7 +310,7 @@
                         @if($count==1)
                         <tr>
                             <td colspan="8">
-                                <center>No data to shown</center>
+                                <center>No data to show</center>
                             </td>
                         </tr>
                         @endif
@@ -531,7 +533,7 @@
         });
     }
     //child icon image delete
-    function to_delete_child(image_path, e) {
+    function to_delete_child(image_path, e,resource_id) {
         swal({
             title: 'Are you sure?',
             // text: "You won't be able to revert this!",
@@ -549,7 +551,8 @@
             }
         }).then((willDelete) => {
             if (willDelete) {
-                $("#asset_icon_child_delete").val(image_path);
+                $("#asset_icon_child_delete").val($("#asset_icon_child_delete").val() + resource_id + ",");
+                $("#delete_asset_icon_child_delete").val($("#delete_asset_icon_child_delete").val() + image_path + ",");
                 $(e).closest("#asset_icon_delete_child_div").hide(200);
             }
         });
@@ -619,7 +622,7 @@
                 if (data.response == "success") {
                     resetAssetForm(); // resetting form
                     $("#toggle1").click(); // closing form div
-                    swal("Success!", "New asset has been added successfully.", {
+                    swal("Success!", "New Resource has been added successfully.", {
                         icon: "success",
                         buttons: {
                             confirm: {
@@ -746,12 +749,12 @@
                                 to_append += `<div id="asset_icon_delete_child_div" style="padding:5px 0; ">
                                     <div style="display: inline-block;position:relative;padding:3px;border:1px solid #c4c4c4; border-radius:3px;">
                                         <img src=`+ '{{url("")}}/' + data.childs_parent[i].asset_icon + ` style="height:55px;">
-                                        <span onclick="to_delete_child('`+ data.childs_parent[i].asset_icon + `',this)" style="position:absolute;top:0;right:0; background: rgba(0,0,0,0.5); cursor: pointer; padding: 3px 3px;" class="text-white" onclick=""><i class="fas fa-trash"></i></span>
+                                        <span onclick="to_delete_child('`+ data.childs_parent[i].asset_icon + `',this,'`+ data.childs_parent[i].asset_id + `')" style="position:absolute;top:0;right:0; background: rgba(0,0,0,0.5); cursor: pointer; padding: 3px 3px;" class="text-white" onclick=""><i class="fas fa-trash"></i></span>
                                     </div>
                                 </div>`
                             }
 
-                            to_append += ` <input type="text" name="asset_icon_child_delete" id="asset_icon_child_delete" value="" hidden>
+                            to_append += ` 
                             </td>
                             <td><button type="button" class="btn btn-danger btn-xs delete-button-row-child" onclick="delete_child(`+ data.childs_parent[i].asset_id + `);"><i class="fas fa-trash-alt"></i></button>
                             <input type="text" name="asset_child_name_id[]" id="asset_child_name_id" value=\"`+ data.childs_parent[i].asset_id + `\" hidden></td>
