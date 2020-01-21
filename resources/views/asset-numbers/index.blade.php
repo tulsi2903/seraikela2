@@ -187,7 +187,7 @@
                             @if($count==1)
                             <tr>
                                 <td colspan="7">
-                                    <center>No data to shown</center>
+                                    <center>No data to show</center>
                                 </td>
                             </tr>
                             @endif

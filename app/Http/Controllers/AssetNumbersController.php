@@ -298,15 +298,19 @@ class AssetNumbersController extends Controller
 
             if ($request->hidden_input_purpose == "edit" && count($request->delete_asset_geo_loc_id) != 0) {
                 $edit_asset_value = AssetNumbers::find($asset_number->asset_numbers_id);
-                $edit_asset_value->current_value = $edit_asset_value->current_value - count($request->delete_asset_geo_loc_id);
+                $edit_asset_value->current_value = $request->previous_value - count($request->delete_asset_geo_loc_id);//2-1=1//2=1
                 $edit_asset_value->pre_value = $edit_asset_value->current_value;
                 $edit_asset_value->save();
+                if (($request->previous_value - count($request->delete_asset_geo_loc_id)) == 0) {
+                    # code...
+                    AssetNumbers::where('asset_numbers_id', $edit_asset_value->asset_numbers_id)->delete();
+                }
             }
             if ($request->hidden_input_purpose == "add") {
                 $checkStatus = Asset::where('asset_id', $request->asset_id)->value('movable');
             }
             session()->put('alert-class', 'alert-success');
-            session()->put('alert-content', 'Asset details have been successfully submitted !');
+            session()->put('alert-content', 'Resource Number details have been successfully submitted !');
             if ($request->hidden_input_purpose == "add" && $checkStatus == 0) {
                 session()->put('message', $asset_number->asset_numbers_id);
             }
@@ -783,9 +787,10 @@ class AssetNumbersController extends Controller
                                 $noOfSuccess++;
                                 /* Condition for Add And edit Location Latitude And longitude */
                                 if($excelSheetHeadings[6] == "locationlandmark" || $excelSheetHeadings[7] == "latitude" || $excelSheetHeadings[8] == "longitude"){
-                                    if (($row['main_resource_sno'] == null && $row['count'] == null) && ($row['locationlandmark'] != null)) {
+                                    if ($row['main_resource_sno'] == null && $row['count'] == null && $row['locationlandmark'] != null) {
                                         // echo "1";
                                         // echo "<br>";
+                                        
                                         if($fetch_asset_number_edit->asset_numbers_id != null)
                                         {
                                             $AssetNumbers = AssetNumbers::find($fetch_asset_number_edit->asset_numbers_id);
@@ -850,9 +855,11 @@ class AssetNumbersController extends Controller
                                         }
                                         
                                     }
-                                    if (($row['main_resource_sno'] != null || $row['count'] != null) && (is_numeric($row['count']))) {
+
+                                    if ($row['main_resource_sno'] != null || $row['count'] != null) {
                                         // echo "2";
                                         // echo "<br>";
+                                        // $noOfSuccess++;
                                         $aseetNo = $row['main_resource_sno'];
                                         $fetch_panchayat_id1 = GeoStructure::where('geo_name', $readExcel[$aseetNo - 1]['panchayat_name'])->where('level_id', '4')->value('geo_id'); /* for Panchayat ID */
                                         $fetch_asset_id1 = Asset::where('asset_name', $readExcel[$aseetNo - 1]['resource_name'])->value('asset_id'); /* for asset ID */
@@ -949,11 +956,9 @@ class AssetNumbersController extends Controller
                                         $ErrorTxt .= " ON row sno. " . $row['sno.'] . " Resources And Year Not Found \n";
                                     } elseif ($fetch_year_id == null && $fetch_panchayat_id == null && $fetch_asset_id == null) {
                                         $ErrorTxt .= " ON row sno. " . $row['sno.'] . " Year Resources And Panchayat Not Found \n";
-                                    }
-                                    elseif (!is_numeric($row['count'])) {
+                                    } elseif (gettype($row['count']) !==  "double") {
                                         $ErrorTxt .= " ON row sno. " . $row['sno.'] . " Count is Not Numeric \n";
-                                    }
-                                    elseif ($row['locationlandmark'] == null) {
+                                    } elseif ($row['locationlandmark'] == null) {
                                         $ErrorTxt .= " ON row sno. " . $row['sno.'] . " Please Fill Landmark/Location \n";
                                     }
                                 } 
@@ -963,6 +968,7 @@ class AssetNumbersController extends Controller
                                 // }
                             }
                         }
+                        // die();
 
                         $txt = "District Resource and Scheme Management\n";
                         $txt .= "----------------------------------------------------------------------------------------------------------------------------------\n";
@@ -1047,6 +1053,7 @@ class AssetNumbersController extends Controller
         }
         return -1;
     }
+
     public function error_log_download()
     {
         # code...
@@ -1061,21 +1068,19 @@ class AssetNumbersController extends Controller
         exit();
     }
 
-         // abhishek 
-         public function view_diffrent_formate(Request $request)
-         {
-            // return $request;
-            // return "akf";
-            $asset_numbers_id = explode(',',$request->asset_numbers_id); // array
-             $department=array();
-             if($request->print=="print_pdf")
-             {
-                  
-                 if($request->asset_numbers_id!="")
-                 {
-     
-                       
-                    $AssetNumberdata = AssetNumbers::whereIn('asset_numbers_id',$asset_numbers_id)->select('geo_id', 'asset_id', 'year', 'created_at as date', DB::raw('MAX(updated_at) AS max_updated'), DB::raw('MAX(asset_numbers_id) as asset_numbers_id'))
+    // abhishek 
+    public function view_diffrent_formate(Request $request)
+    {
+        // return $request;
+        // return "akf";
+        $asset_numbers_id = explode(',', $request->asset_numbers_id); // array
+        $department = array();
+        if ($request->print == "print_pdf") {
+
+            if ($request->asset_numbers_id != "") {
+
+
+                $AssetNumberdata = AssetNumbers::whereIn('asset_numbers_id', $asset_numbers_id)->select('geo_id', 'asset_id', 'year', 'created_at as date', DB::raw('MAX(updated_at) AS max_updated'), DB::raw('MAX(asset_numbers_id) as asset_numbers_id'))
                     ->groupBy('year', 'asset_id', 'geo_id', 'created_at')
                     // ->format("Y-m-d")
                     ->get();
@@ -1110,16 +1115,16 @@ class AssetNumbersController extends Controller
                 );
 
                 date_default_timezone_set('Asia/Kolkata');
-                            $currentDateTime = date('d-m-Y H:i:s'); 
-                            $user_name=Auth::user()->first_name;
-                            $user_last_name=Auth::user()->last_name;
+                $currentDateTime = date('d-m-Y H:i:s');
+                $user_name = Auth::user()->first_name;
+                $user_last_name = Auth::user()->last_name;
                 $pdfbuilder = new \PdfBuilder($doc_details);
 
                 $content = "<table cellspacing=\"0\" cellpadding=\"4\" border=\"1\" ><tr>";
                 $content .= "<th style='border: solid 1px #000000;' colspan=\"7\" align=\"left\" ><b>Resources Number</b></th></tr>";
-                $content .= "<p style=\"border: solid 1px #000000;width: 50px;\" padding:\"100px;\">"."<b>"."<span>Title: </span>&nbsp;&nbsp;&nbsp;Resources Number Details
-                "."<br>"."<span>Date & Time: </span>&nbsp;&nbsp;&nbsp;".$currentDateTime."<br>"."<span>User Name:</span>&nbsp;&nbsp;&nbsp;" . $user_name."&nbsp;".$user_last_name.
-                "</b>"."</p>";
+                $content .= "<p style=\"border: solid 1px #000000;width: 50px;\" padding:\"100px;\">" . "<b>" . "<span>Title: </span>&nbsp;&nbsp;&nbsp;Resources Number Details
+        " . "<br>" . "<span>Date & Time: </span>&nbsp;&nbsp;&nbsp;" . $currentDateTime . "<br>" . "<span>User Name:</span>&nbsp;&nbsp;&nbsp;" . $user_name . "&nbsp;" . $user_last_name .
+                    "</b>" . "</p>";
 
                 /* ========================================================================= */
                 /*                Total width of the pdf table is 1017px                     */
@@ -1154,86 +1159,74 @@ class AssetNumbersController extends Controller
                 $pdfbuilder->table($content, array('border' => '1', 'align' => ''));
                 $pdfbuilder->output('AssetNumber.pdf');
                 exit;
-                   
-    
-                         
-    
-     
-                 }
-                //  return $request;
-             }
-             elseif($request->print=="excel_sheet")
-             {
-                    // return $request;
-                 if($request->asset_numbers_id!="")
-                 {
-     
-                                config()->set('database.connections.mysql.strict', false);
-                                \DB::reconnect(); //important as the existing connection if any would be in strict mode
+            }
+            //  return $request;
+        } elseif ($request->print == "excel_sheet") {
+            // return $request;
+            if ($request->asset_numbers_id != "") {
+
+                config()->set('database.connections.mysql.strict', false);
+                \DB::reconnect(); //important as the existing connection if any would be in strict mode
 
 
-                                $data = array(1 => array("Resources Number Details"));
-                                $data[] = array('Sl. No.', 'Year', 'Asset', 'Block', 'Panchyat', 'Current Value', 'Date');
+                $data = array(1 => array("Resources Number Details"));
+                $data[] = array('Sl. No.', 'Year', 'Asset', 'Block', 'Panchyat', 'Current Value', 'Date');
 
-                                $items = DB::table('asset_numbers')
-                                    ->whereIn('asset_numbers_id',$asset_numbers_id)
-                                    ->leftJoin('geo_structure', 'asset_numbers.geo_id', '=', 'geo_structure.geo_id')
-                                    ->leftJoin('asset', 'asset_numbers.asset_id', '=', 'asset.asset_id')
-                                    ->leftJoin('year', 'asset_numbers.year', '=', 'year.year_id')
-                                    ->select(
-                                        'asset_numbers.asset_numbers_id as slNo',
-                                        'year.year_value',
-                                        'asset.asset_name',
-                                        'geo_structure.bl_id as Block',
-                                        'geo_structure.geo_name',
-                                        'asset_numbers.current_value',
-                                        'asset_numbers.created_at as CreatedDate'
-                                    )
-                                    ->groupBy('asset_numbers.year', 'asset_numbers.asset_id', 'asset_numbers.geo_id')->get();
+                $items = DB::table('asset_numbers')
+                    ->whereIn('asset_numbers_id', $asset_numbers_id)
+                    ->leftJoin('geo_structure', 'asset_numbers.geo_id', '=', 'geo_structure.geo_id')
+                    ->leftJoin('asset', 'asset_numbers.asset_id', '=', 'asset.asset_id')
+                    ->leftJoin('year', 'asset_numbers.year', '=', 'year.year_id')
+                    ->select(
+                        'asset_numbers.asset_numbers_id as slNo',
+                        'year.year_value',
+                        'asset.asset_name',
+                        'geo_structure.bl_id as Block',
+                        'geo_structure.geo_name',
+                        'asset_numbers.current_value',
+                        'asset_numbers.created_at as CreatedDate'
+                    )
+                    ->groupBy('asset_numbers.year', 'asset_numbers.asset_id', 'asset_numbers.geo_id')->get();
 
-                                //now changing back the strict ON
-                                config()->set('database.connections.mysql.strict', true);
-                                \DB::reconnect();
-
-
-                                foreach ($items as $key => $value) {
-                                    $value->CreatedDate = date('d/m/Y', strtotime($value->CreatedDate));
-                                    $block_data_tmp = GeoStructure::find($value->Block);
-                                    $value->Block = $block_data_tmp->geo_name;
-
-                                    $data[] = array(
-                                        $key + 1,
-                                        $value->year_value,
-                                        $value->asset_name,
-                                        $value->Block,
-                                        $value->geo_name,
-                                        $value->current_value,
-                                        $value->CreatedDate
-                                    );
-                                }
-                                \Excel::create('Resources Number Details', function ($excel) use ($data) {
-
-                                    // Set the title
-                                    $excel->setTitle('Resources Number Details');
-
-                                    // Chain the setters
-                                    $excel->setCreator('Seraikela')->setCompany('Seraikela');
-
-                                    $excel->sheet('Resources Number Details', function ($sheet) use ($data) {
-                                        $sheet->freezePane('A3');
-                                        $sheet->mergeCells('A1:I1');
-                                        $sheet->fromArray($data, null, 'A1', true, false);
-                                        $sheet->setColumnFormat(array('I1' => '@'));
-                                    });
-                                })->download('xls');
-                                return Excel::download(new AssetNumberSectionExport, 'Asset Number-Sheet.xls');
+                //now changing back the strict ON
+                config()->set('database.connections.mysql.strict', true);
+                \DB::reconnect();
 
 
+                foreach ($items as $key => $value) {
+                    $value->CreatedDate = date('d/m/Y', strtotime($value->CreatedDate));
+                    $block_data_tmp = GeoStructure::find($value->Block);
+                    $value->Block = $block_data_tmp->geo_name;
 
-     
-                 }
-                 return $request;
-             }
-         }
+                    $data[] = array(
+                        $key + 1,
+                        $value->year_value,
+                        $value->asset_name,
+                        $value->Block,
+                        $value->geo_name,
+                        $value->current_value,
+                        $value->CreatedDate
+                    );
+                }
+                \Excel::create('Resources Number Details', function ($excel) use ($data) {
+
+                    // Set the title
+                    $excel->setTitle('Resources Number Details');
+
+                    // Chain the setters
+                    $excel->setCreator('Seraikela')->setCompany('Seraikela');
+
+                    $excel->sheet('Resources Number Details', function ($sheet) use ($data) {
+                        $sheet->freezePane('A3');
+                        $sheet->mergeCells('A1:I1');
+                        $sheet->fromArray($data, null, 'A1', true, false);
+                        $sheet->setColumnFormat(array('I1' => '@'));
+                    });
+                })->download('xls');
+                return Excel::download(new AssetNumberSectionExport, 'Asset Number-Sheet.xls');
+            }
+            return $request;
+        }
+    }
 
 }

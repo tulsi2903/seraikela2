@@ -69,14 +69,14 @@ class AssetController extends Controller
         // $toReturn['checkicon2'] = $request->file('asset_icon');
         // foreach ($request->child_name as $key => $value) {
         //     # code...
-        //     $toReturn['check12'][] = $value;
-        //     $toReturn['checkids'][] = $request->asset_child_name_id[$key];
+        //     // $toReturn['check12'][] = $value;
+        //     // $toReturn['checkids'][] = $request->asset_child_name_id[$key];
         //     $toReturn['checkicon'][] = $request->hasFile('child_asset_icon.'.$key);
         // }
-        // $toReturn['count'] = count($request->child_name);
-        // // $toReturn['checkfile1'] = $request->hasFile('child_asset_icon.0');
-        // $toReturn['sub'] = $request;
-        // return $request;
+        // $deleted_asset_child_id = rtrim($request->asset_icon_child_delete, ",");
+        // $to_delete_image_field_arr = explode(",", $deleted_asset_child_id);
+        // // $toReturn['sub'] = $request;
+        // return $toReturn;
         $toReturn["response"] = "Something went wrong! Please try again"; // response pre defined as error
         $asset = new Asset;
 
@@ -127,7 +127,7 @@ class AssetController extends Controller
             // session()->put('alert-class','alert-danger');
             // session()->put('alert-content','This asset '.$request->asset_name.' already exist !');
             $toReturn["response"] = "This asset " . $request->asset_name . " already exists!";
-            $toReturn["asset_name_error"] = "This asset name is already exist in selected department";
+            $toReturn["asset_name_error"] = "This Resource name is already exist in selected department";
         } else if ($asset->save()) {
             // session()->put('alert-class','alert-success');
             // session()->put('alert-content','Asset details have been successfully submitted !');
@@ -138,7 +138,17 @@ class AssetController extends Controller
             $toReturn["response"] = "Something went wrong while adding new asset!";
         }
         // return redirect('asset');
-
+        if($request->hidden_input_purpose == "edit") {
+            if ($request->asset_icon_child_delete) {
+                $deleted_asset_child_image_null = rtrim($request->asset_icon_child_delete, ",");
+                $to_delete_image_field_arr = explode(",", $deleted_asset_child_image_null);
+                for ($i = 0; $i < count($to_delete_image_field_arr); $i++) {
+                    $editchildimagenull = Asset::find($to_delete_image_field_arr[$i]);
+                    $editchildimagenull->asset_icon = "";
+                    $editchildimagenull->save();
+                }
+            }
+        }
         if($request->hidden_input_purpose == "add")//Add for child asset new entry for child
         {
             if (count($request->child_name) !=0 && $request->child_name != null) {
@@ -179,6 +189,7 @@ class AssetController extends Controller
                         { //edit child asset if any changes
                             $editchildasset = Asset::find($request->asset_child_name_id[$keyy]);
                             $editchildasset->asset_name = $value;
+                            
                             if ($request->hasFile('child_asset_icon.'.$keyy)) {
                                 $upload_directory_chid1 = "public/uploaded_documents/assets/";
                                 $file_child1 = $request->file('child_asset_icon.'.$keyy);
@@ -226,6 +237,15 @@ class AssetController extends Controller
                 $deleted_asset_child_id = explode(",", $deleted_asset_child_id);
                 $to_delete_query = Asset::whereIn('asset_id', $deleted_asset_child_id)->delete();
             }
+            if ($request->delete_asset_icon_child_delete) {
+                $to_delete_image_arr = explode(",", $request->delete_asset_icon_child_delete);
+                for ($i = 0; $i < count($to_delete_image_arr); $i++) {
+                    if (file_exists($to_delete_image_arr[$i])) {
+                        unlink($to_delete_image_arr[$i]);
+                    }
+                }
+            }
+            
         }
         return $toReturn;
     }
