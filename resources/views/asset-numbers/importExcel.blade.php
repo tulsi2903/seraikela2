@@ -9,7 +9,7 @@
 @endsection
 
 @section('page-content')
-   <div class="row row-card-no-pd" style="border-top: 3px solid #5c76b7;">
+<div class="card">
         <div class="col-md-12">
             <!-- <div class="card"> -->
                 <div class="card-header">
@@ -18,7 +18,7 @@
                         <div class="card-tools">
                         <!-- <a href="{{url('asset-numbers')}}" class="btn btn-sm btn-secondary" style="float:right;"><i class="fas fa-arrow-left"></i>&nbsp;&nbsp;Back</a> -->
                         <a href="{{url('asset_Numbers/downloadFormat')}}" data-toggle="tooltip" title="Download Excel Format"><button style="float:right;" type="button" class="btn btn-warning" ><i class="fa fa-download"></i>Download Format</button></a>
-                    <a href="{{url('asset_Numbers/downloadFormatwithLocation')}}" data-toggle="tooltip" title="Download Location Excel Format"><button style="float:right;" type="button" class="btn btn-primary" ><i class="fa fa-download"></i>Download Format With Location</button></a>
+                    <a href="{{url('asset_Numbers/downloadFormatwithLocation')}}" data-toggle="tooltip" title="Download Location Excel Format"><button style="float:right;margin-right: 1em;" type="button" class="btn btn-primary" ><i class="fa fa-download"></i>Download Format With Location</button></a>
                         </div>
                     </div>
                 </div>

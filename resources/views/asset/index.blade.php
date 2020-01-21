@@ -182,37 +182,7 @@
                             <div class="invalid-feedback" id="subcategory_error_msg"></div>
                         </div>
                     </div>
-               
-              
-                
-                </div>
-             
-                     <!-- <div class="col-md-8">
-                        <div class="form-group">
-                            <label for="asset_icon">{{$phrase->sub_catagory}}</label>
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>{{$phrase->name}} </th>
-                                        <th>{{$phrase->type}} </th>
-                                        <th>{{$phrase->icon}}</th>
-                                        <th></th>
-                                        <th>{{$phrase->action}}</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="append-name-child">
 
-                                </tbody>
-                                <tbody>
-                                    <tr>
-                                        <td colspan="3"></td>
-                                        <td></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div> -->
-            <div class="row">
                     <div class="col-md-4">
                         <div class="form-group">
                             <label for="asset_icon">{{$phrase->icon}}</label>
@@ -228,7 +198,13 @@
                             <div class="invalid-feedback" id="asset_icon_error_msg"></div>
                         </div>
                     </div>
-                         <div class="col-md-8">
+               
+              
+                
+                </div>
+            <div class="row">
+                   
+                         <div class="col-md-12">
                             <div class="card-header">
                                 <div class="card-head-row card-tools-still-right">
                                     <h4 class="card-title" style="margin-left: -20px;">Sub Category</h4>
@@ -237,29 +213,6 @@
                                     </div>
                                 </div>
                             </div>  
-                            <!-- <div class="table-responsive table-hover table-sales">
-                                <br>
-                                <table style="width: 100%;">
-                                    <thead>
-                                        <tr>
-                                            <th>{{$phrase->name}} </th>
-                                            <th>{{$phrase->type}} </th>
-                                            <th style="padding: 5px;">{{$phrase->icon}}</th>
-                                            <th></th>
-                                            <th>{{$phrase->action}}</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="append-name-child">
-    
-                                    </tbody>
-                                    <tbody>
-                                        <tr>
-                                            <td colspan="3"></td>
-                                            <td></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div> -->
                             <br>
                             <div class="table-responsive">
                                 <table class="display table table-striped table-hover" >

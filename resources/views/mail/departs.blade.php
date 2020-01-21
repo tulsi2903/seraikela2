@@ -403,9 +403,7 @@
                    
 
 
-                    <tkkkktttynrtkhjnrtt
-                    
-                                `!  f7 hbr bgcolor="#5269a3">
+                    <tr bgcolor="#5269a3">
 	                	<td>
                         <table border="0" width="600" align="center" cellpadding="0" cellspacing="0" class="container-middle">
                             <tr>
@@ -413,9 +411,7 @@
                         </tr>
                        </table>
                        </td>
-                    </tkkkktttynrtkhjnrtt
-                    
-                                `!  f7 hbr>
+                    </tr>
    
                     <tr>
                         <td valign="top"><table width="100%" border="0" cellspacing="0" cellpadding="0" style="   background: #dce6ff;">
@@ -424,7 +420,7 @@
                              </tbody><tbody>
                                 <tr>
                                     <td height="2"></td>
-                                </tr>9 n n90-      
+                                </tr>   
                              
                                 <tr>
                                     <td>

@@ -170,6 +170,74 @@
     #scheme-performane-table td a {
         font-weight: bold;
     }
+
+    .focus-grid {
+        margin-top:10px;
+    }
+    .col-md-1 {
+    -webkit-box-flex: 0;
+    flex: 0%;
+    max-width: 10%;
+}
+
+/* .card-category {
+        margin-top: 8px;
+        font-size: 16px;
+        color: #FFEB3B;
+        margin-bottom: -4px;
+        word-break: normal;
+        font-family: 'Bree Serif', serif;
+    }
+ */
+
+
+@media only screen and (min-width: 480px){
+    .card-category {
+        margin-top: 8px;
+        font-size: 12px;
+        color: #FFEB3B;
+        margin-bottom: -4px;
+        word-break: normal;
+        font-family: 'Bree Serif', serif;
+    }
+
+}
+
+@media only screen and (min-width: 768px){
+
+    .card-category {
+        margin-top: 8px;
+        font-size: 15px;
+        color: #FFEB3B;
+        margin-bottom: -4px;
+        word-break: normal;
+        font-family: 'Bree Serif', serif;
+    }
+}
+
+@media only screen and (min-width: 992px){
+    .card-category {
+        margin-top: 8px;
+        font-size: 12px;
+        color: #FFEB3B;
+        margin-bottom: -4px;
+        word-break: normal;
+        font-family: 'Bree Serif', serif;
+    }
+
+}
+
+@media only screen and (min-width: 1280px){
+    .card-category {
+        margin-top: 8px;
+        font-size: 16px;
+        color: #FFEB3B;
+        margin-bottom: -4px;
+        word-break: normal;
+        font-family: 'Bree Serif', serif;
+    }
+
+}
 </style>
 
 
@@ -303,7 +371,7 @@
         <div class="card">
             <div class="card-head-row card-tools-still-right" style="background:#fff;">
                 <h4 style="color: #000;font-size: 1.2em;padding: 1em; overflow: hidden;">
-                    <div style="display: inline-block; float: left; width:50%;">Scheme Performance</div>
+                    <div style="display: inline-block; float: left; width:50%;font-family: 'Bree Serif', serif;">Scheme Performance</div>
                     <!-- (monthly) -->
                     <div style="display: inline-block; float:right;left; width:200px; text-align: right;">
                         <select name="year" id="year_value" onchange="get_year(this);" class="form-control">
@@ -322,7 +390,7 @@
                 <!--    </select>-->
                 <!--</div>-->
             </div>
-            <hr style="margin-top: -12px;">
+            <hr style="margin-top:-13px;border-top: 1px dashed #717070;">
             <div>
                 @if(session()->get('message_year'))
                 <span>{{session()->get('message_year')}}</span>
@@ -412,146 +480,22 @@
             </div>
         </div>
     </div>
-
-    <!-- <div class="col-md-6" style="margin-top:1em;">
-        <div class="card">
-            <div class="card-head-row card-tools-still-right" style="background:#fff;">
-                <h4 style="color: #000;font-size: 1.2em;float: left;padding: 1em;">Department Performance (monthly)</h4>
-            </div>
-            <hr style="margin-top: -12px;">
-            <div class="card-body">
-                <h2><strong><span style="color: #09c521;"><i class="fas fa-wrench"></i></span>&nbsp;&nbsp;Under Development</strong></h2>
-            </div> 
-        </div>
-    </div> -->
 </div>
 <!--enf of row-->
 
 
 
 
-<!--           
-                <div class="row" style="margin-top: 1em; width:122%;"> 
-                    <div class="col-md-1">
-                        <div id="card-detail1">
-                            <div class="card-body p-3 text-center">
-                                <div class="text-right">{{$health_scheme_count}}</div>
-                                <div class="h1 m-0"><i class="fa fa-heartbeat" style="font-size:35px; color: #fff;"></i></div>
-                                <div class="text-muted mb-3">Health</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-1">
-                        <div id="card-detail2">
-                            <div class="card-body p-3 text-center">
-                                <center><div class="text-right">{{$land_revenue_count}}</div></center>
-                                <i class="fas fa-graduation-cap" style="font-size:35px; color: #fff;"></i>
-                                <div class="text-muted mb-3">Land and Revenue</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-1">
-                        <div id="card-detail3">
-                            <div class="card-body p-3 text-center">
-                                <center><div class="text-right">{{$welfare_count}}</div></center>
-                                <div class="h1 m-0"><i class="fas fa-hands" style="font-size:35px; color: #fff;"></i></div>
-                                <div class="text-muted mb-3">Welfare</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-1">
-                        <div id="card-detail4">
-                            <div class="card-body p-3 text-center">
-                                <div class="text-right">{{$education_count}}</div>
-                                <div class="h1 m-0"><i class="fas fa-graduation-cap" style="font-size:35px; color: #fff;"></i></div>
-                                <div class="text-muted mb-3">Education</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-1">
-                        <div id="card-detail5">
-                            <div class="card-body p-3 text-center">
-                                <div class="text-right">{{$land_acquisition_count}}</div>
-                                <div class="h1 m-0"><i class="fas fa-oil-can"style="font-size:35px; color: #fff;"></i></div>
-                                <div class="text-muted mb-3">Land Acquisition</div>
-                            </div>
-                        </div>
-                    </div>
-             
-               
-                    <div class="col-md-1">
-                        <div id="card-detail6">
-                            <div class="card-body p-3 text-center">
-                                <div class="text-right">{{$election_count}}</div>
-                                <div class="h1 m-0"><i class="fas fa-box" style="font-size:35px; color: #fff;"></i></div>
-                                <div class="text-muted mb-3">Election</div>
-                            </div>
-                        </div> 
-                    </div>
-    
-                    <div class="col-md-1">
-                        <div id="card-detail7">
-                            <div class="card-body p-3 text-center">
-                                <div class="text-right">{{$agriculture_count}}</div>
-                                <div class="h1 m-0"><i class="fas fa-leaf" style="font-size:35px; color: #fff;"></i></div>
-                                <div class="text-muted mb-3">Agriculture</div>
-                            </div>
-                        </div>
-                    </div>
-    
-                    <div class="col-md-1">
-                        <div id="card-detail8">
-                            <div class="card-body p-3 text-center">
-                                <div class="text-right">{{$social_welfare_count}}</div>
-                                <div class="h1 m-0"><i class="fas fa-hands" style="font-size:35px; color: #fff;"></i></div>
-                                <div class="text-muted mb-3">Social Welfare</div>
-                            </div>
-                        </div>
-                    </div>
-    
-                    <div class="col-md-1">
-                        <div id="card-detail9">
-                            <div class="card-body p-3 text-center">
-                                <div class="text-right">{{$drinking_water_and_sanitation_count}}</div>
-                                <div class="h1 m-0"><i class="fas fa-oil-can" style="font-size:35px; color: #fff;"></i></div>
-                                <div class="text-muted mb-3">Drinking Water and Sanitation</div>
-                            </div>
-                        </div>
-                    </div>
-    
-                    <div class="col-md-1">
-                        <div id="card-detail10">
-                            <div class="card-body p-3 text-center">
-                                <div class="text-right">{{$social_security_scheme_count}}</div>
-                                <div class="h1 m-0"><i class="fas fa-user-lock" style="font-size:35px; color: #fff;"></i></div>
-                                <div class="text-muted mb-3">Social Security Scheme</div>
-                            </div>
-                        </div>
-                    </div>
-                </div> -->
-
-
-<!-- content-starts-here -->
-
-
-<div class="col-md-12">
-    <h4 style="color: #000;
-    font-size: 1.2em;
-    float: left;
-    padding: 1em;
-    width: 100%;
-    background: #b3c4f1;
-    margin-top: 1em;
-    border-left: 3px solid #212f51;">{{$phrase->no_of_scheme}}</h4>
-</div>
-
-<div class="row" style="width: 118%;
-margin-left: 1em;">
-
+<div class="row">
+    <div class="col-md-12" style="margin-top:1em;">
+        <div class="card">
+            <div class="card-head-row card-tools-still-right" style="background:#fff;">
+                <h4 style="color: #000;font-size: 1.2em;padding: 1em; overflow: hidden;">
+                    <div style="display: inline-block; float: left; width:50%;font-family: 'Bree Serif', serif;">{{$phrase->no_of_scheme}}</div>
+                </h4>
+                <hr style="margin-top:-13px;border-top: 1px dashed #717070;">
+            </div>
+            <div style="display:flex; padding: 1em;">
     <div class="col-md-1 focus-grid" style="padding-right: 5px;padding-left: 5px;">
         <div class="focus-border">
             <center>
@@ -664,12 +608,15 @@ margin-left: 1em;">
         </div>
     </div>
 </div><br>
-
+</div>
+</div>
+</div>
+<br>
 <div class="row">
     <div class="col-md-6">
         <div class="card" style="min-height: 600px;">
             <div class="card-head-row card-tools-still-right" style="background:#fff;">
-                <h4 style="color: #000;font-size: 1.2em;float: left;padding: 1em;">{{$phrase->no_of_resources}} </h4>
+                <h4 style="color: #000;font-size: 1.2em;float: left;padding: 1em;font-family: 'Bree Serif', serif;">{{$phrase->no_of_resources}} </h4>
                 <hr style="margin-top: 4em;border-top: 1px dashed #717070;">
 
             </div>
@@ -681,7 +628,7 @@ margin-left: 1em;">
     <div class="col-md-6">
         <div class="card" style="min-height: 600px;">
             <div class="card-head-row card-tools-still-right" style="background:#fff;">
-                <h4 style="color: #000;font-size: 1.2em;float: left;padding: 1em;">{{$phrase->map_of_saraikela}}</h4>
+                <h4 style="color: #000;font-size: 1.2em;float: left;padding: 1em;font-family: 'Bree Serif', serif;">{{$phrase->map_of_saraikela}}</h4>
                 <hr style="margin-top: 4em;border-top: 1px dashed #717070;">
 
 
