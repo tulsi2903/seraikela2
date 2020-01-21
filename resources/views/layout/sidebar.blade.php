@@ -10,16 +10,16 @@
 				<li class="nav-item">
 					<a data-toggle="collapse" href="#asset" class="collapsed" aria-expanded="false">
 						<i class="fas fa-layer-group"></i>
-						<p>Resources</p>
+						<p>{{$phrase->resource}}</p>
 						<span class="caret"></span>
 					</a>
 					<div class="collapse" id="asset">
 						<ul class="nav nav-collapse">
 							@if(array_key_exists("mod13", $desig_permissions))
-							<li class="nav-item"><a href="{{url('asset')}}"><i class="fas fa-list"></i><p>Define Resources</p></a></li>
+							<li class="nav-item"><a href="{{url('asset')}}"><i class="fas fa-list"></i><p>{{$phrase->define_resource}}</p></a></li>
 							@endif
 							@if(array_key_exists("mod14", $desig_permissions))
-							<li class="nav-item"><a href="{{url('asset-numbers')}}"><i class="fas fa-list-ol"></i><p>Resources Number</p></a></li>
+							<li class="nav-item"><a href="{{url('asset-numbers')}}"><i class="fas fa-list-ol"></i><p>{{$phrase->resource_number}} </p></a></li>
 							@endif</ul>
 					</div>
 				</li>
@@ -27,20 +27,20 @@
 				<li class="nav-item">
 					<a data-toggle="collapse" href="#scheme" class="collapsed" aria-expanded="false">
 							<i class="fas fa-bezier-curve"></i>
-						<p>Scheme</p>
+						<p>{{$phrase->scheme}}</p>
 						<span class="caret"></span>
 					</a>
 					<div class="collapse" id="scheme">
 						<ul class="nav nav-collapse">
 							@if(array_key_exists("mod15", $desig_permissions))
-								<li class="nav-item"><a href="{{url('scheme-structure')}}"><i class="fas fa-receipt"></i><p>Define Scheme</p></a></li>
+								<li class="nav-item"><a href="{{url('scheme-structure')}}"><i class="fas fa-receipt"></i><p>{{$phrase->define_scheme}}</p></a></li>
 							@endif
 							@if(array_key_exists("mod16", $desig_permissions))
-							<li class="nav-item"><a href="{{url('scheme-asset')}}"><i class="fas fa-users-cog"></i><p>Scheme Assets</p></a></li>
+							<li class="nav-item"><a href="{{url('scheme-asset')}}"><i class="fas fa-users-cog"></i><p>{{$phrase->scheme_assets}}</p></a></li>
 							@endif
 							@if(array_key_exists("mod17", $desig_permissions))
 							<!-- <li class="nav-item"><a href="{{url('scheme-geo-target')}}"><i class="fas fa-receipt"></i><p>Scheme Geo Target</p></a></li> -->
-			                <li class="nav-item"><a href="{{url('scheme-performance')}}"><i class="fas fa-receipt"></i><p>Scheme Performance</p></a></li>
+			                <li class="nav-item"><a href="{{url('scheme-performance')}}"><i class="fas fa-receipt"></i><p>{{$phrase->scheme_performance}}</p></a></li>
 							@endif
 						</ul>
 					</div>
@@ -49,76 +49,76 @@
 				<li class="nav-item">
 					<a data-toggle="collapse" href="#review" class="collapsed" aria-expanded="false">
 							<i class="fas fa-receipt"></i>
-						<p>Review</p>
+						<p>{{$phrase->review}}</p>
 						<span class="caret"></span>
 					</a>
 					<div class="collapse" id="review">
 						<ul class="nav nav-collapse">
 							@if(array_key_exists("mod19", $desig_permissions))
-							<li class="nav-item"><a href="{{url('asset-review')}}"><i class="fas fa-receipt"></i><p>Resources Review</p></a></li>
+							<li class="nav-item"><a href="{{url('asset-review')}}"><i class="fas fa-receipt"></i><p>{{$phrase->resource_review}} </p></a></li>
 							@endif
 							@if(array_key_exists("mod20", $desig_permissions))
-							<li class="nav-item"><a href="{{url('scheme-review')}}"><i class="fas fa-receipt"></i><p>Scheme Review</p></a></li>
+							<li class="nav-item"><a href="{{url('scheme-review')}}"><i class="fas fa-receipt"></i><p>{{$phrase->scheme_review}}</p></a></li>
 							@endif
 					</div>
 				</li>
 				<li class="nav-item">
 					<a data-toggle="collapse" href="#Import" class="collapsed" aria-expanded="false">
 							<i class="fas fa-receipt"></i>
-						<p>Import</p>
+						<p>{{$phrase->import}}</p>
 						<span class="caret"></span>
 					</a>
 					<div class="collapse" id="Import">
 						<ul class="nav nav-collapse">
-							<li class="nav-item"><a href="{{url('asset_Numbers/changeViewforimport')}}"><i class="fas fa-receipt"></i><p>Resources Import</p></a></li>
+							<li class="nav-item"><a href="{{url('asset_Numbers/changeViewforimport')}}"><i class="fas fa-receipt"></i><p>{{$phrase->group_review}}</p></a></li>
 							<li class="nav-item"><a href="{{url('import/scheme')}}"><i class="fas fa-receipt"></i><p>Scheme Import</p></a></li>
 					</div>
 				</li>
 				@if(array_key_exists("mod22", $desig_permissions))
-				<li class="nav-item"><a href="{{url('favourites')}}"><i class="fa fa-bookmark" aria-hidden="true"></i><p>Favourite</p></a></li>
+				<li class="nav-item"><a href="{{url('favourites')}}"><i class="fa fa-bookmark" aria-hidden="true"></i><p>{{$phrase->favorite}}</p></a></li>
 				@endif<!-- <li class="nav-item"><a href="{{url('mgnrega')}}"><i class="fa fa-bookmark" aria-hidden="true"></i><p>Mgnrega</p></a></li> -->
 				<li class="nav-item">
 					<a data-toggle="collapse" href="#administator" class="collapsed" aria-expanded="false">
 							<i class="fas fa-user-tie"></i>
-						<p>Setting</p>
+						<p>{{$phrase->setting}}</p>
 						<span class="caret"></span>
 					</a>
 					<div class="collapse" id="administator">
 						<ul class="nav nav-collapse">
 							@if(array_key_exists("mod1", $desig_permissions))
-								<li class="nav-item"><a href="{{url('user')}}"><i class="fas fa-users"></i><p>User</p></a></li>
+								<li class="nav-item"><a href="{{url('user')}}"><i class="fas fa-users"></i><p>{{$phrase->user}}</p></a></li>
 							@endif
 							@if(array_key_exists("mod12", $desig_permissions))
-							<li class="nav-item"><a href="{{url('geo-structure')}}"><i class="fas fa-map-marker-alt"></i><p>Geo Structure</p></a></li>
+							<li class="nav-item"><a href="{{url('geo-structure')}}"><i class="fas fa-map-marker-alt"></i><p>{{$phrase->geo_struture}}</p></a></li>
 							@endif
 							@if(array_key_exists("mod2", $desig_permissions))
-								<li class="nav-item"><a href="{{url('department')}}"><i class="fas fa-sitemap"></i><p>Department</p></a></li>
+								<li class="nav-item"><a href="{{url('department')}}"><i class="fas fa-sitemap"></i><p>{{$phrase->department}}</p></a></li>
 							@endif
 							@if(array_key_exists("mod3", $desig_permissions))
-								<li class="nav-item"><a href="{{url('year')}}"><i class="fas fa-calendar-alt"></i><p>Year</p></a></li>
+								<li class="nav-item"><a href="{{url('year')}}"><i class="fas fa-calendar-alt"></i><p>{{$phrase->year}}</p></a></li>
 							@endif
 							@if(array_key_exists("mod4", $desig_permissions))
 								<!-- <li class="nav-item"><a href="{{url('uom')}}"><i class="fas fa-list-ol"></i><p>UoM</p></a></li> -->
 							@endif
 
 							@if(array_key_exists("mod5", $desig_permissions))
-								<li class="nav-item"><a href="{{url('designation')}}"><i class="fas fa-user-check"></i><p>Designation</p></a></li>
+								<li class="nav-item"><a href="{{url('designation')}}"><i class="fas fa-user-check"></i><p>{{$phrase->designation}}</p></a></li>
 							@endif
 							@if(array_key_exists("mod6", $desig_permissions))
-								<li class="nav-item"><a href="{{url('scheme-type')}}"><i class="fas fa-receipt"></i><p>Scheme Type</p></a></li>
+								<li class="nav-item"><a href="{{url('scheme-type')}}"><i class="fas fa-receipt"></i><p>{{$phrase->scheme_type}}</p></a></li>
 							@endif
 							@if(array_key_exists("mod7", $desig_permissions))
-								<li class="nav-item"><a href="{{url('scheme-group')}}"><i class="fas fa-receipt"></i><p>Scheme Group</p></a></li>
+								<li class="nav-item"><a href="{{url('scheme-group')}}"><i class="fas fa-receipt"></i><p>{{$phrase->scheme_group}}</p></a></li>
 							@endif
 							@if(array_key_exists("mod8", $desig_permissions))
-								<li class="nav-item"><a href="{{url('assetcat')}}"><i class="fas fa-receipt"></i><p> Resource Category</p></a></li>
+								<li class="nav-item"><a href="{{url('assetcat')}}"><i class="fas fa-receipt"></i><p> {{$phrase->resource_catagory}}</p></a></li>
 							@endif
 							@if(array_key_exists("mod9", $desig_permissions))
-								<li class="nav-item"><a href="{{url('asset_subcat')}}"><i class="fas fa-receipt"></i><p> Resource Sub Category</p></a></li>
+								<li class="nav-item"><a href="{{url('asset_subcat')}}"><i class="fas fa-receipt"></i><p>  {{$phrase->resourcesub_catagory}}</p></a></li>
 							@endif
 							@if(session()->get('user_designation')=="1")
-								<li class="nav-item"><a href="{{url('module')}}"><i class="fas fa-indent"></i><p>Module</p></a></li>
-								<li class="nav-item"><a href="{{url('designation-permission')}}"><i class="fas fa-users-cog"></i><p>Designation Permission</p></a></li>
+								<li class="nav-item"><a href="{{url('module')}}"><i class="fas fa-indent"></i><p>{{$phrase->module}}</p></a></li>
+								<li class="nav-item"><a href="{{url('designation-permission')}}"><i class="fas fa-users-cog"></i><p>{{$phrase->designation_permission}}</p></a></li>
 							@endif
 						</ul>
 					</div>
