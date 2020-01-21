@@ -121,8 +121,10 @@
                                     
                                     <div class="tab-pane fade" id="v-pills-messages-nobd" role="tabpanel" aria-labelledby="v-pills-messages-tab-nobd">
                                         <div style="float: right;margin-right: 2em;margin-bottom: 1em;">
-                                            <a href="{{url('fav_block/pdf/pdfURL')}}" target="_blank" data-toggle="tooltip" title="{{$phrase->export_pdf}}"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button></a>
-                                            <a href="{{url('fav_block/export/excelURL')}}" data-toggle="tooltip" title="{{$phrase->export_excel}}"><button type="button" class="btn btn-icon btn-round btn-primary" ><i class="fas fa-file-excel"></i></button></a>
+                                            <button type="button" onclick="exportSubmit('print_pdf');" class="btn btn-icon btn-round btn-warning"><i class="fas fa-file-export"></i></button>
+                                            <button type="button" onclick="exportSubmit('excel_sheet');" class="btn btn-icon btn-round btn-success"><i class="fas fa-file-excel"></i></button>
+                                            <!-- <a href="{{url('fav_block/pdf/pdfURL')}}" target="_blank" data-toggle="tooltip" title="{{$phrase->export_pdf}}"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button></a>
+                                            <a href="{{url('fav_block/export/excelURL')}}" data-toggle="tooltip" title="{{$phrase->export_excel}}"><button type="button" class="btn btn-icon btn-round btn-primary" ><i class="fas fa-file-excel"></i></button></a> -->
                                         </div><br><br>
                                             <form action="{{url('fav_block')}}" method="post">
                                                     @csrf
@@ -141,7 +143,9 @@
                                                                 @foreach($datas_block as $key => $val)
                                                                     <tr>
                                                                         <td><input type="checkbox" name="block_id[]" value={{$val->geo_id}} @if($val->checked==1) checked @endif></td>
-                                                                        <td>{{$val->geo_name}}</td>
+                                                                        <td>{{$val->geo_name}}
+                                                                            <input type="text" value="{{$val->geo_id}}" name="geo_id_to_export[]" hidden >
+                                                                        </td>
                                                                         <!-- <td>{{$val->geo_id}}</td> -->
                                                                     </tr>
                                                                 @endforeach
@@ -154,6 +158,13 @@
                                                 <button class="btn btn-secondary">{{$phrase->submit}}</button>
                                             </div>
                                             </form>
+                                               <!-- export starts -->
+                                                    <form action="{{url('fav_block/view_diffrent_formate')}}" method="POST" enctype="multipart/form-data" id="export-form"> <!-- for for edit, if inline edit form append then this form action/method will triggered -->
+                                                    @csrf
+                                                    <input type="text" name="geo_id" hidden >
+                                                    <input type="text" name="print" hidden > <!-- hidden input for export (pdf/excel) -->
+                                                    </form>
+                                                <!-- export ends -->
                                     </div>
                                     
                                                                        
@@ -249,4 +260,12 @@
 
 @endsection
 
-  
+<script>
+    function exportSubmit(type)
+    {
+        $("input[name='print']").val(type);
+        var values = $("input[name='geo_id_to_export[]']").map(function(){return $(this).val();}).get();
+        $("input[name='geo_id']").val(values);
+        document.getElementById('export-form').submit();
+    }
+</script>

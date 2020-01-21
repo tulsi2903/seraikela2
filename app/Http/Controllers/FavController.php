@@ -22,7 +22,7 @@ use DB;
 use App\Asset;
 use App\Fav_Define_Assets;
 use App\Exports\FavouriteAssets;
-
+USE Auth;
 
 
 
@@ -285,15 +285,15 @@ class FavController extends Controller
                 );
      
             }
-            \Excel::create('FavouriteDepartment', function ($excel) use ($data) {
+            \Excel::create('Favourite Department', function ($excel) use ($data) {
     
                 // Set the title
-                $excel->setTitle('FavouriteDepartment-Sheet');
+                $excel->setTitle('Favourite Department-Sheet');
     
                 // Chain the setters
                 $excel->setCreator('Seraikela')->setCompany('Seraikela');
     
-                $excel->sheet('Fees', function ($sheet) use ($data) {
+                $excel->sheet('Favourite Department-Sheet', function ($sheet) use ($data) {
                     $sheet->freezePane('A3');
                     $sheet->mergeCells('A1:I1');
                     $sheet->fromArray($data, null, 'A1', true, false);
@@ -329,10 +329,16 @@ class FavController extends Controller
             "mode" => 'P'
         );
 
+        date_default_timezone_set('Asia/Kolkata');
+                            $currentDateTime = date('d-m-Y H:i:s'); 
+                            $user_name=Auth::user()->first_name;
+                            $user_last_name=Auth::user()->last_name;
         $pdfbuilder = new \PdfBuilder($doc_details);
         $content = "<table cellspacing=\"0\" cellpadding=\"4\" border=\"1\" ><tr>";
         $content .= "<th style='border: solid 1px #000000;' colspan=\"4\" align=\"left\" ><b>Department Favourite Details</b></th></tr>";
-        
+        $content .= "<p style=\"border: solid 1px #000000;width: 50px;\" padding:\"100px;\">"."<b>"."<span>Title: </span>&nbsp;&nbsp;&nbsp;Department Favourite Details
+        "."<br>"."<span>Date & Time: </span>&nbsp;&nbsp;&nbsp;".$currentDateTime."<br>"."<span>User Name:</span>&nbsp;&nbsp;&nbsp;" . $user_name."&nbsp;".$user_last_name.
+        "</b>"."</p>";
 
         /* ========================================================================= */
         /*             Total width of the pdf table is 1017px lanscape               */
@@ -388,7 +394,7 @@ class FavController extends Controller
             );
  
         }
-        \Excel::create('FavouriteScheme-Sheet', function ($excel) use ($data) {
+        \Excel::create('Favourite Scheme-Sheet', function ($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Favourite Scheme-Sheet');
@@ -396,7 +402,7 @@ class FavController extends Controller
             // Chain the setters
             $excel->setCreator('Seraikela')->setCompany('Seraikela');
 
-            $excel->sheet('Fees', function ($sheet) use ($data) {
+            $excel->sheet('Favourite Scheme-Sheet', function ($sheet) use ($data) {
                 $sheet->freezePane('A3');
                 $sheet->mergeCells('A1:I1');
                 $sheet->fromArray($data, null, 'A1', true, false);
@@ -431,10 +437,16 @@ class FavController extends Controller
             "mode" => 'P'
         );
 
+        date_default_timezone_set('Asia/Kolkata');
+        $currentDateTime = date('d-m-Y H:i:s'); 
+        $user_name=Auth::user()->first_name;
+        $user_last_name=Auth::user()->last_name;
         $pdfbuilder = new \PdfBuilder($doc_details);
         $content = "<table cellspacing=\"0\" cellpadding=\"4\" border=\"1\" ><tr>";
         $content .= "<th style='border: solid 1px #000000;' colspan=\"5\" align=\"left\" ><b>Scheme Structure Favourite Details</b></th></tr>";
-        
+        $content .= "<p style=\"border: solid 1px #000000;width: 50px;\" padding:\"100px;\">"."<b>"."<span>Title: </span>&nbsp;&nbsp;&nbsp;Scheme Structure Favourite Details
+        "."<br>"."<span>Date & Time: </span>&nbsp;&nbsp;&nbsp;".$currentDateTime."<br>"."<span>User Name:</span>&nbsp;&nbsp;&nbsp;" . $user_name."&nbsp;".$user_last_name.
+        "</b>"."</p>";
 
         /* ========================================================================= */
         /*             Total width of the pdf table is 1017px lanscape               */
@@ -494,7 +506,7 @@ class FavController extends Controller
                 );
             }
 
-            \Excel::create('FavouriteBlock_Sheet', function ($excel) use ($data) {
+            \Excel::create('Favourite Block Sheet', function ($excel) use ($data) {
     
                 // Set the title
                 $excel->setTitle('Favourite Block-Sheet');
@@ -502,7 +514,7 @@ class FavController extends Controller
                 // Chain the setters
                 $excel->setCreator('Seraikela')->setCompany('Seraikela');
     
-                $excel->sheet('Fees', function ($sheet) use ($data) {
+                $excel->sheet('Favourite Block Sheet', function ($sheet) use ($data) {
                     $sheet->freezePane('A3');
                     $sheet->mergeCells('A1:I1');
                     $sheet->fromArray($data, null, 'A1', true, false);
@@ -535,10 +547,16 @@ class FavController extends Controller
             "mode" => 'P'
         );
 
+        date_default_timezone_set('Asia/Kolkata');
+        $currentDateTime = date('d-m-Y H:i:s'); 
+        $user_name=Auth::user()->first_name;
+        $user_last_name=Auth::user()->last_name;
         $pdfbuilder = new \PdfBuilder($doc_details);
         $content = "<table cellspacing=\"0\" cellpadding=\"4\" border=\"1\" ><tr>";
         $content .= "<th style='border: solid 1px #000000;' colspan=\"4\" align=\"left\" ><b>Favourite Block Details</b></th></tr>";
-        
+        $content .= "<p style=\"border: solid 1px #000000;width: 50px;\" padding:\"100px;\">"."<b>"."<span>Title: </span>&nbsp;&nbsp;&nbsp;Favourite Block Details
+        "."<br>"."<span>Date & Time: </span>&nbsp;&nbsp;&nbsp;".$currentDateTime."<br>"."<span>User Name:</span>&nbsp;&nbsp;&nbsp;" . $user_name."&nbsp;".$user_last_name.
+        "</b>"."</p>";
 
         /* ========================================================================= */
         /*             Total width of the pdf table is 1017px lanscape               */
@@ -596,7 +614,7 @@ class FavController extends Controller
             );
         }
 
-        \Excel::create('FavouritePanchayat_Sheet', function ($excel) use ($data) {
+        \Excel::create('Favourite Panchayat-Sheet', function ($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Favourite Panchayat-Sheet');
@@ -604,7 +622,7 @@ class FavController extends Controller
             // Chain the setters
             $excel->setCreator('Seraikela')->setCompany('Seraikela');
 
-            $excel->sheet('Fees', function ($sheet) use ($data) {
+            $excel->sheet('Favourite Panchayat-Sheet', function ($sheet) use ($data) {
                 $sheet->freezePane('A3');
                 $sheet->mergeCells('A1:I1');
                 $sheet->fromArray($data, null, 'A1', true, false);
@@ -636,10 +654,16 @@ class FavController extends Controller
           "mode" => 'P'
       );
 
+      date_default_timezone_set('Asia/Kolkata');
+                            $currentDateTime = date('d-m-Y H:i:s'); 
+                            $user_name=Auth::user()->first_name;
+                            $user_last_name=Auth::user()->last_name;
       $pdfbuilder = new \PdfBuilder($doc_details);
       $content = "<table cellspacing=\"0\" cellpadding=\"4\" border=\"1\" ><tr>";
       $content .= "<th style='border: solid 1px #000000;' colspan=\"4\" align=\"left\" ><b>Favourite Panchayat Details</b></th></tr>";
-      
+      $content .= "<p style=\"border: solid 1px #000000;width: 50px;\" padding:\"100px;\">"."<b>"."<span>Title: </span>&nbsp;&nbsp;&nbsp;Favourite Panchayat Details
+      "."<br>"."<span>Date & Time: </span>&nbsp;&nbsp;&nbsp;".$currentDateTime."<br>"."<span>User Name:</span>&nbsp;&nbsp;&nbsp;" . $user_name."&nbsp;".$user_last_name.
+      "</b>"."</p>";
 
       /* ========================================================================= */
       /*             Total width of the pdf table is 1017px lanscape               */
@@ -673,7 +697,7 @@ class FavController extends Controller
     //DefineAsset_Excel   section by  rohit singh
      public function export_DefineAsset_Excel_Department()
      {
-         $data = array(1 => array("FavouriteAssets-Sheet"));
+         $data = array(1 => array("Favourite Resource-Sheet"));
          $data[] = array('Sl.No.','Asset Name','Department Name','Date','Check Favourite');
  
          $items = Asset::leftJoin('department', 'asset.dept_id', '=', 'department.dept_id')
@@ -699,7 +723,7 @@ class FavController extends Controller
                 );
          }
  
-         \Excel::create('FavouriteAssets_Sheet', function ($excel) use ($data) {
+         \Excel::create('Favourite Resource-Sheet', function ($excel) use ($data) {
  
              // Set the title
              $excel->setTitle('FavouriteAssets-Sheet');
@@ -707,7 +731,7 @@ class FavController extends Controller
              // Chain the setters
              $excel->setCreator('Seraikela')->setCompany('Seraikela');
  
-             $excel->sheet('Fees', function ($sheet) use ($data) {
+             $excel->sheet('Favourite Resource-Sheet', function ($sheet) use ($data) {
                  $sheet->freezePane('A3');
                  $sheet->mergeCells('A1:I1');
                  $sheet->fromArray($data, null, 'A1', true, false);
@@ -735,16 +759,22 @@ class FavController extends Controller
         }
 
         $doc_details = array(
-            "title" => "Assets Favourite",
+            "title" => "Resource Favourite",
             "author" => 'IT-Scient',
             "topMarginValue" => 10,
             "mode" => 'P'
         );
 
+        date_default_timezone_set('Asia/Kolkata');
+                            $currentDateTime = date('d-m-Y H:i:s'); 
+                            $user_name=Auth::user()->first_name;
+                            $user_last_name=Auth::user()->last_name;
         $pdfbuilder = new \PdfBuilder($doc_details);
         $content = "<table cellspacing=\"0\" cellpadding=\"4\" border=\"1\" ><tr>";
-        $content .= "<th style='border: solid 1px #000000;' colspan=\"5\" align=\"left\" ><b>Assets Favourite Details</b></th></tr>";
-        
+        $content .= "<th style='border: solid 1px #000000;' colspan=\"5\" align=\"left\" ><b>Resource Favourite Details</b></th></tr>";
+        $content .= "<p style=\"border: solid 1px #000000;width: 50px;\" padding:\"100px;\">"."<b>"."<span>Title: </span>&nbsp;&nbsp;&nbsp;Resource Favourite Details
+        "."<br>"."<span>Date & Time: </span>&nbsp;&nbsp;&nbsp;".$currentDateTime."<br>"."<span>User Name:</span>&nbsp;&nbsp;&nbsp;" . $user_name."&nbsp;".$user_last_name.
+        "</b>"."</p>";
 
         /* ========================================================================= */
         /*             Total width of the pdf table is 1017px lanscape               */
@@ -776,4 +806,135 @@ class FavController extends Controller
         exit;
     }
     
+
+        // abhishek 
+        public function view_diffrent_formate(Request $request)
+        {
+        //    return $request;
+        //    return "akf";
+           $geo_id = explode(',',$request->geo_id); // array
+            $department=array();
+            if($request->print=="print_pdf")
+            {
+                 
+                if($request->geo_id!="")
+                {
+    
+                      
+                     
+                    $block_pdf = GeoStructure::whereIn('geo_id',$geo_id)->select('geo_id','geo_name','created_at as createdDate')->where('level_id','3')->orderBy('geo_structure.geo_id','asc')->get();
+                    foreach ($block_pdf as $key => $value) {
+                      $value->createdDate = date('d/m/Y',strtotime($value->createdDate));
+                      $fav_block_tmp = Fav_Block::select('favourite_block_id')->where('user_id', session()->get('user_id'))->where('block_id',$block_pdf[$key]->geo_id)->first();
+                          if($fav_block_tmp){
+                              $block_pdf[$key]->checked="Yes";
+                          }
+                          else{
+                              $block_pdf[$key]->checked="No";
+                          }          
+                  }
+          
+                  $doc_details = array(
+                      "title" => "Favourite Block",
+                      "author" => 'IT-Scient',
+                      "topMarginValue" => 10,
+                      "mode" => 'P'
+                  );
+          
+                  date_default_timezone_set('Asia/Kolkata');
+                  $currentDateTime = date('d-m-Y H:i:s'); 
+                  $user_name=Auth::user()->first_name;
+                  $user_last_name=Auth::user()->last_name;
+                  $pdfbuilder = new \PdfBuilder($doc_details);
+                  $content = "<table cellspacing=\"0\" cellpadding=\"4\" border=\"1\" ><tr>";
+                  $content .= "<th style='border: solid 1px #000000;' colspan=\"4\" align=\"left\" ><b>Favourite Block Details</b></th></tr>";
+                  $content .= "<p style=\"border: solid 1px #000000;width: 50px;\" padding:\"100px;\">"."<b>"."<span>Title: </span>&nbsp;&nbsp;&nbsp;Favourite Block Details
+                  "."<br>"."<span>Date & Time: </span>&nbsp;&nbsp;&nbsp;".$currentDateTime."<br>"."<span>User Name:</span>&nbsp;&nbsp;&nbsp;" . $user_name."&nbsp;".$user_last_name.
+                  "</b>"."</p>";
+          
+                  /* ========================================================================= */
+                  /*             Total width of the pdf table is 1017px lanscape               */
+                  /*             Total width of the pdf table is 709px portrait                */
+                  /* ========================================================================= */
+                  $content .= "<thead>";
+                  $content .= "<tr>";
+                  $content .= "<th style=\"width: 50px;\" align=\"center\"><b>Sl.No.</b></th>";
+                  $content .= "<th style=\"width: 140px;\" align=\"center\"><b>Check Favourite</b></th>";
+                  $content .= "<th style=\"width: 429px;\" align=\"center\"><b>Block Name</b></th>";
+                  $content .= "<th style=\"width: 90px;\" align=\"center\"><b>Date</b></th>";
+                  $content .= "</tr>";
+                  $content .= "</thead>";
+                  $content .= "<tbody>";
+                  foreach ($block_pdf as $key => $row) {
+                      $index = $key+1;
+                      $content .= "<tr>";
+                      $content .= "<td style=\"width: 50px;\" align=\"right\">" . $index . "</td>";
+                      $content .= "<td style=\"width: 140px;\" align=\"left\">" . $row->checked . "</td>";
+                      $content .= "<td style=\"width: 429px;\" align=\"left\">" . $row->geo_name . "</td>";
+                      $content .= "<td style=\"width: 90px;\" align=\"right\">" . $row->createdDate. "</td>";
+                      $content .= "</tr>";
+                  }
+                  $content .= "</tbody></table>";
+                  $pdfbuilder->table($content, array('border' => '1', 'align' => ''));
+                  $pdfbuilder->output('BlockFavourite.pdf');
+                  exit;
+   
+                        
+   
+    
+                }
+               //  return $request;
+            }
+            elseif($request->print=="excel_sheet")
+            {
+                   // return $request;
+                if($request->geo_id!="")
+                {
+    
+                    $data = array(1 => array("Favourite Block-Sheet"));
+                    $data[] = array('Sl.No.','Block Name','Date','Check Favourite');
+            
+                    $items = GeoStructure::whereIn('geo_id',$geo_id)->select('geo_id as slId','geo_name','created_at as createdDate')->where('level_id','3')
+                        ->orderBy('geo_structure.geo_id','asc')->get();
+            
+                    foreach ($items as $key => $value) 
+                    {
+                        $fav_block_tmp = Fav_Block::select('favourite_block_id')->where('user_id', session()->get('user_id'))->where('block_id',$items[$key]->slId)->first();
+                            if($fav_block_tmp!=""){
+                                $value->checked="Yes";
+                            }
+                            else{
+                                $value->checked="No";
+                            }
+                        $value->createdDate = date('d/m/Y', strtotime($value->createdDate));
+                        $data[] = array(
+                            $key + 1,
+                            $value->geo_name,
+                            $value->createdDate,
+                            $value->checked,
+                        );
+                    }
+        
+                    \Excel::create('Favourite Block Sheet', function ($excel) use ($data) {
+            
+                        // Set the title
+                        $excel->setTitle('Favourite Block-Sheet');
+            
+                        // Chain the setters
+                        $excel->setCreator('Seraikela')->setCompany('Seraikela');
+            
+                        $excel->sheet('Favourite Block Sheet', function ($sheet) use ($data) {
+                            $sheet->freezePane('A3');
+                            $sheet->mergeCells('A1:I1');
+                            $sheet->fromArray($data, null, 'A1', true, false);
+                            $sheet->setColumnFormat(array('I1' => '@'));
+                        });
+                    })->download('xls');  
+           
+    
+                }
+                return $request;
+            }
+        }
+
 }

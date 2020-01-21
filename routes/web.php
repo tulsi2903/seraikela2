@@ -328,6 +328,8 @@ Route::post('scheme-group/view_diffrent_formate','GroupController@view_diffrent_
 Route::post('module/view_diffrent_formate','ModuleController@view_diffrent_formate');
 Route::post('asset-numbers/view_diffrent_formate','AssetNumbersController@view_diffrent_formate');
 Route::post('asset/view_diffrent_formate','AssetController@view_diffrent_formate_for_resources');
+Route::post('fav_block/view_diffrent_formate','FavController@view_diffrent_formate');
+
 //For Scheme Import
 Route::get('import/scheme','SchemePerformanceController@view_import_forscheme');
 Route::get('dashborad/schemeperformance/{year}','DashboardController@scheme_performance_for_dashborad');
