@@ -21,11 +21,8 @@
         </div>
     </div>
 
-
-
     <div class="row" style="padding:2em;">
         <div class="col-md-4">
-           
                 <div class="form-group" style="margin-top: -5px;">
                     <label for="scheme_asset_name">{{$phrase->name}}<span style="color:red;margin-left:5px;">*</span></label>
                     <input name="scheme_asset_name" id="scheme_asset_name" class="form-control" autocomplete="off" value="{{$data->scheme_asset_name}}">

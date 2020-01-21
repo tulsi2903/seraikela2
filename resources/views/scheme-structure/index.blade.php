@@ -141,7 +141,7 @@
                                 <input type="text" value="{{$data->scheme_id}}" name="scheme_id_to_export[]" hidden >
 
                             </td>
-                            <td>@if($data->scheme_logo) <img src="{{$data->scheme_logo}}" style="height: 50px;"> @endif</td>
+                            <td>@if($data->scheme_logo) <center><img src="{{$data->scheme_logo}}" style="height: 50px;"></center> @endif</td>
                             <td>({{$data->scheme_short_name}}) {{$data->scheme_name}}</td>
                             <td>{{$data->dept_name}}</td>
                             <td>

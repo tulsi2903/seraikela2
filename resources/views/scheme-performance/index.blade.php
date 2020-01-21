@@ -4,6 +4,47 @@
 
 @section('page-style')
 <style>
+    .modal-content {
+    position: relative;
+    display: -webkit-box;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    flex-direction: column;
+    width: 100%;
+    pointer-events: auto;
+    /* background-color: #fff; */
+    background-clip: padding-box;
+    border: 1px solid rgba(0, 0, 0, .2);
+    border-radius: .3rem;
+    outline: 0;
+    background: linear-gradient(to bottom, #a5baef, #ffffff 70%, #ffffff, #ffffff 100%);
+}
+.modal-header {
+    display: -webkit-box;
+    display: flex;
+    -webkit-box-align: start;
+    align-items: flex-start;
+    -webkit-box-pack: justify;
+    justify-content: space-between;
+    padding: 1rem;
+    border-bottom: 1px dashed #000;
+    border-top-left-radius: .3rem;
+    border-top-right-radius: .3rem;
+}
+.modal-footer {
+    display: -webkit-box;
+    display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: end;
+    justify-content: flex-end;
+    padding: 1rem;
+    border-bottom: 1px dashed #999999;
+    border-bottom-right-radius: .3rem;
+    border-bottom-left-radius: .3rem;
+    margin-top: -24px;
+}
 
 </style>
 @endsection
@@ -137,9 +178,9 @@
 
 <div id="create-gallery" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none">
     <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title mt-0">Gallery</h4>
+        <div class="modal-content" style="margin-top: 11em;">
+            <div class="modal-header" style="border-top: 2px solid #5269a3">
+                <h4 class="modal-title mt-0" style="font-family: 'Bree Serif', serif;color:#000;">Gallery</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -173,9 +214,9 @@
 
 <div id="create-coordinates" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none">
     <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title mt-0">Coordinates</h4>
+        <div class="modal-content"style="margin-top: 11em;">
+            <div class="modal-header" style="border-top: 2px solid #5269a3">
+                <h4 class="modal-title mt-0" style="font-family: 'Bree Serif', serif;color:#000;">Coordinates</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -183,13 +224,19 @@
             <form action="{{url('scheme_performance/coordinatesupdate')}}" method="post" id="FormsaveImagescoordinatesLoacation" enctype="multipart/form-data" autocomplete="off">
                 @csrf
                 <div class="modal-body">
-                    <div class="row">
-                        <table class="table">
+                    <div class="row" style="padding:2em;    margin-top: -3em;
+                    ">
+                
+
+
+                        <table class="table table-bordered table-head-bg-info table-bordered-bd-info mt-4">
                             <thead>
-                                <th>SI.No</th>
-                                <th>Latitude</th>
-                                <th>Longitude</th>
-                                <th>Action</th>
+                                <tr>
+                                    <th>SI.No</th>
+                                    <th>Latitude</th>
+                                    <th>Longitude</th>
+                                    <th>Action</th>
+                                </tr>
                             </thead>
                             <tbody id="append_coordinate_section">
                                 <!-- append details -->
