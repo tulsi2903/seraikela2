@@ -354,7 +354,7 @@ class SchemeReviewController extends Controller
             $tmp_2 = [""]; // for complete, incomplete, total
             foreach($scheme_datas as $scheme_data){
                 array_push($tmp_1, $scheme_data->scheme_short_name.":".$scheme_data->scheme_logo);
-                array_push($tmp_2, "Incomplete","Completed","Total");
+                array_push($tmp_2, "Sanctioned","Completed","Inprogress");
             }
             array_push($tabular_view_block_wise, $tmp_1);
             array_push($tabular_view_block_wise, $tmp_2);
@@ -446,7 +446,7 @@ class SchemeReviewController extends Controller
                     /******** map ends ********/
 
                     $total_count_tmp = "<a href='javascript:void();' onclick=\"getAllDatasIndividually('".$panchayat_data->geo_id."', '".$panchayat_data->geo_name."', '".$scheme_data->scheme_id."')\">".$performance_datas->count()."</a>";
-                    array_push($scheme_wise_tabular_datas, $performance_datas->where('status','')->count(), $performance_datas->where('status','1')->count(), $total_count_tmp);
+                    array_push($scheme_wise_tabular_datas, $total_count_tmp, $performance_datas->where('status','1')->count(), $performance_datas->where('status','')->count());
                     
 
                     // // assigning datas to variable that has to be returned (tmp)

@@ -1682,6 +1682,9 @@
 <script>
     // for direct page load/ direct search form dashboard
     var initiate="{{$initiate}}";
+    if(initiate=="initiate"){
+        
+    }
     
     $(document).ready(function(){
         if(initiate=="initiate"){
