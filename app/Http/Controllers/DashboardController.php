@@ -137,9 +137,11 @@ class DashboardController extends Controller
         $land_acquisition_count = SchemeStructure::where('dept_id', '5')->count();
         $election_count = SchemeStructure::where('dept_id', '6')->count();
         $agriculture_count = SchemeStructure::where('dept_id', '7')->count();
-        $social_welfare_count = SchemeStructure::where('dept_id', '8')->count();
-        $drinking_water_and_sanitation_count = SchemeStructure::where('dept_id', '9')->count();
-        $social_security_scheme_count = SchemeStructure::where('dept_id', '10')->count();
+        $social_welfare_count = SchemeStructure::where('dept_id', '9')->count();
+        $drinking_water_and_sanitation_count = SchemeStructure::where('dept_id', '10')->count();
+        $social_security_scheme_count = SchemeStructure::where('dept_id', '11')->count();
+
+
         $scheme_performance_details = SchemePerformance::get()->toArray();
         $year_details = Year::get()->toArray();
 
@@ -303,7 +305,7 @@ class DashboardController extends Controller
         }
         /** for dc dashboard ends **/
         // return $performance_table_heading_1;
-        return view('dashboard.dc_dashboard')->with(compact('subdivision_count', 'year_id','block_count', 'panchayat_count', 'asset_count', 'scheme_count', 'block_details', 'scheme_performance_details', 'villages_count', 'get_schemes', 'departments', 'health_scheme_count', 'year_details', 'land_revenue_count', 'welfare_count', 'education_count', 'land_acquisition_count', 'election_count', 'agriculture_count', 'social_welfare_count', 'drinking_water_and_sanitation_count', 'social_security_scheme_count', 'dashboard_scheme_performance_has_datas', 'performance_table_heading_1', 'performance_table_heading_2', 'performance_table_datas'));
+        return view('dashboard.dc_dashboard')->with(compact('subdivision_count', 'year_id','block_count', 'panchayat_count', 'asset_count', 'scheme_count', 'block_details', 'scheme_performance_details', 'villages_count', 'get_schemes', 'departments', 'health_scheme_count', 'year_details', 'land_revenue_count', 'welfare_count', 'education_count', 'land_acquisition_count', 'election_count', 'agriculture_count', 'social_welfare_count', 'drinking_water_and_sanitation_count', 'social_security_scheme_count','dashboard_scheme_performance_has_datas', 'performance_table_heading_1', 'performance_table_heading_2', 'performance_table_datas'));
     }
 
     public function get_department_wise_asset_data()

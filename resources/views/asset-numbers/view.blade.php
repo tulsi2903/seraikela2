@@ -52,7 +52,7 @@
                         </table>
                         @if(count($asset_locations)!=0)
                             <div class="col-md-12">
-                                <button class="btn"  style="margin-left:1.5%;background: #0f85e2!important;color:#fff;"><i class="fas fa-location-arrow"></i>&nbsp;&nbsp;{{$phrase->selectToDelete}}Resource Locations</button>
+                                <button class="btn"  style="margin-left:1.5%;background: #0f85e2!important;color:#fff;"><i class="fas fa-location-arrow"></i>&nbsp;&nbsp;Resource Locations</button>
                                     <div class="card-body" style="background: #f2f6ff; border: 1px solid #a5bbf6;margin-top: -18px;">
                                     <table id="basic-datatables" class=" table order-list" style="margin-top: 10px;">
                                         <thead style="background: #cedcff">                                              

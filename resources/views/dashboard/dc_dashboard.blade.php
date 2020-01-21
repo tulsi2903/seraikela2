@@ -514,7 +514,7 @@
             </center>
             <div class="focus-layout" id="card-detail2">
                 <i class="fas fa-graduation-cap" style="font-size:35px; color: #fff;margin-top: 0.5em;"></i>
-                <h4 class="clrchg">{{$phrase->education}} {{$education_count}}</h4>
+                <h4 class="clrchg">{{$phrase->education}}</h4>
             </div>
         </div>
 
