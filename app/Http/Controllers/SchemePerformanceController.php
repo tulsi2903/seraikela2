@@ -157,16 +157,16 @@ class SchemePerformanceController extends Controller
                 if ($value_SchemePerformance['status'] != "") {
                     if ($value_SchemePerformance['status'] == 0) {
                         $to_append_tbody .= '<option value="1">Completed</option>';
-                        $to_append_tbody .= '<option value="0" selected>Incomplete</option>';
+                        $to_append_tbody .= '<option value="0" selected>Inprogress</option>';
                     }
                     if ($value_SchemePerformance['status'] == 1) {
                         $to_append_tbody .= '<option value="1" selected >Completed</option>';
-                        $to_append_tbody .= '<option value="0">Incomplete</option>';
+                        $to_append_tbody .= '<option value="0">Inprogress</option>';
                     }
                 } else {
                     // $to_append_tbody .= '<option value=" " selected>--select--</option>';
                     $to_append_tbody .= '<option value="1">Completed</option>';
-                    $to_append_tbody .= '<option value="0" selected>Incomplete</option>';
+                    $to_append_tbody .= '<option value="0" selected>Inprogress</option>';
                 }
                 $to_append_tbody .= '</select></td>';
                 $to_append_tbody .= '<td><input type="text" name="comments[]" value="' . $value_SchemePerformance['comments'] . '" class="form-control" placeholder="comments"></td>';
@@ -222,7 +222,7 @@ class SchemePerformanceController extends Controller
         $to_append_thead .= '<th>Status</th>';
         $to_append_row .= '<td>
                             <select name="status[]" class="form-control">
-                                <option value="0" selected>Incomplete</option>
+                                <option value="0" selected>Inprogress</option>
                                 <option value="1">Completed</option>
                             </select>
                         </td>';
@@ -319,18 +319,6 @@ class SchemePerformanceController extends Controller
             }
             $total_count = $total_count + 1;
         }
-        // echo $scheme_id;
-        // echo "<br>";
-        // echo $year_id;
-        // echo "<br>";
-        // echo $block_id;
-        // echo $incomplete_count;
-        // echo "<br>";
-        // echo $complete_count;
-        // echo "<pre>";
-        // echo count($SchemePerformance);
-        // exit;
-        // return $SchemePerformance;
         $scheme_block_performance_details = scheme_block_performance::where('scheme_id', $scheme_id)->where('block_id', $block_id)->where('year_id', $year_id)->first();
         if ($scheme_block_performance_details != "") {
             scheme_block_performance::where('scheme_block_performance_id', $scheme_block_performance_details->scheme_block_performance_id)->update(array('total_count' => $total_count, 'completed_count' => $complete_count, 'incomplete_count' => $incomplete_count));
@@ -460,9 +448,9 @@ class SchemePerformanceController extends Controller
                                     $scheme_performance->attribute = serialize($unserializedAtributesData[$key]);
                                     if (strtolower($status) == strtolower("Completed")) {
                                         $scheme_performance->status = 1;
-                                    } elseif (strtolower($status) == strtolower("Incompleted")) {
+                                    } elseif (strtolower($status) == strtolower("inprogress")) {
                                         $scheme_performance->status = 0;
-                                    } elseif (strtolower($status) != strtolower("Incompleted") && strtolower($status) != strtolower("Completed")) {
+                                    } elseif (strtolower($status) != strtolower("inprogress") && strtolower($status) != strtolower("Completed")) {
                                         $scheme_performance->status = "";
                                     }
                                     $scheme_performance->created_by = Session::get('user_id');
