@@ -230,10 +230,10 @@ class SchemePerformanceController extends Controller
         $to_append_row .= '<td><input type="text" name="comments[]" class="form-control" placeholder="comments"></td>';
         $to_append_thead .= '<th>Others</th>';
         // for gallery & coordinates
-        $to_append_row .= '<td><a  href="javascript:void();"><i class="fas fa-plus"></i>Images</a>';
+        $to_append_row .= '<td><i class="fas fa-plus"></i>Images';
         // for coordinates
         // if($scheme_data->geo_related==1){
-        $to_append_row .= '<br/><a   href="javascript:void();"><i class="fas fa-plus"></i>Coordinates</a>';
+        $to_append_row .= '<br/><i class="fas fa-plus"></i>Coordinates';
         // }
         $to_append_row .= '</td>';
 
