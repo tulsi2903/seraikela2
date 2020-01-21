@@ -101,7 +101,7 @@
     <div class="col-md-12">
         <div class="card-header">
             <div class="card-head-row card-tools-still-right" style="background:#fff;">
-                <h4 class="card-title">Resources Number</h4>
+                <h4 class="card-title">{{$phrase->resource_number}}</h4>
                 <div class="card-tools">
                     <!-- <a href="#" data-toggle="tooltip" title="Send Mail"><button type="button" class="btn btn-icon btn-round btn-success" data-target="#create-email" data-toggle="modal"><i class="fa fa-envelope" aria-hidden="true"></i></button></a> -->
                     
@@ -116,7 +116,7 @@
                     @if($desig_permissions["mod14"]["add"])
                     
                     <!-- <a href="{{url('asset_Numbers/changeViewforimport')}}" data-toggle="tooltip" title="Import From Excel"><button type="button" class="btn btn-icon btn-round btn-default" ><i class="fa fa-upload"></i></button></a> -->
-                    <a class="btn btn-secondary" href="{{url('asset-numbers/add')}}" role="button" style="padding: 7px;"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;Enter Value</a>
+                    <a class="btn btn-secondary" href="{{url('asset-numbers/add')}}" role="button" style="padding: 7px;"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;{{$phrase->add}}</a>
                     @endif
                 </div>
             </div>
@@ -140,14 +140,14 @@
                         <thead style="background: #d6dcff;color: #000;">
                             <tr>
                                 <th>#</th>
-                                <th>Year</th>
-                                <th>Resource</th>
-                                <th>Block</th>
-                                <th>Panchyat</th>
+                                <th>{{$phrase->year}}</th>
+                                <th>{{$phrase->resource}}</th>
+                                <th>{{$phrase->block}}</th>
+                                <th>{{$phrase->panchayat}}</th>
                                 <!-- <th>Pre Value</th> -->
-                                <th>Current Value</th>
+                                <th>{{$phrase->current_value}}</th>
                                 @if($desig_permissions["mod14"]["view"] ||$desig_permissions["mod14"]["del"] || $desig_permissions["mod14"]["edit"])
-                                <th class="action-buttons">Action</th>
+                                <th class="action-buttons">{{$phrase->action}}</th>
                                 @endif
                             </tr>
                         </thead>
@@ -243,7 +243,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title mt-0">Send Email</h4>
+                    <h4 class="modal-title mt-0">{{$phrase->send_email}}</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -267,7 +267,7 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="subject" class="control-label">Subject <font color="red">*</font></label>
+                                    <label for="subject" class="control-label">{{$phrase->subject}} <font color="red">*</font></label>
                                     <input type="text" class="form-control" id="subject" name="subject" placeholder="Subject" required="" aria-required="true">
                                 </div>
                                 <!-- <div class="form-group">
@@ -280,8 +280,8 @@
                     </div>
 
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-info waves-effect waves-light">Send</button>
+                        <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">{{$phrase->close}}</button>
+                        <button type="submit" class="btn btn-info waves-effect waves-light">{{$phrase->send}}</button>
                     </div>
                 </form>
             </div>

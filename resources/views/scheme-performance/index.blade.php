@@ -14,7 +14,7 @@
 
         <div class="card-header">
             <div class="card-head-row card-tools-still-right" style="background:#fff;">
-                <h4 class="card-title">Scheme Performance</h4>
+                <h4 class="card-title">{{$phrase->scheme_performance}}</h4>
                 <div class="card-tools">
 
                     <!-- <a href="{{url('scheme-geo-target')}}" class="btn btn-sm btn-secondary" style="float:right;"><i class="fas fa-arrow-left"></i>&nbsp;&nbsp;Back</a> -->
@@ -30,7 +30,7 @@
                     <div class="row">
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="scheme_id">Scheme<span style="color:red;margin-left:5px;">*</span></label>
+                                <label for="scheme_id">{{$phrase->scheme}}<span style="color:red;margin-left:5px;">*</span></label>
                                 <select name="scheme_id" id="scheme_id" onchange="get_scheme_value(this);" class="form-control">
                                     <option value="">---Select---</option>
                                     @foreach($scheme_datas as $scheme )
@@ -43,7 +43,7 @@
 
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="year_id">Year<span style="color:red;margin-left:5px;">*</span></label>
+                                <label for="year_id">{{$phrase->year}}<span style="color:red;margin-left:5px;">*</span></label>
                                 <select name="year_id" id="year_id" class="form-control">
                                     <option value="">---Select---</option>
                                     @foreach($year_datas as $year_data )
@@ -55,7 +55,7 @@
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="block_id">Block<span style="color:red;margin-left:5px;">*</span></label>
+                                <label for="block_id">{{$phrase->block}}<span style="color:red;margin-left:5px;">*</span></label>
                                 <select name="block_id" id="block_id" class="form-control">
                                     <option value="">---Select---</option>
                                     @foreach( $block_datas as $block_data )
@@ -67,7 +67,7 @@
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="panchayat_id">Panchayat <span style="color:red;margin-left:5px;">*</span></label>
+                                <label for="panchayat_id">{{$phrase->panchayat}} <span style="color:red;margin-left:5px;">*</span></label>
                                 <select name="panchayat_id" id="panchayat_id" class="form-control">
                                     <option value="">--Select--</option>
                                 </select>
@@ -113,7 +113,7 @@
                                 </tbody>
                             </table>
                             <div style="text-align: right;">
-                                <button type="button" class="btn btn-secondary btn-sm btn-circle" onclick="appendRow()">Add&nbsp;&nbsp;<i class="fa fa-plus-circle" aria-hidden="true"></i></button>
+                                <button type="button" class="btn btn-secondary btn-sm btn-circle" onclick="appendRow()">{{$phrase->add}}&nbsp;&nbsp;<i class="fa fa-plus-circle" aria-hidden="true"></i></button>
                             </div>
                             <hr />
                             <!-- hidden inputs -->
@@ -122,7 +122,7 @@
                             <input type="hidden" name="panchayat_id" id="panchayat_id_hidden">
                             <input type="hidden" name="to_delete" id="to_delete">
                             <!-- hidden inputs -->
-                            <button type="submit" class="btn btn-secondary"><i class="fas fa-check"></i>&nbsp;&nbsp;Save</button>
+                            <button type="submit" class="btn btn-secondary"><i class="fas fa-check"></i>&nbsp;&nbsp;{{$phrase->save}}</button>
                         </form>
                     </div>
                 </div>

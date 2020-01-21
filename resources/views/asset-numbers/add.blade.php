@@ -8,9 +8,9 @@
 
         <div class="card-header">
             <div class="card-head-row card-tools-still-right" style="background:#fff;">
-                <h4 class="card-title">Resources Number</h4>
+                <h4 class="card-title">{{$phrase->resource_number}}</h4>
                 <div class="card-tools">
-                    <a href="{{url('asset-numbers')}}" class="btn btn-sm btn-secondary" style="float:right;"><i class="fas fa-arrow-left"></i>&nbsp;&nbsp;Back</a>
+                    <a href="{{url('asset-numbers')}}" class="btn btn-sm btn-secondary" style="float:right;"><i class="fas fa-arrow-left"></i>&nbsp;&nbsp;{{$phrase->back}}</a>
                 </div>
             </div>
         </div>
@@ -22,7 +22,7 @@
             <div class="row">
                 <div class="col-md-3">
                     <div class="form-group">
-                        <label for="year">Year<span style="color:red;margin-left:5px;">*</span></label>
+                        <label for="year">{{$phrase->year}}<span style="color:red;margin-left:5px;">*</span></label>
                         <select name="year" id="year" class="form-control">
                             <option value="">---Select---</option>
                             @foreach($years as $year)
@@ -34,7 +34,7 @@
                 </div>
                 <div class="col-md-3">
                     <div class="form-group">
-                        <label for="asset_id">Resource<span style="color:red;margin-left:5px;">*</span></label>
+                        <label for="asset_id">{{$phrase->resource}}<span style="color:red;margin-left:5px;">*</span></label>
                         <select name="asset_id" id="asset_id" class="form-control">
                             <option value="">---Select---</option>
                             @foreach( $assets as $asset )
@@ -60,7 +60,7 @@
 
                 <div class="col-md-3">
                     <div class="form-group">
-                        <label for="geo_id">Panchayat<span style="color:red;margin-left:5px;">*</span></label>
+                        <label for="geo_id">{{$phrase->panchayat}}<span style="color:red;margin-left:5px;">*</span></label>
                         <select name="geo_id" id="geo_id" class="form-control">
                             @if($hidden_input_purpose == 'edit')
                                 @foreach($panchayats as $panchayat)
@@ -82,13 +82,13 @@
             <div class="row">
                 <div class="col-md-3">
                     <div class="form-group" id="previous_value_hide" style="display:none;">
-                        <label for="previous_value">Previous Value</label>
+                        <label for="previous_value">{{$phrase->previous_value}}</label>
                         <input type="text" name="previous_value" id="previous_value" class="form-control" readonly>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="form-group" id="current_value_hide" style="display:none;">
-                        <label for="current_value">Current Value</label>
+                        <label for="current_value">{{$phrase->current_value}}</label>
                         <input type="text" name="current_value" id="current_value" value="{{$data->current_value}}" class="form-control" autocomplete="off">
                         <div class="invalid-feedback" id="current_value_error_msg"></div>
                     </div>
@@ -96,17 +96,17 @@
             </div>
 
             <div class="form-group" style="display:none;" id="append-location">
-                <label>Resource Locations</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                <label>{{$phrase->resource_locations}}</label>&nbsp;&nbsp;&nbsp;&nbsp;
                 <label id="show_location_error"></label>
                 <div class="table-responsive table-hover table-sales">
                     <table class="table">
                         <thead style="background: #d6dcff;color: #000;">
                             <tr>
-                                <th>Select To Delete</th>
-                                <th>Location/Landmark</th>
-                                <th>Latitude</th>
-                                <th>Longitude</th>
-                                <th style="text-align: center;" id="actionHide">Action</th>
+                                <th>{{$phrase->selectToDelete}}</th>
+                                <th>{{$phrase->location_Landmark}}</th>
+                                <th>{{$phrase->latitude}}</th>
+                                <th>{{$phrase->longitude}}</th>
+                                <th style="text-align: center;" id="actionHide">{{$phrase->action}}</th>
                             </tr>
                         </thead>
                         <tbody id="append-location-delete">
@@ -143,7 +143,7 @@
             <div class="form-group" id="submit-buttons" style="margin-top:1em;">
                 <input type="text" name="hidden_input_purpose" id="hidden_input_purpose" value="{{$hidden_input_purpose}}" hidden>
                 <input type="text" name="hidden_input_id" id="hidden_input_id" value="{{$hidden_input_id}}" hidden>
-                <button type="submit" class="btn btn-primary" onclick=" return submitSave()"><span id="save-button-text">Next</span>&nbsp;&nbsp;<i class="fas fa-arrow-right"></i></button>
+                <button type="submit" class="btn btn-primary" onclick=" return submitSave()"><span id="save-button-text">{{$phrase->next}}</span>&nbsp;&nbsp;<i class="fas fa-arrow-right"></i></button>
             </div>
         </form>
     </div>
@@ -182,8 +182,8 @@
                     <input type="text" class="form-control" name="asset_gallery_id" id="asset_gallery_id" value="" hidden> <!--  asset_number_id -->
 
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-info waves-effect waves-light">Save</button>
+                        <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">{{$phrase->cancel}}</button>
+                        <button type="submit" class="btn btn-info waves-effect waves-light">{{$phrase->save}}</button>
                     </div>
                 </form>
             </div>
