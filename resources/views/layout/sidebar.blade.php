@@ -3,7 +3,18 @@
 	<div class="sidebar-wrapper scrollbar scrollbar-inner">
 		<div class="sidebar-content">
 			<ul class="nav nav-primary">
-				<li class="nav-item"><a href="{{url(session()->get('dashboard_url'))}}"><i class="fas fa-home"></i><p>{{session()->get('dashboard_title')}}</p></a></li>
+				<li class="nav-item"><a href="{{url(session()->get('dashboard_url'))}}"><i class="fas fa-home"></i>
+					@if(session()->get('dashboard_title')=='My District')
+					<p> {{$phrase->my}} {{$phrase->district}}</p>
+					@elseif(session()->get('dashboard_title')=='My SubDivision')
+					<p> {{$phrase->my}}  {{$phrase->sub_divisin}}</p>
+					@elseif(session()->get('dashboard_title')=='My Block')
+					<p> {{$phrase->my}}  {{$phrase->block}}</p>
+					@else
+					<p>  {{$phrase->my}} {{$phrase->panchayat}}</p>
+					@endif
+				</a></li>
+					
 
 				
 			
@@ -70,8 +81,8 @@
 					</a>
 					<div class="collapse" id="Import">
 						<ul class="nav nav-collapse">
-							<li class="nav-item"><a href="{{url('asset_Numbers/changeViewforimport')}}"><i class="fas fa-receipt"></i><p>{{$phrase->group_review}}</p></a></li>
-							<li class="nav-item"><a href="{{url('import/scheme')}}"><i class="fas fa-receipt"></i><p>Scheme Import</p></a></li>
+							<li class="nav-item"><a href="{{url('asset_Numbers/changeViewforimport')}}"><i class="fas fa-receipt"></i><p> {{$phrase->resource}}  {{$phrase->import}}</p></a></li>
+							<li class="nav-item"><a href="{{url('import/scheme')}}"><i class="fas fa-receipt"></i><p> {{$phrase->scheme}} {{$phrase->import}}</p></a></li>
 					</div>
 				</li>
 				@if(array_key_exists("mod22", $desig_permissions))
@@ -107,9 +118,9 @@
 							@if(array_key_exists("mod6", $desig_permissions))
 								<li class="nav-item"><a href="{{url('scheme-type')}}"><i class="fas fa-receipt"></i><p>{{$phrase->scheme_type}}</p></a></li>
 							@endif
-							@if(array_key_exists("mod7", $desig_permissions))
+							<!-- @if(array_key_exists("mod7", $desig_permissions))
 								<li class="nav-item"><a href="{{url('scheme-group')}}"><i class="fas fa-receipt"></i><p>{{$phrase->scheme_group}}</p></a></li>
-							@endif
+							@endif -->
 							@if(array_key_exists("mod8", $desig_permissions))
 								<li class="nav-item"><a href="{{url('assetcat')}}"><i class="fas fa-receipt"></i><p> {{$phrase->resource_catagory}}</p></a></li>
 							@endif

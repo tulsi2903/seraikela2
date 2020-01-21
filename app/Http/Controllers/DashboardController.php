@@ -26,12 +26,12 @@ class DashboardController extends Controller
         // session store user details
         if (Auth::check()) {
             session()->put('user_id', Auth::user()->id);
-            session()->put('user_full_name',"Mr ". Auth::user()->first_name . " " . Auth::user()->last_name);
+            session()->put('user_full_name',"(Mr) .". Auth::user()->first_name . " " . Auth::user()->last_name);
             session()->put('user_org_id', Auth::user()->org_id);
             session()->put('user_designation', Auth::user()->userRole);
             switch (Auth::user()->userRole) {
                 case "1":
-                    session()->put('user_designation_name', "IAS");
+                    session()->put('user_designation_name', "I.A.S");
                     session()->put('dashboard_title', "My District");
                     session()->put('dashboard_url', "my-district");
                     break;
@@ -154,16 +154,24 @@ class DashboardController extends Controller
         } else if (session()->get('user_designation') == 2) { // sdo
             // get block id from geo structure where officer id is assigned
             // then get all panchayat od that block
-            $subdivision_id_tmp = GeoStructure::where('officer_id', Auth::user()->id)->first()->geo_id;
-            $geo_ids = GeoStructure::where('sd_id', $subdivision_id_tmp)->where('level_id', '3')->pluck('geo_id'); // decide rows (blocks)
+            $subdivision_id_tmp = GeoStructure::where('officer_id', Auth::user()->id)->first();
+            if($subdivision_id_tmp){
+                $geo_ids = GeoStructure::where('sd_id', $subdivision_id_tmp->geo_id)->where('level_id', '3')->pluck('geo_id'); // decide rows (blocks)
+            }
         } else if (session()->get('user_designation') == 3) { // bdo
             // get block id from geo structure where officer id is assigned
             // then get all panchayat od that block
-            $block_id_tmp = GeoStructure::where('officer_id', Auth::user()->id)->first()->geo_id;
-            $geo_ids = GeoStructure::where('bl_id', $block_id_tmp)->where('level_id', '4')->pluck('geo_id'); // decide rows (panchayat)
+            $block_id_tmp = GeoStructure::where('officer_id', Auth::user()->id)->first();
+            if($block_id_tmp)
+            {
+                $geo_ids = GeoStructure::where('bl_id', $block_id_tmp->geo_id)->where('level_id', '4')->pluck('geo_id'); // decide rows (panchayat)
+            }
         } else if (session()->get('user_designation') == 4) { //po
-            $panchayat_id_tmp = GeoStructure::where('officer_id', Auth::user()->id)->first()->geo_id;
-            $geo_ids = GeoStructure::where('geo_id', $panchayat_id_tmp)->where('level_id', '4')->pluck('geo_id'); // decide rows (panchayat)
+            $panchayat_id_tmp = GeoStructure::where('officer_id', Auth::user()->id)->first();
+            if($panchayat_id_tmp)
+            {
+                $geo_ids = GeoStructure::where('geo_id', $panchayat_id_tmp->geo_id)->where('level_id', '4')->pluck('geo_id'); // decide rows (panchayat)
+            }
         } else {
             $dashboard_scheme_performance_has_datas = "no_data";
         }
@@ -200,7 +208,7 @@ class DashboardController extends Controller
                 $scheme_data = SchemeStructure::find($scheme_id);
                 if($scheme_data){
                     array_push($performance_table_heading_1, $scheme_data->scheme_short_name ."::". $scheme_data->scheme_logo);
-                    array_push($performance_table_heading_2, "Incomplete", "Completed", "Total");
+                    array_push($performance_table_heading_2, "Sanctioned", "Completed", "Inprogress");
                 }
                 else{
                     unset($scheme_ids[$key]);
@@ -230,7 +238,7 @@ class DashboardController extends Controller
                             $performance_data->total_count = 0;
                             $per = 0;
                         }
-                        array_push($performance_table_datas_tmp, $performance_data->incomplete_count . ":" . $per, $performance_data->completed_count . ":" . $per, "<a href='scheme-review?review_for=block&scheme=" . $scheme_id . "&geo=" . $geo_id . "&year=".$year_id."&initiate=initiate'>" . $performance_data->total_count . "</a>:" . $per);
+                        array_push($performance_table_datas_tmp, "<a href='scheme-review?review_for=block&scheme=" . $scheme_id . "&geo=" . $geo_id . "&year=".$year_id."&initiate=initiate'>" . $performance_data->total_count . "</a>:" . $per, $performance_data->completed_count . ":" . $per, $performance_data->incomplete_count . ":" . $per);
                     } else if (session()->get('user_designation') == 2) { // sdo
                         $performance_data = scheme_block_performance::where('block_id', $geo_id)
                             ->where('scheme_id', $scheme_id)
@@ -246,8 +254,9 @@ class DashboardController extends Controller
                             $performance_data->total_count = 0;
                             $per = 0;
                         }
-                        array_push($performance_table_datas_tmp, $performance_data->incomplete_count . ":" . $per, $performance_data->completed_count . ":" . $per, $performance_data->total_count . ":" . $per);
-                    } else if (session()->get('user_designation') == 3) { // bdo
+                        array_push($performance_table_datas_tmp, "<a href='scheme-review?review_for=block&scheme=" . $scheme_id . "&geo=" . $geo_id . "&year=".$year_id."&initiate=initiate'>" . $performance_data->total_count . "</a>:" . $per, $performance_data->completed_count . ":" . $per, $performance_data->incomplete_count . ":" . $per);
+                        // array_push($performance_table_datas_tmp, $performance_data->incomplete_count . ":" . $per, $performance_data->completed_count . ":" . $per, $performance_data->total_count . ":" . $per);
+                    } else if (session()->get('user_designation') == 3) { // panchayat
                         $performance_datas = SchemePerformance::where('panchayat_id', $geo_id)
                             ->where('scheme_id', $scheme_id)
                             ->where('year_id',$year_id)
@@ -267,8 +276,8 @@ class DashboardController extends Controller
                             $per = 0;
                         }
                         // array_push($performance_table_datas_tmp, $incomplete_count.":".$per, $completed_count.":".$per, "<a href='scheme-review?review_for=block&scheme=".$scheme_id."&geo=".$geo_id."&year=4&initiate=initiate'>".$total_count."</a>:".$per);
-                        array_push($performance_table_datas_tmp, $incomplete_count . ":" . $per, $completed_count . ":" . $per, $total_count . ":" . $per);
-                    } else if (session()->get('user_designation') == 4) { // bdo
+                        array_push($performance_table_datas_tmp,$total_count . ":" . $per, $completed_count . ":" . $per, $incomplete_count . ":" . $per );
+                    } else if (session()->get('user_designation') == 4) { // po
                         $performance_datas = SchemePerformance::where('panchayat_id', $geo_id)
                             ->where('scheme_id', $scheme_id)
                             ->where('year_id',$year_date)
@@ -286,7 +295,7 @@ class DashboardController extends Controller
                             $total_count = 0;
                             $per = 0;
                         }
-                        array_push($performance_table_datas_tmp, $incomplete_count . ":" . $per, $completed_count . ":" . $per, $total_count . ":" . $per);
+                        array_push($performance_table_datas_tmp, $total_count . ":" . $per, $completed_count . ":" . $per, $incomplete_count . ":" . $per);
                     }
                 }
                 array_push($performance_table_datas, $performance_table_datas_tmp);
@@ -387,7 +396,7 @@ class DashboardController extends Controller
                 $scheme_data = SchemeStructure::find($scheme_id);
                 if($scheme_data){
                     array_push($performance_table_heading_1, $scheme_data->scheme_short_name ."::". $scheme_data->scheme_logo);
-                    array_push($performance_table_heading_2, "Incomplete", "Completed", "Total");
+                    array_push($performance_table_heading_2, "Sanctioned", "Completed", "Inprogress");
                 }
                 else{
                     unset($scheme_ids[$key]);
@@ -417,7 +426,9 @@ class DashboardController extends Controller
                             $performance_data->total_count = 0;
                             $per = 0;
                         }
-                        array_push($performance_table_datas_tmp, $performance_data->incomplete_count . ":" . $per, $performance_data->completed_count . ":" . $per, "<a href='scheme-review?review_for=block&scheme=" . $scheme_id . "&geo=" . $geo_id . "&year=".$year."&initiate=initiate'>" . $performance_data->total_count . "</a>:" . $per);
+                        array_push($performance_table_datas_tmp, "<a href='scheme-review?review_for=block&scheme=" . $scheme_id . "&geo=" . $geo_id . "&year=".$year."&initiate=initiate'>" . $performance_data->total_count . "</a>:" . $per, $performance_data->completed_count . ":" . $per, $performance_data->incomplete_count . ":" . $per);
+
+                        // array_push($performance_table_datas_tmp, $performance_data->incomplete_count . ":" . $per, $performance_data->completed_count . ":" . $per, "<a href='scheme-review?review_for=block&scheme=" . $scheme_id . "&geo=" . $geo_id . "&year=".$year."&initiate=initiate'>" . $performance_data->total_count . "</a>:" . $per);
                     } else if (session()->get('user_designation') == 2) { // sdo
                         $performance_data = scheme_block_performance::where('block_id', $geo_id)
                             ->where('scheme_id', $scheme_id)
@@ -433,8 +444,10 @@ class DashboardController extends Controller
                             $performance_data->total_count = 0;
                             $per = 0;
                         }
-                        array_push($performance_table_datas_tmp, $performance_data->incomplete_count . ":" . $per, $performance_data->completed_count . ":" . $per, $performance_data->total_count . ":" . $per);
-                    } else if (session()->get('user_designation') == 3) { // bdo
+                        array_push($performance_table_datas_tmp, "<a href='scheme-review?review_for=block&scheme=" . $scheme_id . "&geo=" . $geo_id . "&year=".$year."&initiate=initiate'>" . $performance_data->total_count . "</a>:" . $per, $performance_data->completed_count . ":" . $per, $performance_data->incomplete_count . ":" . $per);
+
+                        // array_push($performance_table_datas_tmp, $performance_data->incomplete_count . ":" . $per, $performance_data->completed_count . ":" . $per, $performance_data->total_count . ":" . $per);
+                    } else if (session()->get('user_designation') == 3) { // panchayat
                         $performance_datas = SchemePerformance::where('panchayat_id', $geo_id)
                             ->where('scheme_id', $scheme_id)
                             ->where('year_id', $year)
@@ -454,7 +467,7 @@ class DashboardController extends Controller
                             $per = 0;
                         }
                         // array_push($performance_table_datas_tmp, $incomplete_count.":".$per, $completed_count.":".$per, "<a href='scheme-review?review_for=block&scheme=".$scheme_id."&geo=".$geo_id."&year=4&initiate=initiate'>".$total_count."</a>:".$per);
-                        array_push($performance_table_datas_tmp, $incomplete_count . ":" . $per, $completed_count . ":" . $per, $total_count . ":" . $per);
+                        array_push($performance_table_datas_tmp,$total_count . ":" . $per, $completed_count . ":" . $per, $incomplete_count . ":" . $per );
                     } else if (session()->get('user_designation') == 4) { // bdo
                         $performance_datas = SchemePerformance::where('panchayat_id', $geo_id)
                             ->where('scheme_id', $scheme_id)
@@ -474,7 +487,7 @@ class DashboardController extends Controller
                             $total_count = 0;
                             $per = 0;
                         }
-                        array_push($performance_table_datas_tmp, $incomplete_count . ":" . $per, $completed_count . ":" . $per, $total_count . ":" . $per);
+                        array_push($performance_table_datas_tmp, $total_count . ":" . $per, $completed_count . ":" . $per, $incomplete_count . ":" . $per);
                     }
                 }
                 array_push($performance_table_datas, $performance_table_datas_tmp);

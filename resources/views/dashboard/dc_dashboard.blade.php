@@ -1,6 +1,6 @@
 @extends('layout.layout')
 
-@section('title', 'My District')
+@section('title', session()->get('dashboard_title'))
 
 @section('page-style')
 <style>
