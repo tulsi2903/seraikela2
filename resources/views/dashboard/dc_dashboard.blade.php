@@ -499,11 +499,18 @@
             @foreach($departments as $key_dep=>$value_dept)
     <div class="col-md-1 focus-grid" style="padding-right: 5px;padding-left: 5px;">
         <div class="focus-border">
+            <?php  @$dept_count=DB::table('scheme_structure')->where('dept_id',@$value_dept['dept_id'])->get(); ?>
+            @if($dept_count!="")
             <center>
-                <div class="text-right">{{$health_scheme_count}}</div>
+                <div class="text-right">{{count($dept_count)}}</div>
             </center>
+            @else
+            <center>
+                <div class="text-right">{{0}}</div>
+            </center>
+            @endif
             <div class="focus-layout" id="card-detail1">
-                <span class="logo  " ><img src="{{$value_dept['dept_icon']}}" ></span>
+                <span style="display:block; padding:10px; text-align: center;"><img style="max-height:60px;" src="{{$value_dept['dept_icon']}}" ></span>
                 <!-- <i class="fa fa-heartbeat" style="font-size:35px; color: #fff;margin-top: 0.5em;"></i> -->
                 <h4 class="clrchg"> {{$value_dept['dept_name']}}</h4>
             </div>
