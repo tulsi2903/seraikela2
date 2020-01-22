@@ -133,7 +133,12 @@ class SchemePerformanceController extends Controller
 
     public function get_panchayat_datas(Request $request)
     {
-        $datas = GeoStructure::where('bl_id', $request->block_id)->get();
+        if (session()->get('user_designation') == 4) { //po
+            $datas = GeoStructure::where('bl_id', $request->block_id)->where('officer_id', Auth::user()->id)->get();
+        }
+        else {
+            $datas = GeoStructure::where('bl_id', $request->block_id)->get();
+        }
         return $datas;
     }
 

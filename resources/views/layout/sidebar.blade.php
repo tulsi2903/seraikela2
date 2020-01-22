@@ -49,7 +49,7 @@
 							@if(array_key_exists("mod16", $desig_permissions))
 							<li class="nav-item"><a href="{{url('scheme-asset')}}"><i class="fas fa-users-cog"></i><p>{{$phrase->scheme_assets}}</p></a></li>
 							@endif
-							@if(array_key_exists("mod17", $desig_permissions))
+							@if(array_key_exists("mod18", $desig_permissions))
 							<!-- <li class="nav-item"><a href="{{url('scheme-geo-target')}}"><i class="fas fa-receipt"></i><p>Scheme Geo Target</p></a></li> -->
 			                <li class="nav-item"><a href="{{url('scheme-performance')}}"><i class="fas fa-receipt"></i><p>{{$phrase->scheme_performance}}</p></a></li>
 							@endif
