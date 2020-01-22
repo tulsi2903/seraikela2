@@ -24,6 +24,31 @@ class SchemePerformanceController extends Controller
     public function index(Request $request)
     {
 
+        $geo_ids = [];
+        if (session()->get('user_designation') == 1) // dc
+        {
+            $geo_ids = GeoStructure::where('level_id', 3)->pluck('geo_id'); // panchayat_ids
+        } 
+        else if (session()->get('user_designation') == 2) { // sdo
+            $subdivision_id_tmp = GeoStructure::where('officer_id', Auth::user()->id)->where('level_id', '2')->first();
+            if($subdivision_id_tmp){
+                $geo_ids = GeoStructure::where('sd_id', $subdivision_id_tmp->geo_id)->pluck('geo_id'); // panchayat_ids
+            }
+        } 
+        else if (session()->get('user_designation') == 3) { // bdo
+            $block_id_tmp = GeoStructure::where('officer_id', Auth::user()->id)->first();
+            // return $block_id_tmp;
+            if($block_id_tmp){
+                $geo_ids = GeoStructure::where('officer_id', Auth::user()->id)->pluck('geo_id'); // decide rows (panchayat)
+            }
+        } 
+        else if (session()->get('user_designation') == 4) { //po
+            $panchayat_id_tmp = GeoStructure::where('officer_id', Auth::user()->id)->first();
+            if($panchayat_id_tmp){
+                $geo_ids = GeoStructure::where('geo_id', $panchayat_id_tmp->bl_id)->pluck('geo_id'); // decide rows (panchayat)
+            }
+        }
+
         // $datas = SchemePerformance::leftJoin('scheme_structure', 'scheme_geo_target.scheme_id', '=', 'scheme_structure.scheme_id')
         //             ->leftJoin('scheme_geo_target','scheme-performance.scheme_geo_target_id','=','scheme_geo_target.scheme_geo_target_id')
         //             ->leftJoin('geo_structure', 'scheme_geo_target.geo_id', '=', 'geo_structure.geo_id')
@@ -71,7 +96,7 @@ class SchemePerformanceController extends Controller
 
         $scheme_datas = SchemeStructure::select('scheme_id', 'scheme_name', 'scheme_short_name')->orderBy('scheme_id', 'DESC')->get(); // only independent scheme (scheme_is == 1)
         $year_datas = Year::select('year_id', 'year_value')->orderBy('year_value', 'asc')->get();
-        $block_datas = GeoStructure::select('geo_id', 'geo_name')->orderBy('geo_name', 'asc')->where('level_id', '=', '3')->get();
+        $block_datas = GeoStructure::select('geo_id', 'geo_name')->orderBy('geo_name', 'asc')->whereIn('geo_id', $geo_ids)->where('level_id', '=', '3')->get();
 
         return view('scheme-performance.index')->with(compact('scheme_datas', 'year_datas', 'block_datas'));
     }

@@ -23,10 +23,38 @@ class AssetNumbersController extends Controller
 
     public function index()
     {
+
+        $geo_ids = [];
+        if (session()->get('user_designation') == 1) // dc
+        {
+            $geo_ids = GeoStructure::where('level_id', 4)->pluck('geo_id'); // panchayat_ids
+        } 
+        else if (session()->get('user_designation') == 2) { // sdo
+            $subdivision_id_tmp = GeoStructure::where('officer_id', Auth::user()->id)->first();
+            if($subdivision_id_tmp){
+                $geo_ids = GeoStructure::where('sd_id', $subdivision_id_tmp->geo_id)->where('level_id', '4')->pluck('geo_id'); // panchayat_ids
+            }
+        } 
+        else if (session()->get('user_designation') == 3) { // bdo
+            $block_id_tmp = GeoStructure::where('officer_id', Auth::user()->id)->first();
+            if($block_id_tmp)
+            {
+                $geo_ids = GeoStructure::where('bl_id', $block_id_tmp->geo_id)->where('level_id', '4')->pluck('geo_id'); // decide rows (panchayat)
+            }
+        } 
+        else if (session()->get('user_designation') == 4) { //po
+            $panchayat_id_tmp = GeoStructure::where('officer_id', Auth::user()->id)->first();
+            if($panchayat_id_tmp)
+            {
+                $geo_ids = GeoStructure::where('geo_id', $panchayat_id_tmp->geo_id)->where('level_id', '4')->pluck('geo_id'); // decide rows (panchayat)
+            }
+        }
+
         // getting rows, last updated
         $asset_ids = Asset::where('parent_id', -1)->get()->pluck('asset_id');
         $datas = AssetNumbers::select('geo_id', 'asset_id', 'year', DB::raw('MAX(updated_at) AS max_updated'), DB::raw('MAX(asset_numbers_id) as asset_numbers_id'))
             ->whereIn('asset_id', $asset_ids)
+            ->whereIn('geo_id', $geo_ids)
             ->groupBy('year', 'asset_id', 'geo_id')
             ->get();
 
@@ -58,14 +86,46 @@ class AssetNumbersController extends Controller
     }
     public function add(Request $request)
     {
+        $geo_ids = [];
+        if (session()->get('user_designation') == 1) // dc
+        {
+            $geo_ids = GeoStructure::where('level_id', 3)->pluck('geo_id'); // panchayat_ids
+        } 
+        else if (session()->get('user_designation') == 2) { // sdo
+            $subdivision_id_tmp = GeoStructure::where('officer_id', Auth::user()->id)->where('level_id', '2')->first();
+            if($subdivision_id_tmp){
+                $geo_ids = GeoStructure::where('sd_id', $subdivision_id_tmp->geo_id)->pluck('geo_id'); // panchayat_ids
+            }
+        } 
+        else if (session()->get('user_designation') == 3) { // bdo
+            $block_id_tmp = GeoStructure::where('officer_id', Auth::user()->id)->first();
+            // return $block_id_tmp;
+            if($block_id_tmp){
+                $geo_ids = GeoStructure::where('officer_id', Auth::user()->id)->pluck('geo_id'); // decide rows (panchayat)
+            }
+        } 
+        else if (session()->get('user_designation') == 4) { //po
+            $panchayat_id_tmp = GeoStructure::where('officer_id', Auth::user()->id)->first();
+            if($panchayat_id_tmp){
+                $geo_ids = GeoStructure::where('geo_id', $panchayat_id_tmp->bl_id)->pluck('geo_id'); // decide rows (panchayat)
+            }
+        }
         // return $request;
         $hidden_input_purpose = "add";
         $hidden_input_id = "NA";
 
+        $assetgeoid = AssetNumbers::where('asset_numbers_id',$request->id)->value('geo_id');
+        $fetchpanchayatid = GeoStructure::where('geo_id',$assetgeoid)->value('bl_id');
+
         $assets = Asset::orderBy('asset_id')->where('parent_id', -1)->get();
-        $panchayats = GeoStructure::where('level_id', '4')->orderBy('geo_name')->get();
+        if (session()->get('user_designation') == 4) { //po
+            $panchayats = GeoStructure::where('level_id', '4')->where('bl_id',$fetchpanchayatid)->where('officer_id', Auth::user()->id)->orderBy('geo_name')->get();
+        }
+        else {
+            $panchayats = GeoStructure::where('level_id', '4')->where('bl_id',$fetchpanchayatid)->orderBy('geo_name')->get();
+        }
         $years = Year::orderBy('year_id')->get();
-        $block_datas = GeoStructure::select('geo_id', 'geo_name')->orderBy('geo_name', 'asc')->where('level_id', '=', '3')->get();
+        $block_datas = GeoStructure::select('geo_id', 'geo_name')->whereIn('geo_id', $geo_ids)->orderBy('geo_name', 'asc')->where('level_id', '=', '3')->get();
 
         $data = new AssetNumbers;
 
@@ -156,6 +216,17 @@ class AssetNumbersController extends Controller
             ->first()->images);
 
         return ['current_value' => $current_value, 'movable' => $movable, 'asset_location' => $asset_location, 'images' => $images];
+    }
+
+    public function get_panchayat_datas(Request $request)
+    {
+        if (session()->get('user_designation') == 4) { //po
+            $datas = GeoStructure::where('bl_id', $request->block_id)->where('officer_id', Auth::user()->id)->get();
+        }
+        else {
+            $datas = GeoStructure::where('bl_id', $request->block_id)->get();
+        }
+        return $datas;
     }
 
     public function store(Request $request)

@@ -760,7 +760,7 @@
                 }
             });
             $.ajax({
-                url:"{{url('scheme-performance/get-panchayat-datas')}}",
+                url:"{{url('asset_number/get-panchayat-datas')}}",
                 data: {'block_id':block_id_tmp},
                 method:"GET",
                 contentType:'application/json',

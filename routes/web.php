@@ -179,6 +179,7 @@ Route::get('asset_Numbers/pdf/pdfURL','AssetNumbersController@exportpdfFunctiuon
 Route::get('asset_number/list_of_childs/{child_id}/{geo_child_id}/{year_child_id}/{hidden_input_id}/{geo_location_id}','AssetNumbersController@list_of_childs');
 Route::post('asset-numbers/saveChilddata','AssetNumbersController@saveChilddata'); 
 Route::get('asset_number/list_of_imagedata/{loc_id}/{asset_id}/{year_id}/{geo_id}/{hidden_input_id}','AssetNumbersController@list_of_imagedata');
+Route::get('asset_number/get-panchayat-datas','AssetNumbersController@get_panchayat_datas'); // to get panchayat data and append in <select>
 Route::post('asset-numbers/saveImagesforLoacation','AssetNumbersController@saveImagesforLoacation'); 
 Route::get('asset_Numbers/downloadFormat','AssetNumbersController@downloadFormat'); 
 Route::get('asset_Numbers/downloadFormatwithLocation','AssetNumbersController@downloadFormatwithLocation'); 
