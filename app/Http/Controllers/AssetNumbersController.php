@@ -817,7 +817,39 @@ class AssetNumbersController extends Controller
 
     public function saveimporttoExcel(Request $request)
     {
-        // return $request;
+        $geo_names = array();
+        if (session()->get('user_designation') == 1) // dc
+        {
+            $geo_names = GeoStructure::where('level_id', 4)->pluck('geo_name'); // panchayat_ids
+        } 
+        else if (session()->get('user_designation') == 2) { // sdo
+            $subdivision_id_tmp = GeoStructure::where('officer_id', Auth::user()->id)->first();
+            if($subdivision_id_tmp){
+                $geo_names = GeoStructure::where('sd_id', $subdivision_id_tmp->geo_id)->where('level_id', '4')->pluck('geo_name'); // panchayat_ids
+            }
+        } 
+        else if (session()->get('user_designation') == 3) { // bdo
+            $block_id_tmp = GeoStructure::where('officer_id', Auth::user()->id)->first();
+            if($block_id_tmp)
+            {
+                $geo_names = GeoStructure::where('bl_id', $block_id_tmp->geo_id)->where('level_id', '4')->pluck('geo_name'); // decide rows (panchayat)
+            }
+        } 
+        else if (session()->get('user_designation') == 4) { //po
+            $panchayat_id_tmp = GeoStructure::where('officer_id', Auth::user()->id)->first();
+            if($panchayat_id_tmp)
+            {
+                $geo_names = GeoStructure::where('geo_id', $panchayat_id_tmp->geo_id)->where('level_id', '4')->pluck('geo_name'); // decide rows (panchayat)
+            }
+        }
+
+        $geo_names = (array)$geo_names;
+        $geo_names_array=array();
+        foreach($geo_names as $key_geo=> $value_geo)
+        {
+            $geo_names_array=$value_geo;
+        }
+
         if ($_FILES['excel_for_asset_number']['tmp_name']) {
             $readExcel = \Excel::load($_FILES['excel_for_asset_number']['tmp_name'], function ($reader) { })->get()->toArray();
             $readExcelHeader = \Excel::load($_FILES['excel_for_asset_number']['tmp_name'])->get();
@@ -831,7 +863,7 @@ class AssetNumbersController extends Controller
                     // print_r($tableHeadingsAndAtributes);
                     // exit;
             foreach ($readExcel as $key_a => $row_a) {
-            $si_no_arary[]= $row_a['sno.'];
+                $si_no_arary[]= $row_a['sno.'];
             }
             
             $tableHeadingsAndAtributes = array('sno.', 'year', 'resource_name', 'panchayat_name', 'current_value',0);
@@ -855,17 +887,14 @@ class AssetNumbersController extends Controller
                             $noOfSuccess = 0;
                             $noOfFails = 0;
                             $ErrorTxt = "";
-
+                            echo "<pre>";    
+                            // print_r($geo_names);
                             foreach ($readExcel as $key => $row) { /* Insert Data By using for each one by one */
-                                // preg_replace('/[^\w]/', '', ucwords($row['panchayat_name']));
-                                // ucwords(preg_replace('/[^A-Za-z ]/', '', "$row['panchayat_name']"));
-                                // ucwords(preg_replace('/[^0-9-]/', '', $row['year']));
 
                                 $panchayat_name = trim(ucwords($row['panchayat_name'])," ");
+
                                 $asset_name = trim(ucwords($row['resource_name'])," ");
 
-                                // $panchayat_name = ucwords(preg_replace('/[^A-Za-z ]/', '', $row['panchayat_name'])); //replace number and special character from panchayat name
-                                // $asset_name = ucwords(preg_replace('/[^A-Za-z ]/', '', $row['resource_name'])); //replace number and special character from asset name
                                 $year_value = ucwords(preg_replace('/[^0-9-]/', '', $row['year'])); //replace ASCII form year
 
                                 $fetch_panchayat_id = GeoStructure::where('geo_name', $panchayat_name)->where('level_id','4')->value('geo_id'); /* for Panchayat ID */
@@ -874,8 +903,8 @@ class AssetNumbersController extends Controller
                                 $fetch_asset_number_edit = AssetNumbers::where('asset_id', $fetch_asset_id)->where('geo_id', $fetch_panchayat_id)->first();
                                 $fetch_asset_loc_edit = AssetGeoLocation::where('asset_id', $fetch_asset_id)->where('geo_id', $fetch_panchayat_id)->where('location_name', $row['locationlandmark'])->where('year', $fetch_year_id)->first();
                                 
-                                if ($row['sno.'] != null && $fetch_panchayat_id != null && $fetch_year_id != null && $fetch_asset_id != null) {
-
+                                if ($row['sno.'] != null && $fetch_panchayat_id != null && $fetch_year_id != null && $fetch_asset_id != null && in_array($panchayat_name,$geo_names_array)) {
+                                    
                                     /* Condition for Add And edit Location Latitude And longitude */
                                     if($excelSheetHeadings[6] == "locationlandmark" || $excelSheetHeadings[7] == "latitude" || $excelSheetHeadings[8] == "longitude"){
                                         if ($row['main_resource_sno'] == null && $row['count'] == null && $row['locationlandmark'] != null) {
@@ -947,7 +976,7 @@ class AssetNumbersController extends Controller
                                             
                                         } elseif ($row['locationlandmark'] == null && $row['main_resource_sno'] == null && $row['count'] == null) {
                                             $noOfFails++;
-                                            $ErrorTxt .= " ON row sno. " . $row['sno.'] . " Please Fill Landmark/Location \n";
+                                            $ErrorTxt .= " On SNo. " . $row['sno.'] . " Please Fill Landmark/Location \n";
                                         }
 
                                         if (($row['main_resource_sno'] != null || $row['count'] != null) && (gettype($row['count']) ===  "double") && (in_array($row['main_resource_sno'],$si_no_arary))) {
@@ -1012,11 +1041,11 @@ class AssetNumbersController extends Controller
                                             }
                                         } elseif ((gettype($row['count']) !==  "double") && ($row['main_resource_sno'] != null || $row['count'] != null)) {
                                             $noOfFails++;
-                                            $ErrorTxt .= " ON row sno. " . $row['sno.'] . " Count is Not Numeric \n";
+                                            $ErrorTxt .= " On SNo. " . $row['sno.'] . " Count is Not Numeric \n";
                                         }
                                         elseif ((in_array($row['main_resource_sno'],$si_no_arary) == false) && ($row['main_resource_sno'] != null || $row['count'] != null)) {
                                             $noOfFails++;
-                                            $ErrorTxt .= " ON row sno. " . $row['sno.'] . "Main Resource Serial Number Not Found \n";
+                                            $ErrorTxt .= " On SNo. " . $row['sno.'] . "Main Resource Serial Number Not Found \n";
                                         }
                                     }
                                     else {
@@ -1042,36 +1071,38 @@ class AssetNumbersController extends Controller
                                             $asset_number->save();
                                         }
                                     }
-                                }else {  /* Else find id and error write on the notepad */
+                                }else {  
+                                    /* Else find id and error write on the notepad */
                                     $noOfFails++;
                                     if ($row['sno.'] != null) {
                                         if ($fetch_asset_id == null && $fetch_panchayat_id != null && $fetch_year_id != null) {
-                                            $ErrorTxt .= " ON row sno. " . $row['sno.'] . " Resources Not Found \n";
-                                        } elseif ($fetch_panchayat_id == null && $fetch_asset_id != null && $fetch_year_id != null) {
-                                            $ErrorTxt .= " ON row sno. " . $row['sno.'] . " Panchayat Not Found \n";
-                                        } elseif ($fetch_year_id == null && $fetch_panchayat_id != null && $fetch_asset_id != null) {
-                                            $ErrorTxt .= " ON row sno. " . $row['sno.'] . " Year Not Found \n";
-                                        } elseif ($fetch_year_id == null && $fetch_panchayat_id == null && $fetch_asset_id != null) {
-                                            $ErrorTxt .= " ON row sno. " . $row['sno.'] . " Year And Panchayat Not Found \n";
-                                        } elseif ($fetch_year_id != null && $fetch_panchayat_id == null && $fetch_asset_id == null) {
-                                            $ErrorTxt .= " ON row sno. " . $row['sno.'] . " Resources And Panchayat Not Found \n";
-                                        } elseif ($fetch_year_id == null && $fetch_panchayat_id != null && $fetch_asset_id == null) {
-                                            $ErrorTxt .= " ON row sno. " . $row['sno.'] . " Resources And Year Not Found \n";
-                                        } elseif ($fetch_year_id == null && $fetch_panchayat_id == null && $fetch_asset_id == null) {
-                                            $ErrorTxt .= " ON row sno. " . $row['sno.'] . " Year Resources And Panchayat Not Found \n";
-                                        } elseif (gettype($row['count']) !==  "double") {
-                                            $ErrorTxt .= " ON row sno. " . $row['sno.'] . " Count is Not Numeric \n";
-                                        } elseif ($row['locationlandmark'] == null) {
-                                            $ErrorTxt .= " ON row sno. " . $row['sno.'] . " Please Fill Landmark/Location \n";
+                                            $ErrorTxt .= " On SNo. " . $row['sno.'] . " Resources Not Found \n";
+                                        } 
+                                        if ($fetch_panchayat_id == null && $fetch_asset_id != null && $fetch_year_id != null) {
+                                            $ErrorTxt .= " On SNo. " . $row['sno.'] . " Panchayat Not Found \n";
+                                        } 
+                                        if ($fetch_year_id == null && $fetch_panchayat_id != null && $fetch_asset_id != null) {
+                                            $ErrorTxt .= " On SNo. " . $row['sno.'] . " Year Not Found \n";
+                                        } 
+                                        if ($fetch_year_id == null && $fetch_panchayat_id == null && $fetch_asset_id != null) {
+                                            $ErrorTxt .= " On SNo. " . $row['sno.'] . " Year And Panchayat Not Found \n";
+                                        } 
+                                        if ($fetch_year_id != null && $fetch_panchayat_id == null && $fetch_asset_id == null) {
+                                            $ErrorTxt .= " On SNo. " . $row['sno.'] . " Resources And Panchayat Not Found \n";
+                                        } 
+                                        if ($fetch_year_id == null && $fetch_panchayat_id != null && $fetch_asset_id == null) {
+                                            $ErrorTxt .= " On SNo. " . $row['sno.'] . " Resources And Year Not Found \n";
+                                        } 
+                                        if ($fetch_year_id == null && $fetch_panchayat_id == null && $fetch_asset_id == null) {
+                                            $ErrorTxt .= " On SNo. " . $row['sno.'] . " Year Resources And Panchayat Not Found \n";
+                                        }
+                                        if (in_array($panchayat_name,$geo_names_array) == false) {
+                                            $ErrorTxt .= " On SNo. " . $row['sno.'] . " Wrong panchayat Name \n";
                                         }
                                     } 
-                                    // else {
-                                    //     $txt = " Serial Number Not Available \n";
-                                    //     fwrite($myfile, $txt);
-                                    // }
+                                    // echo $ErrorTxt;
                                 }
                             }
-                            // die();
 
                             $txt = "District Resource and Scheme Management\n";
                             $txt .= "----------------------------------------------------------------------------------------------------------------------------------\n";
