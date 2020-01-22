@@ -30,14 +30,17 @@ class FavController extends Controller
 {
     public function index()
     {
-           //Department FAV CODE 
+        // echo session()->get('user_designation');
+
+        //Department FAV CODE
+        if(session()->get('user_designation') == 1){
             $datas_dept = Department::leftJoin('organisation', 'department.org_id', '=', 'organisation.org_id')
-                ->select('department.*','organisation.org_name')->where('department.is_active',1)
-                ->orderBy('department.dept_id','asc')->get();
- 
+            ->select('department.*','organisation.org_name')->where('department.is_active',1)
+            ->orderBy('department.dept_id','asc')->get();
+            
             for($i=0;$i<count($datas_dept);$i++){
                 $fav_dept_tmp = Fav_Dept::select('favourite_department_id')->where('user_id', session()->get('user_id'))->where('dept_id',$datas_dept[$i]->dept_id)->first();
-
+                
                 if($fav_dept_tmp){
                     $datas_dept[$i]->checked=1;
                 }
@@ -45,6 +48,7 @@ class FavController extends Controller
                     $datas_dept[$i]->checked=0;
                 }
             }
+        }
 
             //Scheme fav code or not fav
             $datas_scheme = SchemeStructure::select('scheme_id','scheme_name','scheme_short_name')->get();
@@ -59,8 +63,8 @@ class FavController extends Controller
                 }
             }
 
-
-            //block fav code 
+        //block fav code
+        if(session()->get('user_designation') == 1){          
             $datas_block = GeoStructure::select('geo_id','geo_name')->where('level_id','3')
                         ->orderBy('geo_structure.geo_id','asc')->get();
             
@@ -73,8 +77,10 @@ class FavController extends Controller
                     $datas_block[$i]->checked=0;
                 }
             }
+        }
 
-            //fav panchayat fav  or not
+        //fav panchayat fav  or not
+        if(session()->get('user_designation') == 1){   
             $datas_panchayat = GeoStructure::select('geo_id','geo_name')->where('level_id','4')
                                 ->orderBy('geo_structure.geo_id','asc')->get();
             for($i=0;$i<count($datas_panchayat);$i++){
@@ -86,8 +92,31 @@ class FavController extends Controller
                     $datas_panchayat[$i]->checked=0;
                 }
             }
+        }
+        else if(session()->get('user_designation') == 3){
+            $panchayat_ids_tmp = [];
+            $block_id_tmp = GeoStructure::where('officer_id', Auth::user()->id)->first();
+            if($block_id_tmp)
+            {
+                $panchayat_ids_tmp = GeoStructure::where('bl_id', $block_id_tmp->geo_id)->where('level_id', '4')->pluck('geo_id'); // panchayats
+            }
 
-            //fav Assets     
+            $datas_panchayat = GeoStructure::select('geo_id','geo_name')->where('level_id','4')
+                    ->whereIn('geo_id', $panchayat_ids_tmp)
+                    ->orderBy('geo_structure.geo_id','asc')->get();
+            for($i=0;$i<count($datas_panchayat);$i++){
+                $fav_panchayat_tmp = Fav_Panchayat::select('favourite_panchayat_id')->where('user_id', session()->get('user_id'))->where('panchayat_id',$datas_panchayat[$i]->geo_id)->first();
+                if($fav_panchayat_tmp){
+                    $datas_panchayat[$i]->checked=1;
+                }
+                else{
+                    $datas_panchayat[$i]->checked=0;
+                }
+            }
+        }
+ 
+        //fav Assets   
+        if(session()->get('user_designation') == 1){   
             $datas_define_asset = Asset::leftJoin('department', 'asset.dept_id', '=', 'department.dept_id')
                                 ->select('asset.*','department.dept_name')
                                 ->orderBy('asset.asset_id','asc')->get();
@@ -103,7 +132,7 @@ class FavController extends Controller
                     $datas_define_asset[$i]->checked=0;
                 }
             }
-
+        }
         return view('favourite.fav_all',compact('datas_dept','datas_scheme','datas_block','datas_panchayat','datas_define_asset'));//->with('datas_dept', $datas_dept);
 
     }
@@ -111,34 +140,36 @@ class FavController extends Controller
 
     public function add_fav_departs(Request $request)
     {
-        if(($request->dept_id)!=0)
-        {           
-            // delete previous entries
-            $delete_query = Fav_Dept::where('user_id', session()->get('user_id'))->delete();
-            
-            $count_id = $request->dept_id;
-            foreach ($count_id as $department_id) 
-            {                       
-                $fav_department= new Fav_Dept();
-                $fav_department->dept_id = $department_id;              
-                $fav_department->user_id = session()->get('user_id');
-                $fav_department->org_id = session()->get('user_org_id');
-                $fav_department->created_by = session()->get('user_id');
-                $fav_department->updated_by = session()->get('user_id');
-                $fav_department->save();                
+        
+        // if(session()->get('user_designation') == 1){    
+            if(($request->dept_id)!=0)
+            {           
+                // delete previous entries
+                $delete_query = Fav_Dept::where('user_id', session()->get('user_id'))->delete();
+                
+                $count_id = $request->dept_id;
+                foreach ($count_id as $department_id) 
+                {                       
+                    $fav_department= new Fav_Dept();
+                    $fav_department->dept_id = $department_id;              
+                    $fav_department->user_id = session()->get('user_id');
+                    $fav_department->org_id = session()->get('user_org_id');
+                    $fav_department->created_by = session()->get('user_id');
+                    $fav_department->updated_by = session()->get('user_id');
+                    $fav_department->save();                
+                }
+                session()->put('alert-class','alert-success');
+                session()->put('alert-content','Your Favourite Department is Inserted');
+                return redirect('favourites');
             }
-            session()->put('alert-class','alert-success');
-            session()->put('alert-content','Your Favourite Department is Inserted');
-            return redirect('favourites');
-        }
-        else
-        {
-            session()->put('alert-class','alert-danger');
-            session()->put('alert-content','Select Atleast one Favourite Department!');
-            return redirect('favourites');
-        }        
+            else
+            {
+                session()->put('alert-class','alert-danger');
+                session()->put('alert-content','Select Atleast one Favourite Department!');
+                return redirect('favourites');
+            }        
+        // }
     }
-
 
     public function add_fav_scheme(Request $request){
         if(($request->scheme_id)!=0){ 

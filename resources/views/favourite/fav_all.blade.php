@@ -27,11 +27,19 @@
                         <div class="row">
                             <div class="col-2">
                                 <div class="nav flex-column nav-pills nav-secondary nav-pills-no-bd" id="v-pills-tab-without-border" role="tablist" aria-orientation="vertical">
+                                @if(session()->get('user_designation') == 1)
                                     <a class="nav-link active" id="v-pills-home-tab-nobd" data-toggle="pill" href="#v-pills-home-nobd" role="tab" aria-controls="v-pills-home-nobd" aria-selected="true">{{$phrase->department}}</a>
-                                    <a class="nav-link" id="v-pills-profile-tab-nobd" data-toggle="pill" href="#v-pills-profile-nobd" role="tab" aria-controls="v-pills-profile-nobd" aria-selected="false">{{$phrase->scheme}}</a>
                                     <a class="nav-link" id="v-pills-messages-tab-nobd" data-toggle="pill" href="#v-pills-messages-nobd" role="tab" aria-controls="v-pills-messages-nobd" aria-selected="false">{{$phrase->block}}</a>
                                     <a class="nav-link" id="v-pills-report-tab-nobd" data-toggle="pill" href="#v-pills-report-nobd" role="tab" aria-controls="v-pills-report-nobd" aria-selected="false">{{$phrase->panchayat}}</a>
                                     <a class="nav-link" id="v-pills-asset-tab-nobd" data-toggle="pill" href="#v-pills-asset-nobd" role="tab" aria-controls="v-pills-asset-nobd" aria-selected="false">{{$phrase->resource}}</a>
+                                    <a class="nav-link" id="v-pills-profile-tab-nobd" data-toggle="pill" href="#v-pills-profile-nobd" role="tab" aria-controls="v-pills-profile-nobd" aria-selected="false">{{$phrase->scheme}}</a>
+                                @elseif(session()->get('user_designation') == 3)
+                                    <a class="nav-link" id="v-pills-report-tab-nobd" data-toggle="pill" href="#v-pills-report-nobd" role="tab" aria-controls="v-pills-report-nobd" aria-selected="false">{{$phrase->panchayat}}</a>
+                                    <a class="nav-link" id="v-pills-profile-tab-nobd" data-toggle="pill" href="#v-pills-profile-nobd" role="tab" aria-controls="v-pills-profile-nobd" aria-selected="false">{{$phrase->scheme}}</a>
+                                @else
+                                    <a class="nav-link" id="v-pills-profile-tab-nobd" data-toggle="pill" href="#v-pills-profile-nobd" role="tab" aria-controls="v-pills-profile-nobd" aria-selected="false">{{$phrase->scheme}}</a>
+                                @endif
+                                
                                 </div>
                             </div>
                         
@@ -42,9 +50,9 @@
                                             <a href="{{url('fav_department/pdf/pdfURL')}}" target="_blank" data-toggle="tooltip" title="{{$phrase->export_pdf}}"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button></a>
                                             <a href="{{url('fav_department/export/excelURL')}}" data-toggle="tooltip" title="{{$phrase->export_excel}}"><button type="button" class="btn btn-icon btn-round btn-primary" ><i class="fas fa-file-excel"></i></button></a>
                                         </div><br><br>
+                                        @if(session()->get('user_designation') == 1)
                                             <form action="{{url('fav_department')}}" method="post" >
-                                                    @csrf
-                                      
+                                                    @csrf                                                                                                                       
                                             <div class="table-responsive">
                                                 <table class="display  table table-striped table-hover" >
                                                     <thead style="background: #d6dcff;color: #000;">
@@ -68,14 +76,13 @@
                                                     @endif
                                                     </tbody>
                                                 </table> 
-                                            </div>
-                                           
-                                      
+                                            </div>                                                                                 
                                         <hr class="new2" style="width: 98%;"> 
                                         <div class="card-action" style="margin-top: -29px;">   
                                                 <button type="submit" class="btn btn-secondary">{{$phrase->submit}}</button>
-                                            </div>
+                                        </div>
                                         </form>
+                                    @endif
                                     </div><!--END OF TAB-->
 
 
@@ -92,8 +99,8 @@
                                                     <thead style="background: #d6dcff;color: #000;">
                                                         <tr>
                                                             <th>#</th>
-                                                            <th>{{$phrase->scheme_name}}</th>
                                                             <th>{{$phrase->short_name}}</th>
+                                                            <th>{{$phrase->scheme_name}}</th>
                                                                  
                                                         </tr>
                                                     </thead>
@@ -102,8 +109,8 @@
                                                             @foreach($datas_scheme as $key => $val)
                                                                 <tr>
                                                                     <td><input type="checkbox" name="scheme_id[]" value="{{$val->scheme_id}}" @if($val->checked==1) checked @endif></td>
-                                                                    <td>{{$val->scheme_name}}</td>
                                                                     <td>{{$val->scheme_short_name}}</td>
+                                                                    <td>{{$val->scheme_name}}</td>
                                                                     <!-- <td>{{$val->scheme_id}}</td> -->
                                                                 </tr>
                                                             @endforeach
@@ -173,6 +180,7 @@
                                             <a href="{{url('fav_panchayat/pdf/pdfURL')}}" target="_blank" data-toggle="tooltip" title="{{$phrase->export_pdf}}"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button></a>
                                             <a href="{{url('fav_panchayat/export/excelURL')}}" data-toggle="tooltip" title="{{$phrase->export_excel}}"><button type="button" class="btn btn-icon btn-round btn-primary" ><i class="fas fa-file-excel"></i></button></a>
                                         </div><br><br>
+                                        @if(session()->get('user_designation') == 1 || session()->get('user_designation') == 3)                                                         
                                             <form action="{{url('fav_panchayat')}}" method="post">
                                                     @csrf
                                         <div class="card-body" style="margin-top:-32px;">																								
@@ -206,6 +214,7 @@
                                                 <button class="btn btn-secondary">{{$phrase->submit}}</button>
                                             </div>
                                         </form>
+                                        @endif  
                                     </div>
 
                                     <div class="tab-pane fade" id="v-pills-asset-nobd" role="tabpanel" aria-labelledby="v-pills-asset-tab-nobd" style="overflow-y: scroll; height:600px;">
@@ -221,7 +230,7 @@
                                                     <thead style="background: #d6dcff;color: #000;">
                                                         <tr>
                                                             <th>#</th>
-                                                            <th>{{$phrase->assets_name}}</th>
+                                                            <th>{{$phrase->resource}}</th>
                                                             <th>{{$phrase->department_name}}</th>
                                                         </tr>
                                                     </thead>
