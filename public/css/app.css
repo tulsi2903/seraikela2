@@ -6052,13 +6052,14 @@ a.close.disabled {
     flex-direction: column;
     width: 100%;
     pointer-events: auto;
-    background-color: #fff;
+    /* background-color: #fff; */
     background-clip: padding-box;
     border: 1px solid rgba(0, 0, 0, .2);
     border-radius: .3rem;
-    outline: 0
+    outline: 0;
+    background: linear-gradient(to top, #a5baef, #ffffff 70%, #ffffff, #ffffff 100%);
+    border-top: 1px solid #000;
 }
-
 .modal-backdrop {
     position: fixed;
     top: 0;
@@ -6085,9 +6086,11 @@ a.close.disabled {
     -webkit-box-pack: justify;
     justify-content: space-between;
     padding: 1rem;
-    border-bottom: 1px solid #dee2e6;
+    border-bottom: 1px dashed #3F51B5;
     border-top-left-radius: .3rem;
-    border-top-right-radius: .3rem
+    border-top-right-radius: .3rem;
+    border-top: 3px solid #3F51B5;
+    background: #e1e6ff;
 }
 
 .modal-header .close {
@@ -6097,16 +6100,17 @@ a.close.disabled {
 
 .modal-title {
     margin-bottom: 0;
-    line-height: 1.6
+    line-height: 1.6;
+    color: #000;
 }
 
 .modal-body {
     position: relative;
     -webkit-box-flex: 1;
     flex: 1 1 auto;
-    padding: 1rem
+    padding: 1rem;
+    margin-top: -1.5em;
 }
-
 .modal-footer {
     display: -webkit-box;
     display: flex;
@@ -6115,11 +6119,11 @@ a.close.disabled {
     -webkit-box-pack: end;
     justify-content: flex-end;
     padding: 1rem;
-    border-top: 1px solid #dee2e6;
+    border-top: 1px dashed #3F51B5;
     border-bottom-right-radius: .3rem;
-    border-bottom-left-radius: .3rem
+    border-bottom-left-radius: .3rem;
+    margin-top: -1.6em;
 }
-
 .modal-footer>:not(:first-child) {
     margin-left: .25rem
 }

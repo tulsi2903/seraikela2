@@ -237,7 +237,7 @@
                                 <div class="form-group">
                                     <input type="hidden" name="scheme_structure" value="scheme_structure">
                                     <input type="hidden" name="result" value="{{$datas}}">
-                                    <input type="text" name="search_query" id="dept_search" >
+                                    <input type="text" name="search_query" id="dept_search" hidden>
                                     <!-- <input type="text" name="from" class="form-control" placeholder="From" required=""> -->
                                 </div>
                                 <div class="form-group">

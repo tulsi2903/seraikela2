@@ -194,7 +194,7 @@
                                 <input type="file" name="galleryFile[]" class="form-control" multiple>
                             </div>
                         </div>
-                        <div id="show_image_for_location">
+                        <div id="show_image_for_location" style="padding: 2em;">
                             <!-- append images -->
                         </div>
                     </div>
@@ -224,11 +224,7 @@
             <form action="{{url('scheme_performance/coordinatesupdate')}}" method="post" id="FormsaveImagescoordinatesLoacation" enctype="multipart/form-data" autocomplete="off">
                 @csrf
                 <div class="modal-body">
-                    <div class="row" style="padding:2em;    margin-top: -3em;
-                    ">
-                
-
-
+                    <div class="row" style="padding:2em;    margin-top: -3em;">
                         <table class="table table-bordered table-head-bg-info table-bordered-bd-info mt-4">
                             <thead>
                                 <tr>

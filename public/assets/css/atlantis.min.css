@@ -7995,10 +7995,10 @@ label.error {
 }
 
 .modal-content {
-   border-radius: .4rem!important;
-   border: 0!important
+   border-radius: 8px;
+   border: 0!important;
+   margin-top: 9em;
 }
-
 .activity-feed {
    padding: 15px;
    list-style: none

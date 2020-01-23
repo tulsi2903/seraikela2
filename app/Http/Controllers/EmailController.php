@@ -37,10 +37,10 @@ class EmailController extends Controller
             // return $details;
             // exit;
             $user = array('email_from'=>$email_from,'email_to'=>$email_to, 'cc'=>$email_cc, 'subject'=>$send_subject,'results'=>$details);
-            // $pdf = PDF::loadView('mail.departs',['user'=>$user]);  
-            // //$data =$pdf; 
-            // // echo $data;
-            // // die;
+            $pdf = PDF::loadView('mail.departs',['user'=>$user]);  
+            //$data =$pdf; 
+            // echo $data;
+            // die;
 
             Mail::send('mail.departs',['user'=> $user], function($message) use ($user)
             {
@@ -61,7 +61,7 @@ class EmailController extends Controller
             
                 // $message->attachData($pdf->output(), "department.pdf");
                 $message->subject($user['subject']);
-                $message->from('dsrm.skla@gmail.com','seraikela'); 
+                $message->from('dsrm.skla@gmail.com','DSRM Mailer'); 
                 session()->put('alert-class','alert-success');
                 session()->put('alert-content','Email send');
             });
@@ -113,7 +113,7 @@ class EmailController extends Controller
                 }
                 // $message->attachData($pdf->output(), "designation.pdf");
                 $message->subject($user['subject']);
-                $message->from('dsrm.skla@gmail.com','seraikela'); 
+                $message->from('dsrm.skla@gmail.com','DSRM Mailer'); 
                 session()->put('alert-class','alert-success');
                 session()->put('alert-content','Email send');
             });
@@ -142,29 +142,29 @@ class EmailController extends Controller
               // exit;
 
             $user = array('email_from'=>$email_from,'email_to'=>$email_to, 'cc'=>$email_cc, 'subject'=>$request->subject, 'content'=>$request->message,'results'=>$details_scheme_type);
-            // Mail::send('mail.scheme_type',['user'=> $user], function($message) use ($user)
-            // {
-            //     $email_to=explode(',',$user['email_to']);
-            //     foreach($email_to as $key=>$value)
-            //     {
-            //     $message->to($email_to[$key]);
-            //     }
+            Mail::send('mail.scheme_type',['user'=> $user], function($message) use ($user)
+            {
+                $email_to=explode(',',$user['email_to']);
+                foreach($email_to as $key=>$value)
+                {
+                $message->to($email_to[$key]);
+                }
 
-            //     if(@$user['cc'])
-            //     {
-            //     $email_cc=explode(',',$user['cc']);
-            //     foreach($email_cc as $key=>$value)
-            //     {
-            //         $message->cc($email_cc[$key]);
-            //     }
-            //     }
-            //     $message->subject($user['subject']);
-            //     $message->from('dsrm.skla@gmail.com','seraikela'); 
-            //     session()->put('alert-class','alert-success');
-            //     session()->put('alert-content','Email send');
-            // });
-            return view('mail.scheme_type')->with('user',$user);
-            // return redirect('scheme_type');
+                if(@$user['cc'])
+                {
+                $email_cc=explode(',',$user['cc']);
+                foreach($email_cc as $key=>$value)
+                {
+                    $message->cc($email_cc[$key]);
+                }
+                }
+                $message->subject($user['subject']);
+                $message->from('dsrm.skla@gmail.com','DSRM Mailer'); 
+                session()->put('alert-class','alert-success');
+                session()->put('alert-content','Email send');
+            });
+            // return view('mail.scheme_type')->with('user',$user);
+            return redirect('scheme_type');
         }
         elseif($request->asset_numbers=="asset_numbers"){
             $email_from=$request->from;
@@ -207,7 +207,7 @@ class EmailController extends Controller
                 }
                 }
                 $message->subject($user['subject']);
-                $message->from('dsrm.skla@gmail.com','seraikela'); 
+                $message->from('dsrm.skla@gmail.com','DSRM Mailer'); 
                 session()->put('alert-class','alert-success');
                 session()->put('alert-content','Email send');
             });
@@ -239,11 +239,13 @@ class EmailController extends Controller
                 }
                 }
                 $message->subject($user['subject']);
-                $message->from('dsrm.skla@gmail.com','seraikela'); 
+                $message->from('dsrm.skla@gmail.com','DSRM Mailer'); 
                 session()->put('alert-class','alert-success');
                 session()->put('alert-content','Email send');
             });
-            return redirect('geo-structure');
+            return redirect('geo-structure');                                     // lol
+            // return view('mail.geo-structure')->with('user',$user);
+
         }
         elseif($request->scheme_indicator=="scheme_indicator"){
 
@@ -254,31 +256,33 @@ class EmailController extends Controller
             $details=json_decode($request->data);
 
             $user = array('email_from'=>$email_from,'email_to'=>$email_to, 'cc'=>$email_cc, 'subject'=>$request->subject, 'content'=>$request->message,'results'=>$details);
-             Mail::send('mail.scheme-indicator',['user'=> $user], function($message) use ($user)
-             {
-                 $email_to=explode(',',$user['email_to']);
-                 foreach($email_to as $key=>$value)
-                {
-                    $message->to($email_to[$key]);
-                }
+            //  Mail::send('mail.scheme-indicator',['user'=> $user], function($message) use ($user)
+            //  {
+            //      $email_to=explode(',',$user['email_to']);
+            //      foreach($email_to as $key=>$value)
+            //     {
+            //         $message->to($email_to[$key]);
+            //     }
 
-                if(@$user['cc'])
-                {
-                 $email_cc=explode(',',$user['cc']);
-                    foreach($email_cc as $key=>$value)
-                    {
-                        $message->cc($email_cc[$key]);
-                    }
-                }
-                $message->subject($user['subject']);
-                $message->from('dsrm.skla@gmail.com','seraikela'); 
-                 session()->put('alert-class','alert-success');
-                 session()->put('alert-content','Email send');
-             });
-              return redirect('scheme-indicator');
+            //     if(@$user['cc'])
+            //     {
+            //      $email_cc=explode(',',$user['cc']);
+            //         foreach($email_cc as $key=>$value)
+            //         {
+            //             $message->cc($email_cc[$key]);
+            //         }
+            //     }
+            //     $message->subject($user['subject']);
+            //     $message->from('dsrm.skla@gmail.com','seraikela'); 
+            //      session()->put('alert-class','alert-success');
+            //      session()->put('alert-content','Email send');
+            //  });
+            //   return redirect('scheme-indicator');                                //lol
+            return view('mail.scheme-indicator')->with('user',$user);
+            
         }
         elseif($request->scheme_structure=="scheme_structure"){
-            
+            ;
             $email_from=$request->from;
             $email_to=$request->to;
             $email_cc=$request->cc;
@@ -323,7 +327,7 @@ class EmailController extends Controller
                     }
                 }
                 $message->subject($user['subject']);
-                $message->from('dsrm.skla@gmail.com','seraikela'); 
+                $message->from('dsrm.skla@gmail.com','DSRM Mailer'); 
                  session()->put('alert-class','alert-success');
                  session()->put('alert-content','Email send');
              });
@@ -333,7 +337,7 @@ class EmailController extends Controller
               return redirect('scheme-structure');
         }
         elseif($request->scheme_asset=="scheme_asset"){
-
+           
           
             $email_from=$request->from;
             $email_to=$request->to;
@@ -354,31 +358,31 @@ class EmailController extends Controller
          
 
             $user = array('email_from'=>$email_from,'email_to'=>$email_to, 'cc'=>$email_cc, 'subject'=>$request->subject, 'content'=>$request->message,'results'=>$details_scheme_assets);
-            //  Mail::send('mail.scheme-asset',['user'=> $user], function($message) use ($user)
-            //  {
-            //      $email_to=explode(',',$user['email_to']);
-            //      foreach($email_to as $key=>$value)
-            //     {
-            //         $message->to($email_to[$key]);
-            //     }
+             Mail::send('mail.scheme-asset',['user'=> $user], function($message) use ($user)
+             {
+                 $email_to=explode(',',$user['email_to']);
+                 foreach($email_to as $key=>$value)
+                {
+                    $message->to($email_to[$key]);
+                }
 
-            //     if(@$user['cc'])
-            //     {
-            //      $email_cc=explode(',',$user['cc']);
-            //         foreach($email_cc as $key=>$value)
-            //         {
-            //             $message->cc($email_cc[$key]);
-            //         }
-            //     }
-            //     $message->subject($user['subject']);
-            //     $message->from('dsrm.skla@gmail.com','seraikela'); 
-            //      session()->put('alert-class','alert-success');
-            //      session()->put('alert-content','Email send');
-            //  });
-            //     return $user;
-             return view('mail.scheme-asset')->with('user',$user);
+                if(@$user['cc'])
+                {
+                 $email_cc=explode(',',$user['cc']);
+                    foreach($email_cc as $key=>$value)
+                    {
+                        $message->cc($email_cc[$key]);
+                    }
+                }
+                $message->subject($user['subject']);
+                $message->from('dsrm.skla@gmail.com','DSRM Mailer'); 
+                 session()->put('alert-class','alert-success');
+                 session()->put('alert-content','Email send');
+             });
+          
+            //  return view('mail.scheme-asset')->with('user',$user);
             
-            //   return redirect('scheme-asset');
+              return redirect('scheme-asset');
         }
         elseif($request->group=="group"){
             
@@ -408,29 +412,29 @@ class EmailController extends Controller
             // print_r($user['results']);
             // die;
             
-            Mail::send('mail.groups',['user'=> $user], function($message) use ($user)
-             {
-                 $email_to=explode(',',$user['email_to']);
-                 foreach($email_to as $key=>$value)
-                {
-                    $message->to($email_to[$key]);
-                }
+            // Mail::send('mail.groups',['user'=> $user], function($message) use ($user)
+            //  {
+            //      $email_to=explode(',',$user['email_to']);
+            //      foreach($email_to as $key=>$value)
+            //     {
+            //         $message->to($email_to[$key]);
+            //     }
 
-                if(@$user['cc'])
-                {
-                 $email_cc=explode(',',$user['cc']);
-                    foreach($email_cc as $key=>$value)
-                    {
-                        $message->cc($email_cc[$key]);
-                    }
-                }
-                $message->subject($user['subject']);
-                $message->from('dsrm.skla@gmail.com','seraikela'); 
-                 session()->put('alert-class','alert-success');
-                 session()->put('alert-content','Email send');
-             });
-            // return view('mail.groups')->with('user',$user);
-              return redirect('scheme-group');
+            //     if(@$user['cc'])
+            //     {
+            //      $email_cc=explode(',',$user['cc']);
+            //         foreach($email_cc as $key=>$value)
+            //         {
+            //             $message->cc($email_cc[$key]);
+            //         }
+            //     }
+            //     $message->subject($user['subject']);
+            //     $message->from('dsrm.skla@gmail.com','seraikela'); 
+            //      session()->put('alert-class','alert-success');
+            //      session()->put('alert-content','Email send');
+            //  });
+            return view('mail.groups')->with('user',$user);
+            //   return redirect('scheme-group');
         }
         elseif($request->geo_target=="geo_target"){
             
@@ -442,28 +446,30 @@ class EmailController extends Controller
 
             $user = array('email_from'=>$email_from,'email_to'=>$email_to, 'cc'=>$email_cc, 'subject'=>$request->subject, 'content'=>$request->message,'results'=>$details);
             
-            Mail::send('mail.scheme-geo-target',['user'=> $user], function($message) use ($user)
-             {
-                 $email_to=explode(',',$user['email_to']);
-                 foreach($email_to as $key=>$value)
-                {
-                    $message->to($email_to[$key]);
-                }
+            // Mail::send('mail.scheme-geo-target',['user'=> $user], function($message) use ($user)
+            //  {
+            //      $email_to=explode(',',$user['email_to']);
+            //      foreach($email_to as $key=>$value)
+            //     {
+            //         $message->to($email_to[$key]);
+            //     }
 
-                if(@$user['cc'])
-                {
-                 $email_cc=explode(',',$user['cc']);
-                    foreach($email_cc as $key=>$value)
-                    {
-                        $message->cc($email_cc[$key]);
-                    }
-                }
-                $message->subject($user['subject']);
-                $message->from('dsrm.skla@gmail.com','seraikela'); 
-                 session()->put('alert-class','alert-success');
-                 session()->put('alert-content','Email send');
-             });
-              return redirect('scheme-geo-target');
+            //     if(@$user['cc'])
+            //     {
+            //      $email_cc=explode(',',$user['cc']);
+            //         foreach($email_cc as $key=>$value)
+            //         {
+            //             $message->cc($email_cc[$key]);
+            //         }
+            //     }
+            //     $message->subject($user['subject']);
+            //     $message->from('dsrm.skla@gmail.com','seraikela'); 
+            //      session()->put('alert-class','alert-success');
+            //      session()->put('alert-content','Email send');
+            //  });
+            //   return redirect('scheme-geo-target');                      // lol
+            return view('mail.scheme-geo-target')->with('user',$user);
+
         }
 
         elseif($request->year=="year"){
@@ -508,7 +514,7 @@ class EmailController extends Controller
                     }
                 }
                 $message->subject($user['subject']);
-                $message->from('dsrm.skla@gmail.com','seraikela'); 
+                $message->from('dsrm.skla@gmail.com','DSRM Mailer'); 
                  session()->put('alert-class','alert-success');
                  session()->put('alert-content','Email send');
              });
@@ -557,7 +563,7 @@ class EmailController extends Controller
                     }
                 }
                 $message->subject($user['subject']);
-                $message->from('dsrm.skla@gmail.com','seraikela'); 
+                $message->from('dsrm.skla@gmail.com','DSRM Mailer'); 
                  session()->put('alert-class','alert-success');
                  session()->put('alert-content','Email send');
              });
@@ -575,28 +581,30 @@ class EmailController extends Controller
 
             $user = array('email_from'=>$email_from,'email_to'=>$email_to, 'cc'=>$email_cc, 'subject'=>$request->subject, 'content'=>$request->message,'results'=>$details);
             
-            Mail::send('mail.uom',['user'=> $user], function($message) use ($user)
-             {
-                 $email_to=explode(',',$user['email_to']);
-                 foreach($email_to as $key=>$value)
-                {
-                    $message->to($email_to[$key]);
-                }
+            // Mail::send('mail.uom',['user'=> $user], function($message) use ($user)
+            //  {
+            //      $email_to=explode(',',$user['email_to']);
+            //      foreach($email_to as $key=>$value)
+            //     {
+            //         $message->to($email_to[$key]);
+            //     }
 
-                if(@$user['cc'])
-                {
-                 $email_cc=explode(',',$user['cc']);
-                    foreach($email_cc as $key=>$value)
-                    {
-                        $message->cc($email_cc[$key]);
-                    }
-                }
-                $message->subject($user['subject']);
-                $message->from('dsrm.skla@gmail.com','seraikela'); 
-                 session()->put('alert-class','alert-success');
-                 session()->put('alert-content','Email send');
-             });
-              return redirect('uom');
+            //     if(@$user['cc'])
+            //     {
+            //      $email_cc=explode(',',$user['cc']);
+            //         foreach($email_cc as $key=>$value)
+            //         {
+            //             $message->cc($email_cc[$key]);
+            //         }
+            //     }
+            //     $message->subject($user['subject']);
+            //     $message->from('dsrm.skla@gmail.com','seraikela'); 
+            //      session()->put('alert-class','alert-success');
+            //      session()->put('alert-content','Email send');
+            //  });
+            //   return redirect('uom');                            // lol
+            return view('mail.uom')->with('user',$user);
+
         }
 
         elseif($request->sub_category=="sub_category"){
@@ -641,12 +649,12 @@ class EmailController extends Controller
                     }
                 }
                 $message->subject($user['subject']);
-                $message->from('dsrm.skla@gmail.com','seraikela'); 
+                $message->from('dsrm.skla@gmail.com','DSRM Mailer'); 
                  session()->put('alert-class','alert-success');
                  session()->put('alert-content','Email send');
              });
+            return redirect('asset_subcat');
             // return view('mail.sub_category')->with('user',$user);
-              return redirect('asset_subcat');
         }
 
         elseif($request->category=="category"){
@@ -689,12 +697,12 @@ class EmailController extends Controller
                     }
                 }
                 $message->subject($user['subject']);
-                $message->from('dsrm.skla@gmail.com','seraikela'); 
+                $message->from('dsrm.skla@gmail.com','DSRM Mailer'); 
                  session()->put('alert-class','alert-success');
                  session()->put('alert-content','Email send');
              });
+            return redirect('assetcat');
             // return view('mail.category')->with('user',$user);
-              return redirect('assetcat');
         }
 
         elseif($request->asset=="asset"){
@@ -739,7 +747,7 @@ class EmailController extends Controller
                     }
                 }
                 $message->subject($user['subject']);
-                $message->from('dsrm.skla@gmail.com','seraikela'); 
+                $message->from('dsrm.skla@gmail.com','DSRM Mailer'); 
                  session()->put('alert-class','alert-success');
                  session()->put('alert-content','Email send');
              });
@@ -775,7 +783,7 @@ class EmailController extends Controller
                     }
                 }
                 $message->subject($user['subject']);
-                $message->from('dsrm.skla@gmail.com','seraikela'); 
+                $message->from('dsrm.skla@gmail.com','DSRM Mailer'); 
                  session()->put('alert-class','alert-success');
                  session()->put('alert-content','Email send');
              });
