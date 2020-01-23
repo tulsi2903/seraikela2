@@ -335,3 +335,9 @@ Route::post('fav_block/view_diffrent_formate','FavController@view_diffrent_forma
 Route::get('import/scheme','SchemePerformanceController@view_import_forscheme');
 Route::get('dashborad/schemeperformance/{year}','DashboardController@scheme_performance_for_dashborad');
 
+//uom_type by rohit 
+Route::get('uom_type','UoMType_Controller@index');
+Route::post('uom_type/store','UoMType_Controller@store');
+Route::get('uom_type/delete/{uom_type_id}','UoMType_Controller@delete');
+
+

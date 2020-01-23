@@ -10,7 +10,7 @@
 
 @section('page-content')
 
-<?php  $desig_permissions = session()->get('desig_permission'); // assigning desig_permission so we can use ?>
+
 
     <div class="card">
         <div class="col-md-12">
@@ -20,11 +20,11 @@
                         <div class="card-tools">
                             <a href="#" data-toggle="tooltip" title="Send Mail"><button type="button" class="btn btn-icon btn-round btn-success" data-target="#create-email" data-toggle="modal"><i class="fa fa-envelope" aria-hidden="true"></i></button></a>
                             <a href="#" data-toggle="tooltip" title="Print"><button type="button" class="btn btn-icon btn-round btn-default" id="print-button" onclick="printView();"><i class="fa fa-print" aria-hidden="true"></i></button></a>
-                            <a href="{{url('uom/pdf/pdfURL')}}" target="_BLANK" data-toggle="tooltip" title="Export to PDF"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button></a>
-                            <a href="{{url('uom/export/excelURL')}}" data-toggle="tooltip" title="Export to Excel"><button type="button" class="btn btn-icon btn-round btn-primary" ><i class="fas fa-file-excel"></i></button></a>
-                            @if($desig_permissions["mod4"]["add"])
+                            <a href="" target="_BLANK" data-toggle="tooltip" title="Export to PDF"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button></a>
+                            <a href="" data-toggle="tooltip" title="Export to Excel"><button type="button" class="btn btn-icon btn-round btn-primary" ><i class="fas fa-file-excel"></i></button></a>
+                            
                                 <a id="toggle1" class="btn btn-secondary uom-add-button" href="javascript:void();" role="button"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;Add</a>
-                            @endif    
+                          
                         </div>
                     </div>
                 </div>
@@ -33,27 +33,16 @@
             <div class="row">
                 <div class="col-12">
                     <div id="show-toggle1">
-                        <form action="{{url('uom/store')}}" method="POST" id="uom-form">
+                        <form action="{{url('uom_type/store')}}" method="POST" id="uom-form">
                         @csrf
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label for="uom_name">UoM Name<span style="color:red;margin-left:5px;">*</span></label>
-                                        <input type="text" name="uom_name" id="uom_name" class="form-control" autocomplete="off">
-                                        <div class="invalid-feedback" id="uom_name_error_msg"></div>
+                                        <label for="uom_type_name">UoM Name Type<span style="color:red;margin-left:5px;">*</span></label>
+                                        <input type="text" name="uom_type_name" id="uom_type_name" class="form-control" autocomplete="off">
+                                        <div class="invalid-feedback" id="uom_type_name_error_msg"></div>
                                     </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="uom_type">UoM type<font style="color:red;">*</font></label>                                     
-                                            <select name="uom_type" id="uom_type" class="form-control form-control">
-                                                <option value="">--Select--</option>
-                                                <option value="1">Radius</option>
-                                
-                                            </select>
-                                        <div class="invalid-feedback" id="uom_type_error_msg"></div>
-                                    </div>
-                                </div>
+                                </div>                             
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <div style="height:30px;"></div>
@@ -65,38 +54,27 @@
                         </form>
                     </div>
                     <div class="table-responsive table-hover table-sales">
-                        <form action="{{url('uom/store')}}" method="POST"> <!-- for for edit, if inline edit form append then this form action/method will triggered -->
+                        <form action="{{url('uom_type/store')}}" method="POST"> <!-- for for edit, if inline edit form append then this form action/method will triggered -->
                         @csrf
                             <table class="table table-datatable" id="printable-area">
                                 <thead style="background: #d6dcff;color: #000;">
                                     <tr>
                                         <th>#</th>
-                                        <th>Name</th>
-                                        <th>UoM Type</th>
-                                        @if($desig_permissions["mod4"]["del"] || $desig_permissions["mod4"]["edit"])
+                                        <th>UoM Type Name</th>                                       
                                         <th class="action-buttons">Actions</th>
-                                        @endif
+                                        
                                     </tr>
                                 </thead>
                                 <?php $count=1; ?>
                                 @if(isset($datas))
                                     @foreach($datas as $data)
-                                        <tr data-row-id="{{$data->uom_id}}" data-row-values="{{$data->uom_name}},{{$data->uom_type}}">
+                                        <tr data-row-id="{{$data->uom_type_id}}" data-row-values="{{$data->uom_type_name}}">
                                             <td width="40px;">{{$count++}}</td>
-                                            <td>{{$data->uom_name}}</td>
-                                            <td>
-                                                <?php if($data->uom_type=='1'){
-                                                echo 'UoM 1';
-                                            }
-                                            else{
-                                                echo 'UoM 2';
-                                            } ?></td>
-                                            @if($desig_permissions["mod4"]["del"] || $desig_permissions["mod4"]["edit"])
+                                            <td>{{$data->uom_type_name}}</td> 
                                             <td class="action-buttons">
-                                                @if($desig_permissions["mod4"]["del"])<a href="{{url('uom/delete')}}/{{$data->uom_id}}" class="btn btn-danger btn-sm delete-button"><i class="fas fa-trash-alt"></i></a>@endif
-                                                @if($desig_permissions["mod4"]["edit"])&nbsp;&nbsp;<button type="button" class="btn btn-sm btn-secondary" onclick="openInlineForm('{{$data->uom_id}}')"><i class="fas fa-edit"></i></button>@endif
-                                            </td>
-                                            @endif
+                                                <a href="{{url('uom_type/delete')}}/{{$data->uom_type_id}}" class="btn btn-danger btn-sm delete-button"><i class="fas fa-trash-alt"></i></a>
+                                                 &nbsp;&nbsp;<button type="button" class="btn btn-sm btn-secondary" onclick="openInlineForm('{{$data->uom_type_id}}')"><i class="fas fa-edit"></i></button>
+                                            </td>                                       
                                         </tr>
                                     @endforeach
                                 @endif
@@ -183,27 +161,8 @@
         var form_append = `<tr data-edit-id="`+id+`">
             <td></td>
             <td>
-                <input type="text" name="uom_name" id="edit_uom_name" class="form-control" value="`+edit_values[0]+`" autocomplete="off">
-                <div class="invalid-feedback" id="edit_uom_name_error_msg"></div>
-            </td>
-           
-            <td>
-                    <select class="form-control" name="uom_type" id="edit_uom_type">
-                        <option value="">-Select-</option>`;
-                        
-                    form_append += `<option value="1" `;
-                            if(edit_values[1]==1){
-                                form_append += `selected`;
-                            }
-                    form_append += `>UoM 1</option>`;
-                    form_append += `<option value="2" `;
-                            if(edit_values[1]==2){
-                                form_append += `selected`;
-                            }
-                    form_append += `>UoM 2</option>`;
-
-                    form_append +=`</select>
-                                <div class="invalid-feedback" id="edit_uom_type_error_msg"></div>
+                <input type="text" name="uom_type_name" id="edit_uom_type_name" class="form-control" value="`+edit_values[0]+`" autocomplete="off">
+                <div class="invalid-feedback" id="edit_uom_type_name_error_msg"></div>
             </td>
             <td>
                 <input type="text" name="edit_id" value="`+id+`" hidden>
@@ -235,54 +194,38 @@
     edit inline form: validation start
     *
     */
-    var edit_uom_name_error = true;
-    var edit_uom_type_error = true;
+    var edit_uom_type_name_error = true;
+
     
     $(document).ready(function(){
-        $(document).on("change", "#edit_uom_name", function(){
-            edit_uom_name_validate();
+        $(document).on("change", "#edit_uom_type_name", function(){
+            edit_uom_type_name_validate();
         });
-        $(document).on("change", "#edit_uom_type", function(){
-            edit_uom_type_validate();
-        });
+
     });
     
-    function edit_uom_name_validate(){
-        var edit_uom_name_val = $("#edit_uom_name").val();
+    function edit_uom_type_name_validate(){
+        var edit_uom_type_name_val = $("#edit_uom_type_name").val();
         var regAlphaNumericSpace = new RegExp('^[a-zA-Z0-9 ]+$');
-        if(edit_uom_name_val==""){
-            edit_uom_name_error=true;
-            $("#edit_uom_name").addClass('is-invalid');
-            $("#edit_uom_name_error_msg").html("UoM should not be blank");
+        if(edit_uom_type_name_val==""){
+            edit_uom_type_name_error=true;
+            $("#edit_uom_type_name").addClass('is-invalid');
+            $("#edit_uom_type_name_error_msg").html("UoM Type Should not be blank");
         }
-        else if(!regAlphaNumericSpace.test(edit_uom_name_val)){
-            edit_uom_name_error=true;
-            $("#edit_uom_name").addClass('is-invalid');
-            $("#edit_uom_name_error_msg").html("Please enter valid UoM");
+        else if(!regAlphaNumericSpace.test(edit_uom_type_name_val)){
+            edit_uom_type_name_error=true;
+            $("#edit_uom_type_name").addClass('is-invalid');
+            $("#edit_uom_type_name_error_msg").html("Please enter valid UoM Type");
         }
         else{
-            edit_uom_name_error=false;
-            $("#edit_uom_name").removeClass('is-invalid');
+            edit_uom_type_name_error=false;
+            $("#edit_uom_type_name").removeClass('is-invalid');
         }
-    }
-    function edit_uom_type_validate(){
-        var edit_uom_type_val = $("#edit_uom_type").val();
-        if(edit_uom_type_val==""){
-            edit_uom_type_error=true;
-            $("#edit_uom_type").addClass('is-invalid');
-            $("#edit_uom_type_error_msg").html("UoM Type Should not be blank");
-        }
-        else {
-            edit_uom_type_error = false;
-                $("#edit_uom_type").removeClass('is-invalid');
-            }
     }
     
     function submitFormInline(){
-        edit_uom_name_validate();
-        edit_uom_type_validate();
-      
-        if(edit_uom_name_error || edit_uom_type_error){ return false; } // error occured
+        edit_uom_type_name_validate();   
+        if(edit_uom_type_name_error){ return false; } // error occured
         else{ $(".custom-loader").show(); return true; } // proceed to submit form data
     }
 </script>
@@ -291,17 +234,12 @@
 <script>
      /* validation starts */
     // error variables as true = error occured
-    var uom_name_error = true;
-    var uom_type_error = true;
+    var uom_type_name_error = true;
     
     $(document).ready(function(){
-        $("#uom_name").change(function(){
-            uom_name_validate();
-        });
-        $("#uom_type").change(function(){
-            uom_type_validate();
-        });
-       
+        $("#uom_type_name").change(function(){
+            uom_type_name_validate();
+        });    
         // reset/initiate form
         $(".uom-add-button").click(function(){
             initiateForm();
@@ -311,46 +249,32 @@
     // intitiate everything reletaed to "add form"
     function initiateForm(){
         document.getElementById('uom-form').reset();
-        $("#uom_name").removeClass('is-invalid');
+        $("#uom_type_name").removeClass('is-invalid');
     }
     
-     function uom_name_validate(){
-        var uom_name_val = $("#uom_name").val();
+     function uom_type_name_validate(){
+        var uom_type_name_val = $("#uom_type_name").val();
         var regAlphaNumericSpace = new RegExp('^[a-zA-Z0-9 ]+$');
-        if(uom_name_val==""){
-            uom_name_error=true;
-            $("#uom_name").addClass('is-invalid');
-            $("#uom_name_error_msg").html("UoM should not be blank");
+        if(uom_type_name_val==""){
+            uom_type_name_error=true;
+            $("#uom_type_name").addClass('is-invalid');
+            $("#uom_type_name_error_msg").html("UoM Type Should not be blank");
         }
-        else if(!regAlphaNumericSpace.test(uom_name_val)){
-            uom_name_error=true;
-            $("#uom_name").addClass('is-invalid');
-            $("#uom_name_error_msg").html("Please enter valid UoM");
+        else if(!regAlphaNumericSpace.test(uom_type_name_val)){
+            uom_type_name_error=true;
+            $("#uom_type_name").addClass('is-invalid');
+            $("#uom_type_name_error_msg").html("Please enter valid UoM Type");
         }
         else{
-            uom_name_error=false;
-            $("#uom_name").removeClass('is-invalid');
+            uom_type_name_error=false;
+            $("#uom_type_name").removeClass('is-invalid');
         }
-    }
-    function uom_type_validate(){
-        var uom_type_val = $("#uom_type").val();
-        if(uom_type_val==""){
-            uom_type_error=true;
-            $("#uom_type").addClass('is-invalid');
-            $("#uom_type_error_msg").html("UoM Type Should not be blank");
-        }
-        else {
-            uom_type_error = false;
-                $("#uom_type").removeClass('is-invalid');
-            }
     }
     
     function submitForm(){
-        uom_name_validate();
-        uom_type_validate();
+        uom_type_name_validate();
 
-      
-        if(uom_name_error || uom_type_error){ return false; } // error occured
+        if(uom_type_name_error){ return false; } // error occured
         else{ $(".custom-loader").show(); return true; } // proceed to submit form data
     }
 </script>

@@ -52,7 +52,7 @@
                                             <select name="uom_type" id="uom_type" class="form-control form-control">
                                                 <option value="">--Select--</option>
                                                 <option value="1">Radius</option>
-                                               
+                                
                                             </select>
                                         <div class="invalid-feedback" id="uom_type_error_msg"></div>
                                     </div>
