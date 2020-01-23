@@ -124,7 +124,7 @@ class AssetNumbersController extends Controller
         else {
             $panchayats = GeoStructure::where('level_id', '4')->where('bl_id',$fetchpanchayatid)->orderBy('geo_name')->get();
         }
-        $years = Year::orderBy('year_id')->get();
+        $years = Year::orderBy('year_id')->where('status',1)->get();
         $block_datas = GeoStructure::select('geo_id', 'geo_name')->whereIn('geo_id', $geo_ids)->orderBy('geo_name', 'asc')->where('level_id', '=', '3')->get();
 
         $data = new AssetNumbers;
@@ -470,8 +470,8 @@ class AssetNumbersController extends Controller
         \DB::reconnect(); //important as the existing connection if any would be in strict mode
 
 
-        $data = array(1 => array("Asset Numbers Sheet"));
-        $data[] = array('Sl. No.', 'Year', 'Asset', 'Block', 'Panchyat', 'Current Value', 'Date');
+        $data = array(1 => array("Resource Numbers Sheet"));
+        $data[] = array('Sl. No.', 'Year', 'Resource', 'Block', 'Panchyat', 'Current Value', 'Date');
 
         $items = DB::table('asset_numbers')
             ->leftJoin('geo_structure', 'asset_numbers.geo_id', '=', 'geo_structure.geo_id')
@@ -508,10 +508,10 @@ class AssetNumbersController extends Controller
                 $value->CreatedDate
             );
         }
-        \Excel::create('Asset_Numbers', function ($excel) use ($data) {
+        \Excel::create('Resource_Numbers', function ($excel) use ($data) {
 
             // Set the title
-            $excel->setTitle('Asset Numbers Sheet');
+            $excel->setTitle('Resource Numbers Sheet');
 
             // Chain the setters
             $excel->setCreator('Seraikela')->setCompany('Seraikela');
@@ -523,7 +523,7 @@ class AssetNumbersController extends Controller
                 $sheet->setColumnFormat(array('I1' => '@'));
             });
         })->download('xls');
-        return Excel::download(new AssetNumberSectionExport, 'Asset Number-Sheet.xls');
+        return Excel::download(new AssetNumberSectionExport, 'Resource Number-Sheet.xls');
     }
 
     public function exportpdfFunctiuonforasset_Numbers()
@@ -556,7 +556,7 @@ class AssetNumbersController extends Controller
         }
 
         $doc_details = array(
-            "title" => "Asset Number Data",
+            "title" => "Resource Number Data",
             "author" => 'IT-Scient',
             "topMarginValue" => 10,
             "mode" => 'L'
@@ -565,7 +565,7 @@ class AssetNumbersController extends Controller
         $pdfbuilder = new \PdfBuilder($doc_details);
 
         $content = "<table cellspacing=\"0\" cellpadding=\"4\" border=\"1\" ><tr>";
-        $content .= "<th style='border: solid 1px #000000;' colspan=\"7\" align=\"left\" ><b>Asset Number</b></th></tr>";
+        $content .= "<th style='border: solid 1px #000000;' colspan=\"7\" align=\"left\" ><b>Resource Number</b></th></tr>";
 
         /* ========================================================================= */
         /*                Total width of the pdf table is 1017px                     */
@@ -574,7 +574,7 @@ class AssetNumbersController extends Controller
         $content .= "<tr>";
         $content .= "<th style=\"width: 50px;\" align=\"center\"><b>Sl. No.</b></th>";
         $content .= "<th style=\"width: 250px;\" align=\"center\"><b>Year</b></th>";
-        $content .= "<th style=\"width: 160px;\" align=\"center\"><b>Asset</b></th>";
+        $content .= "<th style=\"width: 160px;\" align=\"center\"><b>Resource</b></th>";
         $content .= "<th style=\"width: 160px;\" align=\"center\"><b>Block</b></th>";
         $content .= "<th style=\"width: 160px;\" align=\"center\"><b>Panchyat</b></th>";
         $content .= "<th style=\"width: 140px;\" align=\"center\"><b>Current Value</b></th>";
@@ -598,7 +598,7 @@ class AssetNumbersController extends Controller
         $content .= "</tbody></table>";
         // print_r($content);exit;
         $pdfbuilder->table($content, array('border' => '1', 'align' => ''));
-        $pdfbuilder->output('AssetNumber.pdf');
+        $pdfbuilder->output('ResourceNumber.pdf');
         exit;
     }
 
@@ -1247,7 +1247,7 @@ class AssetNumbersController extends Controller
                 }
 
                 $doc_details = array(
-                    "title" => "Asset Number Data",
+                    "title" => "Resource Number Data",
                     "author" => 'IT-Scient',
                     "topMarginValue" => 10,
                     "mode" => 'L'
@@ -1272,7 +1272,7 @@ class AssetNumbersController extends Controller
                 $content .= "<tr>";
                 $content .= "<th style=\"width: 50px;\" align=\"center\"><b>Sl. No.</b></th>";
                 $content .= "<th style=\"width: 250px;\" align=\"center\"><b>Year</b></th>";
-                $content .= "<th style=\"width: 160px;\" align=\"center\"><b>Asset</b></th>";
+                $content .= "<th style=\"width: 160px;\" align=\"center\"><b>Resource</b></th>";
                 $content .= "<th style=\"width: 160px;\" align=\"center\"><b>Block</b></th>";
                 $content .= "<th style=\"width: 160px;\" align=\"center\"><b>Panchyat</b></th>";
                 $content .= "<th style=\"width: 140px;\" align=\"center\"><b>Current Value</b></th>";
@@ -1296,7 +1296,7 @@ class AssetNumbersController extends Controller
                 $content .= "</tbody></table>";
                 // print_r($content);exit;
                 $pdfbuilder->table($content, array('border' => '1', 'align' => ''));
-                $pdfbuilder->output('AssetNumber.pdf');
+                $pdfbuilder->output('ResourceNumber.pdf');
                 exit;
             }
             //  return $request;
@@ -1309,7 +1309,7 @@ class AssetNumbersController extends Controller
 
 
                 $data = array(1 => array("Resources Number Details"));
-                $data[] = array('Sl. No.', 'Year', 'Asset', 'Block', 'Panchyat', 'Current Value', 'Date');
+                $data[] = array('Sl. No.', 'Year', 'Resource', 'Block', 'Panchyat', 'Current Value', 'Date');
 
                 $items = DB::table('asset_numbers')
                     ->whereIn('asset_numbers_id', $asset_numbers_id)
@@ -1362,7 +1362,7 @@ class AssetNumbersController extends Controller
                         $sheet->setColumnFormat(array('I1' => '@'));
                     });
                 })->download('xls');
-                return Excel::download(new AssetNumberSectionExport, 'Asset Number-Sheet.xls');
+                return Excel::download(new AssetNumberSectionExport, 'Resource Number-Sheet.xls');
             }
             return $request;
         }

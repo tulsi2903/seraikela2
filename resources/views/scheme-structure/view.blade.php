@@ -71,11 +71,15 @@ hr.new2 {
         <div class="row">
             <div class="col-3">
                 <h4 style="color: black;">{{$phrase->map_marker}}</h4 style="color: black;">
-                <img src="{{url($data->scheme_map_marker)}}" style="max-width: 80px;">
+                    @if($data->scheme_map_marker)
+                        <img src="{{url($data->scheme_map_marker)}}" style="max-width: 80px;">
+                    @endif
             </div>
             <div class="col-3">
                 <h4 style="color: black;">{{$phrase->attachment}}</h4 style="color: black;">
-                <a href="{{url($data->attachment)}}" target="_blank"><i class="fas fa-file-download"></i><b>&nbsp;&nbsp;Click here to show/ download</b></a>
+                    @if($data->attachment)
+                        <a href="{{url($data->attachment)}}" target="_blank"><i class="fas fa-file-download"></i><b>&nbsp;&nbsp;Click here to show/ download</b></a>
+                    @endif
             </div>
         </div>
     </div>

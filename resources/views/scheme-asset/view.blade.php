@@ -84,7 +84,7 @@
                     <thead style="background: #cedcff">
                         <tr>
                             <th>{{$phrase->name}}</th>
-                            <th>{{$phrase->uom}}</th>
+                            <!-- <th>{{$phrase->uom}}</th> -->
                             <th width="130px;">{{$phrase->mandatory}}</th>
                         </tr>
                     </thead>
@@ -99,11 +99,11 @@
                                             <td>
                                                 {{$attribute['name']}}
                                             </td>
-                                            <td>
+                                            <!-- <td>
                                                 @foreach($uom_datas as $uom_data)
                                                     <?php if($uom_data->uom_id==$attribute['uom']){ echo $uom_data->uom_name; } ?>
                                                 @endforeach
-                                            </td> 
+                                            </td>  -->
                                             <td>
                                                 <?php if($attribute['mandatory']==1){ echo "Yes"; } else { echo "No"; } ?>
                                             </td>

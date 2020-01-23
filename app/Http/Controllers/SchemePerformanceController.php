@@ -94,8 +94,8 @@ class SchemePerformanceController extends Controller
         //     return redirect('scheme-geo-target');
         // }
 
-        $scheme_datas = SchemeStructure::select('scheme_id', 'scheme_name', 'scheme_short_name')->orderBy('scheme_id', 'DESC')->get(); // only independent scheme (scheme_is == 1)
-        $year_datas = Year::select('year_id', 'year_value')->orderBy('year_value', 'asc')->get();
+        $scheme_datas = SchemeStructure::select('scheme_id', 'scheme_name', 'scheme_short_name')->where('status',1)->orderBy('scheme_id', 'DESC')->get(); // only independent scheme (scheme_is == 1)
+        $year_datas = Year::select('year_id', 'year_value')->where('status',1)->orderBy('year_value', 'asc')->get();
         $block_datas = GeoStructure::select('geo_id', 'geo_name')->orderBy('geo_name', 'asc')->whereIn('geo_id', $geo_ids)->where('level_id', '=', '3')->get();
 
         return view('scheme-performance.index')->with(compact('scheme_datas', 'year_datas', 'block_datas'));

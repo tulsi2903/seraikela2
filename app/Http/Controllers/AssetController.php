@@ -126,16 +126,16 @@ class AssetController extends Controller
         if (Asset::where('asset_name', $request->asset_name)->where('dept_id', $request->dept_id)->first() && $request->hidden_input_purpose != "edit") {
             // session()->put('alert-class','alert-danger');
             // session()->put('alert-content','This asset '.$request->asset_name.' already exist !');
-            $toReturn["response"] = "This asset " . $request->asset_name . " already exists!";
+            $toReturn["response"] = "This Resource " . $request->asset_name . " already exists!";
             $toReturn["asset_name_error"] = "This Resource name is already exist in selected department";
         } else if ($asset->save()) {
             // session()->put('alert-class','alert-success');
-            // session()->put('alert-content','Asset details have been successfully submitted !');
+            // session()->put('alert-content','Resource details have been successfully submitted !');
             $toReturn["response"] = "success";
         } else {
             // session()->put('alert-class','alert-danger');
             // session()->put('alert-content','Something went wrong while adding new details !');
-            $toReturn["response"] = "Something went wrong while adding new asset!";
+            $toReturn["response"] = "Something went wrong while adding new Resource!";
         }
         // return redirect('asset');
         if($request->hidden_input_purpose == "edit") {
@@ -414,7 +414,7 @@ class AssetController extends Controller
         $asset_subcat->org_id = 1;
         if (asset_subcat::where('asset_sub_cat_name', $request->asset_sub_cat_name)->where('asset_cat_id', $request->asset_cat_id)->first() && $request->hidden_input_purpose != "edit") {
             session()->put('alert-class', 'alert-danger');
-            session()->put('alert-content', 'This asset ' . $request->asset_subcat_name . ' already exist !');
+            session()->put('alert-content', 'This Resource ' . $request->asset_subcat_name . ' already exist !');
         } else if ($asset_subcat->save()) {
             session()->put('alert-class', 'alert-success');
             session()->put('alert-content', 'Resource SubCategory Details have been saved Successfully !');
@@ -551,7 +551,7 @@ class AssetController extends Controller
     //asset catagory rohit singh
     public function export_Excel_Asset_Category()
     {
-        $data = array(1 => array("Asset Category Sheet"));
+        $data = array(1 => array("Resource Category Sheet"));
         $data[] = array('Sl. No.', 'Name', 'Category Description', 'Type', 'Date');
 
         $items = asset_cat::orderBy('asset_cat.asset_cat_id', 'desc')->select(
@@ -577,10 +577,10 @@ class AssetController extends Controller
                 $value->createdDate,
             );
         }
-        \Excel::create('Asset_Category', function ($excel) use ($data) {
+        \Excel::create('Resource_Category', function ($excel) use ($data) {
 
             // Set the title
-            $excel->setTitle('Asset Category Sheet');
+            $excel->setTitle('Resource Category Sheet');
 
             // Chain the setters
             $excel->setCreator('Seraikela')->setCompany('Seraikela');
@@ -607,7 +607,7 @@ class AssetController extends Controller
         }
 
         $doc_details = array(
-            "title" => "Asset Category",
+            "title" => "Resource Category",
             "author" => 'IT-Scient',
             "topMarginValue" => 10,
             "mode" => 'L'
@@ -620,8 +620,8 @@ class AssetController extends Controller
         $pdfbuilder = new \PdfBuilder($doc_details);
 
         $content = "<table cellspacing=\"0\" cellpadding=\"4\" border=\"1\" ><tr>";
-        $content .= "<th colspan=\"5\" align=\"left\" ><b>Asset Category</b></th></tr>";
-        $content .= "<p style=\"border: solid 1px #000000;width: 50px;\" padding:\"100px;\">"."<b>"."<span>Title: </span>&nbsp;&nbsp;&nbsp;Asset Category
+        $content .= "<th colspan=\"5\" align=\"left\" ><b>Resource Category</b></th></tr>";
+        $content .= "<p style=\"border: solid 1px #000000;width: 50px;\" padding:\"100px;\">"."<b>"."<span>Title: </span>&nbsp;&nbsp;&nbsp;Resource Category
                       "."<br>"."<span>Date & Time: </span>&nbsp;&nbsp;&nbsp;".$currentDateTime."<br>"."<span>User Name:</span>&nbsp;&nbsp;&nbsp;" . $user_name."&nbsp;".$user_last_name.
                       "</b>"."</p>";
 
@@ -657,7 +657,7 @@ class AssetController extends Controller
     //asset subcatagory rohit singh
     public function export_Excel_Asset_SubCategory()
     {
-        $data = array(1 => array("Asset Sub Catagory-Sheet"));
+        $data = array(1 => array("Resource Sub Catagory-Sheet"));
         $data[] = array('Sl.No.', 'Sub Category Name', 'Sub Category Description', 'Category Name', 'Date');
 
         $items =  asset_subcat::leftjoin('asset_cat', 'asset_subcat.asset_cat_id', '=', 'asset_cat.asset_cat_id')
@@ -679,10 +679,10 @@ class AssetController extends Controller
                 $value->createdDate
             );
         }
-        \Excel::create('AssetSubCatagory', function ($excel) use ($data) {
+        \Excel::create('ResourceSubCatagory', function ($excel) use ($data) {
 
             // Set the title
-            $excel->setTitle('AssetSubCatagory-Sheet');
+            $excel->setTitle('ResourceSubCatagory-Sheet');
 
             // Chain the setters
             $excel->setCreator('Seraikela')->setCompany('Seraikela');
@@ -706,7 +706,7 @@ class AssetController extends Controller
         }
 
         $doc_details = array(
-            "title" => "Asset Sub Category",
+            "title" => "Resource Sub Category",
             "author" => 'IT-Scient',
             "topMarginValue" => 10,
             "mode" => 'L'
@@ -719,8 +719,8 @@ class AssetController extends Controller
         $pdfbuilder = new \PdfBuilder($doc_details);
 
         $content = "<table cellspacing=\"0\" cellpadding=\"4\" border=\"1\" ><tr>";
-        $content .= "<th style='border: solid 1px #000000;' colspan=\"5\" align=\"left\" ><b>Asset Sub Category</b></th></tr>";
-        $content .= "<p style=\"border: solid 1px #000000;width: 50px;\" padding:\"100px;\">"."<b>"."<span>Title: </span>&nbsp;&nbsp;&nbsp;Asset Sub Category
+        $content .= "<th style='border: solid 1px #000000;' colspan=\"5\" align=\"left\" ><b>Resource Sub Category</b></th></tr>";
+        $content .= "<p style=\"border: solid 1px #000000;width: 50px;\" padding:\"100px;\">"."<b>"."<span>Title: </span>&nbsp;&nbsp;&nbsp;Resource Sub Category
         "."<br>"."<span>Date & Time: </span>&nbsp;&nbsp;&nbsp;".$currentDateTime."<br>"."<span>User Name:</span>&nbsp;&nbsp;&nbsp;" . $user_name."&nbsp;".$user_last_name.
         "</b>"."</p>";
 
@@ -750,7 +750,7 @@ class AssetController extends Controller
         }
         $content .= "</tbody></table>";
         $pdfbuilder->table($content, array('border' => '1', 'align' => ''));
-        $pdfbuilder->output('AssetSubCatagory.pdf');
+        $pdfbuilder->output('ResourceSubCatagory.pdf');
         exit;
     }
 
@@ -779,7 +779,7 @@ class AssetController extends Controller
                         }
 
                         $doc_details = array(
-                            "title" => "Asset Category",
+                            "title" => "Resource Category",
                             "author" => 'IT-Scient',
                             "topMarginValue" => 10,
                             "mode" => 'L'
@@ -792,8 +792,8 @@ class AssetController extends Controller
                         $pdfbuilder = new \PdfBuilder($doc_details);
 
                         $content = "<table cellspacing=\"0\" cellpadding=\"4\" border=\"1\" ><tr>";
-                        $content .= "<th colspan=\"5\" align=\"left\" ><b>Asset Category</b></th></tr>";
-                        $content .= "<p style=\"border: solid 1px #000000;width: 50px;\" padding:\"100px;\">"."<b>"."<span>Title: </span>&nbsp;&nbsp;&nbsp;Asset Category
+                        $content .= "<th colspan=\"5\" align=\"left\" ><b>Resource Category</b></th></tr>";
+                        $content .= "<p style=\"border: solid 1px #000000;width: 50px;\" padding:\"100px;\">"."<b>"."<span>Title: </span>&nbsp;&nbsp;&nbsp;Resource Category
                                     "."<br>"."<span>Date & Time: </span>&nbsp;&nbsp;&nbsp;".$currentDateTime."<br>"."<span>User Name:</span>&nbsp;&nbsp;&nbsp;" . $user_name."&nbsp;".$user_last_name.
                                     "</b>"."</p>";
 
@@ -822,7 +822,7 @@ class AssetController extends Controller
                         }
                         $content .= "</tbody></table>";
                         $pdfbuilder->table($content, array('border' => '1', 'align' => ''));
-                        $pdfbuilder->output('AssetCategory.pdf');
+                        $pdfbuilder->output('ResourceCategory.pdf');
                         exit;
 
 
@@ -905,7 +905,7 @@ class AssetController extends Controller
             }
     
             $doc_details = array(
-                "title" => "Asset Sub Category",
+                "title" => "Resource Sub Category",
                 "author" => 'IT-Scient',
                 "topMarginValue" => 10,
                 "mode" => 'L'
@@ -918,8 +918,8 @@ class AssetController extends Controller
             $pdfbuilder = new \PdfBuilder($doc_details);
     
             $content = "<table cellspacing=\"0\" cellpadding=\"4\" border=\"1\" ><tr>";
-            $content .= "<th style='border: solid 1px #000000;' colspan=\"5\" align=\"left\" ><b>Asset Sub Category</b></th></tr>";
-            $content .= "<p style=\"border: solid 1px #000000;width: 50px;\" padding:\"100px;\">"."<b>"."<span>Title: </span>&nbsp;&nbsp;&nbsp;Asset Sub Category
+            $content .= "<th style='border: solid 1px #000000;' colspan=\"5\" align=\"left\" ><b>Resource Sub Category</b></th></tr>";
+            $content .= "<p style=\"border: solid 1px #000000;width: 50px;\" padding:\"100px;\">"."<b>"."<span>Title: </span>&nbsp;&nbsp;&nbsp;Resource Sub Category
             "."<br>"."<span>Date & Time: </span>&nbsp;&nbsp;&nbsp;".$currentDateTime."<br>"."<span>User Name:</span>&nbsp;&nbsp;&nbsp;" . $user_name."&nbsp;".$user_last_name.
             "</b>"."</p>";
     
@@ -949,7 +949,7 @@ class AssetController extends Controller
             }
             $content .= "</tbody></table>";
             $pdfbuilder->table($content, array('border' => '1', 'align' => ''));
-            $pdfbuilder->output('AssetSubCatagory.pdf');
+            $pdfbuilder->output('ResourceSubCatagory.pdf');
             exit;
 
 
@@ -1041,7 +1041,7 @@ class AssetController extends Controller
                         }
                 
                         $doc_details = array(
-                            "title" => "Assetdata",
+                            "title" => "Resourcedata",
                             "author" => 'IT-Scient',
                             "topMarginValue" => 10,
                             "mode" => 'P'
@@ -1085,7 +1085,7 @@ class AssetController extends Controller
                         }
                         $content .= "</tbody></table>";
                         $pdfbuilder->table($content, array('border' => '1', 'align' => ''));
-                        $pdfbuilder->output('AssetData.pdf');
+                        $pdfbuilder->output('ResourceData.pdf');
                         exit;
  
                       

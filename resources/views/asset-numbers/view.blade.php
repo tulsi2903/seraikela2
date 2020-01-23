@@ -29,7 +29,11 @@
        
             <div class="row row-card-no-pd" style="border-top: 3px solid #5c76b7;">
                 <div class="col-md-12">   
-                    <div class="card-title" style="float:left; margin-top: 11px;">{{$phrase->resource_number}}</div><br><br>
+                    <div class="card-title" style="float:left; margin-top: 11px;">{{$phrase->resource_number}}</div>
+                    <div class="card-tools">
+                        <a href="{{url('asset-numbers')}}" class="btn btn-sm btn-secondary" style="float:right;margin-top: 15px;margin-right: 35px;"><i class="fas fa-arrow-left"></i>&nbsp;&nbsp;{{$phrase->back}}</a>
+                    </div>
+                    <br><br>
                     <hr class="new2">
                     <div class="card-body" style="margin-top: -35px;"> 
                         <table class="table table-striped mt-3">
@@ -57,7 +61,7 @@
                                     <table id="basic-datatables" class=" table order-list" style="margin-top: 10px;">
                                         <thead style="background: #cedcff">                                              
                                             <tr>
-                                                <th>{{$phrase->location_landmark}}</th>
+                                                <th>{{$phrase->location_Landmark}}</th>
                                                 <th>{{$phrase->latitude}}</th>
                                                 <th>{{$phrase->longitude}}</th>                                                
                                             </tr>
