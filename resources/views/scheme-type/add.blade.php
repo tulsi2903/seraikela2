@@ -18,7 +18,7 @@
             </div>
        
         <div class="card-body">
-                    <div action="{{url('scheme-type/store')}}" method="POST">
+                    <form action="{{url('scheme-type/store')}}" method="POST">
                     @csrf
                     <div class="row">
                         <div class="col-md-6">
@@ -93,13 +93,13 @@
 //    }
 
     // final submission
-//    function submitForm(){
-//         scheme_type_validate();
-//        
-//        if(scheme_type_error){ return false; } // error occured
-//        else{ return true; } // proceed to submit form data
-//       
-//    }
+   function submitForm(){
+        scheme_type_validate();
+       
+       if(scheme_type_error){ return false; } // error occured
+       else{ return true; } // proceed to submit form data
+      
+   }
     
        $("#sub").click(function(){
 

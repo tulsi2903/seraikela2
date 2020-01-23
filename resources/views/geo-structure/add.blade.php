@@ -127,7 +127,8 @@
                         <input type="text" name="hidden_input_purpose" id="hidden_input_purpose" value="{{$hidden_input_purpose}}" hidden>
                         <input type="text" name="hidden_input_id" id="hidden_input_id" value="{{$hidden_input_id}}" data-sd-id="{{$data->sd_id}}" data-bl-id="{{$data->bl_id}}" data-no-of-villages="{{$data->no_of_villages}}" hidden>
                         <button type="submit" class="btn btn-primary" onclick="return submitForm()">{{$phrase->save}}&nbsp;&nbsp;<i class="fas fa-check"></i></button>
-                        <button type="button" class="btn btn-secondary" onclick="initialize()">{{$phrase->reset}}&nbsp;&nbsp;<i class="fas fa-undo"></i></button>
+                        <!-- <button type="button" class="btn btn-secondary" onclick="initialize()">{{$phrase->reset}}&nbsp;&nbsp;<i class="fas fa-undo"></i></button> -->
+                        <button type="reset" class="btn btn-secondary">{{$phrase->reset}}&nbsp;&nbsp;<i class="fas fa-undo"></i></button>
                     </div>
                 </div>
         </form>

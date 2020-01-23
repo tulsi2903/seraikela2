@@ -187,6 +187,7 @@
                                 <th>{{$phrase->designation}}</th>
                                 <th>{{$phrase->address}}</th>
                                 <th>{{$phrase->sts}}</th>
+                                <th>{{$phrase->action}}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -200,14 +201,18 @@
                                 <td>
                                     @if($val->status==1)
                                     <span style="padding:5px 10px; border: 2px solid #00b100;">Active</span>
-                                        @if(@$desig_permissions["mod1"]["edit"])
-                                        <a href="javascirpt:void();" onclick="editUser('{{$val->id}}')" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></a>
-                                        @endif
+                                       
                                     @else
                                     <span style="padding:5px 10px; border: 2px solid #ff1c1c;">Inactive</span>
-                                        @if(@$desig_permissions["mod1"]["edit"])
-                                        <a href="javascirpt:void();" onclick="editUser('{{$val->id}}')" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></a>
-                                        @endif
+                                       
+                                    @endif
+                                </td>
+                                <td>
+                                    @if(@$desig_permissions["mod1"]["edit"])
+                                    <a href="javascirpt:void();" onclick="editUser('{{$val->id}}')" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></a>
+                                    @endif
+                                    @if(@$desig_permissions["mod1"]["edit"])
+                                    <a href="javascirpt:void();" onclick="editUser('{{$val->id}}')" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></a>
                                     @endif
                                 </td>
                             </tr>
@@ -642,10 +647,29 @@
         $('.edit-form-elements').show();
         $("#hidden_input_purpose").val("add"); // resetting hidden input purpose to add
         $("#hidden_input_id").val("NA"); // restting hidden input id to NA
+        $("#title").removeClass("is-invalid");
+        $("#first_name").removeClass("is-invalid");
+        $("#middle_name").removeClass("is-invalid");
+        $("#middle_name").removeClass("is-invalid");
+        $("#middle_name").removeClass("is-invalid");
+        $("#last_name").removeClass("is-invalid");
+        $("#org_id").removeClass("is-invalid");
+        $("#desig_id").removeClass("is-invalid");
+        $("#email").removeClass("is-invalid");
+        $("#username").removeClass("is-invalid");
+        $("#password").removeClass("is-invalid");
+        $("#password").removeClass("is-invalid");
+        $("#confirm_password").removeClass("is-invalid");
+        $("#confirm_password").removeClass("is-invalid");
+        $("#confirm_password").removeClass("is-invalid");
+        $("#mobile").removeClass("is-invalid");
+        $("#mobile").removeClass("is-invalid");
+        $("#status").removeClass("is-invalid");
+
     }
 
     function hideForm(){
-        // resetUserForm(); // resetting form
+        resetUserForm(); // resetting form
         // document.getElementById("user-form").reset();
         $("#show-toggle1").slideUp(150); // opening form div
     }

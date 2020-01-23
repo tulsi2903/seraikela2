@@ -605,6 +605,13 @@
         $("#block_id").val("");
         $("#panchayat_id").html("<option value=''>--Select--</option>");
         $("#append-attributes").html("");
+        
+        $("#scheme_name").removeClass("is-invalid");
+        $("#scheme_short_name").removeClass('is-invalid');
+        $("#scheme_type_id").removeClass('is-invalid');
+        $("#dept_id").removeClass('is-invalid');
+        $("#status").removeClass('is-invalid');
+        $("#scheme_asset_id").removeClass('is-invalid');
     }
 
 
