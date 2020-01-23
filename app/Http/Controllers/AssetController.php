@@ -930,9 +930,9 @@ class AssetController extends Controller
             $content .= "<thead>";
             $content .= "<tr>";
             $content .= "<th style=\"width: 50px;\" align=\"center\"><b>Sl.No.</b></th>";
-            $content .= "<th style=\"width: 300px;\" align=\"center\"><b>Category Name</b></th>";
             $content .= "<th style=\"width: 370px;\" align=\"center\"><b>Sub Category Name</b></th>";
             $content .= "<th style=\"width: 207px;\" align=\"center\"><b>Sub Category Description </b></th>";
+            $content .= "<th style=\"width: 300px;\" align=\"center\"><b>Category Name</b></th>";
             $content .= "<th style=\"width: 90px;\" align=\"center\"><b>Date</b></th>";
             $content .= "</tr>";
             $content .= "</thead>";
@@ -941,9 +941,9 @@ class AssetController extends Controller
                 $index = $key + 1;
                 $content .= "<tr>";
                 $content .= "<td style=\"width: 50px;\" align=\"right\">" . $index . "</td>";
-                $content .= "<td style=\"width: 300px;\" align=\"left\">" . $row->asset_cat_name . "</td>";
                 $content .= "<td style=\"width: 370px;\" align=\"left\">" . $row->asset_sub_cat_name . "</td>";
                 $content .= "<td style=\"width: 207px;\" align=\"left\">" . $row->asset_sub_cat_description . "</td>";
+                $content .= "<td style=\"width: 300px;\" align=\"left\">" . $row->asset_cat_name . "</td>";
                 $content .= "<td style=\"width: 90px;\" align=\"right\">" . $row->createdDate . "</td>";
                 $content .= "</tr>";
             }
