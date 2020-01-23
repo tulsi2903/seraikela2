@@ -131,6 +131,7 @@
 								<li class="nav-item"><a href="{{url('module')}}"><i class="fas fa-indent"></i><p>{{$phrase->module}}</p></a></li>
 								<li class="nav-item"><a href="{{url('designation-permission')}}"><i class="fas fa-users-cog"></i><p>{{$phrase->designation_permission}}</p></a></li>
 							@endif
+							<li class="nav-item"><a href="{{url('uom_type')}}"><i class="fas fa-receipt"></i><p>UoM Type</p></a></li>
 								<li class="nav-item"><a href="{{url('uom')}}"><i class="fas fa-receipt"></i><p>UoM</p></a></li>
 						</ul>
 					</div>

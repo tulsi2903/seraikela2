@@ -15,18 +15,21 @@ class Scheme_Asset_Controller extends Controller
 
     public function index()
     {
+        
+       
         $datas = SchemeAsset::orderBy('scheme_asset_id','desc')->get();
-     
+      
         return view('scheme-asset.index',compact('datas'));
-
+        
     }
     public function add(Request $request){
-
+        
         $hidden_input_purpose = "add";
         $hidden_input_id= "NA";
         $data = new SchemeAsset;
-
-        $uom_datas = Uom::select('uom_id','uom_name')->get();
+        
+        $uom_data = Uom::orderBy('uom_id','desc')->select('uom_name','uom_type')->get();
+        // $uom_datas = Uom::select('uom_id','uom_name')->get();
 
         if(isset($request->purpose)&&isset($request->id)){
             $data = $data->find($request->id);
@@ -36,7 +39,7 @@ class Scheme_Asset_Controller extends Controller
             }
         }
        
-        return view('scheme-asset.add')->with(compact('uom_datas','hidden_input_purpose','hidden_input_id','data'));
+        return view('scheme-asset.add')->with(compact('uom_datas','hidden_input_purpose','hidden_input_id','data','uom_data'));
     }
 
    
@@ -50,6 +53,8 @@ class Scheme_Asset_Controller extends Controller
 
         $scheme_asset->scheme_asset_name = $request->scheme_asset_name;
         $scheme_asset->geo_related = $request->geo_related;
+        $scheme_asset->radius = $request->radius;
+        $scheme_asset->uom_type_id = $request->uom_type_id;
 
         if ($request->hasFile('mapmarkericon')) {
             $upload_directory = "public/uploaded_documents/scheme_assets/mapmarker/";

@@ -1,6 +1,6 @@
 @extends('layout.layout')
 
-@section('title', 'UoM')
+@section('title', 'UoM Type')
 
 @section('page-style')
     <style>
@@ -16,7 +16,7 @@
         <div class="col-md-12">
                 <div class="card-header">
                     <div class="card-head-row card-tools-still-right" style="background:#fff;">
-                        <h4 class="card-title">UoM</h4>
+                        <h4 class="card-title">UoM Type</h4>
                         <div class="card-tools">
                             <a href="#" data-toggle="tooltip" title="Send Mail"><button type="button" class="btn btn-icon btn-round btn-success" data-target="#create-email" data-toggle="modal"><i class="fa fa-envelope" aria-hidden="true"></i></button></a>
                             <a href="#" data-toggle="tooltip" title="Print"><button type="button" class="btn btn-icon btn-round btn-default" id="print-button" onclick="printView();"><i class="fa fa-print" aria-hidden="true"></i></button></a>
@@ -32,9 +32,6 @@
         <div class="card-body">
             <div class="row">
                 <div class="col-12">
-                    <!-- <div style="display: -webkit-box; float:right;margin-top: -22px;">
-                        <a id="toggle1" class="btn btn-secondary uom-add-button" href="javascript:void();" role="button"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;Add</a>
-                    </div> -->
                     <div id="show-toggle1">
                         <form action="{{url('uom/store')}}" method="POST" id="uom-form">
                         @csrf
@@ -52,7 +49,7 @@
                                             <select name="uom_type" id="uom_type" class="form-control form-control">
                                                 <option value="">--Select--</option>
                                                 <option value="1">Radius</option>
-                                               
+                                
                                             </select>
                                         <div class="invalid-feedback" id="uom_type_error_msg"></div>
                                     </div>

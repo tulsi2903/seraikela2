@@ -21,99 +21,73 @@
         </div>
     </div>
 
-    <div class="row" style="padding:2em;">
-        <div class="col-md-4">
+    
+    <div class="col-md-4">            
+        <form action="{{url('scheme-asset/store')}}" method="post"  enctype="multipart/form-data"> 
+            @csrf
                 <div class="form-group" style="margin-top: -5px;">
                     <label for="scheme_asset_name">{{$phrase->name}}<span style="color:red;margin-left:5px;">*</span></label>
                     <input name="scheme_asset_name" id="scheme_asset_name" class="form-control" autocomplete="off" value="{{$data->scheme_asset_name}}">
                     <div class="invalid-feedback" id="scheme_asset_name_error_msg"></div>
                 </div>
-          
-
-         
-                <div class="form-group" style="margin-top: -2em;">
-                    <div style="height:30px;"></div>
-                    <label for="geo_related">{{$phrase->geo_related}}</label>&nbsp;&nbsp;
-                    <input type="checkbox" name="geo_related" id="geo_related" value="1" <?php echo ($data[ 'geo_related']==1 ? 'checked' : '');?>>
+    </div>                               
+                <div class="col-md-4">              
+                    <div class="form-group" style="margin-top: -2em;">
+                        <div style="height:30px;"></div>
+                        <label for="geo_related">{{$phrase->geo_related}}</label>&nbsp;&nbsp;
+                        <input type="checkbox" name="geo_related" id="geo_related" value="1" <?php echo ($data[ 'geo_related']==1 ? 'checked' : '');?>>
+                    </div>
                 </div>
-          
-
-          
-                <div class="form-group" id="no_of_tag">
-                    <label for="mapmarkericon">{{$phrase->map_marker_icon}}</label>
-                    <input type="file" name="mapmarkericon" id="mapmarkericon" class="form-control" autocomplete="off" value="{{$data->mapmarkericon}}">
-                    @if($hidden_input_purpose=="edit"&&$data->mapmarkericon)
-                    <div id="scheme_assets_delete_icon" style="min-height: 132px; padding:10px; border:1px solid #c4c4c4; border-radius: 0 0 5px 5px; background: white;">
-                        <div>Previous Icon</div>
+                    
+                    
+                <div class="col-md-4">            
+                    <div class="form-group" id="no_of_tag">
+                        <label for="mapmarkericon">{{$phrase->map_marker_icon}}</label>
+                        <input type="file" name="mapmarkericon" id="mapmarkericon" class="form-control" autocomplete="off" value="{{$data->mapmarkericon}}">
+                        @if($hidden_input_purpose=="edit"&&$data->mapmarkericon)
+                        <div id="scheme_assets_delete_icon" style="min-height: 132px; padding:10px; border:1px solid #c4c4c4; border-radius: 0 0 5px 5px; background: white;">
+                            <div>Previous Icon</div>
                             <div style="display: inline-block;position:relative;padding:3px;border:1px solid #c4c4c4; border-radius:3px;">
                                 <img src="{{url($data->mapmarkericon)}}" style="height:80px;">
                                 <span style="position:absolute;top:0;right:0; background: rgba(202, 0, 0, 0.85); font-size: 18px; cursor: pointer; padding: 5px 10px;" class="text-white" onclick="to_delete_map_marker('{{$data->mapmarkericon}}',this)"><i class="fas fa-trash"></i></span>
                             </div>
-                    </div>
-                    @endif
-                    <!-- <span id="map_marker_error_msg"></span> -->
-                    <div class="invalid-feedback" id="map_marker_error_msg" ></div>
-                    <input type="text" name="scheme_assets_delete" id="scheme_assets_delete" value="" hidden>           
-                </div>
-             
-
-        </div>
-        <div class="col-8">
-            <button type="button" class="btn" style="margin-left:1.5%;background: #0f85e2!important;color:#fff;"><i class="fas fa-location-arrow"></i>&nbsp;&nbsp;{{$phrase->attributes}}</button>
-            <div class="card-body" style="background: #f2f6ff; border: 1px solid #a5bbf6;margin-top: -16px;    height: 183px;">
-                <table class="table order-list" style="margin-top: 10px;">
-                    <thead style="background: #cedcff">
-                        <tr>
-                            <th>{{$phrase->name}}<span style="color:red;margin-left:5px;">*</span></th>
-                            <!-- <th>UoM<span style="color:red;margin-left:5px;">*</span></th> -->
-                            <th width="130px;">{{$phrase->mandatory}}</th>
-                            <th width="130px;">{{$phrase->action}}</th>
-                        </tr>
-                    </thead>
-                    <tbody id="append-name-uom">
-                        <!-- append attributes -->
-                        @if($data->attribute)
-                            <?php 
-                                $attributes  = unserialize($data->attribute);
-                                foreach($attributes as $attribute)
-                                { 
-                                    ?>
-                                        <tr>
-                                            <td>
-                                                <input type="text" class="form-control" name="attribute_name[]" autocomplete="off" value="{{$attribute['name']}}">
-                                                <div class="invalid-feedback">Please enter valid name</div>
-                                            
-                                                <select name="attribute_uom[]" class="form-control" style="display: none;">
-                                                    <option value="16" selected>---Select---</option>
-                                                    @foreach($uom_datas as $uom_data )
-                                                        <option value="{{ $uom_data->uom_id }}" <?php if($uom_data->uom_id==$attribute['uom']){ echo "selected"; } ?> >{{ $uom_data->uom_name }}</option>
-                                                    @endforeach
-                                                </select>
-                                                <div class="invalid-feedback">UoM should not be blank</div>
-                                            </td> 
-                                            <td>
-                                                <input type="checkbox" name="attribute_mandatory[<?php echo $i; ?>]" value="1" <?php if($attribute['mandatory']==1){ echo "checked"; } ?>>
-                                            </td>
-                                            <td>
-                                                <button type="button" class="btn btn-danger btn-xs delete-button-row"><i class="fas fa-trash-alt"></i></button>
-                                            </td>
-                                        </tr>
-                                    <?php
-                                $i++;
-                                }
-                            ?>
+                        </div>
                         @endif
-                    </tbody>
-                    <tbody>
-                        <tr>
-                            <td colspan="2"></td>
-                            <td><button type="button" onclick="append_table_data('add',null);" class="btn btn-secondary btn-sm btn-circle">{{$phrase->add}} <i class="fa fa-plus-circle" aria-hidden="true"></i></button></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
+                        <div class="invalid-feedback" id="map_marker_error_msg" ></div>
+                        <input type="text" name="scheme_assets_delete" id="scheme_assets_delete" value="" hidden>           
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group" style="margin-top: -5px;">
+                        <label for="radius">Radius<span style="color:red;margin-left:5px;">*</span></label>
+                        <input name="radius" id="radius" class="form-control" autocomplete="off" value="{{$data->radius}}">
+                        <div class="invalid-feedback" id="scheme_asset_name_error_msg"></div>
+                    </div>
+                </div> 
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="uom_type_id">UoM type<font style="color:red;">*</font></label>                                     
+                            <select name="uom_type_id" id="uom_type_id" class="form-control form-control">
+                                <option value="">--Select--</option>
+                                @foreach($uom_data as $uom_data_id)
+                                <option value="{{$uom_data_id->uom_type}}">{{$uom_data_id->uom_name}}</option>
+                                @endforeach
+                                
+                            </select>
+                        <div class="invalid-feedback" id="uom_type_error_msg"></div>
+                    </div>
+                </div>
+                
+
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <input type="text" name="hidden_input_purpose" value="{{$hidden_input_purpose}}" hidden="">
+                        <input type="text" name="hidden_input_id" value="{{$hidden_input_id}}" hidden="">
+                        <button type="submit" class="btn btn-primary" style="float:left;" onclick="return submitForm();">Save&nbsp;&nbsp;<i class="fas fa-check"></i></button>
+                    </div>                    
+                </div>     
+            </form>   
+</div>
 
     <script>
         var append_i = 0;
