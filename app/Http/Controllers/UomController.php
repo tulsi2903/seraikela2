@@ -44,8 +44,10 @@ class UomController extends Controller
         }
 
         $uom->uom_name= $request->uom_name;
-        $uom->created_by = '1';
-        $uom->updated_by = '1';
+        $uom->uom_type= $request->uom_type;
+        $uom->created_by = session()->get('user_id');
+        $uom->updated_by = session()->get('user_id');
+
 
 
         if(Uom::where('uom_name',$request->uom_name)->first()&&$purpose!="edit"){
