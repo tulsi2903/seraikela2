@@ -386,6 +386,57 @@ class SchemePerformanceController extends Controller
 
     public function Import_from_Excel(Request $request)
     {
+        $geo_names = array();
+        if (session()->get('user_designation') == 1) // dc
+        {
+            $geo_names = GeoStructure::where('level_id', 4)->pluck('geo_name'); // panchayat_ids
+            $geo_block_names =  GeoStructure::where('level_id', 3)->pluck('geo_name');
+        } 
+        else if (session()->get('user_designation') == 2) { // sdo
+            $subdivision_id_tmp = GeoStructure::where('officer_id', Auth::user()->id)->first();
+            if($subdivision_id_tmp){
+                $geo_names = GeoStructure::where('sd_id', $subdivision_id_tmp->geo_id)->where('level_id', '4')->pluck('geo_name'); // panchayat_ids
+            }
+            $subdivision_id_tmp_block = GeoStructure::where('officer_id', Auth::user()->id)->first();
+            if($subdivision_id_tmp_block){
+                $geo_block_names = GeoStructure::where('sd_id', $subdivision_id_tmp_block->geo_id)->where('level_id', '3')->pluck('geo_name'); // panchayat_ids
+            }
+        } 
+        else if (session()->get('user_designation') == 3) { // bdo
+            $block_id_tmp = GeoStructure::where('officer_id', Auth::user()->id)->first();
+            if($block_id_tmp)
+            {
+                $geo_names = GeoStructure::where('bl_id', $block_id_tmp->geo_id)->where('level_id', '4')->pluck('geo_name'); // decide rows (panchayat)
+            }
+            $geo_block_names = GeoStructure::where('officer_id', Auth::user()->id)->pluck('geo_name');
+        } 
+        else if (session()->get('user_designation') == 4) { //po
+            $panchayat_id_tmp = GeoStructure::where('officer_id', Auth::user()->id)->first();
+            if($panchayat_id_tmp)
+            {
+                $geo_names = GeoStructure::where('geo_id', $panchayat_id_tmp->geo_id)->where('level_id', '4')->pluck('geo_name'); // decide rows (panchayat)
+            }
+            $panchayat_id_tmp_block = GeoStructure::where('officer_id', Auth::user()->id)->first();
+            if($panchayat_id_tmp_block){
+                $geo_block_names = GeoStructure::where('geo_id', $panchayat_id_tmp_block->bl_id)->pluck('geo_name'); // decide rows (panchayat)
+            }
+        }
+      
+        $geo_names = (array)$geo_names;
+        $geo_block_names = (array)$geo_block_names;
+        $geo_names_array=array();
+        $geo_block_names_array=array();
+        foreach($geo_names as $key_geo=> $value_geo)
+        {
+            $geo_names_array=$value_geo;
+        }
+        foreach($geo_block_names as $key_block=> $value_block)
+        {
+            $geo_block_names_array=$value_block;
+        }
+        echo "<pre>";
+        print_r($geo_block_names_array);exit;
+
         $scheme_datas = SchemeStructure::where('scheme_id', $request->scheme_id)->first(); /* get scheme atributes */
         $unserialDatas = unserialize($scheme_datas->attributes);
         $tableHeadingsAndAtributes = array();
@@ -453,7 +504,7 @@ class SchemePerformanceController extends Controller
                             $fetch_year_id = Year::where('year_value', $row['work_start_fin_year'])->value('year_id'); /* for Year ID */
 
                             /* if those id avilable then insert data on the base */
-                            if ($row['sno.'] != null && $fetch_block_id != null && $fetch_panchayat_id != null && $fetch_year_id != null && $fetch_subdivision_id != null) {
+                            if ($row['sno.'] != null && $fetch_block_id != null && $fetch_panchayat_id != null && $fetch_year_id != null && $fetch_subdivision_id != null && in_array($panchayat_name,$geo_names_array) && in_array($block_name,$geo_block_names_array)) {
                                 $noOfSuccess++;
                                 $flag = 0;
                                 $scheme_performance_id = "";
@@ -491,16 +542,22 @@ class SchemePerformanceController extends Controller
                                 if ($row['sno.'] != null) {
                                     if ($fetch_block_id == null && $fetch_panchayat_id != null) {
                                         $ErrorTxt .= " ON row sno. " . $row['sno.'] . " Block Not Found \n";
-                                    } elseif ($fetch_panchayat_id == null && $fetch_block_id != null) {
+                                    } 
+                                    if ($fetch_panchayat_id == null && $fetch_block_id != null) {
                                         $ErrorTxt .= " ON row sno. " . $row['sno.'] . " Panchayat Not Found \n";
-                                    } elseif ($fetch_panchayat_id == null && $fetch_block_id == null) {
+                                    } 
+                                    if ($fetch_panchayat_id == null && $fetch_block_id == null) {
                                         $ErrorTxt .= " ON row sno. " . $row['sno.'] . " Both Panchayat And Block Not Found \n";
-                                    } elseif ($fetch_subdivision_id == null || $fetch_year_id == null) {
+                                    } 
+                                    if ($fetch_subdivision_id == null || $fetch_year_id == null) {
                                         $ErrorTxt .= " ON row sno. " . $row['sno.'] . "Both Subdivision And Year Not Found \n";
                                     }
-                                    // } else {
-                                    //     $txt = " Serial Number Not Available \n";
-                                    //     fwrite($myfile, $txt);
+                                    if (in_array($panchayat_name,$geo_names_array) == false) {
+                                        $ErrorTxt .= " On SNo. " . $row['sno.'] . " Wrong panchayat Name \n";
+                                    }
+                                    if (in_array($block_name,$geo_block_names_array) == false) {
+                                        $ErrorTxt .= " On SNo. " . $row['sno.'] . " Wrong block Name \n";
+                                    }
                                 }
                             }
                         }
