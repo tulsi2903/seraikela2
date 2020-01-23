@@ -129,7 +129,7 @@ Route::get('year/pdf/pdfURL','YearController@exportpdfFunctiuonforyear');
 
 /*uom*/
 Route::get('uom','UomController@index');
-Route::get('uom/add','UomController@add');
+// Route::get('uom/add','UomController@add');
 Route::post('uom/store','UomController@store');
 Route::get('uom/delete/{uom_id}','UomController@delete');
 Route::get('uom/export/excelURL','UomController@exportExcelFunctiuonforuom');
