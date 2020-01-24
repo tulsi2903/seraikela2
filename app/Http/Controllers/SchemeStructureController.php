@@ -124,6 +124,7 @@ class SchemeStructureController extends Controller
     }
     public function store(Request $request)
     {
+        // return $request;
         $upload_directory = "public/uploaded_documents/schemes/"; // directory to upload docs/icons etc related to scheme
         $scheme_structure = new SchemeStructure;
         // for performance data if sche,e comes under a group
@@ -162,6 +163,12 @@ class SchemeStructureController extends Controller
             $scheme_structure->attributes = $serialize_attribute ?? "";
         // }
         $scheme_structure->status = $request->status;
+        if ($request->spans_across_borders) {
+            $scheme_structure->spans_across_borders = $request->spans_across_borders;
+        } else {
+            $scheme_structure->spans_across_borders = 0;
+        }
+        
         $scheme_structure->dept_id = $request->dept_id;
         $scheme_structure->scheme_type_id = $request->scheme_type_id;
         $scheme_structure->description = $request->description;

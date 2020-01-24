@@ -85,6 +85,13 @@
                             <div class="invalid-feedback" id="scheme_type_id_error_msg"></div>
                         </div>
                     </div>
+                    <div class="col-md-2 scheme-form-elements">
+                        <div class="form-group">
+                            <label for="spans_across_borders">Spans Across Borders?</label>
+                            <input type="checkbox" name="spans_across_borders" id="spans_across_borders" class="form-control" value="1" <?php echo ($data['spans_across_borders']==1 ? 'checked' : '');?>>
+                            <div class="invalid-feedback" id="spans_across_borders_error_msg"></div>
+                        </div>
+                    </div>
                     <!-- <div class="col-md-2 scheme-form-elements under-a-scheme-form-elements">
                         <div class="form-group">
                             <label for="scheme_group_id">Scheme Group</label>
@@ -609,6 +616,7 @@
         $("#scheme_name").removeClass("is-invalid");
         $("#scheme_short_name").removeClass('is-invalid');
         $("#scheme_type_id").removeClass('is-invalid');
+        $("#spans_across_borders").removeClass('is-invalid');
         $("#dept_id").removeClass('is-invalid');
         $("#status").removeClass('is-invalid');
         $("#scheme_asset_id").removeClass('is-invalid');
