@@ -49,10 +49,12 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label for="uom_type">UoM type<font style="color:red;">*</font></label>                                     
-                                            <select name="uom_type" id="uom_type" class="form-control form-control">
+                                            <select name="uom_type_id" id="uom_type" class="form-control form-control">
                                                 <option value="">--Select--</option>
-                                                <option value="1">Radius</option>
-                                
+                                                @foreach($uom_type as $uom_type_datas)
+                                                <option value="{{$uom_type_datas->uom_type_id}}">{{$uom_type_datas->uom_type_name}}</option>
+                                                @endforeach
+                                                                             
                                             </select>
                                         <div class="invalid-feedback" id="uom_type_error_msg"></div>
                                     </div>
@@ -84,16 +86,11 @@
                                 <?php $count=1; ?>
                                 @if(isset($datas))
                                     @foreach($datas as $data)
-                                        <tr data-row-id="{{$data->uom_id}}" data-row-values="{{$data->uom_name}},{{$data->uom_type}}">
+                                        <tr data-row-id="{{$data->uom_id}}" data-row-values="{{$data->uom_name}},{{$data->uom_type_id}}">
                                             <td width="40px;">{{$count++}}</td>
-                                            <td>{{$data->uom_name}}</td>
-                                            <td>
-                                                <?php if($data->uom_type=='1'){
-                                                echo 'UoM 1';
-                                            }
-                                            else{
-                                                echo 'UoM 2';
-                                            } ?></td>
+                                            <td>{{$data->uom_name}}</td>                                          
+                                            <td>{{$data->uom_type_name}}</td>                                          
+
                                             @if($desig_permissions["mod4"]["del"] || $desig_permissions["mod4"]["edit"])
                                             <td class="action-buttons">
                                                 @if($desig_permissions["mod4"]["del"])<a href="{{url('uom/delete')}}/{{$data->uom_id}}" class="btn btn-danger btn-sm delete-button"><i class="fas fa-trash-alt"></i></a>@endif
@@ -176,6 +173,7 @@
 
     to_edit_id = 0;
     edit_form_opened = false;
+    uom_type_html = $("#uom_type").html();
     /* to open forms */
     function openInlineForm(id){
         closeInlineForm(); // to close if already opened any row form
@@ -191,20 +189,9 @@
             </td>
            
             <td>
-                    <select class="form-control" name="uom_type" id="edit_uom_type">
-                        <option value="">-Select-</option>`;
-                        
-                    form_append += `<option value="1" `;
-                            if(edit_values[1]==1){
-                                form_append += `selected`;
-                            }
-                    form_append += `>UoM 1</option>`;
-                    form_append += `<option value="2" `;
-                            if(edit_values[1]==2){
-                                form_append += `selected`;
-                            }
-                    form_append += `>UoM 2</option>`;
+                    <select class="form-control" name="uom_type_id" id="edit_uom_type">`;
 
+                    form_append += uom_type_html;
                     form_append +=`</select>
                                 <div class="invalid-feedback" id="edit_uom_type_error_msg"></div>
             </td>
@@ -215,11 +202,11 @@
             </td>
         </tr>`;
 
-
         $("tr[data-row-id='"+id+"']").after(form_append);
         $("tr[data-row-id='"+id+"']").hide();
         to_edit_id = id;
         edit_form_opened = true;
+        setTimeout(function(){ $("#edit_uom_type").val(edit_values[1]); }, 1000);
     }
     /* to close forms */
     function closeInlineForm(){
@@ -315,6 +302,8 @@
     function initiateForm(){
         document.getElementById('uom-form').reset();
         $("#uom_name").removeClass('is-invalid');
+        $("#uom_type").removeClass('is-invalid');
+
     }
     
      function uom_name_validate(){
