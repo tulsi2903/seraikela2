@@ -28,23 +28,20 @@ class SchemePerformanceController extends Controller
         if (session()->get('user_designation') == 1) // dc
         {
             $geo_ids = GeoStructure::where('level_id', 3)->pluck('geo_id'); // panchayat_ids
-        } 
-        else if (session()->get('user_designation') == 2) { // sdo
+        } else if (session()->get('user_designation') == 2) { // sdo
             $subdivision_id_tmp = GeoStructure::where('officer_id', Auth::user()->id)->where('level_id', '2')->first();
-            if($subdivision_id_tmp){
+            if ($subdivision_id_tmp) {
                 $geo_ids = GeoStructure::where('sd_id', $subdivision_id_tmp->geo_id)->pluck('geo_id'); // panchayat_ids
             }
-        } 
-        else if (session()->get('user_designation') == 3) { // bdo
+        } else if (session()->get('user_designation') == 3) { // bdo
             $block_id_tmp = GeoStructure::where('officer_id', Auth::user()->id)->first();
             // return $block_id_tmp;
-            if($block_id_tmp){
+            if ($block_id_tmp) {
                 $geo_ids = GeoStructure::where('officer_id', Auth::user()->id)->pluck('geo_id'); // decide rows (panchayat)
             }
-        } 
-        else if (session()->get('user_designation') == 4) { //po
+        } else if (session()->get('user_designation') == 4) { //po
             $panchayat_id_tmp = GeoStructure::where('officer_id', Auth::user()->id)->first();
-            if($panchayat_id_tmp){
+            if ($panchayat_id_tmp) {
                 $geo_ids = GeoStructure::where('geo_id', $panchayat_id_tmp->bl_id)->pluck('geo_id'); // decide rows (panchayat)
             }
         }
@@ -94,8 +91,8 @@ class SchemePerformanceController extends Controller
         //     return redirect('scheme-geo-target');
         // }
 
-        $scheme_datas = SchemeStructure::select('scheme_id', 'scheme_name', 'scheme_short_name')->where('status',1)->orderBy('scheme_id', 'DESC')->get(); // only independent scheme (scheme_is == 1)
-        $year_datas = Year::select('year_id', 'year_value')->where('status',1)->orderBy('year_value', 'asc')->get();
+        $scheme_datas = SchemeStructure::select('scheme_id', 'scheme_name', 'scheme_short_name')->where('status', 1)->orderBy('scheme_id', 'DESC')->get(); // only independent scheme (scheme_is == 1)
+        $year_datas = Year::select('year_id', 'year_value')->where('status', 1)->orderBy('year_value', 'asc')->get();
         $block_datas = GeoStructure::select('geo_id', 'geo_name')->orderBy('geo_name', 'asc')->whereIn('geo_id', $geo_ids)->where('level_id', '=', '3')->get();
 
         return view('scheme-performance.index')->with(compact('scheme_datas', 'year_datas', 'block_datas'));
@@ -135,8 +132,7 @@ class SchemePerformanceController extends Controller
     {
         if (session()->get('user_designation') == 4) { //po
             $datas = GeoStructure::where('bl_id', $request->block_id)->where('officer_id', Auth::user()->id)->get();
-        }
-        else {
+        } else {
             $datas = GeoStructure::where('bl_id', $request->block_id)->get();
         }
         return $datas;
@@ -163,6 +159,18 @@ class SchemePerformanceController extends Controller
                 $to_append_tbody .= '<input type="hidden" name="scheme_performance_id[]" value="' . $value_SchemePerformance['scheme_performance_id'] . '">';
                 if ($scheme_data->scheme_is == 2) {
                     $to_append_tbody .= '<td> <select name="assest_name[]" class="form-control status_readonly" required>';
+                    if ($value_SchemePerformance['status'] == 1 || $value_SchemePerformance['status'] == 3) {
+                        if ($value_SchemePerformance['scheme_asset_id'] != "") {
+                        foreach ($scheme_asset_data as $key_asset => $value_assest) {
+                            if ($value_SchemePerformance['scheme_asset_id'] == $value_assest["scheme_asset_id"]) {
+                                $to_append_tbody .= "<option  value=\"" . $value_assest["scheme_asset_id"] . "\" selected>" . $value_assest["scheme_asset_name"] . "  </option>";
+                            }
+                            // $to_append_tbody .= "<option  value=\"" . $value_assest["scheme_asset_id"] . "\">" . $value_assest["scheme_asset_name"] . "</option>";
+                        }
+                    }
+                    }
+                    else
+                    {
                     if ($value_SchemePerformance['scheme_asset_id'] != "") {
                         foreach ($scheme_asset_data as $key_asset => $value_assest) {
                             if ($value_SchemePerformance['scheme_asset_id'] == $value_assest["scheme_asset_id"]) {
@@ -176,48 +184,49 @@ class SchemePerformanceController extends Controller
                             $to_append_tbody .= "<option  value=\"" . $value_assest["scheme_asset_id"] . "\">" . $value_assest["scheme_asset_name"] . "</option>";
                         }
                     }
+                    }
                     $to_append_tbody .= '</select>';
                 }
+                
                 $attributes  = unserialize($scheme_data->attributes);
                 foreach ($attributes as $key_att => $attribute) {
                     $to_append_tbody .= '<td><input type="text" name="' . $attribute['id'] . '[]" class=" status_readonly form-control" value="' . @$SchemePerformance_attributes[$key_att][$attribute['id']] . '" placeholder="' . $attribute['name'] . '"></td>';
                 }
                 // echo $value_SchemePerformance['status'];
-                $to_append_tbody .= '<td><select name="status[]"  onchange="checkStatusOld(this,'.$value_SchemePerformance['scheme_performance_id'].')"  class="form-control status_readonly">';
-                if ($value_SchemePerformance['status']!= "") {
-                    if ($value_SchemePerformance['status'] ==0) {
+                $to_append_tbody .= '<td><select name="status[]"  onchange="checkStatusOld(this,' . $value_SchemePerformance['scheme_performance_id'] . ')"  class="form-control status_readonly">';
+                if ($value_SchemePerformance['status'] != "") {
+                    if ($value_SchemePerformance['status'] == 0) {
                         $to_append_tbody .= '<option value="1">Completed</option>';
                         $to_append_tbody .= '<option value="0" selected>Inprogress</option>';
                     }
                     if ($value_SchemePerformance['status'] == 1) {
                         $to_append_tbody .= '<option value="1" selected >Completed</option>';
                     }
-                    if($value_SchemePerformance['status'] == 2)
-                    {
+                    if ($value_SchemePerformance['status'] == 2) {
                         $to_append_tbody .= '<option value="2" selected >Sanctioned</option>';
                         $to_append_tbody .= '<option value="0">Inprogress</option>';
                         $to_append_tbody .= '<option value="3">Cancel</option>';
                     }
-                    if($value_SchemePerformance['status'] == 3)
-                    {
+                    if ($value_SchemePerformance['status'] == 3) {
                         $to_append_tbody .= '<option value="3" selected>Cancel</option>';
                     }
                 } else {
-                    // $to_append_tbody .= '<option value=" " selected>--select--</option>';
-                    // $to_append_tbody .= '<option value="1">Completed</option>';
-                    // $to_append_tbody .= '<option value="0" selected>Inprogress</option>';
                     $to_append_tbody .= '<option value="2" selected >Sanctioned</option>';
-                    // $to_append_tbody .= '<option value="0">Inprogress</option>';
-                    // $to_append_tbody .= '<option value="3">Cancel</option>';
                 }
                 $to_append_tbody .= '</select></td>';
                 $to_append_tbody .= '<td><input type="text" name="comments[]" value="' . $value_SchemePerformance['comments'] . '" class="form-control status_readonly" placeholder="comments"></td>';
                 // for gallery & coordinates
+                if ($value_SchemePerformance['status'] == 3) {
+                    $to_append_tbody .= '<td><i class="fas fa-plus"></i>Images';
+                    $to_append_tbody .= '<br/><i class="fas fa-plus"></i>Coordinates';
+                    $to_append_tbody .= '</td>';
+                } else {
+                    $to_append_tbody .= '<td><a  onclick="update_image(' . $value_SchemePerformance['scheme_performance_id'] . ');" href="javascript:void()"> <i class="fas fa-plus"></i>Images</a>';
+                    // $to_append_tbody.='<td><button type="button" class="btn btn-danger btn-xs" onclick="delete_row(this)"><i class="fas fa-trash-alt"></i></button></td>';
+                    $to_append_tbody .= '<br/><a  onclick="coordinates_details(' . $value_SchemePerformance['scheme_performance_id'] . ');" href="javascript:void();"><i class="fas fa-plus"></i>Coordinates</a>';
+                    $to_append_tbody .= '</td>';
+                }
 
-                $to_append_tbody .= '<td><a  onclick="update_image(' . $value_SchemePerformance['scheme_performance_id'] . ');" href="javascript:void()"> <i class="fas fa-plus"></i>Images</a>';
-                // $to_append_tbody.='<td><button type="button" class="btn btn-danger btn-xs" onclick="delete_row(this)"><i class="fas fa-trash-alt"></i></button></td>';
-                $to_append_tbody .= '<br/><a  onclick="coordinates_details(' . $value_SchemePerformance['scheme_performance_id'] . ');" href="javascript:void();"><i class="fas fa-plus"></i>Coordinates</a>';
-                $to_append_tbody .= '</td>';
                 $to_append_tbody .= '<td><button type="button" class="btn btn-danger btn-xs" onclick="delete_row(this,' . $value_SchemePerformance['scheme_performance_id'] . ')"><i class="fas fa-trash-alt"></i></button></td>';
                 $to_append_tbody .= '</tr>';
                 $total_count_record = $key_SchemePerformance + 1;
@@ -242,6 +251,7 @@ class SchemePerformanceController extends Controller
             $to_append_thead .= '<th>Select Assest</th>';
         }
         $to_append_row .= '<input type="hidden" name="scheme_performance_id[]" value="new_scheme_performance"> ';
+
         if ($scheme_data->scheme_is == 2) {
             $to_append_row .= '<td><select name="assest_name[]" class="form-control" required>';
             $to_append_row .= "<option  value=''>--Select--</option>";
@@ -268,7 +278,7 @@ class SchemePerformanceController extends Controller
                             <option value="2" selected>Sanctioned</option>
                             </select>
                         </td>';
-        
+
         $to_append_thead .= '<th>Comments</th>';
         $to_append_row .= '<td><input type="text" name="comments[]" class="form-control" placeholder="comments"></td>';
         $to_append_thead .= '<th>Others</th>';
@@ -404,51 +414,45 @@ class SchemePerformanceController extends Controller
         {
             $geo_names = GeoStructure::where('level_id', 4)->pluck('geo_name'); // panchayat_ids
             $geo_block_names =  GeoStructure::where('level_id', 3)->pluck('geo_name');
-        } 
-        else if (session()->get('user_designation') == 2) { // sdo
+        } else if (session()->get('user_designation') == 2) { // sdo
             $subdivision_id_tmp = GeoStructure::where('officer_id', Auth::user()->id)->first();
-            if($subdivision_id_tmp){
+            if ($subdivision_id_tmp) {
                 $geo_names = GeoStructure::where('sd_id', $subdivision_id_tmp->geo_id)->where('level_id', '4')->pluck('geo_name'); // panchayat_ids
             }
             $subdivision_id_tmp_block = GeoStructure::where('officer_id', Auth::user()->id)->first();
-            if($subdivision_id_tmp_block){
+            if ($subdivision_id_tmp_block) {
                 $geo_block_names = GeoStructure::where('sd_id', $subdivision_id_tmp_block->geo_id)->where('level_id', '3')->pluck('geo_name'); // panchayat_ids
             }
-        } 
-        else if (session()->get('user_designation') == 3) { // bdo
+        } else if (session()->get('user_designation') == 3) { // bdo
             $block_id_tmp = GeoStructure::where('officer_id', Auth::user()->id)->first();
-            if($block_id_tmp)
-            {
+            if ($block_id_tmp) {
                 $geo_names = GeoStructure::where('bl_id', $block_id_tmp->geo_id)->where('level_id', '4')->pluck('geo_name'); // decide rows (panchayat)
             }
             $geo_block_names = GeoStructure::where('officer_id', Auth::user()->id)->pluck('geo_name');
-        } 
-        else if (session()->get('user_designation') == 4) { //po
+        } else if (session()->get('user_designation') == 4) { //po
             $panchayat_id_tmp = GeoStructure::where('officer_id', Auth::user()->id)->first();
-            if($panchayat_id_tmp)
-            {
+            if ($panchayat_id_tmp) {
                 $geo_names = GeoStructure::where('geo_id', $panchayat_id_tmp->geo_id)->where('level_id', '4')->pluck('geo_name'); // decide rows (panchayat)
             }
             $panchayat_id_tmp_block = GeoStructure::where('officer_id', Auth::user()->id)->first();
-            if($panchayat_id_tmp_block){
+            if ($panchayat_id_tmp_block) {
                 $geo_block_names = GeoStructure::where('geo_id', $panchayat_id_tmp_block->bl_id)->pluck('geo_name'); // decide rows (panchayat)
             }
         }
-      
-        $geo_names = (array)$geo_names;
-        $geo_block_names = (array)$geo_block_names;
-        $geo_names_array=array();
-        $geo_block_names_array=array();
-        foreach($geo_names as $key_geo=> $value_geo)
-        {
-            $geo_names_array=$value_geo;
+
+        $geo_names = (array) $geo_names;
+        $geo_block_names = (array) $geo_block_names;
+        $geo_names_array = array();
+        $geo_block_names_array = array();
+        foreach ($geo_names as $key_geo => $value_geo) {
+            $geo_names_array = $value_geo;
         }
-        foreach($geo_block_names as $key_block=> $value_block)
-        {
-            $geo_block_names_array=$value_block;
+        foreach ($geo_block_names as $key_block => $value_block) {
+            $geo_block_names_array = $value_block;
         }
         echo "<pre>";
-        print_r($geo_block_names_array);exit;
+        print_r($geo_block_names_array);
+        exit;
 
         $scheme_datas = SchemeStructure::where('scheme_id', $request->scheme_id)->first(); /* get scheme atributes */
         $unserialDatas = unserialize($scheme_datas->attributes);
@@ -517,7 +521,7 @@ class SchemePerformanceController extends Controller
                             $fetch_year_id = Year::where('year_value', $row['work_start_fin_year'])->value('year_id'); /* for Year ID */
 
                             /* if those id avilable then insert data on the base */
-                            if ($row['sno.'] != null && $fetch_block_id != null && $fetch_panchayat_id != null && $fetch_year_id != null && $fetch_subdivision_id != null && in_array($panchayat_name,$geo_names_array) && in_array($block_name,$geo_block_names_array)) {
+                            if ($row['sno.'] != null && $fetch_block_id != null && $fetch_panchayat_id != null && $fetch_year_id != null && $fetch_subdivision_id != null && in_array($panchayat_name, $geo_names_array) && in_array($block_name, $geo_block_names_array)) {
                                 $noOfSuccess++;
                                 $flag = 0;
                                 $scheme_performance_id = "";
@@ -555,20 +559,20 @@ class SchemePerformanceController extends Controller
                                 if ($row['sno.'] != null) {
                                     if ($fetch_block_id == null && $fetch_panchayat_id != null) {
                                         $ErrorTxt .= " ON row sno. " . $row['sno.'] . " Block Not Found \n";
-                                    } 
+                                    }
                                     if ($fetch_panchayat_id == null && $fetch_block_id != null) {
                                         $ErrorTxt .= " ON row sno. " . $row['sno.'] . " Panchayat Not Found \n";
-                                    } 
+                                    }
                                     if ($fetch_panchayat_id == null && $fetch_block_id == null) {
                                         $ErrorTxt .= " ON row sno. " . $row['sno.'] . " Both Panchayat And Block Not Found \n";
-                                    } 
+                                    }
                                     if ($fetch_subdivision_id == null || $fetch_year_id == null) {
                                         $ErrorTxt .= " ON row sno. " . $row['sno.'] . "Both Subdivision And Year Not Found \n";
                                     }
-                                    if (in_array($panchayat_name,$geo_names_array) == false) {
+                                    if (in_array($panchayat_name, $geo_names_array) == false) {
                                         $ErrorTxt .= " On SNo. " . $row['sno.'] . " Wrong panchayat Name \n";
                                     }
-                                    if (in_array($block_name,$geo_block_names_array) == false) {
+                                    if (in_array($block_name, $geo_block_names_array) == false) {
                                         $ErrorTxt .= " On SNo. " . $row['sno.'] . " Wrong block Name \n";
                                     }
                                 }
@@ -641,7 +645,7 @@ class SchemePerformanceController extends Controller
                             session()->put('totalCount', count($readExcel));
                             session()->put('totalsuccess', $noOfSuccess);
                             session()->put('totalfail', $noOfFails);
-                            session()->put('scheme_name',$scheme_datas['scheme_name']);
+                            session()->put('scheme_name', $scheme_datas['scheme_name']);
 
                             // readfile($filename);
                             session()->put('alert-class', 'alert-success');
