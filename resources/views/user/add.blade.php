@@ -324,10 +324,10 @@ $(document).ready(function() {
 
     function new_password_validate()
     {
-      
+    
         var password_val = $("#new_password").val();
-        var regEx = new RegExp('^[a-zA-Z0-9_-]+$');
-        // var hasSymbols = new Regex(@"[!@#$%^&*()_+=\[{\]};:<>|./?,-]");
+        var regEx = new RegExp('^[a-zA-Z0-9_\@\#\!\$\%\^\&\*\-]+$');
+       
      
         if (password_val == "") {
           
@@ -352,8 +352,8 @@ $(document).ready(function() {
     {
        
         var password_val = $("#confirm_password_model").val();
-        var regEx = new RegExp('^[a-zA-Z0-9_-]+$');
-        //  var hasSymbols = new Regex(@"[!@#$%^&*()_+=\[{\]};:<>|./?,-]");
+        var regEx = new RegExp('^[a-zA-Z0-9_\@\#\!\$\%\^\&\*\-]+$');
+       
        
         if (password_val == "") {
             confirm_password_error_model = true;
@@ -620,8 +620,8 @@ function passwordSubmit(){
 
     function password_validate() {
         var password_val = $("#password").val();
-        var regEx = new RegExp('^[a-zA-Z0-9_-]+$');
-        // var hasSymbols = new Regex(@"[!@#$%^&*()_+=\[{\]};:<>|./?,-]");
+        var regEx = new RegExp('^[a-zA-Z0-9_\@\#\!\$\%\^\&\*\-]+$');
+       
         if ($("#hidden_input_purpose").val() == "add") {
             if (password_val == "") {
                 password_error = true;
@@ -649,8 +649,8 @@ function passwordSubmit(){
 
     function confirm_password_validate() {
         var confirm_password_val = $("#confirm_password").val();
-        var regEx = new RegExp('^[a-zA-Z0-9_-]+$');
-        // var hasSymbols = new Regex(@"[!@#$%^&*()_+=\[{\]};:<>|./?,-]");
+        var regEx = new RegExp('^[a-zA-Z0-9_\@\#\!\$\%\^\&\*\-]+$');
+      
         if ($("#hidden_input_purpose").val() == "add") {
             if (confirm_password_val == "") {
                 confirm_password_error = true;
