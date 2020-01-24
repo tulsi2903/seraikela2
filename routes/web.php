@@ -251,6 +251,8 @@ Route::get('scheme-performance/getblock_datafor_borders','SchemePerformanceContr
 Route::get('scheme-performance/get-panchayat-datas-for-borders','SchemePerformanceController@getpanchayat_datafor_borders'); /* End Spans Across Borders */
 Route::post('scheme_performance/savebl_pl_connectivity','SchemePerformanceController@savebl_pl_connectivity'); /* End Spans Across Borders */
 
+Route::get('matching-schemes','CheckMatchingPerformanceController@index');
+
 /* scheme review */
 Route::get('scheme-review', 'SchemeReviewController@index');
 Route::get('scheme-review/get-tabular-view-datas', 'SchemeReviewController@get_tabular_view_datas');
