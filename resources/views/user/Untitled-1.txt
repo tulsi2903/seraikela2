@@ -1,0 +1,100 @@
+<div class="col-md-1 focus-grid" style="padding-right: 5px;padding-left: 5px;">
+        <div class="focus-border">
+            <center>
+                <div class="text-right">{{$education_count}}</div>
+            </center>
+            <div class="focus-layout" id="card-detail2">
+                <i class="fas fa-graduation-cap" style="font-size:35px; color: #fff;margin-top: 0.5em;"></i>
+                <h4 class="clrchg">{{$phrase->education}}</h4>
+            </div>
+        </div>
+
+    </div>
+    <div class="col-md-1 focus-grid" style="padding-right: 5px;padding-left: 5px;">
+        <div class="focus-border">
+            <center>
+                <div class="text-right">{{$land_revenue_count}}</div>
+            </center>
+            <div class="focus-layout" id="card-detail3">
+                <i class="fas fa-graduation-cap" style="font-size:35px; color: #fff;margin-top: 0.5em;"></i>
+                <h4 class="clrchg">{{$phrase->land_revenue}}</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-1 focus-grid" style="padding-right: 5px;padding-left: 5px;">
+        <div class="focus-border">
+            <center>
+                <div class="text-right">{{$welfare_count}}</div>
+            </center>
+            <div class="focus-layout" id="card-detail4">
+                <i class="fas fa-hands" style="font-size:35px; color: #fff;margin-top: 0.5em;"></i>
+                <h4 class="clrchg">{{$phrase->welfare}}</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-1 focus-grid" style="padding-right: 5px;padding-left: 5px;">
+        <div class="focus-border">
+            <center>
+                <div class="text-right">{{$land_acquisition_count}}</div>
+            </center>
+            <div class="focus-layout" id="card-detail5">
+                <i class="fas fa-oil-can" style="font-size:35px; color: #fff;margin-top: 0.5em;"></i>
+                <h4 class="clrchg">{{$phrase->landAcquisition}}</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-1 focus-grid" style="padding-right: 5px;padding-left: 5px;">
+        <div class="focus-border">
+            <center>
+                <div class="text-right">{{$election_count}}</div>
+            </center>
+            <div class="focus-layout" id="card-detail6">
+                <i class="fas fa-box" style="font-size:35px; color: #fff;margin-top: 0.5em;"></i>
+                <h4 class="clrchg">{{$phrase->election}}</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-1 focus-grid" style="padding-right: 5px;padding-left: 5px;">
+        <div class="focus-border">
+            <center>
+                <div class="text-right">{{$agriculture_count}}</div>
+            </center>
+            <div class="focus-layout" id="card-detail7">
+                <i class="fas fa-leaf" style="font-size:35px; color: #fff;margin-top: 0.5em;"></i>
+                <h4 class="clrchg">{{$phrase->agriculture}}</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-1 focus-grid" style="padding-right: 5px;padding-left: 5px;">
+        <div class="focus-border">
+            <center>
+                <div class="text-right">{{$social_welfare_count}}</div>
+            </center>
+            <div class="focus-layout" id="card-detail8">
+                <i class="fas fa-hands" style="font-size:35px; color: #fff;margin-top: 0.5em;"></i>
+                <h4 class="clrchg">{{$phrase->socialWelfare}}</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-1 focus-grid" style="padding-right: 5px;padding-left: 5px;">
+        <div class="focus-border">
+            <center>
+                <div class="text-right">{{$drinking_water_and_sanitation_count}}</div>
+            </center>
+            <div class="focus-layout" id="card-detail9">
+                <i class="fas fa-oil-can" style="font-size:35px; color: #fff;margin-top: 0.5em;"></i>
+                <h4 class="clrchg">{{$phrase->drinkingWaterAndSanitation}}</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-1 focus-grid" style="padding-right: 5px;padding-left: 5px;">
+        <div class="focus-border">
+            <center>
+                <div class="text-right">{{$social_security_scheme_count}}</div>
+            </center>
+            <div class="focus-layout" id="card-detail10">
+                <i class="fas fa-user-lock" style="font-size:35px; color: #fff;margin-top: 0.5em;"></i>
+                <h4 class="clrchg">{{$phrase->socialSecurityScheme}}</h4>
+            </div>
+        </div>
+    </div>

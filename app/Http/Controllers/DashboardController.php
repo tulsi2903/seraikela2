@@ -23,7 +23,14 @@ class DashboardController extends Controller
     // function to assign everything related to user logged in (after logged in user id redirected to this method, this method further redirected usaer to its dashboadr page)
     public function index()
     {
-        // session store user details
+        
+        if(Auth::user()->status==0)
+        {
+            session()->flush();
+            return redirect()->back();
+        }
+
+         // session store user details
         if (Auth::check()) {
             session()->put('user_id', Auth::user()->id);
             session()->put('user_full_name',"Mr .". Auth::user()->first_name . " " . Auth::user()->last_name);

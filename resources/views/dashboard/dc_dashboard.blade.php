@@ -247,7 +247,160 @@
 <!-- <div id="particles-js"></div> -->
 
 
+<div class="row">
+    <div class="col-md-12" style="margin-top:1em;">
+        <div class="card">
+            <div class="card-head-row card-tools-still-right" style="background:#fff;">
+                <h4 style="color: #000;font-size: 1.2em;padding: 1em; overflow: hidden;">
+                    <div style="display: inline-block; float: left; width:50%;font-family: 'Bree Serif', serif;">{{$phrase->no_of_scheme}}</div>
+                </h4>
+                <hr style="margin-top:-13px;border-top: 1px dashed #717070;">
+            </div>
+            <div style="display:flex; padding: 1em;">
+            @foreach($departments as $key_dep=>$value_dept)
+    <div class="col-md-1 focus-grid" style="padding-right: 5px;padding-left: 5px;">
+        <div class="focus-border">
+            <?php  @$dept_count=DB::table('scheme_structure')->where('dept_id',@$value_dept['dept_id'])->get(); ?>
+            @if($dept_count!="")
+            <center>
+                <div class="text-right">{{count($dept_count)}}</div>
+            </center>
+            @else
+            <center>
+                <div class="text-right">{{0}}</div>
+            </center>
+            @endif
+            <div class="focus-layout" id="card-detail1">
+                <span style="display:block; padding:10px; text-align: center;"><img style="max-height:60px;" src="{{$value_dept['dept_icon']}}" ></span>
+                <!-- <i class="fa fa-heartbeat" style="font-size:35px; color: #fff;margin-top: 0.5em;"></i> -->
+                <h4 class="clrchg"> {{$value_dept['dept_name']}}</h4>
+            </div>
+        </div>
+    </div>
+    @endforeach
+    
+</div><br>
+</div>
+</div>
+</div>
 
+<div class="row">
+    <div class="col-md-12" style="margin-top:1em;">
+        <div class="card">
+            <div class="card-head-row card-tools-still-right" style="background:#fff;">
+                <h4 style="color: #000;font-size: 1.2em;padding: 1em; overflow: hidden;">
+                    <div style="display: inline-block; float: left; width:50%;font-family: 'Bree Serif', serif;">Scheme Performance</div>
+                    <!-- (monthly) -->
+                    <div style="display: inline-block; float:right;left; width:200px; text-align: right;">
+                        <select name="year" id="year_value" onchange="get_year(this);" class="form-control">
+                            @foreach($year_details as $key_year=> $value_year)
+                            <option @if($year_id==$value_year['year_id']) {{"selected"}}  @endif value="{{$value_year['year_id']}}"> {{$value_year['year_value']}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </h4>
+                
+                <!--<div class="col-3">-->
+                <!--    <select name="year" id="year_value" onchange="get_year(this);" style="color: #000;font-size: 1.2em;float: left;padding: 1em;" class="form-control">-->
+                <!--        @foreach($year_details as $key_year=> $value_year)-->
+                <!--        <option @if($year_id==$value_year['year_id']) {{"selected"}}  @endif value="{{$value_year['year_id']}}"> {{$value_year['year_value']}}</option>-->
+                <!--        @endforeach-->
+                <!--    </select>-->
+                <!--</div>-->
+            </div>
+            <hr style="margin-top:-13px;border-top: 1px dashed #717070;">
+            <div>
+                @if(session()->get('message_year'))
+                <span>{{session()->get('message_year')}}</span>
+                <?php session()->forget('message_year'); ?>
+                @endif
+            </div>
+            <div class="card-body">
+
+                <div class="row">
+                    
+                </div>
+                <div style="max-height: 520px; padding-bottom: 15px; overflow: auto;" id="Scheme_Performance">
+                    @if($dashboard_scheme_performance_has_datas=="success")
+                    <table class="table" id="scheme-performane-table">
+                        <thead style="background: #d6dcff;color: #000;">
+                            <tr>
+                                <?php 
+                                for($i=0; $i<count($performance_table_heading_1); $i++)
+                                {
+                                    if($i!=0){
+                                        echo "<th colspan='3' style='text-align: center'>";
+                                        $value = explode("::", $performance_table_heading_1[$i]);
+                                        echo "<img src='".$value[1]."' style='height: 35px;margin-right: 15px;'>".$value[0]."</th>";
+                                    }
+                                    else{
+                                        echo "<th style='text-align: center'></th>";
+                                    }
+                                } 
+                                ?>
+                            </tr>
+                            <tr>
+                                <?php 
+                                for($i=0; $i<count($performance_table_heading_2); $i++)
+                                {
+                                    echo "<th>".$performance_table_heading_2[$i]."</th>";
+                                } 
+                                ?>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                                foreach($performance_table_datas as $key=>$performance_table_data){
+                                    echo "<tr>";
+                                        foreach($performance_table_data as $key_2=>$value_before){
+                                            $value = explode(":", $value_before);
+                                            if(count($value)==2)
+                                            {
+                                                $value[1] = (int)$value[1];
+                                                if($value[1]==0){
+                                                    echo "<td style='background: #ffcfcf;'>";
+                                                }
+                                                else if($value[1]<30){
+                                                    echo "<td style='background: #ff9999;'>";
+                                                }
+                                                else if($value[1]<70){
+                                                    echo "<td style='background: #ffcfcf;'>";
+                                                }
+                                                else if($value[1]==100){
+                                                    echo "<td style='background: #2cbd36;'>";
+                                                }
+                                                else {
+                                                    echo "<td style='background: #87f387;'>";
+                                                }   
+                                            }
+                                            else{
+                                                echo "<td>";
+                                            }
+
+                                            if($value[0]){
+                                                echo $value[0];
+                                            }
+                                            else{
+                                                echo "0";
+                                            }
+
+                                            echo "</td>";
+                                        }
+                                    echo "</tr>";
+                                }
+                                ?>
+                        </tbody>
+                    </table>
+                    @else
+                    <h4><span style="color: #09c521;"><i class="fas fa-info"></i></span>&nbsp;&nbsp;{{$dashboard_scheme_performance_has_datas}}</h4>
+                    @endif
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--enf of row-->
+<br>
 <div class="row" style="margin-left: 0px;">
     <div class="col-sm-2">
         <div class="card-stats card card-round" style="min-height:0px; border-top: 0px solid">
@@ -366,162 +519,11 @@
     </div>
 </div>
 <!--end of first row-->
-<div class="row">
-    <div class="col-md-12" style="margin-top:1em;">
-        <div class="card">
-            <div class="card-head-row card-tools-still-right" style="background:#fff;">
-                <h4 style="color: #000;font-size: 1.2em;padding: 1em; overflow: hidden;">
-                    <div style="display: inline-block; float: left; width:50%;font-family: 'Bree Serif', serif;">Scheme Performance</div>
-                    <!-- (monthly) -->
-                    <div style="display: inline-block; float:right;left; width:200px; text-align: right;">
-                        <select name="year" id="year_value" onchange="get_year(this);" class="form-control">
-                            @foreach($year_details as $key_year=> $value_year)
-                            <option @if($year_id==$value_year['year_id']) {{"selected"}}  @endif value="{{$value_year['year_id']}}"> {{$value_year['year_value']}}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                </h4>
-                
-                <!--<div class="col-3">-->
-                <!--    <select name="year" id="year_value" onchange="get_year(this);" style="color: #000;font-size: 1.2em;float: left;padding: 1em;" class="form-control">-->
-                <!--        @foreach($year_details as $key_year=> $value_year)-->
-                <!--        <option @if($year_id==$value_year['year_id']) {{"selected"}}  @endif value="{{$value_year['year_id']}}"> {{$value_year['year_value']}}</option>-->
-                <!--        @endforeach-->
-                <!--    </select>-->
-                <!--</div>-->
-            </div>
-            <hr style="margin-top:-13px;border-top: 1px dashed #717070;">
-            <div>
-                @if(session()->get('message_year'))
-                <span>{{session()->get('message_year')}}</span>
-                <?php session()->forget('message_year'); ?>
-                @endif
-            </div>
-            <div class="card-body">
-
-                <div class="row">
-                    
-                </div>
-                <div style="max-height: 520px; padding-bottom: 15px; overflow: auto;" id="Scheme_Performance">
-                    @if($dashboard_scheme_performance_has_datas=="success")
-                    <table class="table" id="scheme-performane-table">
-                        <thead style="background: #d6dcff;color: #000;">
-                            <tr>
-                                <?php 
-                                for($i=0; $i<count($performance_table_heading_1); $i++)
-                                {
-                                    if($i!=0){
-                                        echo "<th colspan='3' style='text-align: center'>";
-                                        $value = explode("::", $performance_table_heading_1[$i]);
-                                        echo "<img src='".$value[1]."' style='height: 35px;margin-right: 15px;'>".$value[0]."</th>";
-                                    }
-                                    else{
-                                        echo "<th style='text-align: center'></th>";
-                                    }
-                                } 
-                                ?>
-                            </tr>
-                            <tr>
-                                <?php 
-                                for($i=0; $i<count($performance_table_heading_2); $i++)
-                                {
-                                    echo "<th>".$performance_table_heading_2[$i]."</th>";
-                                } 
-                                ?>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php
-                                foreach($performance_table_datas as $key=>$performance_table_data){
-                                    echo "<tr>";
-                                        foreach($performance_table_data as $key_2=>$value_before){
-                                            $value = explode(":", $value_before);
-                                            if(count($value)==2)
-                                            {
-                                                $value[1] = (int)$value[1];
-                                                if($value[1]==0){
-                                                    echo "<td style='background: #ffcfcf;'>";
-                                                }
-                                                else if($value[1]<30){
-                                                    echo "<td style='background: #ff9999;'>";
-                                                }
-                                                else if($value[1]<70){
-                                                    echo "<td style='background: #ffcfcf;'>";
-                                                }
-                                                else if($value[1]==100){
-                                                    echo "<td style='background: #2cbd36;'>";
-                                                }
-                                                else {
-                                                    echo "<td style='background: #87f387;'>";
-                                                }   
-                                            }
-                                            else{
-                                                echo "<td>";
-                                            }
-
-                                            if($value[0]){
-                                                echo $value[0];
-                                            }
-                                            else{
-                                                echo "0";
-                                            }
-
-                                            echo "</td>";
-                                        }
-                                    echo "</tr>";
-                                }
-                                ?>
-                        </tbody>
-                    </table>
-                    @else
-                    <h4><span style="color: #09c521;"><i class="fas fa-info"></i></span>&nbsp;&nbsp;{{$dashboard_scheme_performance_has_datas}}</h4>
-                    @endif
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!--enf of row-->
 
 
 
 
-<div class="row">
-    <div class="col-md-12" style="margin-top:1em;">
-        <div class="card">
-            <div class="card-head-row card-tools-still-right" style="background:#fff;">
-                <h4 style="color: #000;font-size: 1.2em;padding: 1em; overflow: hidden;">
-                    <div style="display: inline-block; float: left; width:50%;font-family: 'Bree Serif', serif;">{{$phrase->no_of_scheme}}</div>
-                </h4>
-                <hr style="margin-top:-13px;border-top: 1px dashed #717070;">
-            </div>
-            <div style="display:flex; padding: 1em;">
-            @foreach($departments as $key_dep=>$value_dept)
-    <div class="col-md-1 focus-grid" style="padding-right: 5px;padding-left: 5px;">
-        <div class="focus-border">
-            <?php  @$dept_count=DB::table('scheme_structure')->where('dept_id',@$value_dept['dept_id'])->get(); ?>
-            @if($dept_count!="")
-            <center>
-                <div class="text-right">{{count($dept_count)}}</div>
-            </center>
-            @else
-            <center>
-                <div class="text-right">{{0}}</div>
-            </center>
-            @endif
-            <div class="focus-layout" id="card-detail1">
-                <span style="display:block; padding:10px; text-align: center;"><img style="max-height:60px;" src="{{$value_dept['dept_icon']}}" ></span>
-                <!-- <i class="fa fa-heartbeat" style="font-size:35px; color: #fff;margin-top: 0.5em;"></i> -->
-                <h4 class="clrchg"> {{$value_dept['dept_name']}}</h4>
-            </div>
-        </div>
-    </div>
-    @endforeach
-    
-</div><br>
-</div>
-</div>
-</div>
+
 <br>
 <div class="row">
     <div class="col-md-6">

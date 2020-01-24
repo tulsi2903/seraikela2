@@ -49,6 +49,9 @@ Route::get('user/export/excelURL','UserAdd_Controller@exportExcelFunctiuonforuse
 Route::get('user/pdf/pdfURL','UserAdd_Controller@exportpdfFunctiuonforusers');
 Route::get('user/getuser-details/{id}','UserAdd_Controller@get_user_details');
 
+Route::post('user/password_change','UserAdd_Controller@change_password');
+
+
 
 /* department */
 Route::get('department','DepartmentController@index');

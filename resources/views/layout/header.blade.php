@@ -78,7 +78,11 @@
                         <a class="dropdown-toggle profile-pic" data-toggle="dropdown" href="#" aria-expanded="false">
                             <div class="user-box">
                                 <div class="avatar-sm">
-                                    <img src="https://cdn.s3waas.gov.in/s3b337e84de8752b27eda3a12363109e80/uploads/2019/07/2019070129.jpg" alt="..." class="avatar-img rounded-circle" style="margin-top: 12px;">
+                                    @if(Auth::user()->profile_picture)
+                                    <img src="{{Auth::user()->profile_picture}}" alt="..." class="avatar-img rounded-circle" style="margin-top: 12px;">
+                                    @else
+                                    <img src="{{url('public/images/user.png')}}" alt="..." class="avatar-img rounded-circle" style="margin-top: 12px;">
+                                    @endif
                                 </div>
                                 <div class="u-text">
                                     <h4 style="color: #fff;font-weight: 500;font-family: 'Bree Serif', serif; text-transform: capitalize;">{{session()->get('user_full_name')}}</h4>
