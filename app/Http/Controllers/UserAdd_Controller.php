@@ -126,8 +126,8 @@ class UserAdd_Controller extends Controller
 
         $response="error";
         // duplicate entry
-        if((User::where('username',$request->username)->exists()) && (User::where('email',$request->email)->exists()) && $request->hidden_input_purpose=="add"){
-            $message="The combination of this username and email already exist";
+        if(((User::where('username',$request->username)->exists()) || (User::where('email',$request->email)->exists())) && $request->hidden_input_purpose=="add"){
+            $message="The combination of this username or email already exist";
            $response="error";
             return ["message"=>$message, "response"=>$response];
 

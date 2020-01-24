@@ -886,7 +886,14 @@ function passwordSubmit(){
                                 className: 'btn btn-success'
                             }
                         },
-                    })
+                    }).then((ok) => {
+                        if (ok) {
+                            document.location.reload();
+                        }
+                    });
+                    setTimeout(function () { // reloading after successfully data saved
+                        document.location.reload()
+                    }, 3000);
                    
                 }
                 else {
