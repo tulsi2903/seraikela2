@@ -124,12 +124,12 @@ class UserAdd_Controller extends Controller
 
 
 
-
+        $response="error";
         // duplicate entry
         if((User::where('username',$request->username)->exists()) && (User::where('email',$request->email)->exists()) && $request->hidden_input_purpose=="add"){
             $message="The combination of this username and email already exist";
-           
-            return ["message"=>$message, "response"=>"error"];
+           $response="error";
+            return ["message"=>$message, "response"=>$response];
 
            
         }
@@ -137,10 +137,10 @@ class UserAdd_Controller extends Controller
         // return $request;
 
         if($new_user->save()){
-            session()->put('alert-class','alert-success');
-            session()->put('alert-content','User data has been saved successfully !!');
+            $message="User data has been saved successfully !!";
+            $response="success";
         }
-        return redirect('user');
+        return ["message"=>$message, "response"=>$response];
     }
 
     public function change_password(Request $request)

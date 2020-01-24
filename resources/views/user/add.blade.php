@@ -877,6 +877,7 @@ function passwordSubmit(){
                 console.log(data);
                 if (data.response == "success") {
                     resetUserForm(); // resetting form
+                    hideForm();
                     $("#show-toggle1").click(); // closing form div
                     swal("Success!", "User has been added successfully.", {
                         icon: "success",
