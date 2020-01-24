@@ -144,7 +144,7 @@
                         </div> -->
                     </div>
                     <div >
-                        <form action="{{url('scheme-performance/store')}}" method="POST" enctype="multipart/form-data">
+                        <form action="{{url('scheme-performance/store')}}" method="POST"  enctype="multipart/form-data" onsubmit="return check_performamance_status();">
                             @csrf
                             <table class="table">
                                 <thead id="to_append_thead" style="background: #cedcff">
@@ -396,7 +396,7 @@
             // downloadformat
             // importexcel
             // excelformat
-            $("#excelformat").show();
+            // $("#excelformat").show();
             var scheme_id_tmp = $("#scheme_id").val();
             var year_id_tmp = $("#year_id").val();
             var panchayat_id_tmp = $("#panchayat_id").val();
@@ -429,10 +429,9 @@
                     $("#to_append_tbody").html("");
                     $("#to_append_thead").html(data.to_append_thead);
                     $("#to_append_tbody").html(data.to_append_tbody);
-                    $("#total_date_count").html(data.total_count_record);
                     // alert(data.length);
                     to_append_row = data.to_append_row;
-
+                    setTimeout(function(){ checkStatus(); }, 3000);
                     $("#to_append_table").fadeIn(300);
 
                     $(".custom-loader").fadeOut(300);
@@ -705,6 +704,70 @@
     }
 </script>
 <script>
+    
+function checkStatusOld(e,id)
+{
+    var status_id=$(e).val();
+    if(status_id==0)
+    {
+        var  result="true";
+        alert(id);
+        $.ajax({
+            url: "{{url('scheme-performance/checkduplicate/')}}" + "/" + id+"/"+result,
+            method: "GET",
+            contentType: 'application/json',
+            dataType: "json",
+            beforeSend: function (data) {
+                $(".custom-loader").fadeIn(300);
+            },
+            error: function (xhr) {
+                alert("error" + xhr.status + "," + xhr.statusText);
+                $(".custom-loader").fadeOut(300);
+            },
+            success: function (data) {
+                console.log(data);
+                $(".custom-loader").fadeOut(300);
+            }
+        });
+        alert("inprogess");
+    }
+    if(status_id==1)
+    {
+        var status_readonly= $(e).closest('tr').find(".status_readonly");
+        for(i=0;i<status_readonly.length;i++)
+        {
+            $(status_readonly[i]).prop('readonly',true);
+        }
+    }
+    if(status_id==3)
+    {
+        var status_readonly= $(e).closest('tr').find(".status_readonly");
+        for(i=0;i<status_readonly.length;i++)
+        {
+            $(status_readonly[i]).prop('readonly',true);
+        }
+    }
+}
+
+function checkStatus(){
+    var trs = $("#to_append_tbody tr");
+    for (var i = 0; i < trs.length; i++) {
+        var status_id = $(trs[i]).find("select[name='status[]']").val();
+        if(status_id==1)
+        {
+            $(trs[i]).find(".status_readonly").prop('readonly',true);
+        }
+        if(status_id==3)
+        {
+            $(trs[i]).find(".status_readonly").prop('readonly',true);
+        }
+
+        // $(trs[i]).find(first_td).html(i + 1);
+    }
+}
+
+</script>
+<script>
     function submitgalleryAjax() {
         var formElement = $('#FormsavegalleryforLoacation')[0];
         var form_data = new FormData(formElement);
@@ -768,5 +831,12 @@
         }
         // alert(scheme_id);
     }
+</script>
+<script>
+function check_performamance_status()
+{
+    alert("dfdf");
+    return true;
+}
 </script>
 @endsection

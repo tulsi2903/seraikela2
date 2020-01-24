@@ -162,7 +162,7 @@ class SchemePerformanceController extends Controller
                 $scheme_asset_data = SchemeAsset::get();
                 $to_append_tbody .= '<input type="hidden" name="scheme_performance_id[]" value="' . $value_SchemePerformance['scheme_performance_id'] . '">';
                 if ($scheme_data->scheme_is == 2) {
-                    $to_append_tbody .= '<td> <select name="assest_name[]" class="form-control" required>';
+                    $to_append_tbody .= '<td> <select name="assest_name[]" class="form-control status_readonly" required>';
                     if ($value_SchemePerformance['scheme_asset_id'] != "") {
                         foreach ($scheme_asset_data as $key_asset => $value_assest) {
                             if ($value_SchemePerformance['scheme_asset_id'] == $value_assest["scheme_asset_id"]) {
@@ -180,26 +180,38 @@ class SchemePerformanceController extends Controller
                 }
                 $attributes  = unserialize($scheme_data->attributes);
                 foreach ($attributes as $key_att => $attribute) {
-                    $to_append_tbody .= '<td><input type="text" name="' . $attribute['id'] . '[]" class="form-control" value="' . @$SchemePerformance_attributes[$key_att][$attribute['id']] . '" placeholder="' . $attribute['name'] . '"></td>';
+                    $to_append_tbody .= '<td><input type="text" name="' . $attribute['id'] . '[]" class=" status_readonly form-control" value="' . @$SchemePerformance_attributes[$key_att][$attribute['id']] . '" placeholder="' . $attribute['name'] . '"></td>';
                 }
-
-                $to_append_tbody .= '<td><select name="status[]"  class="form-control">';
-                if ($value_SchemePerformance['status'] != "") {
-                    if ($value_SchemePerformance['status'] == 0) {
+                // echo $value_SchemePerformance['status'];
+                $to_append_tbody .= '<td><select name="status[]"  onchange="checkStatusOld(this,'.$value_SchemePerformance['scheme_performance_id'].')"  class="form-control status_readonly">';
+                if ($value_SchemePerformance['status']!= "") {
+                    if ($value_SchemePerformance['status'] ==0) {
                         $to_append_tbody .= '<option value="1">Completed</option>';
                         $to_append_tbody .= '<option value="0" selected>Inprogress</option>';
                     }
                     if ($value_SchemePerformance['status'] == 1) {
                         $to_append_tbody .= '<option value="1" selected >Completed</option>';
+                    }
+                    if($value_SchemePerformance['status'] == 2)
+                    {
+                        $to_append_tbody .= '<option value="2" selected >Sanctioned</option>';
                         $to_append_tbody .= '<option value="0">Inprogress</option>';
+                        $to_append_tbody .= '<option value="3">Cancel</option>';
+                    }
+                    if($value_SchemePerformance['status'] == 3)
+                    {
+                        $to_append_tbody .= '<option value="3" selected>Cancel</option>';
                     }
                 } else {
                     // $to_append_tbody .= '<option value=" " selected>--select--</option>';
-                    $to_append_tbody .= '<option value="1">Completed</option>';
-                    $to_append_tbody .= '<option value="0" selected>Inprogress</option>';
+                    // $to_append_tbody .= '<option value="1">Completed</option>';
+                    // $to_append_tbody .= '<option value="0" selected>Inprogress</option>';
+                    $to_append_tbody .= '<option value="2" selected >Sanctioned</option>';
+                    // $to_append_tbody .= '<option value="0">Inprogress</option>';
+                    // $to_append_tbody .= '<option value="3">Cancel</option>';
                 }
                 $to_append_tbody .= '</select></td>';
-                $to_append_tbody .= '<td><input type="text" name="comments[]" value="' . $value_SchemePerformance['comments'] . '" class="form-control" placeholder="comments"></td>';
+                $to_append_tbody .= '<td><input type="text" name="comments[]" value="' . $value_SchemePerformance['comments'] . '" class="form-control status_readonly" placeholder="comments"></td>';
                 // for gallery & coordinates
 
                 $to_append_tbody .= '<td><a  onclick="update_image(' . $value_SchemePerformance['scheme_performance_id'] . ');" href="javascript:void()"> <i class="fas fa-plus"></i>Images</a>';
@@ -251,11 +263,12 @@ class SchemePerformanceController extends Controller
 
         $to_append_thead .= '<th>Status</th>';
         $to_append_row .= '<td>
-                            <select name="status[]" class="form-control">
-                                <option value="0" selected>Inprogress</option>
-                                <option value="1">Completed</option>
+                            <select name="status[]" class="form-control" required>
+                            <option value="" >--Select--</option>
+                            <option value="2" selected>Sanctioned</option>
                             </select>
                         </td>';
+        
         $to_append_thead .= '<th>Comments</th>';
         $to_append_row .= '<td><input type="text" name="comments[]" class="form-control" placeholder="comments"></td>';
         $to_append_thead .= '<th>Others</th>';
