@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\SchemeAsset;
 use App\Uom;
+use App\UoM_Type;
 
 
 class Scheme_Asset_Controller extends Controller
@@ -28,7 +29,7 @@ class Scheme_Asset_Controller extends Controller
         $hidden_input_id= "NA";
         $data = new SchemeAsset;
         
-        $uom_data = Uom::orderBy('uom_id','desc')->select('uom_name','uom_type')->get();
+        $uom_data = UoM_Type::orderBy('uom_type_id','asc')->get();
         // $uom_datas = Uom::select('uom_id','uom_name')->get();
 
         if(isset($request->purpose)&&isset($request->id)){

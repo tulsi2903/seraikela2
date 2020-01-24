@@ -7,14 +7,17 @@ use App\Uom;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\UoMSectionExport;
 use PDF;
-
+use App\UoM_Type;
 
 
 class UomController extends Controller
 {
     public function index(){
-        $datas = Uom::orderBy('uom_id','desc')->get();
-        return view('uom.index')->with('datas', $datas);
+        $datas = Uom::leftjoin('uom_type','uom_type.uom_type_id','=','uom.uom_type_id')
+                        ->select('uom_type.uom_type_name','uom.*')->orderBy('uom_id','desc')->get();
+        // return  $datas;             
+        $uom_type =UoM_Type::orderBy('uom_type_id','asc')->get();
+        return view('uom.index',compact('uom_type'))->with('datas', $datas);
     }
 
     
@@ -44,7 +47,7 @@ class UomController extends Controller
         }
 
         $uom->uom_name= $request->uom_name;
-        $uom->uom_type= $request->uom_type;
+        $uom->uom_type_id= $request->uom_type_id;
         $uom->created_by = session()->get('user_id');
         $uom->updated_by = session()->get('user_id');
 

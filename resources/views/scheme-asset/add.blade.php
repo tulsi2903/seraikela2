@@ -69,8 +69,8 @@
                         <label for="uom_type_id">UoM type<font style="color:red;">*</font></label>                                     
                             <select name="uom_type_id" id="uom_type_id" class="form-control form-control">
                                 <option value="">--Select--</option>
-                                @foreach($uom_data as $uom_data_id)
-                                <option value="{{$uom_data_id->uom_type}}">{{$uom_data_id->uom_name}}</option>
+                                @foreach($uom_data as $uom_data_show)
+                                <option value="{{$uom_data_show->uom_type_id}}">{{$uom_data_show->uom_type_name}}</option>
                                 @endforeach
                                 
                             </select>
