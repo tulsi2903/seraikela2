@@ -214,19 +214,33 @@ class SchemePerformanceController extends Controller
                     $to_append_tbody .= '<option value="2" selected >Sanctioned</option>';
                 }
                 $to_append_tbody .= '</select></td>';
+                 /*Spans Across Borders */
+                 if($scheme_data->spans_across_borders==1)
+                 {
+                     $to_append_tbody .='<td> 
+                                     <input type="checkbox" name="connectivity_details[]" value="1" onclick="showbutton(this.value,this)" '. ($value_SchemePerformance["connectivity_status"]==1 ? "checked" : "") .'>
+                                     </td>';
+                 }
+                 /* End Spans Across Borders */
                 $to_append_tbody .= '<td><input type="text" name="comments[]" value="' . $value_SchemePerformance['comments'] . '" class="form-control status_readonly" placeholder="comments"></td>';
                 // for gallery & coordinates
                 if ($value_SchemePerformance['status'] == 3) {
                     $to_append_tbody .= '<td><i class="fas fa-plus"></i>Images';
                     $to_append_tbody .= '<br/><i class="fas fa-plus"></i>Coordinates';
-                    $to_append_tbody .= '</td>';
+                    // $to_append_tbody .= '</td>';
                 } else {
                     $to_append_tbody .= '<td><a  onclick="update_image(' . $value_SchemePerformance['scheme_performance_id'] . ');" href="javascript:void()"> <i class="fas fa-plus"></i>Images</a>';
                     // $to_append_tbody.='<td><button type="button" class="btn btn-danger btn-xs" onclick="delete_row(this)"><i class="fas fa-trash-alt"></i></button></td>';
                     $to_append_tbody .= '<br/><a  onclick="coordinates_details(' . $value_SchemePerformance['scheme_performance_id'] . ');" href="javascript:void();"><i class="fas fa-plus"></i>Coordinates</a>';
-                    $to_append_tbody .= '</td>';
+                    // $to_append_tbody .= '</td>';
                 }
-
+                /*Spans Across Borders */
+                if($value_SchemePerformance["connectivity_status"] == 0)
+                $to_append_tbody .= '<br/><a  onclick="border_connectivity_details(' . $value_SchemePerformance['scheme_performance_id'] . ');" href="javascript:void();" style="display:none" class="showconnectivity"><i class="fas fa-plus"></i>Connectivity</a>';
+                else
+                $to_append_tbody .= '<br/><a  onclick="border_connectivity_details(' . $value_SchemePerformance['scheme_performance_id'] . ');" href="javascript:void();" class="showconnectivity"><i class="fas fa-plus"></i>Connectivity</a>';
+                /* End Spans Across Borders */
+                $to_append_tbody .= '</td>';
                 $to_append_tbody .= '<td><button type="button" class="btn btn-danger btn-xs" onclick="delete_row(this,' . $value_SchemePerformance['scheme_performance_id'] . ')"><i class="fas fa-trash-alt"></i></button></td>';
                 $to_append_tbody .= '</tr>';
                 $total_count_record = $key_SchemePerformance + 1;
@@ -278,6 +292,15 @@ class SchemePerformanceController extends Controller
                             <option value="2" selected>Sanctioned</option>
                             </select>
                         </td>';
+
+        /*Spans Across Borders */
+        if($scheme_data->spans_across_borders==1)
+        {
+            $to_append_thead .= '<th>Connectivity Details</th>';
+            $to_append_row .='<td> <input type="checkbox" name="connectivity_details[]" value="1"></td>';
+            // $to_append_row .='<td></td>';
+        }
+        /*Spans Across Borders */
 
         $to_append_thead .= '<th>Comments</th>';
         $to_append_row .= '<td><input type="text" name="comments[]" class="form-control" placeholder="comments"></td>';
@@ -332,6 +355,13 @@ class SchemePerformanceController extends Controller
                     $scheme_performance->year_id = $year_id;
                     $scheme_performance->subdivision_id = $subdivision_id;
                     $scheme_performance->block_id = $block_id;
+                     /*  Spans Across Borders */
+                     if ($request->connectivity_details[$key_request]) {
+                        $scheme_performance->connectivity_status = $request->connectivity_details[$key_request];
+                    } else {
+                        $scheme_performance->connectivity_status = 0;
+                    }
+                    /* End Spans Across Borders */
                     $scheme_performance->panchayat_id = $panchayat_id;
                     $scheme_performance->attribute = serialize($value_request) ?? "";
                     $scheme_performance->status = $request->status[$key_request];
@@ -350,6 +380,13 @@ class SchemePerformanceController extends Controller
                 $scheme_performance->panchayat_id = $panchayat_id;
                 $scheme_performance->attribute = serialize($value_request) ?? "";
                 $scheme_performance->status = $request->status[$key_request];
+                /* Spans Across Borders */
+                if ($request->connectivity_details[$key_request]) {
+                    $scheme_performance->connectivity_status = $request->connectivity_details[$key_request];
+                } else {
+                    $scheme_performance->connectivity_status = 0;
+                }
+                /* End Spans Across Borders */
                 $scheme_performance->scheme_asset_id = $request->assest_name[$key_request] ?? $scheme_data->scheme_asset_id;
                 $scheme_performance->comments = $request->comments[$key_request] ?? "";
                 $scheme_performance->created_by = Auth::user()->id;
@@ -846,4 +883,50 @@ class SchemePerformanceController extends Controller
 
         return view('scheme-performance.schemeimport')->with(compact('scheme_datas', 'year_datas', 'block_datas'));
     }
+
+    /*  Spans Across Borders */
+    public function getblock_datafor_borders()
+    {
+        $block_datas = GeoStructure::select('geo_id', 'geo_name')->orderBy('geo_name', 'asc')->where('level_id', '=', '3')->get();
+        return ["block_datas" => $block_datas];
+    }
+    public function getpanchayat_datafor_borders(Request $request)
+    {
+        $datas = GeoStructure::where('bl_id', $request->block_id)->get();
+        return $datas;
+    }
+    public function get_connectivity_details($scheme_id)
+    {
+        $block_datas = GeoStructure::select('geo_id', 'geo_name')->orderBy('geo_name', 'asc')->where('level_id', '=', '3')->get();
+        $SchemePerformance_connectivity = SchemePerformance::where('scheme_performance_id', $scheme_id)->first();
+        $connectivity_details = array();
+        if ($SchemePerformance_connectivity->borders_connectivity != "") {
+            $connectivity_details = unserialize($SchemePerformance_connectivity->borders_connectivity);
+        }
+        // echo "<pre>";
+        // print_r($connectivity_details);exit;
+        foreach ($connectivity_details as $key => $value) {
+            $panchayat_datas[] = GeoStructure::select('geo_id', 'geo_name')->orderBy('geo_name', 'asc')->where('bl_id',$value['conn_block_id'])->get();
+        }
+        return ["block_datas" => $block_datas,"scheme_id" => $scheme_id,"connectivity" => $connectivity_details,"panchayat_datas" => $panchayat_datas];
+    }
+
+    public function savebl_pl_connectivity(Request $request)
+    {
+        $connectivity = array();
+        foreach ($request->block_connectivity as $key_connectivity => $value_connectivity) {
+            $connectivity[] = array('conn_block_id' => $request->block_connectivity[$key_connectivity], 'conn_panchayat_id' => $request->panchayay_connectivity[$key_connectivity]);
+        }
+        if ($connectivity) {
+            if ($request->scheme_performance_id_connectivity != null) {
+                $SchemePerformance_edit = SchemePerformance::find($request->scheme_performance_id_connectivity);
+                $SchemePerformance_edit->borders_connectivity = serialize($connectivity);
+                $SchemePerformance_edit->save();
+            }
+        } else {
+            return ["message" => "Scheme latitudes longitudes You Have  Already entered"];
+        }
+        return ["message" => "success"];
+    }
+    /* End Spans Across Borders */
 }

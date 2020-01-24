@@ -262,6 +262,57 @@
         </div>
     </div>
 </div>
+
+<div id="create-connectivity" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content"style="margin-top: 11em;">
+            <div class="modal-header" style="border-top: 2px solid #5269a3">
+                <h4 class="modal-title mt-0" style="font-family: 'Bree Serif', serif;color:#000;">Connectivity Details</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="{{url('scheme_performance/savebl_pl_connectivity')}}" method="post" id="Formsaveborderconnectivity" enctype="multipart/form-data" autocomplete="off">
+                @csrf
+                <div class="modal-body">
+                    <div class="row" style="padding:2em;    margin-top: -3em;">
+                        <table class="table table-bordered table-head-bg-info table-bordered-bd-info mt-4">
+                            <thead>
+                                <tr>
+                                    <th>SI.No</th>
+                                    <th>Block</th>
+                                    <th>Panchayat</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="append_connectivity_section">
+                                <!-- append details -->
+                            </tbody>
+                            <tbody>
+                                <tr>
+                                    <td colspan="4">
+                                        <div style="text-align: right;">
+                                            <button type="button" class="btn btn-secondary btn-sm btn-circle" onclick="appendconnectivity()">Add&nbsp;&nbsp;<i class="fa fa-plus-circle" aria-hidden="true"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div id="connectivity_details">
+                            <!-- append images -->
+                        </div>
+                    </div>
+                </div>
+
+                <input type="hidden" class="form-control" name="scheme_performance_id_connectivity" id="scheme_performance_id_for_connectivity"> <!--  scheme_performance_id -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Cancel</button>
+                    <button type="button" id="connectivity_save" onclick="submitborderconnectivityAjax();" class="btn btn-info waves-effect waves-light">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 <script>
     // to append row
     var to_append_row = "";
@@ -711,7 +762,6 @@ function checkStatusOld(e,id)
     if(status_id==0)
     {
         var  result="true";
-        alert(id);
         $.ajax({
             url: "{{url('scheme-performance/checkduplicate/')}}" + "/" + id+"/"+result,
             method: "GET",
@@ -725,11 +775,9 @@ function checkStatusOld(e,id)
                 $(".custom-loader").fadeOut(300);
             },
             success: function (data) {
-                console.log(data);
                 $(".custom-loader").fadeOut(300);
             }
         });
-        alert("inprogess");
     }
     if(status_id==1)
     {
@@ -838,5 +886,182 @@ function check_performamance_status()
     alert("dfdf");
     return true;
 }
+</script>
+
+<script>
+    function get_panchayat_datas_for_borders(id, e) {
+        if (id) {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                url: "{{url('scheme-performance/get-panchayat-datas-for-borders')}}",
+                data: { 'block_id': id },
+                method: "GET",
+                contentType: 'application/json',
+                dataType: "json",
+                success: function (data) {
+
+                    var panchayat_val = $(e).closest('tr').find("select[name='panchayay_connectivity[]']");
+                    for (var i = 0; i < data.length; i++) {
+                        $(panchayat_val).append('<option value="' + data[i].geo_id + '">' + data[i].geo_name + '</option>');
+                    }
+                }
+            });
+        }
+    }
+    function appendconnectivity() {
+        append_no++;
+        $.ajax({
+            url: "{{url('scheme-performance/getblock_datafor_borders')}}",
+            method: "GET",
+            contentType: 'application/json',
+            dataType: "json",
+            success: function (data) {
+                console.log(data);
+                to_append = `<tr>
+                    <td>  <span class="index_no">`+ append_no + `</span></td>
+                        <td> <select name="block_connectivity[]" id="block_connectivity" onchange='get_panchayat_datas_for_borders(this.value,this)' class="form-control">
+                                <option value="">---Select---</option>`;
+                for (i = 0; i < data.block_datas.length; i++) {
+                    to_append += `<option value="` + data.block_datas[i].geo_id + `">` + data.block_datas[i].geo_name + `</option>`
+                }
+                to_append += ` </select>          
+                        </td>
+                        <td><select name="panchayay_connectivity[]" id="panchayay_connectivity" class="form-control">
+                                <option value="">--Select--</option>
+                            </select>
+                        </td>
+                        <td><button type="button" class="btn btn-danger btn-xs" onclick="delete_lat_lon(this)"><i class="fas fa-trash-alt"></i></button></td>
+                            </tr>`;
+                $("#append_connectivity_section").append(to_append);
+                sl_no_append();
+            }
+        });
+    }
+    function border_connectivity_details(scheme_id) {
+
+        $('#create-connectivity').modal('show');
+        $("#scheme_performance_id_for_connectivity").val(scheme_id);
+        $("#append_connectivity_section").html("");
+        append_no = 0;
+        $.ajax({
+            url: "{{url('scheme-performance/get-connectivity/')}}" + "/" + scheme_id,
+            method: "GET",
+            contentType: 'application/json',
+            dataType: "json",
+            beforeSend: function (data) {
+                $(".custom-loader").fadeIn(300);
+            },
+            error: function (xhr) {
+                alert("error" + xhr.status + "," + xhr.statusText);
+                $(".custom-loader").fadeOut(300);
+            },
+            success: function (data) {
+                // console.log(data);
+                $("#append_connectivity_section").html("");
+                if (data.connectivity.length > 0) {
+                    append_no = 1;
+                    var to_append;
+                    for (i = 0; i < data.connectivity.length; i++) {
+                        append_no = i + 1;
+                        to_append += `<tr>
+                        <td><span>`+ append_no + `</span></td>
+                        <td> <select name="block_connectivity[]" id="block_connectivity" onchange='get_panchayat_datas_for_borders(this.value,this)' class="form-control">
+                                <option value="">---Select---</option>`;
+                        for (j = 0; j < data.block_datas.length; j++) {
+                            if (data.block_datas[j].geo_id == data.connectivity[i].conn_block_id)
+                                to_append += `<option value="` + data.block_datas[j].geo_id + `"  selected="selected">` + data.block_datas[j].geo_name + `</option>`
+                            else
+                                to_append += `<option value="` + data.block_datas[j].geo_id + `" >` + data.block_datas[j].geo_name + `</option>`
+                        }
+                        to_append += ` </select>    
+                        </td>
+                        <td> <select name="panchayay_connectivity[]" id="panchayay_connectivity" class="form-control">
+                            <option value="">--Select--</option>`;
+                        for (j = 0; j < data.panchayat_datas[i].length; j++) {
+                            if (data.panchayat_datas[i][j].geo_id == data.connectivity[i].conn_panchayat_id)
+                                to_append += `<option value="` + data.panchayat_datas[i][j].geo_id + `"  selected="selected">` + data.panchayat_datas[i][j].geo_name + `</option>`
+                            else
+                                to_append += `<option value="` + data.panchayat_datas[i][j].geo_id + `" >` + data.panchayat_datas[i][j].geo_name + `</option>`
+                        }
+                        to_append += `  </select>
+                        </td>
+                        
+                        <td><button type="button" class="btn btn-danger btn-xs" onclick="delete_lat_lon(this)"><i class="fas fa-trash-alt"></i></button></td>
+                    </tr>`;
+                    }
+                    $("#append_connectivity_section").html(to_append);
+                    sl_no_append();
+                }
+                $(".custom-loader").fadeOut(300);
+            }
+        });
+    }
+
+    function submitborderconnectivityAjax() {
+        var formElement = $('#Formsaveborderconnectivity')[0];
+        var form_data = new FormData(formElement);
+
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        $.ajax({
+            url: "{{url('scheme_performance/savebl_pl_connectivity')}}",
+            data: form_data,
+            method: "POST",
+            dataType: 'json',
+            processData: false,
+            contentType: false,
+            beforeSend: function (data) {
+                $(".custom-loader").fadeIn(300);
+            },
+            error: function (xhr) {
+                alert("error" + xhr.status + ", " + xhr.statusText);
+                $(".custom-loader").fadeOut(300);
+            },
+            success: function (data) {
+                if (data.message == "success") {
+                    swal("Success!", "New Border Connectivity  has been added successfully.", {
+                        icon: "success",
+                        buttons: {
+                            confirm: {
+                                className: 'btn btn-success'
+                            }
+                        },
+                    }).then((ok) => {
+                        $('#create-connectivity').modal('hide');
+                    });
+                }
+                else {
+                    // error occured
+                    swal("Error Occured!", data.message, {
+                        icon: "error",
+                        buttons: {
+                            confirm: {
+                                className: 'btn btn-danger'
+                            }
+                        },
+                    });
+                }
+
+                $(".custom-loader").fadeOut(300);
+            }
+        });
+    }
+    function showbutton(id_status, e) {
+        var check_ststus = $(e).closest('tr').find("input[name='connectivity_details[]']").is(":checked");
+
+        if (check_ststus == 1) {
+            $(e).closest('tr').find(".showconnectivity").css('display', 'block');
+        }
+        else {
+            $(e).closest('tr').find(".showconnectivity").css('display', 'none');
+        }
+    }
 </script>
 @endsection

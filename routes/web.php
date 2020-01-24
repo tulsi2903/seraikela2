@@ -246,6 +246,10 @@ Route::get('scheme-performance/get-gallery/{id}','SchemePerformanceController@ge
 Route::post('scheme_performance/coordinatesupdate','SchemePerformanceController@save_coordinate');
 Route::get('scheme-performance/get-coordinates/{id}','SchemePerformanceController@get_coordinates_details');
 Route::get('scheme-performance/download_error_log','SchemePerformanceController@download_error_log');
+Route::get('scheme-performance/get-connectivity/{scheme_id}','SchemePerformanceController@get_connectivity_details'); /* End Spans Across Borders */
+Route::get('scheme-performance/getblock_datafor_borders','SchemePerformanceController@getblock_datafor_borders'); /* End Spans Across Borders */
+Route::get('scheme-performance/get-panchayat-datas-for-borders','SchemePerformanceController@getpanchayat_datafor_borders'); /* End Spans Across Borders */
+Route::post('scheme_performance/savebl_pl_connectivity','SchemePerformanceController@savebl_pl_connectivity'); /* End Spans Across Borders */
 
 /* scheme review */
 Route::get('scheme-review', 'SchemeReviewController@index');
