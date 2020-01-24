@@ -27,7 +27,7 @@
                 <div class="row">
                     <div class="col-md-12"><br>
                         <div class="card" style="min-height: unset !important;border-top: 1px solid #5c76b7;">
-                            <form action="{{url('user/store')}}" method="POST" id="user-form" enctype="multipart/form-data">
+                            <form action="{{url('user/store')}}" method="POST" id="user-form" enctype="multipart/form-data" onsubmit="return false;">
                                 @csrf
                                 <div class="card-body">
                                     <div class="row">
@@ -215,7 +215,7 @@
                             <th>{{$phrase->designation}}</th>
                             <th>{{$phrase->address}}</th>
                             <th>{{$phrase->sts}}</th>
-                            <th>Action</th>
+                            <th>{{$phrase->action}}</th>
 
                         </tr>
                     </thead>
@@ -295,7 +295,7 @@
             <div class="modal-footer">
 
                 <input type="text" name="input_id" id="input_id" hidden>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" onclick="return clearModel()" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 <button type="submit" onclick="return passwordSubmit()" class="btn btn-primary">Submit</button>
 
             </div>
@@ -402,6 +402,10 @@ function passwordSubmit(){
 
     function myFun(id) {
         $("#input_id").val(id);
+        $("#new_password").val("");
+        $("#new_password").removeClass("is-invalid");
+        $("#confirm_password_model").val("");
+        $("#confirm_password_model").removeClass("is-invalid");
         $('#exampleModal').modal('show');
     }
 </script>
@@ -744,10 +748,12 @@ function passwordSubmit(){
         status_validate();
 
         if (title_error || first_name_error || middle_name_error || last_name_error  || desig_id_error  || email_error || username_error || password_error || confirm_password_error || mobile_error || confirm_password_error || mobile_error || address_error || status_error) {
-            console.log(title_error + " " + first_name_error + " " + middle_name_error + " " + last_name_error + " "  + desig_id_error + " " + email_error + " " + username_error + " " + password_error + " " + confirm_password_error + " " + mobile_error + " " + address_error + " " + status_error);
-            console.log(password_error);
+            // console.log(title_error + " " + first_name_error + " " + middle_name_error + " " + last_name_error + " "  + desig_id_error + " " + email_error + " " + username_error + " " + password_error + " " + confirm_password_error + " " + mobile_error + " " + address_error + " " + status_error);
+            // console.log(password_error);
             return false;
         } else {
+            submitAjax();
+
             return true;
         }
     }
@@ -827,12 +833,79 @@ function passwordSubmit(){
         $("#status").removeClass("is-invalid");
     }
 
+    function clearModel(){
+        $("#new_password").val("");
+        $("#new_password").removeClass("is-invalid");
+        $("#confirm_password_model").val("");
+        $("#confirm_password_model").removeClass("is-invalid");
+    }
+
     function hideForm() {
         // resetUserForm(); // resetting form
         // document.getElementById("user-form").reset();
         resetUserForm(); // resetting form
         $("#show-toggle1").slideUp(150); // opening form div
     }
+</script>
+
+<script>
+    function submitAjax() {
+        var formElement = $('#user-form')[0];
+        var form_data = new FormData(formElement);
+
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        $.ajax({
+            url: "{{url('user/store')}}",
+            data: form_data,
+            method: "POST",
+            dataType: 'json',
+            processData: false,
+            contentType: false,
+            beforeSend: function (data) {
+                $(".custom-loader").fadeIn(300);
+            },
+            error: function (xhr) {
+                // console.log(xhr);
+                alert("error" + xhr.status + ", " + xhr.statusText);
+                $(".custom-loader").fadeOut(300);
+            },
+            success: function (data) {
+                console.log(data);
+                if (data.response == "success") {
+                    resetUserForm(); // resetting form
+                    $("#show-toggle1").click(); // closing form div
+                    swal("Success!", "User has been added successfully.", {
+                        icon: "success",
+                        buttons: {
+                            confirm: {
+                                className: 'btn btn-success'
+                            }
+                        },
+                    })
+                   
+                }
+                else {
+                    // error occured
+                    swal("This combination of username and email already exist!", {
+                        icon: "error",
+                        buttons: {
+                            confirm: {
+                                className: 'btn btn-danger'
+                            }
+                        },
+                    });
+
+                  
+                }
+                $(".custom-loader").fadeOut(300);
+            }
+        });
+    }
+
 </script>
 
 @endsection
