@@ -122,6 +122,7 @@
                                     <th>{{$phrase->icon}}</th>
                                     <th>{{$phrase->geo_related}}</th>
                                     <th>{{$phrase->multiple_geo_tags}}</th>
+                                    <th>UoM</th>
                                     <th>{{$phrase->action}}</th>
                                 </tr>
                             </thead>
@@ -150,7 +151,8 @@
                                                 @else
                                                 No
                                                 @endif
-                                            </td>     
+                                            </td> 
+                                            <td>{{$data->uom_name}}</td>   
                                             <td>
                                                 <a href="{{url('scheme-asset/view')}}/{{$data->scheme_asset_id}}" class="btn btn-secondary btn-sm"><i class="fas fa-eye"></i></a>
                                                 &nbsp;&nbsp;<a href="{{url('scheme-asset/add')}}?purpose=edit&id={{$data->scheme_asset_id}}" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></a>

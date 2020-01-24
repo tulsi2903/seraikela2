@@ -15,10 +15,12 @@ class Scheme_Asset_Controller extends Controller
 {
 
     public function index()
-    {
-        
-       
-        $datas = SchemeAsset::orderBy('scheme_asset_id','desc')->get();
+    {      
+        $datas = SchemeAsset::leftjoin('uom','uom.uom_id','=','scheme_assets.uom_type_id')
+        ->select('scheme_assets.*','uom.uom_name')->orderBy('scheme_asset_id','desc')->get();
+        // echo "<pre>";
+        // print_r($datas);
+        // exit;
       
         return view('scheme-asset.index',compact('datas'));
         
@@ -29,7 +31,8 @@ class Scheme_Asset_Controller extends Controller
         $hidden_input_id= "NA";
         $data = new SchemeAsset;
         
-        $uom_data = UoM_Type::orderBy('uom_type_id','asc')->get();
+        $uom_data = Uom::orderBy('uom_id','asc')->get();
+        // return $uom_data;
         // $uom_datas = Uom::select('uom_id','uom_name')->get();
 
         if(isset($request->purpose)&&isset($request->id)){

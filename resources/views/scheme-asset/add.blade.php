@@ -59,20 +59,19 @@
                 </div>
                 <div class="col-md-4">
                     <div class="form-group" style="margin-top: -5px;">
-                        <label for="radius">Radius<span style="color:red;margin-left:5px;">*</span></label>
+                        <label for="radius">Radius</label>
                         <input name="radius" id="radius" class="form-control" autocomplete="off" value="{{$data->radius}}">
-                        <div class="invalid-feedback" id="scheme_asset_name_error_msg"></div>
+                        <div class="invalid-feedback" id="radius_error_msg"></div>
                     </div>
                 </div> 
                 <div class="col-md-4">
                     <div class="form-group">
-                        <label for="uom_type_id">UoM type<font style="color:red;">*</font></label>                                     
-                            <select name="uom_type_id" id="uom_type_id" class="form-control form-control">
+                        <label for="uom_type_id">UoM<font style="color:red;">*</font></label>                                     
+                            <select name="uom_type_id" id="uom_type" class="form-control form-control">
                                 <option value="">--Select--</option>
                                 @foreach($uom_data as $uom_data_show)
-                                <option value="{{$uom_data_show->uom_type_id}}">{{$uom_data_show->uom_type_name}}</option>
-                                @endforeach
-                                
+                                <option value="{{$uom_data_show->uom_id}}" <?php if ($data->uom_type_id == $uom_data_show->uom_id) { echo "selected"; } ?>>{{$uom_data_show->uom_name}}</option>
+                                @endforeach                               
                             </select>
                         <div class="invalid-feedback" id="uom_type_error_msg"></div>
                     </div>
@@ -154,14 +153,19 @@
         var attribute_name_error = true;
         var attribute_uom_error = true;
         var marker_icon_error=true;
+        var uom_type_error=true;
 
         $(document).ready(function() {
             $("#scheme_asset_name").change(function() {
                 scheme_asset_name_validate();
             });
             $("#mapmarkericon").change(function() {
-                mapmarker_validate();
+                mapmarker_validate();            
             });
+            $("#uom_type").change(function(){
+                uom_type_validate();
+        });
+
         });
 
         function scheme_asset_name_validate() {
@@ -246,13 +250,27 @@
                 $("#mapmarkericon").removeClass('is-invalid');
             }
     }
-    
+
+        function uom_type_validate() {
+            var uom_type_val = $("#uom_type").val();
+            if(uom_type_val==""){
+                uom_type_error=true;
+                $("#uom_type").addClass('is-invalid');
+                $("#uom_type_error_msg").html("UoM Type Should not be blank");
+            }
+            else {
+                uom_type_error = false;
+                    $("#uom_type").removeClass('is-invalid');
+                }      
+        }
         function submitForm() {
             scheme_asset_name_validate();
             attribute_name_validate();
             attribute_uom_validate();
             mapmarker_validate();
-            if (scheme_asset_name_error || attribute_name_error || attribute_uom_error || marker_icon_error) {
+            uom_type_validate();
+
+            if (scheme_asset_name_error || attribute_name_error || attribute_uom_error || marker_icon_error || uom_type_error) {
                 return false;
             } // error occured
             else {

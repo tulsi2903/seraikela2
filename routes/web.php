@@ -344,4 +344,7 @@ Route::get('uom_type','UoMType_Controller@index');
 Route::post('uom_type/store','UoMType_Controller@store');
 Route::get('uom_type/delete/{uom_type_id}','UoMType_Controller@delete');
 
+//block test
+Route::get('block','UoMType_Controller@show_block');
+Route::get('block/panchyat_data','UoMType_Controller@show_panchayat_datas');
 

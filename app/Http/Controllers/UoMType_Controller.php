@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\UoM_Type;
+use App\GeoStructure;
 
 
 class UoMType_Controller extends Controller
@@ -55,6 +56,19 @@ class UoMType_Controller extends Controller
         }
         return redirect('uom_type');
     }
+
+    public function show_block()
+    {
+        $block_datas = GeoStructure::select('geo_id', 'geo_name')->orderBy('geo_name', 'asc')->where('level_id', '=', '3')->get();
+        return view('test.index',compact('block_datas'));
+       
+    }
+    public function show_panchayat_datas(Request $request)
+    {
+        $datas = GeoStructure::where('bl_id', $request->block_id)->get();
+        return $datas;
+    }
+
 
 
 
