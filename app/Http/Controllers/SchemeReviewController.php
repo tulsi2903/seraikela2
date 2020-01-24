@@ -328,7 +328,6 @@ class SchemeReviewController extends Controller
 
 
         // assigning block datas
-        $block_datas; // block_id, block_name
         if($review_for=="block"){
             $block_datas = GeoStructure::select('geo_id as block_id','geo_name as block_name')->whereIn('geo_id', $geo_id)->get();
         }
@@ -388,7 +387,7 @@ class SchemeReviewController extends Controller
                         // getting all attributes value in single dimentional associative array (before it is multidimnentional assiciative array)
                         // $scheme_data = SchemeStructure::find($scheme_id); // getting scheme details (attributes, id etc)
                         $attributes = unserialize($scheme_data->attributes); // getting attrubutes
-
+                        $tabular_data_tmp=array();
                         $performance_attributes = [];
                         $per_attr_tmps = unserialize($performance_data->attribute);
                         foreach($per_attr_tmps as $per_attr_tmp){
@@ -396,10 +395,16 @@ class SchemeReviewController extends Controller
                         }
 
                         // for attributes
-                        foreach($attributes as $attribute){
-                            array_push($tabular_data_tmp, $performance_attributes[$attribute[id]]);
-                            array_push($map_datas_tmp["attributes"], [$attribute[name], $performance_attributes[$attribute[id]]]);
-                        }
+                        // foreach($attributes as $attribute){
+                        //     // print_r($attribute);
+                        //     // print_r($performance_attributes);
+                        //     // exit();
+                        //     // return $attribute['id'];
+                        //     // return $performance_attributes[$attribute['id']];
+                        //     // return $attribute['name'];
+                        //     array_push($tabular_data_tmp, $performance_attributes[$attribute['id']]);
+                        //     array_push($map_datas_tmp["attributes"], [$attribute['name'], $performance_attributes[$attribute['id']]]);
+                        // }
 
                         // for assets
                         if($performance_data->scheme_asset_name){
@@ -407,12 +412,19 @@ class SchemeReviewController extends Controller
                             $map_datas_tmp["asset_name"] = $performance_data->scheme_asset_name;
                         }
                         else{
-                            array_push($tabular_data_tmp, SchemeAsset::find($scheme_data->scheme_asset_id)->scheme_asset_name);
-                            $map_datas_tmp["asset_name"] = SchemeAsset::find($scheme_data->scheme_asset_id)->scheme_asset_name;
-                        }
+                            if($scheme_data->scheme_asset_id)
+                            {
+                                array_push($tabular_data_tmp, SchemeAsset::find($scheme_data->scheme_asset_id)->scheme_asset_name);
+                                $map_datas_tmp["asset_name"] = SchemeAsset::find($scheme_data->scheme_asset_id)->scheme_asset_name;
+                            }
+                            else{
+                                $map_datas_tmp["asset_name"] = "";
+                            }
 
+                        }
+// return $tabular_data_tmp;
                         // for status
-                        if($performance_data->status==0){
+                        if($performance_data->status==0){\
                             array_push($tabular_data_tmp, "Incomplete");
                             $map_datas_tmp["status"] = "Incomplete";
                         }
@@ -427,7 +439,22 @@ class SchemeReviewController extends Controller
                             $map_datas_tmp["latitude"] = $coordinates_tmp[0]["latitude"];
                             $map_datas_tmp["longitude"] = $coordinates_tmp[0]["longitude"];
                         }
-
+                       
+                        
+                        if($performance_data->coordinates){
+                            $coordinates_multi=array();
+                            $coordinates_details = unserialize($performance_data->coordinates);
+                            foreach($coordinates_details as $key_coor=>$value_coor)
+                            {
+                                $coordinates_multi[$key_coor]['lat']=(float)$value_coor['latitude'];
+                                $coordinates_multi[$key_coor]['lng']=(float)$value_coor['longitude'];
+                                // print_r($value_coor);
+                            }
+                            $map_datas_tmp["coordinates_details"]=$coordinates_multi;
+                            // print_r($map_datas_tmp["coordinates_details"]);
+                        }
+                      
+                        // exit;
                         // for gallery
                         $map_datas_tmp["gallery"] = unserialize($performance_data->gallery);
 
@@ -443,6 +470,7 @@ class SchemeReviewController extends Controller
                             array_push($map_datas, $map_datas_tmp);
                         }
                     }
+                    
                     /******** map ends ********/
 
                     $total_count_tmp = "<a href='javascript:void();' onclick=\"getAllDatasIndividually('".$panchayat_data->geo_id."', '".$panchayat_data->geo_name."', '".$scheme_data->scheme_id."')\">".$performance_datas->count()."</a>";
