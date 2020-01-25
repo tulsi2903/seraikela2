@@ -19,6 +19,44 @@
             right: 0;
             width: 10px;
         }
+        .dropdown-menu .dropdown-item {
+            font-size: .88rem;
+            display: flex;
+            align-items: center;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            cursor: pointer;
+            z-index: 6;
+            position: relative;
+        }
+
+        .flag.large {
+            height: 32px;
+            width: 32px;
+            background-size: 32px 32px;
+        }
+        .flag.large {
+            height: 32px;
+            width: 32px;
+            background-size: 32px 32px;
+        }
+        .ES {
+            background:url("{{url('public/images/hin.png')}}") no-repeat;
+        }
+
+        .flag.large {
+            height: 32px;
+            width: 32px;
+            background-size: 32px 32px;
+        }
+        .flag.large {
+            height: 32px;
+            width: 32px;
+            background-size: 32px 32px;
+        }
+        .FR {
+            background:url("{{url('public/images/eng.png')}}") no-repeat;
+        }
+                
         
     </style>
 
@@ -60,14 +98,24 @@
                         <a class="nav-link" data-toggle="dropdown" href="#" aria-expanded="false">
                             <p style="color: rgba(235, 225, 224, 0.932);font-weight: 500;font-family: 'Bree Serif', serif;margin-top: 5px;">Language :<i class="fas fa-sort-alpha-down"></i></p>
                         </a>
-                        <div class="dropdown-menu quick-actions quick-actions-info animated fadeIn">
+                        <div class="dropdown-menu quick-actions quick-actions-info animated fadeIn" style="background: linear-gradient(to top, #c9d8ff, #ffffff 70%, #ffffff, #ffffff 100%);">
                             <?php $one=1;
                             $two=2; ?>
-                      <div class="quick-actions-header">
-                          <a href="{{url('lang/english/'.$one)}}"><span class="title mb-1">English</span></a>
-                          <a href="{{url('lang/hindi/'.$two)}}"><span class="title mb-1">Hindi</span></a>
-                      </div>
-                  </div>
+                            <a href="{{url('lang/english/'.$one)}}">
+                                <button type="button" tabindex="0" class="dropdown-item">
+                                <span class="mr-3 opacity-8 flag large FR"></span>
+                                English
+                            </button>
+                        </a> 
+                            
+                            <a href="{{url('lang/hindi/'.$two)}}"> <button type="button" tabindex="0" class="dropdown-item">
+                                <span class="mr-3 opacity-8 flag large ES"></span>
+                                    हिंदी
+                            </button>
+                            </a>
+                           
+                     
+                        </div>
                     </li>
 
                         <li class="nav-item dropdown hidden-caret">
