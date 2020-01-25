@@ -24,14 +24,15 @@ class DashboardController extends Controller
     public function index()
     {
         
-        if(Auth::user()->status==0)
-        {
-            session()->flush();
-            return redirect()->back();
-        }
+
 
          // session store user details
         if (Auth::check()) {
+            if(Auth::user()->status==0)
+            {
+                session()->flush();
+                return redirect()->back();
+            }
             session()->put('user_id', Auth::user()->id);
             session()->put('user_full_name',"Mr .". Auth::user()->first_name . " " . Auth::user()->last_name);
             session()->put('user_org_id', Auth::user()->org_id);
