@@ -842,6 +842,12 @@ class AssetNumbersController extends Controller
                 $geo_names = GeoStructure::where('geo_id', $panchayat_id_tmp->geo_id)->where('level_id', '4')->pluck('geo_name'); // decide rows (panchayat)
             }
         }
+        
+        //  echo "<pre>";
+        //     // // // echo $readExcel[1]['main_resource_sno'];
+        //    print_r($geo_names);
+        //             // print_r($tableHeadingsAndAtributes);
+        //             exit;
 
         $geo_names = (array)$geo_names;
         $geo_names_array=array();
@@ -849,7 +855,7 @@ class AssetNumbersController extends Controller
         {
             $geo_names_array=$value_geo;
         }
-
+            
         if ($_FILES['excel_for_asset_number']['tmp_name']) {
             $readExcel = \Excel::load($_FILES['excel_for_asset_number']['tmp_name'], function ($reader) { })->get()->toArray();
             $readExcelHeader = \Excel::load($_FILES['excel_for_asset_number']['tmp_name'])->get();
@@ -900,7 +906,7 @@ class AssetNumbersController extends Controller
                                 $fetch_panchayat_id = GeoStructure::where('geo_name', $panchayat_name)->where('level_id','4')->value('geo_id'); /* for Panchayat ID */
                                 $fetch_asset_id = Asset::where('asset_name', $asset_name)->value('asset_id'); /* for asset ID */ 
                                 $fetch_year_id = Year::where('year_value', $year_value)->value('year_id'); /* for Year ID */
-                                $fetch_asset_number_edit = AssetNumbers::where('asset_id', $fetch_asset_id)->where('geo_id', $fetch_panchayat_id)->first();
+                                $fetch_asset_number_edit = AssetNumbers::where('asset_id', $fetch_asset_id)->where('geo_id', $fetch_panchayat_id)->where('year',$year_value)->first();
                                 $fetch_asset_loc_edit = AssetGeoLocation::where('asset_id', $fetch_asset_id)->where('geo_id', $fetch_panchayat_id)->where('location_name', $row['locationlandmark'])->where('year', $fetch_year_id)->first();
                                 
                                 if ($row['sno.'] != null && $fetch_panchayat_id != null && $fetch_year_id != null && $fetch_asset_id != null && in_array($panchayat_name,$geo_names_array)) {
