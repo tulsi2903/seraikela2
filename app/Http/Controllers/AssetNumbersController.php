@@ -893,7 +893,7 @@ class AssetNumbersController extends Controller
                             $noOfSuccess = 0;
                             $noOfFails = 0;
                             $ErrorTxt = "";
-                            echo "<pre>";    
+                            // echo "<pre>";    
                             // print_r($geo_names);
                             foreach ($readExcel as $key => $row) { /* Insert Data By using for each one by one */
 
