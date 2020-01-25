@@ -16,14 +16,14 @@
         <div class="col-md-12">
                 <div class="card-header">
                     <div class="card-head-row card-tools-still-right" style="background:#fff;">
-                        <h4 class="card-title">UoM Type</h4>
+                        <h4 class="card-title">{{$phrase->uom_type}} </h4>
                         <div class="card-tools">
                             <a href="#" data-toggle="tooltip" title="Send Mail"><button type="button" class="btn btn-icon btn-round btn-success" data-target="#create-email" data-toggle="modal"><i class="fa fa-envelope" aria-hidden="true"></i></button></a>
                             <a href="#" data-toggle="tooltip" title="Print"><button type="button" class="btn btn-icon btn-round btn-default" id="print-button" onclick="printView();"><i class="fa fa-print" aria-hidden="true"></i></button></a>
                             <a href="" target="_BLANK" data-toggle="tooltip" title="Export to PDF"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button></a>
                             <a href="" data-toggle="tooltip" title="Export to Excel"><button type="button" class="btn btn-icon btn-round btn-primary" ><i class="fas fa-file-excel"></i></button></a>
                             
-                                <a id="toggle1" class="btn btn-secondary uom-add-button" href="javascript:void();" role="button"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;Add</a>
+                                <a id="toggle1" class="btn btn-secondary uom-add-button" href="javascript:void();" role="button"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;{{$phrase->add}}</a>
                           
                         </div>
                     </div>
@@ -38,7 +38,7 @@
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label for="uom_type_name">UoM Name Type<span style="color:red;margin-left:5px;">*</span></label>
+                                        <label for="uom_type_name">{{$phrase->uom_type}}<span style="color:red;margin-left:5px;">*</span></label>
                                         <input type="text" name="uom_type_name" id="uom_type_name" class="form-control" autocomplete="off">
                                         <div class="invalid-feedback" id="uom_type_name_error_msg"></div>
                                     </div>
@@ -46,8 +46,8 @@
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <div style="height:30px;"></div>
-                                        <button type="submit" class="btn btn-primary" onclick="return submitForm()">Save&nbsp;&nbsp;<i class="fas fa-check"></i></button>
-                                        <button type="reset" class="btn btn-secondary">Reset&nbsp;&nbsp;<i class="fas fa-undo"></i></button>
+                                        <button type="submit" class="btn btn-primary" onclick="return submitForm()">{{$phrase->submit}}&nbsp;&nbsp;<i class="fas fa-check"></i></button>
+                                        <button type="reset" class="btn btn-secondary">{{$phrase->reset}}&nbsp;&nbsp;<i class="fas fa-undo"></i></button>
                                     </div>
                                 </div>
                             </div>
@@ -60,8 +60,8 @@
                                 <thead style="background: #d6dcff;color: #000;">
                                     <tr>
                                         <th>#</th>
-                                        <th>UoM Type Name</th>                                       
-                                        <th class="action-buttons">Actions</th>
+                                        <th>{{$phrase->uom_type}}</th>                                       
+                                        <th class="action-buttons">{{$phrase->action}}</th>
                                         
                                     </tr>
                                 </thead>
@@ -96,7 +96,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title mt-0">Send Email</h4>
+                <h4 class="modal-title mt-0">{{$phrase->send_email}}</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -119,7 +119,7 @@
                             </div>
                            
                             <div class="form-group">
-                                <label for="subject" class="control-label">Subject <font color="red">*</font></label>
+                                <label for="subject" class="control-label">{{$phrase->subject}} <font color="red">*</font></label>
                                 <input type="text" class="form-control" id="subject" name="subject" placeholder="Subject"  required=""  aria-required="true">
                             </div>
                             <!-- <div class="form-group">
@@ -132,8 +132,8 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-info waves-effect waves-light">Send</button>
+                    <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">{{$phrase->close}}</button>
+                    <button type="submit" class="btn btn-info waves-effect waves-light">{{$phrase->send}}</button>
                 </div>
             </form>
         </div>
@@ -166,8 +166,8 @@
             </td>
             <td>
                 <input type="text" name="edit_id" value="`+id+`" hidden>
-                <button type="submit" onclick="return submitFormInline()" class="btn btn-success btn-sm">Save&nbsp;<i class="fas fa-check"></i></button>
-                &nbsp;&nbsp;<button type="button" class="btn btn-dark btn-sm" onclick="closeInlineForm()">Cancel&nbsp;<i class="fas fa-times"></i></button>
+                <button type="submit" onclick="return submitFormInline()" class="btn btn-success btn-sm">{{$phrase->save}}&nbsp;<i class="fas fa-check"></i></button>
+                &nbsp;&nbsp;<button type="button" class="btn btn-dark btn-sm" onclick="closeInlineForm()">{{$phrase->cancel}}&nbsp;<i class="fas fa-times"></i></button>
             </td>
         </tr>`;
 
