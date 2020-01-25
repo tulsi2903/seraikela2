@@ -148,6 +148,7 @@ class SchemePerformanceController extends Controller
         // print_r($SchemePerformance_details);
         $to_append_tbody = '';
         $total_count_record = "";
+        $checkboxIdentifier = 0;
         if (count($SchemePerformance_details != 0)) {
             foreach ($SchemePerformance_details as $key_SchemePerformance => $value_SchemePerformance) {
 
@@ -218,7 +219,7 @@ class SchemePerformanceController extends Controller
                  if($scheme_data->spans_across_borders==1)
                  {
                      $to_append_tbody .='<td> 
-                                     <input type="checkbox" name="connectivity_details[]" value="1" onclick="showbutton(this.value,this)" '. ($value_SchemePerformance["connectivity_status"]==1 ? "checked" : "") .'>
+                                     <input type="checkbox" name="connectivity_details[]" value="x'.$checkboxIdentifier.'" onclick="showbutton(this.value,this)" '. ($value_SchemePerformance["connectivity_status"]==1 ? "checked" : "") .'>
                                      </td>';
                  }
                  /* End Spans Across Borders */
@@ -244,6 +245,7 @@ class SchemePerformanceController extends Controller
                 $to_append_tbody .= '<td><button type="button" class="btn btn-danger btn-xs" onclick="delete_row(this,' . $value_SchemePerformance['scheme_performance_id'] . ')"><i class="fas fa-trash-alt"></i></button></td>';
                 $to_append_tbody .= '</tr>';
                 $total_count_record = $key_SchemePerformance + 1;
+                $checkboxIdentifier++;
             }
         }
         // exit;
@@ -297,7 +299,8 @@ class SchemePerformanceController extends Controller
         if($scheme_data->spans_across_borders==1)
         {
             $to_append_thead .= '<th>Connectivity Details</th>';
-            $to_append_row .='<td> <input type="checkbox" name="connectivity_details[]" value="1"></td>';
+            $to_append_row .='<td> <input type="checkbox" name="connectivity_details[]" value="x'.$checkboxIdentifier.'"></td>';
+            
             // $to_append_row .='<td></td>';
         }
         /*Spans Across Borders */
@@ -322,6 +325,8 @@ class SchemePerformanceController extends Controller
     }
     public function store(Request $request)
     {
+        // echo "<pre>";
+        // print_r($request->connectivity_details);
         // return $request;
         $scheme_id = $request->scheme_id;
         $year_id = $request->year_id;
@@ -356,8 +361,8 @@ class SchemePerformanceController extends Controller
                     $scheme_performance->subdivision_id = $subdivision_id;
                     $scheme_performance->block_id = $block_id;
                      /*  Spans Across Borders */
-                     if ($request->connectivity_details[$key_request]) {
-                        $scheme_performance->connectivity_status = $request->connectivity_details[$key_request];
+                    if(in_array('x'.$key_request, $request->connectivity_details)){
+                        $scheme_performance->connectivity_status = 1;
                     } else {
                         $scheme_performance->connectivity_status = 0;
                     }
@@ -381,8 +386,8 @@ class SchemePerformanceController extends Controller
                 $scheme_performance->attribute = serialize($value_request) ?? "";
                 $scheme_performance->status = $request->status[$key_request];
                 /* Spans Across Borders */
-                if ($request->connectivity_details[$key_request]) {
-                    $scheme_performance->connectivity_status = $request->connectivity_details[$key_request];
+                if(in_array('x'.$key_request, $request->connectivity_details)){
+                    $scheme_performance->connectivity_status = 1;
                 } else {
                     $scheme_performance->connectivity_status = 0;
                 }
@@ -427,6 +432,7 @@ class SchemePerformanceController extends Controller
             // return $scheme_block_performance;
         }
         // return $scheme_block_performance_details;
+        return ["message" => "success"];
         session()->put('alert-class', 'alert-success');
         session()->put('alert-content', 'New performance data(s) has been saved successfully!');
         // return back();
@@ -903,10 +909,10 @@ class SchemePerformanceController extends Controller
         if ($SchemePerformance_connectivity->borders_connectivity != "") {
             $connectivity_details = unserialize($SchemePerformance_connectivity->borders_connectivity);
         }
-        // echo "<pre>";
-        // print_r($connectivity_details);exit;
-        foreach ($connectivity_details as $key => $value) {
-            $panchayat_datas[] = GeoStructure::select('geo_id', 'geo_name')->orderBy('geo_name', 'asc')->where('bl_id',$value['conn_block_id'])->get();
+        if ($connectivity_details) {
+            foreach ($connectivity_details as $key => $value) {
+                $panchayat_datas[] = GeoStructure::select('geo_id', 'geo_name')->orderBy('geo_name', 'asc')->where('bl_id',$value['conn_block_id'])->get();
+            }
         }
         return ["block_datas" => $block_datas,"scheme_id" => $scheme_id,"connectivity" => $connectivity_details,"panchayat_datas" => $panchayat_datas];
     }

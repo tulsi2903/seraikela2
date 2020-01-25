@@ -144,7 +144,7 @@
                         </div> -->
                     </div>
                     <div >
-                        <form action="{{url('scheme-performance/store')}}" method="POST"  enctype="multipart/form-data" onsubmit="return check_performamance_status();">
+                        <form action="{{url('scheme-performance/store')}}" id="savedataonschemepertable" method="POST"  enctype="multipart/form-data" onsubmit="return check_performamance_status();">
                             @csrf
                             <table class="table">
                                 <thead id="to_append_thead" style="background: #cedcff">
@@ -163,7 +163,7 @@
                             <input type="hidden" name="panchayat_id" id="panchayat_id_hidden">
                             <input type="hidden" name="to_delete" id="to_delete">
                             <!-- hidden inputs -->
-                            <button type="submit" class="btn btn-secondary"><i class="fas fa-check"></i>&nbsp;&nbsp;{{$phrase->save}}</button>
+                            <button type="button" class="btn btn-secondary" onclick="submitdatafromajaxonscheme()"><i class="fas fa-check"></i>&nbsp;&nbsp;{{$phrase->save}}</button>
                         </form>
                     </div>
                 </div>
@@ -495,6 +495,7 @@
     // add new rows
     function appendRow() {
         $("#to_append_tbody").append(to_append_row);
+        scheme_performance_connectivity_index_update();
     }
 
     // delete rows (not working)
@@ -889,6 +890,64 @@ function check_performamance_status()
 </script>
 
 <script>
+    $(document).ready(function () {
+        $('#connectivity_details').is(':checked')?$('#connectivity_details').val():false
+    });
+    function submitdatafromajaxonscheme() {
+        var formElement = $('#savedataonschemepertable')[0];
+        var form_data = new FormData(formElement);
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                url: "{{url('scheme-performance/store')}}",
+                data: form_data,
+                method: "POST",
+                dataType: 'json',
+                processData: false,
+                contentType: false,
+                beforeSend: function (data) {
+
+                    $(".custom-loader").fadeIn(300);
+                },
+                error: function (xhr) {
+                    alert("error" + xhr.status + "," + xhr.statusText);
+                    $(".custom-loader").fadeOut(300);
+                },
+                success: function (data) {
+                    // console.log(data);
+                    if (data.message == "success") {
+                        swal({
+                            title: 'Do You Want To Enter Further Performance Data(s) Connectivity Details?',
+                            icon: 'success',
+                            buttons: {
+                                cancel: {
+                                    visible: true,
+                                    text: 'No',
+                                    className: 'btn btn-danger'
+                                },
+                                confirm: {
+                                    text: 'Yes',
+                                    className: 'btn btn-success'
+                                }
+                            }
+                        }).then((willDelete) => {
+                            if (willDelete) {
+                                go();
+                            }
+                            else
+                            {
+                                window.location = 'scheme-performance';
+                            }
+                        });
+                    }
+                    $(".custom-loader").fadeOut(300);
+                }
+            });
+        // return true;
+    }
     function get_panchayat_datas_for_borders(id, e) {
         if (id) {
             $.ajaxSetup({
@@ -1061,6 +1120,14 @@ function check_performamance_status()
         }
         else {
             $(e).closest('tr').find(".showconnectivity").css('display', 'none');
+        }
+    }
+
+    function scheme_performance_connectivity_index_update() {
+        var trs = $("#to_append_tbody tr");
+        for (var i = 0; i < trs.length; i++) {
+            var connectivity_checkbox = $(trs[i]).find("input[name='connectivity_details[]']")[0];
+            $(trs[i]).find(connectivity_checkbox).val("x"+i+"");
         }
     }
 </script>
