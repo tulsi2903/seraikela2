@@ -252,6 +252,7 @@ Route::get('scheme-performance/get-panchayat-datas-for-borders','SchemePerforman
 Route::post('scheme_performance/savebl_pl_connectivity','SchemePerformanceController@savebl_pl_connectivity'); /* End Spans Across Borders */
 
 Route::get('matching-schemes','CheckMatchingPerformanceController@index');
+Route::get('get/matching-schemes/details/{id}','CheckMatchingPerformanceController@get_matching_entries');
 
 /* scheme review */
 Route::get('scheme-review', 'SchemeReviewController@index');

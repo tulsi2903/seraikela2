@@ -1,6 +1,6 @@
 @extends('layout.layout')
 
-@section('title', 'Scheme Performance')
+@section('title', 'Matching Schemes')
 
 @section('page-style')
 <style>
@@ -77,6 +77,7 @@
                             <th>Assests</th>
                             <th>No of Matching Column</th>
                             <th>Attributes</th>
+                            <th>Action</th>
                            
                         </tr>
                     </thead>
@@ -84,25 +85,15 @@
                     <tbody>
                         
                       @foreach($datas as $data)
-                      <?php 
-                      $scheme_performance=DB::table('scheme_performance')->where('scheme_performance_id',$data['scheme_performance_id'])->first();
-                      $attributes=unserialize($scheme_performance->attribute);
-                     
-                      $scheme_name=DB::table('scheme_structure')->where('scheme_id',$scheme_performance->scheme_id)->first();
-                      $year_id=DB::table('year')->where('year_id',$scheme_performance->year_id)->first();
-                      $block_id = DB::table('geo_structure')->where('geo_id', $scheme_performance->block_id)->first();
-                      $panchayat_id = DB::table('geo_structure')->where('geo_id', $scheme_performance->panchayat_id)->first();
-                      $scheme_assets= DB::table('scheme_assets')->where('scheme_asset_id',$scheme_performance->scheme_asset_id)->first();
-
-                      ?>
+                      
                         <tr>
                             <td>{{$count++}} </td>
-                            <td>{{$year_id->year_value}}</td>
-                            <td>{{$block_id->geo_name}}</td>
-                            <td>{{$panchayat_id->geo_name}}</td>
+                            <td>{{$data->year_value}}</td>
+                            <td>{{$data->geo_name}}</td>
+                            <td>{{$data->panchayat_name}}</td>
                             
-                            <td>{{$scheme_name->scheme_name}}</td>
-                            <td>{{$scheme_assets->scheme_asset_name}}</td>
+                            <td>{{$data->scheme_name}}</td>
+                            <td>{{$data->scheme_asset_name}}</td>
                             <td> 
                                 <?php $matching_array=explode(',',$data['matching_performance_id']);
                                     $matching_count=count($matching_array);
@@ -110,16 +101,22 @@
                                 ?>
 
                             </td>
-                            <td> <?php   
+                            <td>
+                               
+                                <?php   
+                                 $attribute[0]=unserialize($data->attribute);
                                 foreach($attributes[0] as $key_att=>$value_att)
                                 {
                                     $print_att=$value_att;
                                 }   
                                 echo $print_att;
                             ?></td>
-                            
+                            <td>
+
+                            <a href="javascript:void(0);" class="btn btn-sm btn-secondary" onclick="get_view_data({{$data->id}})"><i class="fas fa-eye"></i></a>
+                         
+                            </td>
                            
-                    
                         </tr>
                        @endforeach
                        
@@ -129,15 +126,78 @@
             
         </div>
     </div>
+
+    <!-- View Div -->
+<div id="toggle_div" style="display:none;">
+    <form action="#" method="get">
+        @csrf
+        <div class="modal-body">
+            <div class="row" style="padding:2em;margin-top: -3em;">
+                <table class="table table-bordered table-head-bg-info table-bordered-bd-info mt-4">
+                    <thead>
+                        <tr>
+                        <th>#</th>
+                        <th>Year</th>
+                        <th>Block</th>
+                        <th>Panchayat</th>
+                        <th>Schemes</th>
+                        <th>Assests</th>
+                        <th>Attributes</th>
+                        <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dublicate_data">
+                        <!-- append details -->
+                    </tbody>
+                    
+                </table>
+                
+            </div>
+        </div>
+            <!-- <input type="text"> -->
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary waves-effect" onclick="return hide_div();">Cancel</button>
+            <button type="button" class="btn btn-info waves-effect waves-light">Save</button>
+        </div>
+    </form>
+</div>
+<!-- End of view -->
 </div>
 
-
-
-
-
-
-
-
-
-
 @endsection
+
+<script>
+    function get_view_data(id) {
+       
+        $("#toggle_div").slideDown(300);
+        
+      
+        $.ajax({
+            url: "get/matching-schemes/details"+"/"+id,
+            method: "GET",
+            contentType: 'application/json',
+            dataType: "json",
+            success: function (data){
+              
+                var append;
+                var s_no = 0;
+              for(var i=0; i<data.tmp_matching; i++ )
+              {
+                  s_no++;
+                append=`<tr><td>`+s_no+`</td><td>`+data.Matching.year_value+`</td><td>`+data.Matching.geo_name+`</td><td>`+data.Matching.panchayat_name+`</td><td>`+data.Matching.scheme_name+`</td><td>`+data.Matching.scheme_asset_name+`</td><td>Attributes</td>
+                            <td><button type="button" class="btn btn-primary">In-Progress</button><button type="button" class="btn btn-primary">Cancel</button></td></tr>`;
+              }
+              $("#dublicate_data").append(append);
+
+            }
+        });
+    }
+   
+   function hide_div()
+   {
+    $("#toggle_div").slideUp(300);
+    document.getElementById("toggle_div").reset();
+    // $("#toggle_div").reset();
+    
+   }
+</script>
