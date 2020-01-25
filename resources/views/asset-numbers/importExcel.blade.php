@@ -14,11 +14,11 @@
             <!-- <div class="card"> -->
                 <div class="card-header">
                     <div class="card-head-row card-tools-still-right" style="background:#fff;">
-                        <h4 class="card-title">Import From Excel</h4>
+                        <h4 class="card-title">{{$phrase->import_excel}}</h4>
                         <div class="card-tools">
                         <!-- <a href="{{url('asset-numbers')}}" class="btn btn-sm btn-secondary" style="float:right;"><i class="fas fa-arrow-left"></i>&nbsp;&nbsp;Back</a> -->
-                        <a href="{{url('asset_Numbers/downloadFormatwithLocation')}}"><button style="float:right;" type="button" data-toggle="tooltip" title="Download Location Excel Format" class="btn btn-primary" ><i class="fa fa-download"></i> Download Format With Location</button></a>
-                        <a href="{{url('asset_Numbers/downloadFormat')}}"><button style="float:right;margin-right: 1em;" type="button" data-toggle="tooltip" title="Download Excel Format" class="btn btn-warning" ><i class="fa fa-download"></i> Download Format</button></a>
+                        <a href="{{url('asset_Numbers/downloadFormatwithLocation')}}"><button style="float:right;" type="button" data-toggle="tooltip" title="{{$phrase->downloadFormatWithLocation}}" class="btn btn-primary" ><i class="fa fa-download"></i> {{$phrase->downloadFormatWithLocation}}</button></a>
+                        <a href="{{url('asset_Numbers/downloadFormat')}}"><button style="float:right;margin-right: 1em;" type="button" data-toggle="tooltip" title="{{$phrase->downloadFormat}}" class="btn btn-warning" ><i class="fa fa-download"></i> {{$phrase->downloadFormat}}</button></a>
                         </div>
                     </div>
                 </div>
@@ -51,12 +51,12 @@
                     @csrf
                         <div class="form-group col-6">
                             
-                            <label for="dept_name">File to import<span style="color:red;margin-left:5px;">*</span></label>
+                            <label for="dept_name">{{$phrase->file_to_import}}<span style="color:red;margin-left:5px;">*</span></label>
                             <span>[Maximum no. of entries that can be imported at a time is 250]</span>
                             <input type="file" name="excel_for_asset_number" id="excel_for_asset_number" class="form-control" required>
                         </div>
                         <div class="form-group col-6" style="margin-top: 35px;">
-                            <button type="submit" class="btn btn-primary">Import</button>
+                            <button type="submit" class="btn btn-primary">{{$phrase->import}}</button>
                         </div>
                     </form>
                     <hr>

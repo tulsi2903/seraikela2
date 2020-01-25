@@ -172,7 +172,7 @@
 
                                         <div class="col-md-3">
                                             <div class="form-group">
-                                                <label for="profile_picture">Profile Picture</label>
+                                                <label for="profile_picture">{{$phrase->profilePicture}}</label>
                                                 <input type="file" name="profile_picture" id="profile_picture" class="form-control">
                                                 <div id="profile_picture_delete_div" style="padding:5px 0; display: none;">
                                                     <div>Previous Image</div>
@@ -208,7 +208,7 @@
                 <table class="table-datatable display table table-striped table-hover">
                     <thead style="background: #d6dcff;color: #000;">
                         <tr>
-                            <th>Profile Picture</th>
+                            <th>{{$phrase->profilePicture}}</th>
                             <th>{{$phrase->name}}</th>
                             <th>{{$phrase->email_id}} </th>
                             <th>{{$phrase->user_name}}</th>
@@ -245,13 +245,13 @@
                             
                             <div class="dropdown">
                                 <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    Action
+                                    {{$phrase->action}}
                                 </button>
                                 @if(@$desig_permissions["mod1"]["edit"])
                                 <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
                                    
-                                    <button class="dropdown-item" type="button" onclick="editUser('{{$val->id}}')">Edit Profile</button>
-                                    <button class="dropdown-item" type="button" onclick="myFun({{$val->id}})">Change Password</button>
+                                    <button class="dropdown-item" type="button" onclick="editUser('{{$val->id}}')">{{$phrase->edit_profile}}</button>
+                                    <button class="dropdown-item" type="button" onclick="myFun({{$val->id}})"> {{$phrase->changePassword}}</button>
                                 </div>
                                 @endif
                                 </div>
@@ -271,7 +271,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Password Change</h5>
+                <h5 class="modal-title" id="exampleModalLabel">{{$phrase->changePassword}}</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -280,12 +280,12 @@
                 <form action="{{url('user/password_change')}}" method="POST" id="new_model">
                 @csrf
                     <div class="form-group">
-                        <label for="new_password" class="col-form-label">New Password</label>
+                        <label for="new_password" class="col-form-label">{{$phrase->new_pass}} </label>
                         <input type="password" class="form-control" id="new_password" name="new_password">
                         <div class="invalid-feedback" id="new_password_error_msg"></div>
                     </div>
                     <div class="form-group">
-                        <label for="confirm_password_model" class="col-form-label">Confirm Password</label>
+                        <label for="confirm_password_model" class="col-form-label">{{$phrase->conf_pass}} </label>
                         <input type="password" class="form-control" id="confirm_password_model" name="confirm_password">
                         <div class="invalid-feedback" id="confirm_password_error_msg_model"></div>
                     </div>
@@ -295,8 +295,8 @@
             <div class="modal-footer">
 
                 <input type="text" name="input_id" id="input_id" hidden>
-                <button type="button" onclick="return clearModel()" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="submit" onclick="return passwordSubmit()" class="btn btn-primary">Submit</button>
+                <button type="button" onclick="return clearModel()" class="btn btn-secondary" data-dismiss="modal">{{$phrase->cancel}}</button>
+                <button type="submit" onclick="return passwordSubmit()" class="btn btn-primary">{{$phrase->submit}}</button>
 
             </div>
             </form>

@@ -13,7 +13,7 @@
     <div class="col-md-12">
         <div class="card-header">
             <div class="card-head-row card-tools-still-right" style="background:#fff;">
-                <h4 class="card-title">Scheme Performance</h4>
+                <h4 class="card-title">{{$phrase->scheme_performance}} </h4>
                 <div class="card-tools">
                     <!-- <a href="{{url('scheme-geo-target')}}" class="btn btn-sm btn-secondary" style="float:right;"><i class="fas fa-arrow-left"></i>&nbsp;&nbsp;Back</a> -->
                     <!-- <a href="{{url('scheme-performance/download_error_log')}}" class="btn btn-sm btn-secondary" style="float:right;"><i class="fas fa-download"></i>&nbsp;&nbsp;Download Errorlog</a> -->
@@ -44,7 +44,7 @@
                         <div class="card-head-row card-tools-still-right">
                             <div class="col-md-4">
                             <div class="form-group">
-                                <label for="scheme_id">Scheme<span style="color:red;margin-left:5px;">*</span></label>
+                                <label for="scheme_id">{{$phrase->scheme}}<span style="color:red;margin-left:5px;">*</span></label>
                                 <select name="scheme_id" id="scheme_id" onchange="get_scheme_value(this);" class="form-control">
                                     <option value="">---Select---</option>
                                     @foreach($scheme_datas as $scheme )
@@ -55,7 +55,7 @@
                             </div>
                         </div>
                         <div class="col-md-4 import_section" style="display:none" id="impGort_section">
-                            <button  class="btn btn-primary"  type="button" onclick="location.href='../scheme-performance/downloadFormat?scheme_id='+document.getElementById('scheme_id').value" style="float:left;    margin-top: 4px; background: #349601; color: white;" title="Download Excel Format"><i class="fas fa-file-import"></i>&nbsp;&nbsp;Download Template</button>
+                            <button  class="btn btn-primary"  type="button" onclick="location.href='../scheme-performance/downloadFormat?scheme_id='+document.getElementById('scheme_id').value" style="float:left;    margin-top: 4px; background: #349601; color: white;" title="Download Excel Format"><i class="fas fa-file-import"></i>&nbsp;&nbsp;{{$phrase->downloadFormat}}</button>
                         </div>
                         </div>
                     </div>
@@ -68,7 +68,7 @@
                                           
                                                 <td class="text-left">
                                                     <div class="form-group">
-                                                        <label for="dept_name">{{$phrase->file_to_import}}<span style="color:red;margin-left:5px;">*</span></label>
+                                                        <label for="dept_name">{{$phrase->import}}<span style="color:red;margin-left:5px;">*</span></label>
                                                     <span>[Maximum no. of entries that can be imported at a time is 250]</span>
                                                     <input type="file" name="excelcsv" id="excelcsv" class="form-control" required>
                                                     </div> 
