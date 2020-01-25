@@ -55,6 +55,11 @@ hr.new2 {
                         } else{
                             ?><i class="fas fa-dot-circle text-dark"></i>&nbsp;&nbsp;Inactive<?php
                         } ?>
+                        <br/><b>{{$phrase->spans_across_borders}}</b> <?php if($data->spans_across_borders=="1"){
+                            ?>&nbsp;&nbsp;<i class="fas fa-check-circle text-success"></i><?php
+                        } else{
+                            ?>&nbsp;&nbsp;<i class="fas fa-dot-circle text-dark"></i><?php
+                        } ?>
                     </p>
                 </div>
             </div>

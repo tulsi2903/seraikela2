@@ -207,7 +207,7 @@
                          <div class="col-md-12">
                             <div class="card-header">
                                 <div class="card-head-row card-tools-still-right">
-                                    <h4 class="card-title" style="margin-left: -20px;">Sub Category</h4>
+                                    <h4 class="card-title" style="margin-left: -20px;">{{$phrase->sub_catagory}} </h4>
                                     <div class="card-tools">
                                         <button type="button" onclick="append_table_data('add',null);" class="btn btn-secondary btn-sm btn-circle">{{$phrase->add}} <i class="fa fa-plus-circle" aria-hidden="true"></i></button>
                                     </div>

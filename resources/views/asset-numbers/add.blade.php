@@ -92,7 +92,7 @@
 
                 <div class="col-md-3">
                     <div class="form-group">
-                        <label for="block_id">Block<span style="color:red;margin-left:5px;">*</span></label>
+                        <label for="block_id">{{$phrase->block}}<span style="color:red;margin-left:5px;">*</span></label>
                         <select name="block_id" id="block_id" class="form-control">
                             <option value="">---Select---</option>
                             @foreach( $block_datas as $block_data )

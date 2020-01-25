@@ -123,7 +123,7 @@
                                     
                                     <th>{{$phrase->geo_related}}</th>
                                     <th>{{$phrase->multiple_geo_tags}}</th>
-                                    <th>UoM</th>
+                                    <th>{{$phrase->uom}}</th>
                                     <th>{{$phrase->action}}</th>
                                 </tr>
                             </thead>

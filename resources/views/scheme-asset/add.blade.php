@@ -60,14 +60,14 @@
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
-                        <label for="radius">Radius</label>
+                        <label for="radius">{{$phrase->radius}}</label>
                         <input name="radius" id="radius" class="form-control" autocomplete="off" value="{{$data->radius}}">
                         <div class="invalid-feedback" id="radius_error_msg"></div>
                     </div>
                 </div> 
                 <div class="col-md-4">
                     <div class="form-group">
-                        <label for="uom_type_id">UoM<font style="color:red;">*</font></label>                                     
+                        <label for="uom_type_id">{{$phrase->uom}}<font style="color:red;">*</font></label>                                     
                             <select name="uom_type_id" id="uom_type" class="form-control form-control">
                                 <option value="">--Select--</option>
                                 @foreach($uom_datas as $uom_data_show)
