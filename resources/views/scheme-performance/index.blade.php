@@ -632,6 +632,11 @@
             var first_td = $(trs[i]).find("td")[0];
             $(trs[i]).find(first_td).html(i + 1);
         }
+        var trs1 = $("#append_connectivity_section tr");
+        for (var i = 0; i < trs1.length; i++) {
+            var first_td = $(trs1[i]).find("td")[0];
+            $(trs1[i]).find(first_td).html(i + 1);
+        }
     }
     function delete_lat_lon(e) {
         swal({
@@ -890,9 +895,7 @@ function check_performamance_status()
 </script>
 
 <script>
-    $(document).ready(function () {
-        $('#connectivity_details').is(':checked')?$('#connectivity_details').val():false
-    });
+    
     function submitdatafromajaxonscheme() {
         var formElement = $('#savedataonschemepertable')[0];
         var form_data = new FormData(formElement);
@@ -917,7 +920,7 @@ function check_performamance_status()
                     $(".custom-loader").fadeOut(300);
                 },
                 success: function (data) {
-                    // console.log(data);
+                    console.log(data);
                     if (data.message == "success") {
                         swal({
                             title: 'Do You Want To Enter Further Performance Data(s) Connectivity Details?',
@@ -939,6 +942,20 @@ function check_performamance_status()
                             }
                             else
                             {
+                                window.location = 'scheme-performance';
+                            }
+                        });
+                    }else if(data.message == "error"){
+                        swal({
+                            title: 'New performance data(s) has been saved successfully!',
+                            icon: 'success',
+                            buttons: {
+                            confirm: {
+                                className: 'btn btn-success'
+                            }
+                        },
+                        }).then((willDelete) => {
+                            if (willDelete) {
                                 window.location = 'scheme-performance';
                             }
                         });
@@ -1098,7 +1115,7 @@ function check_performamance_status()
                 }
                 else {
                     // error occured
-                    swal("Error Occured!", data.message, {
+                    swal("Error Occured!", "Duplicate Entry of Panchayat", {
                         icon: "error",
                         buttons: {
                             confirm: {

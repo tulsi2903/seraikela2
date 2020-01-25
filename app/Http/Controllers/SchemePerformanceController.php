@@ -347,6 +347,7 @@ class SchemePerformanceController extends Controller
         }
         $tmp_array = array();
         $delete_check_array = array();
+        $countTempData = 0;
         foreach ($form_request_id as $key_request => $value_request) {
             $SchemePerformance_get = SchemePerformance::where('scheme_id', $scheme_id)->where('year_id', $year_id)->where('panchayat_id', $panchayat_id)->get()->toArray();
             foreach ($SchemePerformance_get as $tmp) {
@@ -365,6 +366,7 @@ class SchemePerformanceController extends Controller
                         $scheme_performance->connectivity_status = 1;
                     } else {
                         $scheme_performance->connectivity_status = 0;
+                        $scheme_performance->borders_connectivity = null;
                     }
                     /* End Spans Across Borders */
                     $scheme_performance->panchayat_id = $panchayat_id;
@@ -377,6 +379,7 @@ class SchemePerformanceController extends Controller
                     $scheme_performance->save();
                 }
             } else {
+                $countTempData++;
                 $scheme_performance = new SchemePerformance;
                 $scheme_performance->scheme_id = $scheme_id;
                 $scheme_performance->year_id = $year_id;
@@ -432,12 +435,17 @@ class SchemePerformanceController extends Controller
             // return $scheme_block_performance;
         }
         // return $scheme_block_performance_details;
-        return ["message" => "success"];
+        
+        if ($countTempData == 0) {
+            return ["message" => "error"];
+        } else {
+            return ["message" => "success"];
+        }
+        
         session()->put('alert-class', 'alert-success');
         session()->put('alert-content', 'New performance data(s) has been saved successfully!');
         // return back();
         // exit;
-        return redirect('scheme-performance');
     }
 
     public function viewimport(Request $request)
@@ -919,20 +927,33 @@ class SchemePerformanceController extends Controller
 
     public function savebl_pl_connectivity(Request $request)
     {
+        // return $request;
+        $countval = 0;
+        if(count(array_unique($request->panchayay_connectivity)) != count($request->panchayay_connectivity))
+        {
+            $countval++;
+        }
+        else {
+            $countval;
+        }
         $connectivity = array();
-        foreach ($request->block_connectivity as $key_connectivity => $value_connectivity) {
-            $connectivity[] = array('conn_block_id' => $request->block_connectivity[$key_connectivity], 'conn_panchayat_id' => $request->panchayay_connectivity[$key_connectivity]);
-        }
-        if ($connectivity) {
-            if ($request->scheme_performance_id_connectivity != null) {
-                $SchemePerformance_edit = SchemePerformance::find($request->scheme_performance_id_connectivity);
-                $SchemePerformance_edit->borders_connectivity = serialize($connectivity);
-                $SchemePerformance_edit->save();
+        if($countval == 0)
+        {
+            foreach ($request->block_connectivity as $key_connectivity => $value_connectivity) {
+                $connectivity[] = array('conn_block_id' => $request->block_connectivity[$key_connectivity], 'conn_panchayat_id' => $request->panchayay_connectivity[$key_connectivity]);
             }
-        } else {
-            return ["message" => "Scheme latitudes longitudes You Have  Already entered"];
+            if ($connectivity) {
+                if ($request->scheme_performance_id_connectivity != null) {
+                    $SchemePerformance_edit = SchemePerformance::find($request->scheme_performance_id_connectivity);
+                    $SchemePerformance_edit->borders_connectivity = serialize($connectivity);
+                    $SchemePerformance_edit->save();
+                }
+            }
+            return ["message" => "success"];
         }
-        return ["message" => "success"];
+        else {
+            return ["message" => "error"];
+        }
     }
     /* End Spans Across Borders */
 }
