@@ -32,7 +32,7 @@ class UoMType_Controller extends Controller
         $uom_type->updated_by = session()->get('user_id');
 
         if(UoM_Type::where('uom_type_name',$request->uom_type_name)->first()){
-            if($purpose=="edit"){
+            if($purpose=="edit"){//check here if already exist cany edit
                 $tmp = UoM_Type::where('uom_type_name',$request->uom_type_name)->first();
                 if($tmp->uom_type_id!=$request->edit_id){
                     session()->put('alert-class','alert-danger');
@@ -49,7 +49,7 @@ class UoMType_Controller extends Controller
                     }
                 }
             }
-            else{
+            else{//for added new uom type check dublicate
                 session()->put('alert-class','alert-danger');
                 session()->put('alert-content','This UoM Type'.$request->uom_type_name.' already exist !');
             }
