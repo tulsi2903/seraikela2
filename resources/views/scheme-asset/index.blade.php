@@ -118,8 +118,9 @@
                             <thead style="background: #d6dcff;color: #000;">
                                 <tr>
                                     <th>#</th>
-                                    <th>{{$phrase->name}}</th>
                                     <th>{{$phrase->icon}}</th>
+                                    <th>{{$phrase->name}}</th>
+                                    
                                     <th>{{$phrase->geo_related}}</th>
                                     <th>{{$phrase->multiple_geo_tags}}</th>
                                     <th>UoM</th>
@@ -136,8 +137,9 @@
                                                 <input type="text" value="{{$data->scheme_asset_id}}" name="scheme_asset_id_to_export[]" hidden >
 
                                             </td>
+                                            <td>@if($data->mapmarkericon) <img src="{{$data->mapmarkericon}}" style="height: 50px;"> @endif</td>  
                                             <td>{{$data->scheme_asset_name}}</td>
-                                            <td>@if($data->mapmarkericon) <img src="{{$data->mapmarkericon}}" style="height: 50px;"> @endif</td>                              
+                                                                        
                                             <td>
                                                 @if($data->geo_related == 1)
                                                 Yes

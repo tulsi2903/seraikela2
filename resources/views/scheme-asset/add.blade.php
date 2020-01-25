@@ -69,7 +69,7 @@
                         <label for="uom_type_id">UoM<font style="color:red;">*</font></label>                                     
                             <select name="uom_type_id" id="uom_type" class="form-control form-control">
                                 <option value="">--Select--</option>
-                                @foreach($uom_data as $uom_data_show)
+                                @foreach($uom_datas as $uom_data_show)
                                 <option value="{{$uom_data_show->uom_id}}" <?php if ($data->uom_type_id == $uom_data_show->uom_id) { echo "selected"; } ?>>{{$uom_data_show->uom_name}}</option>
                                 @endforeach                               
                             </select>

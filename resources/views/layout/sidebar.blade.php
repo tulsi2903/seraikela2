@@ -52,7 +52,9 @@
 							@if(array_key_exists("mod18", $desig_permissions))
 							<!-- <li class="nav-item"><a href="{{url('scheme-geo-target')}}"><i class="fas fa-receipt"></i><p>Scheme Geo Target</p></a></li> -->
 							<li class="nav-item"><a href="{{url('scheme-performance')}}"><i class="fas fa-receipt"></i><p>{{$phrase->scheme_performance}}</p></a></li>
+							@if(session()->get('user_designation')=="1")
 							<li class="nav-item"><a href="{{url('matching-schemes')}}"><i class="fas fa-receipt"></i><p>Matching Schemes</p></a></li>
+							@endif
 							@endif
 						</ul>
 					</div>
@@ -97,7 +99,7 @@
 					</a>
 					<div class="collapse" id="administator">
 						<ul class="nav nav-collapse">
-							<li class="nav-item"><a href="{{url('block')}}"><i class="fas fa-users"></i><p>block</p></a></li>
+							<li class="nav-item"><a href="{{url('block')}}"><i class="fas fa-users"></i><p>Block</p></a></li>
 							@if(array_key_exists("mod1", $desig_permissions))
 								<li class="nav-item"><a href="{{url('user')}}"><i class="fas fa-users"></i><p>{{$phrase->user}}</p></a></li>
 							@endif

@@ -31,9 +31,8 @@ class Scheme_Asset_Controller extends Controller
         $hidden_input_id= "NA";
         $data = new SchemeAsset;
         
-        $uom_data = Uom::orderBy('uom_id','asc')->get();
+        $uom_datas = Uom::orderBy('uom_id','asc')->get();
         // return $uom_data;
-        // $uom_datas = Uom::select('uom_id','uom_name')->get();
 
         if(isset($request->purpose)&&isset($request->id)){
             $data = $data->find($request->id);
@@ -43,7 +42,7 @@ class Scheme_Asset_Controller extends Controller
             }
         }
        
-        return view('scheme-asset.add')->with(compact('uom_datas','hidden_input_purpose','hidden_input_id','data','uom_data'));
+        return view('scheme-asset.add')->with(compact('hidden_input_purpose','hidden_input_id','data','uom_datas'));
     }
 
    
