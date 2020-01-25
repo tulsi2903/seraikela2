@@ -31,10 +31,28 @@ class UoMType_Controller extends Controller
         $uom_type->created_by = session()->get('user_id');
         $uom_type->updated_by = session()->get('user_id');
 
-
-        if(UoM_Type::where('uom_type_name',$request->uom_type_name)->first()&&$purpose!="edit"){
-            session()->put('alert-class','alert-danger');
-            session()->put('alert-content','This UoM Type'.$request->uom_type_name.' already exist !');
+        if(UoM_Type::where('uom_type_name',$request->uom_type_name)->first()){
+            if($purpose=="edit"){
+                $tmp = UoM_Type::where('uom_type_name',$request->uom_type_name)->first();
+                if($tmp->uom_type_id!=$request->edit_id){
+                    session()->put('alert-class','alert-danger');
+                    session()->put('alert-content','This UoM Type'.$request->uom_type_name.' already exist !');
+                }
+                else{
+                    if($uom_type->save()){
+                        session()->put('alert-class','alert-success');
+                        session()->put('alert-content','UOM details have been successfully submitted !');
+                    }
+                    else{
+                        session()->put('alert-class','alert-danger');
+                        session()->put('alert-content','Something went wrong while adding new details !');
+                    }
+                }
+            }
+            else{
+                session()->put('alert-class','alert-danger');
+                session()->put('alert-content','This UoM Type'.$request->uom_type_name.' already exist !');
+            }
         }
         else if($uom_type->save()){
             session()->put('alert-class','alert-success');

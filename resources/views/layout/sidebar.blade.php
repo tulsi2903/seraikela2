@@ -99,7 +99,7 @@
 					</a>
 					<div class="collapse" id="administator">
 						<ul class="nav nav-collapse">
-							<li class="nav-item"><a href="{{url('block')}}"><i class="fas fa-users"></i><p>Block</p></a></li>
+							<!-- <li class="nav-item"><a href="{{url('block')}}"><i class="fas fa-users"></i><p>Block</p></a></li> -->
 							@if(array_key_exists("mod1", $desig_permissions))
 								<li class="nav-item"><a href="{{url('user')}}"><i class="fas fa-users"></i><p>{{$phrase->user}}</p></a></li>
 							@endif
