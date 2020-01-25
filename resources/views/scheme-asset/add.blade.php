@@ -21,24 +21,25 @@
         </div>
     </div>
 
-    
-    <div class="col-md-4">            
-        <form action="{{url('scheme-asset/store')}}" method="post"  enctype="multipart/form-data"> 
-            @csrf
-                <div class="form-group" style="margin-top: -5px;">
-                    <label for="scheme_asset_name">{{$phrase->name}}<span style="color:red;margin-left:5px;">*</span></label>
-                    <input name="scheme_asset_name" id="scheme_asset_name" class="form-control" autocomplete="off" value="{{$data->scheme_asset_name}}">
-                    <div class="invalid-feedback" id="scheme_asset_name_error_msg"></div>
-                </div>
-    </div>                               
+   
+<div class="card-body">
+    <div class="row">
+        <div class="col-md-4">            
+            <form action="{{url('scheme-asset/store')}}" method="post"  enctype="multipart/form-data"> 
+                @csrf
+                    <div class="form-group">
+                        <label for="scheme_asset_name">{{$phrase->name}}<span style="color:red;margin-left:5px;">*</span></label>
+                        <input name="scheme_asset_name" id="scheme_asset_name" class="form-control" autocomplete="off" value="{{$data->scheme_asset_name}}">
+                        <div class="invalid-feedback" id="scheme_asset_name_error_msg"></div>
+                    </div>
+                </div>                               
                 <div class="col-md-4">              
-                    <div class="form-group" style="margin-top: -2em;">
-                        <div style="height:30px;"></div>
+                    <div class="form-group" style="margin-top: 2.5em;">
                         <label for="geo_related">{{$phrase->geo_related}}</label>&nbsp;&nbsp;
                         <input type="checkbox" name="geo_related" id="geo_related" value="1" <?php echo ($data[ 'geo_related']==1 ? 'checked' : '');?>>
                     </div>
                 </div>
-                    
+                <div class="col-md-4"></div>     
                     
                 <div class="col-md-4">            
                     <div class="form-group" id="no_of_tag">
@@ -58,7 +59,7 @@
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <div class="form-group" style="margin-top: -5px;">
+                    <div class="form-group">
                         <label for="radius">Radius</label>
                         <input name="radius" id="radius" class="form-control" autocomplete="off" value="{{$data->radius}}">
                         <div class="invalid-feedback" id="radius_error_msg"></div>
@@ -76,17 +77,17 @@
                         <div class="invalid-feedback" id="uom_type_error_msg"></div>
                     </div>
                 </div>
-                
-
                 <div class="col-md-12">
                     <div class="form-group">
                         <input type="text" name="hidden_input_purpose" value="{{$hidden_input_purpose}}" hidden="">
                         <input type="text" name="hidden_input_id" value="{{$hidden_input_id}}" hidden="">
                         <button type="submit" class="btn btn-primary" style="float:left;" onclick="return submitForm();">Save&nbsp;&nbsp;<i class="fas fa-check"></i></button>
                     </div>                    
-                </div>     
-            </form>   
-</div>
+                </div>  
+            </div><!--end of row-->
+            </form> 
+        </div>  
+    </div>
 
     <script>
         var append_i = 0;
