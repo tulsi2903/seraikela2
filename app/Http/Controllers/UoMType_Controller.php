@@ -36,7 +36,7 @@ class UoMType_Controller extends Controller
                 $tmp = UoM_Type::where('uom_type_name',$request->uom_type_name)->first();
                 if($tmp->uom_type_id!=$request->edit_id){
                     session()->put('alert-class','alert-danger');
-                    session()->put('alert-content','This UoM Type'.$request->uom_type_name.' already exist !');
+                    session()->put('alert-content','This UoM Type '.$request->uom_type_name.' already exist !');
                 }
                 else{
                     if($uom_type->save()){
