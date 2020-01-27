@@ -144,6 +144,7 @@
                         <th>Schemes</th>
                         <th>Assests</th>
                         <th>Attributes</th>
+                        
                         <th>Action</th>
                         </tr>
                     </thead>
@@ -172,12 +173,15 @@
        
         $("#toggle_div").slideDown(300);
         
-      
+       
         $.ajax({
             url: "get/matching-schemes/details"+"/"+id,
             method: "GET",
             contentType: 'application/json',
             dataType: "json",
+            beforeSend: function(){
+                $("#dublicate_data").html("");
+            },
             success: function (data){
               
                 var append;
@@ -185,7 +189,7 @@
               for(var i=0; i<data.tmp_matching; i++ )
               {
                   s_no++;
-                append=`<tr><td>`+s_no+`</td><td>`+data.Matching.year_value+`</td><td>`+data.Matching.geo_name+`</td><td>`+data.Matching.panchayat_name+`</td><td>`+data.Matching.scheme_name+`</td><td>`+data.Matching.scheme_asset_name+`</td><td>Attributes</td>
+                append  +=`<tr><td>`+s_no+`</td><td>`+data.Matching[i].year_value+`</td><td>`+data.Matching[i].geo_name+`</td><td>`+data.Matching.panchayat_name+`</td><td>`+data.Matching.scheme_name+`</td><td>`+data.Matching.scheme_asset_name+`</td><td>Attributes</td>
                             <td><button type="button" class="btn btn-primary">In-Progress</button><button type="button" class="btn btn-primary">Cancel</button></td></tr>`;
               }
               $("#dublicate_data").append(append);
@@ -197,8 +201,9 @@
    function hide_div()
    {
     $("#toggle_div").slideUp(300);
-    document.getElementById("toggle_div").reset();
-    // $("#toggle_div").reset();
+    
     
    }
+
+  
 </script>
