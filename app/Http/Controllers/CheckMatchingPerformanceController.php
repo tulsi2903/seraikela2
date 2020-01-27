@@ -35,16 +35,17 @@ class CheckMatchingPerformanceController extends Controller
    public function index()
    {
         
-     $datas = CheckMatchingPerformance::leftJoin('scheme_performance','scheme_performance.scheme_performance_id','=','chck_matching_performance.scheme_performance_id')
-               ->leftJoin('year','year.year_id','=','scheme_performance.year_id')
-               ->leftJoin('scheme_assets','scheme_assets.scheme_asset_id','=','scheme_performance.scheme_asset_id')
-               ->leftJoin('scheme_structure','scheme_structure.scheme_id','=','scheme_performance.scheme_id')
-               ->leftJoin('geo_structure','geo_structure.geo_id','=','scheme_performance.block_id')
+     $datas = CheckMatchingPerformance::leftJoin('scheme_performance','chck_matching_performance.scheme_performance_id','=','scheme_performance.scheme_performance_id')
+               ->leftJoin('year','scheme_performance.year_id','=','year.year_id')
+               ->leftJoin('scheme_assets','scheme_performance.scheme_asset_id','=','scheme_assets.scheme_asset_id')
+               ->leftJoin('scheme_structure','scheme_performance.scheme_id','=','scheme_structure.scheme_id')
+               ->leftJoin('geo_structure','scheme_performance.block_id','=','geo_structure.geo_id')
                ->select('chck_matching_performance.*', 'scheme_performance.scheme_performance_id','scheme_performance.attribute','scheme_performance.panchayat_id as panchayat_id','year.year_value','scheme_assets.scheme_asset_name','scheme_structure.scheme_name','geo_structure.geo_name')
                ->orderBy('chck_matching_performance.id','desc')
                ->get();
 
- 
+
+//   return $datas;
              
      foreach($datas as $data)
      {
@@ -56,22 +57,22 @@ class CheckMatchingPerformanceController extends Controller
      
      }
         
-        
+     
 
           return view('matching-schemes.index')->with('datas', $datas);
    }
 
    public function get_matching_entries($id="")
    {
-          $datas = CheckMatchingPerformance::leftJoin('scheme_performance','scheme_performance.scheme_performance_id','=','chck_matching_performance.scheme_performance_id')
-          ->leftJoin('year','year.year_id','=','scheme_performance.year_id')
-          ->leftJoin('scheme_assets','scheme_assets.scheme_asset_id','=','scheme_performance.scheme_asset_id')
-          ->leftJoin('scheme_structure','scheme_structure.scheme_id','=','scheme_performance.scheme_id')
-          ->leftJoin('geo_structure','geo_structure.geo_id','=','scheme_performance.block_id')
-          ->select('chck_matching_performance.*', 'scheme_performance.scheme_performance_id','chck_matching_performance.matching_performance_id as matching_performance_id','scheme_performance.attribute as attribute','scheme_performance.panchayat_id as panchayat_id','year.year_value','scheme_assets.scheme_asset_name','scheme_structure.scheme_name','geo_structure.geo_name')
-          ->orderBy('chck_matching_performance.id','desc')
-          ->where('id',$id)
-          ->first();
+          $datas = CheckMatchingPerformance::leftJoin('scheme_performance','chck_matching_performance.scheme_performance_id','=','scheme_performance.scheme_performance_id')
+                         ->leftJoin('year','scheme_performance.year_id','=','year.year_id')
+                         ->leftJoin('scheme_assets','scheme_performance.scheme_asset_id','=','scheme_assets.scheme_asset_id')
+                         ->leftJoin('scheme_structure','scheme_performance.scheme_id','=','scheme_structure.scheme_id')
+                         ->leftJoin('geo_structure','scheme_performance.block_id','=','geo_structure.geo_id')
+                         ->select('chck_matching_performance.*', 'scheme_performance.scheme_performance_id','chck_matching_performance.matching_performance_id as matching_performance_id','scheme_performance.attribute as attribute','scheme_performance.panchayat_id as panchayat_id','year.year_value','scheme_assets.scheme_asset_name','scheme_structure.scheme_name','geo_structure.geo_name')
+                         ->orderBy('chck_matching_performance.id','desc')
+                         ->where('id',$id)
+                         ->first();
          
           $tmp_matching=count(explode(",",$datas->matching_performance_id));
           $tmp_matching_array=explode(",",$datas->matching_performance_id);
@@ -79,24 +80,22 @@ class CheckMatchingPerformanceController extends Controller
                     ->leftJoin('scheme_assets','scheme_assets.scheme_asset_id','=','scheme_performance.scheme_asset_id')
                     ->leftJoin('scheme_structure','scheme_structure.scheme_id','=','scheme_performance.scheme_id')
                     ->leftJoin('geo_structure','geo_structure.geo_id','=','scheme_performance.block_id')
-                    
                     ->whereIn('scheme_performance_id',$tmp_matching_array)
                     ->get();
 
-                    
+
 
           foreach($datas as $data)
           {
                
-               //panchayat data
-               $tmp = GeoStructure::select('geo_name')->where('geo_id',$data['panchayat_id'])->first();
-               $data->panchayat_name = $tmp->geo_name;
-     
+                //panchayat data
+          $tmp = GeoStructure::select('geo_name')->where('geo_id',$data['panchayat_id'])->first();
+          $data->panchayat_name = $tmp->geo_name;
+
           
           }
 
          
-       
 
           return ['Matching'=>$datas,'tmp_matching'=>$tmp_matching];
    }
@@ -105,7 +104,7 @@ class CheckMatchingPerformanceController extends Controller
 
    public function delete(Request $request){
         
-          // return $request;
+          //  return $request;
 
           $tmp_revert = $request->hidden_input_for_revert;
           $tmp_revert = ltrim($tmp_revert,",");
@@ -117,8 +116,9 @@ class CheckMatchingPerformanceController extends Controller
 
      for($i=0;$i<count($tmp_revert);$i++)
      {
-         CheckMatchingPerformance::where('scheme_performance_id',$tmp_revert[$i])->delete();
-     //     return $tmp_revert[$i];
+
+       CheckMatchingPerformance::where('scheme_performance_id',$tmp_revert[$i])->delete();
+     
      }
 
      for($i;$i<count($tmp_inprogress);$i++)
@@ -127,13 +127,13 @@ class CheckMatchingPerformanceController extends Controller
           if($scheme_performance)
           {
                $scheme_performance->status =  0;
+               
+              
           }
           $scheme_performance->save();
           
      }
-
-    
-
+//     return $scheme_performance;
      return redirect('matching-schemes');
  }
 

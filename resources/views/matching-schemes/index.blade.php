@@ -145,7 +145,7 @@
                         <th>Assests</th>
                         <th>Attributes</th>
                         
-                        <th>Action</th>
+                        <th>Status Is</th>
                         </tr>
                     </thead>
                     <tbody id="dublicate_data">
@@ -194,7 +194,7 @@
               {
                   s_no++;
                 append  +=`<tr><td>`+s_no+`</td><td>`+data.Matching[i].year_value+`</td><td>`+data.Matching[i].geo_name+`</td><td>`+data.Matching[i].panchayat_name+`</td><td>`+data.Matching[i].scheme_name+`</td><td>`+data.Matching[i].scheme_asset_name+`</td><td>Attributes</td>
-                            <td><button type="button" class="btn btn-primary" onclick="inprogress_request(`+data.Matching[i].scheme_performance_id+`)">In-Progress</button><button type="button" class="btn btn-primary" onclick="revert_request(`+data.Matching[i].scheme_performance_id+`)">Cancel</button></td></tr>`;
+                            <td><button type="button" class="btn btn-primary" onclick="inprogress_request(`+data.Matching[i].scheme_performance_id+`)">In-Progress</button>&nbsp;&nbsp;<button type="button" class="btn btn-primary" onclick="revert_request(`+data.Matching[i].scheme_performance_id+`)">Cancel</button></td></tr>`;
               }
               $("#dublicate_data").append(append);
 
