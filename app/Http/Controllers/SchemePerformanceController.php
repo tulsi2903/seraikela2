@@ -362,13 +362,22 @@ class SchemePerformanceController extends Controller
                     $scheme_performance->subdivision_id = $subdivision_id;
                     $scheme_performance->block_id = $block_id;
                      /*  Spans Across Borders */
+                     
+                    if($request->connectivity_details!="")
+                    {
                     if(in_array('x'.$key_request, $request->connectivity_details)){
                         $scheme_performance->connectivity_status = 1;
                     } else {
                         $scheme_performance->connectivity_status = 0;
                         $scheme_performance->borders_connectivity = null;
                     }
-                    /* End Spans Across Borders */
+                    }
+                    else
+                    {
+                        $scheme_performance->connectivity_status = 0;
+                            $scheme_performance->borders_connectivity = null;
+                    }
+                        /* End Spans Across Borders */
                     $scheme_performance->panchayat_id = $panchayat_id;
                     $scheme_performance->attribute = serialize($value_request) ?? "";
                     $scheme_performance->status = $request->status[$key_request];
@@ -388,11 +397,19 @@ class SchemePerformanceController extends Controller
                 $scheme_performance->panchayat_id = $panchayat_id;
                 $scheme_performance->attribute = serialize($value_request) ?? "";
                 $scheme_performance->status = $request->status[$key_request];
+                if($request->connectivity_details!="")
+                {
                 /* Spans Across Borders */
-                if(in_array('x'.$key_request, $request->connectivity_details)){
-                    $scheme_performance->connectivity_status = 1;
-                } else {
+                    if(in_array('x'.$key_request, $request->connectivity_details)){
+                        $scheme_performance->connectivity_status = 1;
+                    } else {
+                        $scheme_performance->connectivity_status = 0;
+                    }
+                }
+                else
+                {
                     $scheme_performance->connectivity_status = 0;
+                        $scheme_performance->borders_connectivity = null;
                 }
                 /* End Spans Across Borders */
                 $scheme_performance->scheme_asset_id = $request->assest_name[$key_request] ?? $scheme_data->scheme_asset_id;
@@ -917,6 +934,7 @@ class SchemePerformanceController extends Controller
         if ($SchemePerformance_connectivity->borders_connectivity != "") {
             $connectivity_details = unserialize($SchemePerformance_connectivity->borders_connectivity);
         }
+        $panchayat_datas=array();
         if ($connectivity_details) {
             foreach ($connectivity_details as $key => $value) {
                 $panchayat_datas[] = GeoStructure::select('geo_id', 'geo_name')->orderBy('geo_name', 'asc')->where('bl_id',$value['conn_block_id'])->get();

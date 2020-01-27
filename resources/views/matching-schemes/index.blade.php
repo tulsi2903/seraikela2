@@ -105,11 +105,12 @@
                                
                                 <?php   
                                  $attribute[0]=unserialize($data->attribute);
-                                foreach($attributes[0] as $key_att=>$value_att)
-                                {
-                                    $print_att=$value_att;
-                                }   
-                                echo $print_att;
+                                 $print_att;
+                                 foreach($attribute[0][0] as $key_at=>$value_att)
+                                 {
+                                     $print_att=$value_att;
+                                 }
+                             print_r( $print_att);
                             ?></td>
                             <td>
 

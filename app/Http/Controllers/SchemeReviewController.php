@@ -424,14 +424,51 @@ class SchemeReviewController extends Controller
                         }
 // return $tabular_data_tmp;
                         // for status
-                        if($performance_data->status==0){\
+                        if($performance_data->status==0){
                             array_push($tabular_data_tmp, "Incomplete");
-                            $map_datas_tmp["status"] = "Incomplete";
+                            $map_datas_tmp["status"] = "In progess";
+                            $map_datas_tmp["road_color"]="#3232FF";
+                            if($performance_data->connectivity_status==1)
+                            {
+                                $map_datas_tmp["road_color"]="#43F40B";
+                            }
+    
                         }
                         else if($performance_data->status==1){
                             array_push($tabular_data_tmp, "Completed");
                             $map_datas_tmp["status"] = "Completed";
+                            $map_datas_tmp["road_color"]="#3c3c3c";
+                            if($performance_data->connectivity_status==1)
+                            {
+                                $map_datas_tmp["road_color"]="#43F40B";
+                            }
+    
                         }
+                        else if($performance_data->status==2)
+                        {
+                            array_push($tabular_data_tmp, "Sanctioned");
+                            $map_datas_tmp["status"] = "Sanctioned";
+                            $map_datas_tmp["road_color"]="#ed3900";
+                            if($performance_data->connectivity_status==1)
+                            {
+                                $map_datas_tmp["road_color"]="#43F40B";
+                            }
+    
+                            
+                        }
+                        else if($performance_data->status==3)
+                        {
+                            array_push($tabular_data_tmp, "Cancel");
+                            $map_datas_tmp["status"] = "Cancel";
+                            $map_datas_tmp["road_color"]="#FF0000";
+                            if($performance_data->connectivity_status==1)
+                            {
+                                $map_datas_tmp["road_color"]="#43F40B";
+                            }
+    
+                        }
+
+
 
                         // for coordinates
                         if($performance_data->coordinates){

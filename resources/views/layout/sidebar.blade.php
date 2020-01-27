@@ -5,19 +5,15 @@
 			<ul class="nav nav-primary">
 				<li class="nav-item"><a href="{{url(session()->get('dashboard_url'))}}"><i class="fas fa-home"></i>
 					@if(session()->get('dashboard_title')=='My District')
-					<p> {{$phrase->my}} {{$phrase->district}}</p>
+					<p>  {{$phrase->district}}</p>
 					@elseif(session()->get('dashboard_title')=='My SubDivision')
-					<p> {{$phrase->my}}  {{$phrase->sub_divisin}}</p>
+					<p>   {{$phrase->sub_divisin}}</p>
 					@elseif(session()->get('dashboard_title')=='My Block')
-					<p> {{$phrase->my}}  {{$phrase->block}}</p>
+					<p>   {{$phrase->block}}</p>
 					@else
-					<p>  {{$phrase->my}} {{$phrase->panchayat}}</p>
+					<p>   {{$phrase->panchayat}}</p>
 					@endif
 				</a></li>
-					
-
-				
-			
 				<li class="nav-item">
 					<a data-toggle="collapse" href="#asset" class="collapsed" aria-expanded="false">
 						<i class="fas fa-layer-group"></i>

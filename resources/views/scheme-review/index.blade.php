@@ -1583,37 +1583,49 @@
             //     animation: google.maps.Animation.DROP
             // });
 
-                
+            var data_to_send = this;
             if(this.coordinates_details.length>1)
             {
+                var img_url="public/map_image/road.svg";
+                icon.url = img_url || null;
                 var flightPath = new google.maps.Polyline({
-                path: this.coordinates_details,
-                geodesic: true,
-                strokeColor: '#FF0000',
-                strokeOpacity: 1.0,
-                strokeWeight: 6  
-            });
+                    path: this.coordinates_details,
+                    geodesic: true,
+                    icon:icon,
+        //             icon: {
+        //     path:img_url,
+        //     scale: 10
+        //   },
+                    strokeColor: this.road_color,
+                    strokeOpacity: 1.0,
+                    strokeWeight: 6  
+                });
 
-            flightPath.setMap(map);
+                flightPath.setMap(map);
+                
+                flightPath.addListener('click', function () {
+                    // infowindow.open(map, marker);
+                    showGallery(data_to_send);
+                });
             }
             else{
                 var theposition = new google.maps.LatLng(this.latitude, this.longitude);
                 icon.url = this.scheme_map_marker || null;
                 var marker = new google.maps.Marker({
-                position: theposition,
-                map: map,
-                title: 'Scheme Data',
-                icon: icon,
-                animation: google.maps.Animation.DROP
-            });
-            // if(marker!=null)
-            // {
-            marker.addListener('click', function () {
-                // infowindow.open(map, marker);
-                showGallery(data_to_send);
-            });
-            // }
-
+                    position: theposition,
+                    map: map,
+                    title: 'Scheme Data',
+                    icon: icon,
+                    animation: google.maps.Animation.DROP
+                });
+                // if(marker!=null)
+                // {
+                
+                // }
+                marker.addListener('click', function () {
+                    // infowindow.open(map, marker);
+                    showGallery(data_to_send);
+                });
             }
             
          
@@ -1647,9 +1659,6 @@
             var infowindow = new google.maps.InfoWindow({
                 content: contentString
             });
-
-            var data_to_send = this;
-            
         });
         //map.setCenter(centerLat,centerLng);
         map.setCenter(new google.maps.LatLng(centerLat, centerLng));
