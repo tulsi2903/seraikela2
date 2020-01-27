@@ -45,7 +45,7 @@ class CheckMatchingPerformanceController extends Controller
                ->get();
 
 
-//   return $datas;
+
              
      foreach($datas as $data)
      {
@@ -57,45 +57,46 @@ class CheckMatchingPerformanceController extends Controller
      
      }
         
-     
+  
 
           return view('matching-schemes.index')->with('datas', $datas);
    }
 
    public function get_matching_entries($id="")
    {
-          $datas = CheckMatchingPerformance::leftJoin('scheme_performance','chck_matching_performance.scheme_performance_id','=','scheme_performance.scheme_performance_id')
-                         ->leftJoin('year','scheme_performance.year_id','=','year.year_id')
-                         ->leftJoin('scheme_assets','scheme_performance.scheme_asset_id','=','scheme_assets.scheme_asset_id')
-                         ->leftJoin('scheme_structure','scheme_performance.scheme_id','=','scheme_structure.scheme_id')
-                         ->leftJoin('geo_structure','scheme_performance.block_id','=','geo_structure.geo_id')
-                         ->select('chck_matching_performance.*', 'scheme_performance.scheme_performance_id','chck_matching_performance.matching_performance_id as matching_performance_id','scheme_performance.attribute as attribute','scheme_performance.panchayat_id as panchayat_id','year.year_value','scheme_assets.scheme_asset_name','scheme_structure.scheme_name','geo_structure.geo_name')
-                         ->orderBy('chck_matching_performance.id','desc')
-                         ->where('id',$id)
-                         ->first();
+          $datas = CheckMatchingPerformance::where('id',$id)->first();
          
           $tmp_matching=count(explode(",",$datas->matching_performance_id));
           $tmp_matching_array=explode(",",$datas->matching_performance_id);
-          $datas=SchemePerformance::leftJoin('year','year.year_id','=','scheme_performance.year_id')
-                    ->leftJoin('scheme_assets','scheme_assets.scheme_asset_id','=','scheme_performance.scheme_asset_id')
-                    ->leftJoin('scheme_structure','scheme_structure.scheme_id','=','scheme_performance.scheme_id')
-                    ->leftJoin('geo_structure','geo_structure.geo_id','=','scheme_performance.block_id')
+
+          $datas=SchemePerformance::leftJoin('year','scheme_performance.year_id','=','year.year_id')
+                    ->leftJoin('scheme_assets','scheme_performance.scheme_asset_id','=','scheme_assets.scheme_asset_id')
+                    ->leftJoin('scheme_structure','scheme_performance.scheme_id','=','scheme_structure.scheme_id')
+                    ->leftJoin('geo_structure','scheme_performance.block_id','=','geo_structure.geo_id')
+                    ->select( 'scheme_performance.scheme_performance_id','scheme_performance.attribute','geo_structure.geo_name as block_name ','scheme_performance.panchayat_id as panchayat_id','year.year_value','scheme_assets.scheme_asset_name','scheme_structure.scheme_name','geo_structure.geo_name')
+
                     ->whereIn('scheme_performance_id',$tmp_matching_array)
                     ->get();
-
 
 
           foreach($datas as $data)
           {
                
                 //panchayat data
-          $tmp = GeoStructure::select('geo_name')->where('geo_id',$data['panchayat_id'])->first();
-          $data->panchayat_name = $tmp->geo_name;
+               $tmp = GeoStructure::select('geo_name')->where('geo_id', $data['panchayat_id'])->first();
+               $data->panchayat_name = $tmp->geo_name;
+               $attribute[0]=unserialize($data['attribute']);
+               $print_att="";
+               foreach($attribute[0][0] as $key_at=>$value_att)
+               {
+                   $print_att=$value_att;
+               }
+               $data->attribute = $print_att;
 
-          
+          //  print_r( $print_att);
           }
 
-         
+          // return $datas;
 
           return ['Matching'=>$datas,'tmp_matching'=>$tmp_matching];
    }
@@ -104,8 +105,8 @@ class CheckMatchingPerformanceController extends Controller
 
    public function delete(Request $request){
         
-          //  return $request;
-
+          
+     
           $tmp_revert = $request->hidden_input_for_revert;
           $tmp_revert = ltrim($tmp_revert,",");
           print_r (explode(" ",$tmp_revert));
@@ -113,26 +114,37 @@ class CheckMatchingPerformanceController extends Controller
           $tmp_inprogress = $request->hidden_input_for_inprogress;
           $tmp_inprogress = ltrim($tmp_inprogress,",");
           print_r (explode(" ",$tmp_inprogress));
-
-     for($i=0;$i<count($tmp_revert);$i++)
-     {
-
-       CheckMatchingPerformance::where('scheme_performance_id',$tmp_revert[$i])->delete();
-     
-     }
-
-     for($i;$i<count($tmp_inprogress);$i++)
-     {
-          $scheme_performance = SchemePerformance::where('scheme_performance_id', $tmp_inprogress[$i])->first();
-          if($scheme_performance)
+          if(in_array($tmp_revert,$request->scheme_performance_id))
           {
-               $scheme_performance->status =  0;
+               CheckMatchingPerformance::where('scheme_performance_id',implode(",",$request->scheme_performance_id))->delete();
+          }
+          if($tmp_inprogress==$request->scheme_performance_id)
+          {
+               // $scheme_
+               // $scheme_performance->status =  0;
+          }
+     //     print_r($request->scheme_performance_id);
+          exit;
+
+     // for($i=0;$i<count($tmp_revert);$i++)
+     // {
+
+     //   CheckMatchingPerformance::where('scheme_performance_id',$tmp_revert[$i])->delete();
+     
+     // }
+
+     // for($i;$i<count($tmp_inprogress);$i++)
+     // {
+     //      $scheme_performance = SchemePerformance::where('scheme_performance_id', $tmp_inprogress[$i])->first();
+     //      if($scheme_performance)
+     //      {
+     //           $scheme_performance->status =  0;
                
               
-          }
-          $scheme_performance->save();
+     //      }
+     //      $scheme_performance->save();
           
-     }
+     // }
 //     return $scheme_performance;
      return redirect('matching-schemes');
  }

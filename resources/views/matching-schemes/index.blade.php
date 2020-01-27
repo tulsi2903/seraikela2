@@ -87,7 +87,9 @@
                       @foreach($datas as $data)
                       
                         <tr>
-                            <td>{{$count++}} </td>
+                            <td>{{$count++}} 
+                                
+                            </td>
                             <td>{{$data->year_value}}</td>
                             <td>{{$data->geo_name}}</td>
                             <td>{{$data->panchayat_name}}</td>
@@ -158,8 +160,8 @@
         </div>
            
         <div class="modal-footer">
-            <input type="text" name="hidden_input_for_inprogress" id="hidden_input_for_inprogress" value="" hidden>
-            <input type="text" name="hidden_input_for_revert" id="hidden_input_for_revert" value="" hidden>
+            <input type="text" name="hidden_input_for_inprogress" id="hidden_input_for_inprogress" value="" >
+            <input type="text" name="hidden_input_for_revert" id="hidden_input_for_revert" value="" >
             <button type="button" class="btn btn-secondary waves-effect" onclick="return hide_div();">Cancel</button>
             <button type="submit" class="btn btn-info waves-effect waves-light">Save</button>
         </div>
@@ -187,14 +189,13 @@
                 $("#hidden_input_for_revert").html("");
             },
             success: function (data){
-              
                 var append;
                 var s_no = 0;
               for(var i=0; i<data.tmp_matching; i++ )
               {
                   s_no++;
-                append  +=`<tr><td>`+s_no+`</td><td>`+data.Matching[i].year_value+`</td><td>`+data.Matching[i].geo_name+`</td><td>`+data.Matching[i].panchayat_name+`</td><td>`+data.Matching[i].scheme_name+`</td><td>`+data.Matching[i].scheme_asset_name+`</td><td>Attributes</td>
-                            <td><button type="button" class="btn btn-primary" onclick="inprogress_request(`+data.Matching[i].scheme_performance_id+`)">In-Progress</button>&nbsp;&nbsp;<button type="button" class="btn btn-primary" onclick="revert_request(`+data.Matching[i].scheme_performance_id+`)">Cancel</button></td></tr>`;
+                append  +=`<tr><td>`+s_no+`</td><td>`+data.Matching[i].year_value+`</td><td>`+data.Matching[i].geo_name+`</td><td>`+data.Matching[i].panchayat_name+`</td><td>`+data.Matching[i].scheme_name+`</td><td>`+data.Matching[i].scheme_asset_name+`</td><td>`+data.Matching[i].attribute+`</td>
+                            <td><input type="text" name="scheme_performance_id[]" value="`+data.Matching[i].scheme_performance_id+`"><button type="button" class="btn btn-primary" onclick="inprogress_request(`+data.Matching[i].scheme_performance_id+`)">In-Progress</button>&nbsp;&nbsp;<button type="button" class="btn btn-primary" onclick="revert_request(`+data.Matching[i].scheme_performance_id+`)">Cancel</button></td></tr>`;
               }
               $("#dublicate_data").append(append);
 
