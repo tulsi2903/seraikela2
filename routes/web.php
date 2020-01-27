@@ -253,6 +253,7 @@ Route::post('scheme_performance/savebl_pl_connectivity','SchemePerformanceContro
 
 Route::get('matching-schemes','CheckMatchingPerformanceController@index');
 Route::get('get/matching-schemes/details/{id}','CheckMatchingPerformanceController@get_matching_entries');
+Route::post('scheme_performance/delete','CheckMatchingPerformanceController@delete');
 
 /* scheme review */
 Route::get('scheme-review', 'SchemeReviewController@index');

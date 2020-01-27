@@ -76,38 +76,64 @@ class CheckMatchingPerformanceController extends Controller
           $tmp_matching=count(explode(",",$datas->matching_performance_id));
           $tmp_matching_array=explode(",",$datas->matching_performance_id);
           $datas=SchemePerformance::leftJoin('year','year.year_id','=','scheme_performance.year_id')
-          ->leftJoin('scheme_assets','scheme_assets.scheme_asset_id','=','scheme_performance.scheme_asset_id')
-          ->leftJoin('scheme_structure','scheme_structure.scheme_id','=','scheme_performance.scheme_id')
-          ->leftJoin('geo_structure','geo_structure.geo_id','=','scheme_performance.block_id')
-          ->whereIn('scheme_performance_id',$tmp_matching_array)
-          ->get();
+                    ->leftJoin('scheme_assets','scheme_assets.scheme_asset_id','=','scheme_performance.scheme_asset_id')
+                    ->leftJoin('scheme_structure','scheme_structure.scheme_id','=','scheme_performance.scheme_id')
+                    ->leftJoin('geo_structure','geo_structure.geo_id','=','scheme_performance.block_id')
+                    
+                    ->whereIn('scheme_performance_id',$tmp_matching_array)
+                    ->get();
+
+                    
+
           foreach($datas as $data)
           {
+               
                //panchayat data
                $tmp = GeoStructure::select('geo_name')->where('geo_id',$data['panchayat_id'])->first();
                $data->panchayat_name = $tmp->geo_name;
-          //     $attribute=unserialize($data['attributes']);
-          //     $print_att=array();
-          //      foreach($attribute[0] as $key_at=>$value_att)
-          //                        {
-          //                            $print_att[]=$value_att;
-          //                        }
-          //                    print_r( $attribute);
+     
           
           }
-          // $tmp = GeoStructure::select('geo_name')->where('geo_id',$datas->panchayat_id)->first();
-          $datas->panchayat_name = $tmp->geo_name;
+
          
+       
 
           return ['Matching'=>$datas,'tmp_matching'=>$tmp_matching];
    }
 
+
+
    public function delete(Request $request){
-     if(CheckMatchingPerformance::find($request->id)){
-          SchemePerformance::where('scheme_performance_id',$request->id)->delete();
-         session()->put('alert-class','alert-success');
-         session()->put('alert-content','Status Cancelled successfully');
+        
+          // return $request;
+
+          $tmp_revert = $request->hidden_input_for_revert;
+          $tmp_revert = ltrim($tmp_revert,",");
+          print_r (explode(" ",$tmp_revert));
+
+          $tmp_inprogress = $request->hidden_input_for_inprogress;
+          $tmp_inprogress = ltrim($tmp_inprogress,",");
+          print_r (explode(" ",$tmp_inprogress));
+
+     for($i=0;$i<count($tmp_revert);$i++)
+     {
+         CheckMatchingPerformance::where('scheme_performance_id',$tmp_revert[$i])->delete();
+     //     return $tmp_revert[$i];
      }
+
+     for($i;$i<count($tmp_inprogress);$i++)
+     {
+          $scheme_performance = SchemePerformance::where('scheme_performance_id', $tmp_inprogress[$i])->first();
+          if($scheme_performance)
+          {
+               $scheme_performance->status =  0;
+          }
+          $scheme_performance->save();
+          
+     }
+
+    
+
      return redirect('matching-schemes');
  }
 

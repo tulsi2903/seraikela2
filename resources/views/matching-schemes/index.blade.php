@@ -130,7 +130,7 @@
 
     <!-- View Div -->
 <div id="toggle_div" style="display:none;">
-    <form action="#" method="get">
+    <form action="{{url('scheme_performance/delete')}}" method="POST">
         @csrf
         <div class="modal-body">
             <div class="row" style="padding:2em;margin-top: -3em;">
@@ -156,10 +156,12 @@
                 
             </div>
         </div>
-            <!-- <input type="text"> -->
+           
         <div class="modal-footer">
+            <input type="text" name="hidden_input_for_inprogress" id="hidden_input_for_inprogress" value="" hidden>
+            <input type="text" name="hidden_input_for_revert" id="hidden_input_for_revert" value="" hidden>
             <button type="button" class="btn btn-secondary waves-effect" onclick="return hide_div();">Cancel</button>
-            <button type="button" class="btn btn-info waves-effect waves-light">Save</button>
+            <button type="submit" class="btn btn-info waves-effect waves-light">Save</button>
         </div>
     </form>
 </div>
@@ -181,6 +183,8 @@
             dataType: "json",
             beforeSend: function(){
                 $("#dublicate_data").html("");
+                $("#hidden_input_for_inprogress").html("");
+                $("#hidden_input_for_revert").html("");
             },
             success: function (data){
               
@@ -189,8 +193,8 @@
               for(var i=0; i<data.tmp_matching; i++ )
               {
                   s_no++;
-                append  +=`<tr><td>`+s_no+`</td><td>`+data.Matching[i].year_value+`</td><td>`+data.Matching[i].geo_name+`</td><td>`+data.Matching.panchayat_name+`</td><td>`+data.Matching.scheme_name+`</td><td>`+data.Matching.scheme_asset_name+`</td><td>Attributes</td>
-                            <td><button type="button" class="btn btn-primary">In-Progress</button><button type="button" class="btn btn-primary">Cancel</button></td></tr>`;
+                append  +=`<tr><td>`+s_no+`</td><td>`+data.Matching[i].year_value+`</td><td>`+data.Matching[i].geo_name+`</td><td>`+data.Matching[i].panchayat_name+`</td><td>`+data.Matching[i].scheme_name+`</td><td>`+data.Matching[i].scheme_asset_name+`</td><td>Attributes</td>
+                            <td><button type="button" class="btn btn-primary" onclick="inprogress_request(`+data.Matching[i].scheme_performance_id+`)">In-Progress</button><button type="button" class="btn btn-primary" onclick="revert_request(`+data.Matching[i].scheme_performance_id+`)">Cancel</button></td></tr>`;
               }
               $("#dublicate_data").append(append);
 
@@ -201,8 +205,18 @@
    function hide_div()
    {
     $("#toggle_div").slideUp(300);
-    
-    
+    }
+
+   function revert_request(id)
+   {
+     $("#hidden_input_for_revert").val($("#hidden_input_for_revert").val()+","+id);
+   
+   }
+
+   function inprogress_request(id)
+   {
+   
+    $("#hidden_input_for_inprogress").val($("#hidden_input_for_inprogress").val()+","+id);
    }
 
   
