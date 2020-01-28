@@ -45,6 +45,14 @@
     border-bottom-left-radius: .3rem;
     margin-top: -24px;
 }
+.notduplicate_record{
+    display:none;
+}
+.duplicate_record{
+    display:none;
+}
+
+
 
 </style>
 @endsection
@@ -94,7 +102,7 @@
                             <td>{{$data->geo_name}}</td>
                             <td>{{$data->panchayat_name}}</td>
                             
-                            <td>{{$data->scheme_name}}</td>
+                            <td>{{$data->scheme_name}}({{$data->scheme_short_name}})</td>
                             <td>{{$data->scheme_asset_name}}</td>
                             <td> 
                                 <?php $matching_array=explode(',',$data['matching_performance_id']);
@@ -148,6 +156,9 @@
                         <th>Attributes</th>
                         
                         <th>Status Is</th>
+                        <th>Date</th>
+                        <th>Comment</th>
+                        <th>Cancel</th>
                         </tr>
                     </thead>
                     <tbody id="dublicate_data">
@@ -162,24 +173,45 @@
         <div class="modal-footer">
             <input type="text" name="hidden_input_for_inprogress" id="hidden_input_for_inprogress" value="" hidden>
             <input type="text" name="hidden_input_for_revert" id="hidden_input_for_revert" value="" hidden>
+            
             <button type="button" class="btn btn-secondary waves-effect" onclick="return hide_div();">Cancel</button>
-            <button type="submit" class="btn btn-info waves-effect waves-light">Save</button>
+            <button type="submit" class="btn btn-info waves-effect waves-light" onclick="return before_save()">Save</button>
+
+            <!-- hidden inputs for counting button click -->
+            <!-- <input type="text" value="0" class="inprogress_counter"/>
+            <input type="text" value="0" class="revert_counter"/> -->
         </div>
     </form>
 </div>
 <!-- End of view -->
 </div>
 
-@endsection
+
 
 <script>
     var selected_inprogress = new Array;
     var selected_revert = new Array;
 
+    // var $button_inprogress = document.querySelector('.notduplicate_record');
+    // var $counter_inprogress = document.querySelector('.inprogress_counter');
+
+    // var $button_revert = document.querySelector('.duplicate_record');
+    // var $counter_revert = document.querySelector('.revert_counter');
+
+    // $button_inprogress.addEventListener('click', function(){
+    // $counter_inprogress.value = parseInt($counter_inprogress.value) + 1; // `parseInt` converts the `value` from a string to a number
+    // }, false); 
+
+    // $button_revert.addEventListener('click', function(){
+    // $counter_revert.value = parseInt($counter_revert.value) + 1; // `parseInt` converts the `value` from a string to a number
+    // }, false); 
+
+   
+
     function get_view_data(id) {
        
         $("#toggle_div").slideDown(300);
-        
+       
        
         $.ajax({
             url: "get/matching-schemes/details"+"/"+id,
@@ -192,17 +224,24 @@
                 $("#hidden_input_for_revert").val("");
                 selected_inprogress = [];
                 selected_revert = [];
+               
+              
             },
             success: function (data){
+             
                 var append;
                 var s_no = 0;
+               
               for(var i=0; i<data.tmp_matching; i++ )
               {
-                  s_no++;
-                append  +=`<tr><td>`+s_no+`</td><td>`+data.Matching[i].year_value+`</td><td>`+data.Matching[i].geo_name+`</td><td>`+data.Matching[i].panchayat_name+`</td><td>`+data.Matching[i].scheme_name+`</td><td>`+data.Matching[i].scheme_asset_name+`</td><td>`+data.Matching[i].attribute+`</td>
-                            <td><input type="text" name="matching_id" value="`+id+`" hidden><input type="text" name="scheme_performance_id[]" value="`+data.Matching[i].scheme_performance_id+`" hidden><button type="button" class="btn btn-primary" onclick="inprogress_request(`+data.Matching[i].scheme_performance_id+`)">In-Progress</button>&nbsp;&nbsp;<button type="button" class="btn btn-primary" onclick="revert_request(`+data.Matching[i].scheme_performance_id+`)">Cancel</button></td></tr>`;
+
+                s_no++;
+                append  +=`<tr><td>`+s_no+`</td><td>`+data.Matching[i].year_value+`</td><td>`+data.Matching[i].geo_name+`</td><td>`+data.Matching[i].panchayat_name+`</td><td>`+data.Matching[i].scheme_short_name+`</td><td>`+data.Matching[i].scheme_asset_name+`</td><td>`+data.Matching[i].attribute+`</td>
+                            <td><input type="text" name="matching_id" value="`+id+`" hidden><input type="text" name="scheme_performance_id[]" value="`+data.Matching[i].scheme_performance_id+`" hidden><button type="button" class="btn btn-primary inprogress"  onclick="inprogress_request(`+data.Matching[i].scheme_performance_id+`,this)">Not Duplicate</button><span class="notduplicate_record">This particular record is not duplicate</span><button type="button" class="btn btn-primary revert" id="revert-btn" onclick="revert_request(`+data.Matching[i].scheme_performance_id+`,this)">Duplicate</button><span style="color:red" class="duplicate_record">This particular record is duplicate</span></td><td>Created At</td><td><textarea class="form-control"></textarea></td><td><i class="fa fa-undo" aria-hidden="true"></i></td></tr>`;
               }
               $("#dublicate_data").append(append);
+
+              
 
             }
         });
@@ -210,26 +249,90 @@
    
    function hide_div()
    {
-    $("#toggle_div").slideUp(300);
+        $("#toggle_div").slideUp(300);
+      
     }
 
-   function revert_request(id)
+   function revert_request(id,e)
    {
+
      if (!selected_revert.includes(id)) {
         selected_revert.push(id);
             $("#hidden_input_for_revert").val(selected_revert);
+
+            var tr = $(e).closest("tr");
+           
+            $(tr).find(".duplicate_record").show();
+            $(tr).find(".inprogress").hide();
+            $(tr).find(".revert").hide();
         }
-   
+       
    }
 
    
-   function inprogress_request(id)
+   function inprogress_request(id,e)
    {
         if (!selected_inprogress.includes(id)) {
             selected_inprogress.push(id);
             $("#hidden_input_for_inprogress").val(selected_inprogress);
+
+            var tr = $(e).closest("tr");
+            $(tr).find(".notduplicate_record").show();
+            $(tr).find(".inprogress").hide();
+            $(tr).find(".revert").hide();
         }
+       
+
    }
 
-  
+   function before_save()
+   {
+       if($("#hidden_input_for_inprogress") || $("#hidden_input_for_revert")=="")
+       {
+          
+           
+           swal({
+                    title: 'Either of your status is unchecked, do you want to check it?',
+                    // text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    buttons:{
+                        cancel: {
+                            visible: true,
+                            text : 'No, cancel!',
+                            className: 'btn btn-danger'
+                        },
+                        confirm: {
+                            text : 'Yes, delete it!',
+                            className : 'btn btn-success'
+                        }
+                    }
+                }).then((willDelete) => {
+                    if (willDelete) {
+                        window.location = href;
+                    } else {
+                        return false;
+                        // function get_revert_data();
+                        swal("Your imaginary file is safe!", {
+                            buttons : {
+                                confirm : {
+                                    className: 'btn btn-success'
+                                }
+                            }
+                        });
+                    }
+                });
+                return false;
+       }
+       else{
+           return true;
+       }
+   }
+
+// function get_revert_data()
+// {
+//     alert("id");
+// }
+ 
+
 </script>
+@endsection
