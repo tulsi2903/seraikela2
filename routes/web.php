@@ -263,6 +263,9 @@ Route::get('scheme-review/get-datas', 'SchemeReviewController@get_datas');
 Route::get('scheme-review/get-map-data', 'SchemeReviewController@get_map_data');
 Route::get('scheme-review/get-panchayat-data', 'SchemeReviewController@get_panchayat_data');
 
+Route::get('scheme-review/duplicate-review','SchemeReviewDuplicateDataCheckController@index');
+Route::get('scheme-review/duplicate-review/get-datas','SchemeReviewDuplicateDataCheckController@get_datas');
+
 /* group*///rohit changes 
 Route::get('scheme-group','GroupController@index');
 Route::get('scheme-group/add','GroupController@add');

@@ -70,6 +70,7 @@
 							@if(array_key_exists("mod20", $desig_permissions))
 							<li class="nav-item"><a href="{{url('scheme-review')}}"><i class="fas fa-receipt"></i><p>{{$phrase->scheme_review}}</p></a></li>
 							@endif
+							<li class="nav-item"><a href="{{url('scheme-review/duplicate-review')}}"><i class="fas fa-receipt"></i><p>Duplicate Review</p></a></li>
 					</div>
 				</li>
 				<li class="nav-item">
