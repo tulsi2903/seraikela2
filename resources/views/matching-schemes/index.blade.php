@@ -160,8 +160,8 @@
         </div>
            
         <div class="modal-footer">
-            <input type="text" name="hidden_input_for_inprogress" id="hidden_input_for_inprogress" value="" >
-            <input type="text" name="hidden_input_for_revert" id="hidden_input_for_revert" value="" >
+            <input type="text" name="hidden_input_for_inprogress" id="hidden_input_for_inprogress" value="" hidden>
+            <input type="text" name="hidden_input_for_revert" id="hidden_input_for_revert" value="" hidden>
             <button type="button" class="btn btn-secondary waves-effect" onclick="return hide_div();">Cancel</button>
             <button type="submit" class="btn btn-info waves-effect waves-light">Save</button>
         </div>
@@ -173,6 +173,9 @@
 @endsection
 
 <script>
+    var selected_inprogress = new Array;
+    var selected_revert = new Array;
+
     function get_view_data(id) {
        
         $("#toggle_div").slideDown(300);
@@ -185,8 +188,10 @@
             dataType: "json",
             beforeSend: function(){
                 $("#dublicate_data").html("");
-                $("#hidden_input_for_inprogress").html("");
-                $("#hidden_input_for_revert").html("");
+                $("#hidden_input_for_inprogress").val("");
+                $("#hidden_input_for_revert").val("");
+                selected_inprogress = [];
+                selected_revert = [];
             },
             success: function (data){
                 var append;
@@ -195,7 +200,7 @@
               {
                   s_no++;
                 append  +=`<tr><td>`+s_no+`</td><td>`+data.Matching[i].year_value+`</td><td>`+data.Matching[i].geo_name+`</td><td>`+data.Matching[i].panchayat_name+`</td><td>`+data.Matching[i].scheme_name+`</td><td>`+data.Matching[i].scheme_asset_name+`</td><td>`+data.Matching[i].attribute+`</td>
-                            <td><input type="text" name="scheme_performance_id[]" value="`+data.Matching[i].scheme_performance_id+`"><button type="button" class="btn btn-primary" onclick="inprogress_request(`+data.Matching[i].scheme_performance_id+`)">In-Progress</button>&nbsp;&nbsp;<button type="button" class="btn btn-primary" onclick="revert_request(`+data.Matching[i].scheme_performance_id+`)">Cancel</button></td></tr>`;
+                            <td><input type="text" name="matching_id" value="`+id+`" hidden><input type="text" name="scheme_performance_id[]" value="`+data.Matching[i].scheme_performance_id+`" hidden><button type="button" class="btn btn-primary" onclick="inprogress_request(`+data.Matching[i].scheme_performance_id+`)">In-Progress</button>&nbsp;&nbsp;<button type="button" class="btn btn-primary" onclick="revert_request(`+data.Matching[i].scheme_performance_id+`)">Cancel</button></td></tr>`;
               }
               $("#dublicate_data").append(append);
 
@@ -210,14 +215,20 @@
 
    function revert_request(id)
    {
-     $("#hidden_input_for_revert").val($("#hidden_input_for_revert").val()+","+id);
+     if (!selected_revert.includes(id)) {
+        selected_revert.push(id);
+            $("#hidden_input_for_revert").val(selected_revert);
+        }
    
    }
 
+   
    function inprogress_request(id)
    {
-   
-    $("#hidden_input_for_inprogress").val($("#hidden_input_for_inprogress").val()+","+id);
+        if (!selected_inprogress.includes(id)) {
+            selected_inprogress.push(id);
+            $("#hidden_input_for_inprogress").val(selected_inprogress);
+        }
    }
 
   
