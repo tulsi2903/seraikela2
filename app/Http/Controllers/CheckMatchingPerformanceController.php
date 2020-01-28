@@ -115,7 +115,7 @@ class CheckMatchingPerformanceController extends Controller
           
           if(in_array($tmp_revert,$request->scheme_performance_id))
           {
-               CheckMatchingPerformance::where('id',$CheckMatchingPerformance_id)->update(array('status'=>3));
+               CheckMatchingPerformance::where('id',$CheckMatchingPerformance_id)->update(array('status'=>0));
           }
         
           if($tmp_inprogress_array==$request->scheme_performance_id)
@@ -123,25 +123,9 @@ class CheckMatchingPerformanceController extends Controller
                $CheckMatchingPerformance_deatils=CheckMatchingPerformance::where('id',$CheckMatchingPerformance_id)->first();
                $scheme_performance = SchemePerformance::where('scheme_performance_id',$CheckMatchingPerformance_deatils->scheme_performance_id)->update(array('status'=>0));
                echo $CheckMatchingPerformance_deatils->scheme_performance_id;
-               CheckMatchingPerformance::where('id',$CheckMatchingPerformance_id)->update(array('status'=>0));
+               CheckMatchingPerformance::where('id',$CheckMatchingPerformance_id)->update(array('status'=>1));
 
           }
-
-         
-
-          //  if($tmp_revert || $tmp_inprogress =="")
-          //  {
-          //      //  return ("hi");
-          //      session()->put('alert-class','alert-danger');
-          //      session()->put('alert-content','Either of your status is unchecked, do you want to check it?');
-               
-
-          //  }
-
-
-          // return $tmp_revert;
-
-    
 
      return redirect('matching-schemes');
  }

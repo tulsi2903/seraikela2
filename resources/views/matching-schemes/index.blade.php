@@ -175,7 +175,7 @@
             <input type="text" name="hidden_input_for_revert" id="hidden_input_for_revert" value="" hidden>
             
             <button type="button" class="btn btn-secondary waves-effect" onclick="return hide_div();">Cancel</button>
-            <button type="submit" class="btn btn-info waves-effect waves-light" onclick="return before_save()">Save</button>
+            <button type="submit" class="btn btn-info waves-effect waves-light" onclick="return before_save({{$data->id}})">Save</button>
 
             <!-- hidden inputs for counting button click -->
             <!-- <input type="text" value="0" class="inprogress_counter"/>
@@ -192,20 +192,7 @@
     var selected_inprogress = new Array;
     var selected_revert = new Array;
 
-    // var $button_inprogress = document.querySelector('.notduplicate_record');
-    // var $counter_inprogress = document.querySelector('.inprogress_counter');
-
-    // var $button_revert = document.querySelector('.duplicate_record');
-    // var $counter_revert = document.querySelector('.revert_counter');
-
-    // $button_inprogress.addEventListener('click', function(){
-    // $counter_inprogress.value = parseInt($counter_inprogress.value) + 1; // `parseInt` converts the `value` from a string to a number
-    // }, false); 
-
-    // $button_revert.addEventListener('click', function(){
-    // $counter_revert.value = parseInt($counter_revert.value) + 1; // `parseInt` converts the `value` from a string to a number
-    // }, false); 
-
+   
    
 
     function get_view_data(id) {
@@ -285,53 +272,54 @@
 
    }
 
-   function before_save()
+   function before_save(id)
    {
        if($("#hidden_input_for_inprogress") || $("#hidden_input_for_revert")=="")
        {
           
            
-           swal({
-                    title: 'Either of your status is unchecked, do you want to check it?',
-                    // text: "You won't be able to revert this!",
-                    icon: 'warning',
-                    buttons:{
-                        cancel: {
-                            visible: true,
-                            text : 'No, cancel!',
-                            className: 'btn btn-danger'
-                        },
-                        confirm: {
-                            text : 'Yes, delete it!',
-                            className : 'btn btn-success'
-                        }
-                    }
-                }).then((willDelete) => {
-                    if (willDelete) {
-                        window.location = href;
-                    } else {
-                        return false;
-                        // function get_revert_data();
-                        swal("Your imaginary file is safe!", {
-                            buttons : {
-                                confirm : {
-                                    className: 'btn btn-success'
+                swal({
+                            title: 'Either of your status is unchecked, do you want to check it?',
+                            // text: "You won't be able to revert this!",
+                            icon: 'warning',
+                            buttons:{
+                                cancel: {
+                                    visible: true,
+                                    text : 'No, cancel!',
+                                    className: 'btn btn-danger'
+                                },
+                                confirm: {
+                                    text : 'Yes, delete it!',
+                                    className : 'btn btn-success'
                                 }
                             }
+                        }).then((willDelete) => {
+                            if (willDelete) {
+                                window.location = href;
+                            } else {
+                               
+                                get_revert_data(id);
+                                return false;
+                                swal("Your imaginary file is safe!", {
+                                    buttons : {
+                                        confirm : {
+                                            className: 'btn btn-success'
+                                        }
+                                    }
+                                });
+                            }
                         });
-                    }
-                });
-                return false;
+                        return false;
        }
        else{
            return true;
        }
    }
 
-// function get_revert_data()
-// {
-//     alert("id");
-// }
+function get_revert_data(id)
+{
+    alert(id);
+}
  
 
 </script>
