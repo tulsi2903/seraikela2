@@ -518,9 +518,9 @@ class SchemePerformanceController extends Controller
         foreach ($geo_block_names as $key_block => $value_block) {
             $geo_block_names_array = $value_block;
         }
-        echo "<pre>";
-        print_r($geo_block_names_array);
-        exit;
+        // echo "<pre>";
+        // print_r($geo_block_names_array);
+        // exit;
 
         $scheme_datas = SchemeStructure::where('scheme_id', $request->scheme_id)->first(); /* get scheme atributes */
         $unserialDatas = unserialize($scheme_datas->attributes);
@@ -533,6 +533,10 @@ class SchemePerformanceController extends Controller
             'work_start_fin_year',
             'status'
         );
+        if($scheme_datas->scheme_is==2)
+        {
+            array_push($tableHeadingsAndAtributes,'scheme_asset_name');
+        }
         foreach ($unserialDatas as $key_un => $value_un) {
             array_push($tableHeadingsAndAtributes, strtolower(str_replace(" ", "_", $value_un['name'])));
             $schemeAtributes[$value_un['id']] =  strtolower(str_replace(" ", "_", $value_un['name']));
@@ -587,7 +591,11 @@ class SchemePerformanceController extends Controller
                             $fetch_panchayat_id = GeoStructure::where('geo_name', $panchayat_name)->where('level_id', '4')->value('geo_id'); /* for Panchayat ID */
                             $fetch_subdivision_id = GeoStructure::where('geo_id', $fetch_block_id)->value('sd_id'); /* for subdivision_id ID */
                             $fetch_year_id = Year::where('year_value', $row['work_start_fin_year'])->value('year_id'); /* for Year ID */
-
+                            $assest_details=SchemeAsset::get();
+                            // foreach($assest_details as $key_asset=>$value_assest)
+                            // {
+                            //     if($value_assest['scheme_asset_name']==$row['panchayat_name'])
+                            // }
                             /* if those id avilable then insert data on the base */
                             if ($row['sno.'] != null && $fetch_block_id != null && $fetch_panchayat_id != null && $fetch_year_id != null && $fetch_subdivision_id != null && in_array($panchayat_name, $geo_names_array) && in_array($block_name, $geo_block_names_array)) {
                                 $noOfSuccess++;
@@ -611,13 +619,19 @@ class SchemePerformanceController extends Controller
                                     $scheme_performance->block_id = $fetch_block_id;
                                     $scheme_performance->panchayat_id = $fetch_panchayat_id;
                                     $scheme_performance->subdivision_id = $fetch_subdivision_id;
+                                    if($scheme_datas->scheme_is==2)
+                                    {
+                                        $scheme_performance->subdivision_id = $fetch_subdivision_id;
+                                    }
+
                                     $scheme_performance->attribute = serialize($unserializedAtributesData[$key]);
+
                                     if (strtolower($status) == strtolower("Completed")) {
                                         $scheme_performance->status = 1;
                                     } elseif (strtolower($status) == strtolower("inprogress")) {
                                         $scheme_performance->status = 0;
                                     } elseif (strtolower($status) != strtolower("inprogress") && strtolower($status) != strtolower("Completed")) {
-                                        $scheme_performance->status = "";
+                                        $scheme_performance->status = 0;
                                     }
                                     $scheme_performance->created_by = Session::get('user_id');
                                     $scheme_performance->save();
@@ -781,35 +795,29 @@ class SchemePerformanceController extends Controller
             'SNo.',
             'Block Name',
             'Panchayat Name',
-            'Work Start Fin Year'
+            'Work Start Fin Year',
         );
+        if($scheme_datas->scheme_is==2)
+        {
+            array_push($data,'Scheme Asset Name');
+        }
         foreach ($unserialDatas as $key_un => $value_un) {
             array_push($data, $value_un['name']);
         }
         array_push($data, 'Status');
-        $asset_data = SchemeAsset::get();
+        $asset_data = SchemeAsset::get('scheme_asset_name');
         \Excel::create($scheme_datas->scheme_short_name . ' Scheme-Format-' . date("d-m-Y"), function ($excel) use ($asset_data, $data) {
-
             // Set the title
             $excel->setTitle('Scheme-Format');
-
             // Chain the setters
             $excel->setCreator('Seraikela')->setCompany('Seraikela');
-
             $excel->sheet('Scheme-Format', function ($sheet) use ($data) {
-                // $sheet->freezePane('A3');
-                // $sheet->mergeCells('A1:I1');
-                $sheet->fromArray($data, null, 'A1', true, false);
-                // $sheet->setColumnFormat(array('I1' => '@'));
+                 $sheet->fromArray($data, null, 'A1', true, false);
             });
-
             $excel->sheet('Second sheet', function ($sheet)  use ($asset_data) {
-                foreach ($asset_data as $key_asset => $value_asset) {
-                    $sheet->row($key_asset, $value_asset['scheme_asset_name']);
-                }
-                #
-                // $sheet->fromArray($asset_data, null, 'A1', false, false);
+                $sheet->fromArray($asset_data);
             });
+            // exit;
         })->download('xls');
     }
 
