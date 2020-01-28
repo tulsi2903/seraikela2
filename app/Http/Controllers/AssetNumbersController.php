@@ -812,7 +812,7 @@ class AssetNumbersController extends Controller
     public function changeViewforimport()
     {
         # code...
-        return view('asset-numbers.ImportExcel');
+        return view('asset-numbers.importExcel');
     }
 
     public function saveimporttoExcel(Request $request)

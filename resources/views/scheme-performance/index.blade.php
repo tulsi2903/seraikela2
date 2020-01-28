@@ -966,6 +966,7 @@ function check_performamance_status()
         // return true;
     }
     function get_panchayat_datas_for_borders(id, e) {
+        $(e).closest('tr').find("select[name='panchayay_connectivity[]']").html("");
         if (id) {
             $.ajaxSetup({
                 headers: {
@@ -999,14 +1000,14 @@ function check_performamance_status()
                 console.log(data);
                 to_append = `<tr>
                     <td>  <span class="index_no">`+ append_no + `</span></td>
-                        <td> <select name="block_connectivity[]" id="block_connectivity" onchange='get_panchayat_datas_for_borders(this.value,this)' class="form-control">
+                        <td> <select name="block_connectivity[]"  onchange='get_panchayat_datas_for_borders(this.value,this)' class="form-control">
                                 <option value="">---Select---</option>`;
                 for (i = 0; i < data.block_datas.length; i++) {
                     to_append += `<option value="` + data.block_datas[i].geo_id + `">` + data.block_datas[i].geo_name + `</option>`
                 }
                 to_append += ` </select>          
                         </td>
-                        <td><select name="panchayay_connectivity[]" id="panchayay_connectivity" class="form-control">
+                        <td><select name="panchayay_connectivity[]"  class="form-control">
                                 <option value="">--Select--</option>
                             </select>
                         </td>
@@ -1045,7 +1046,7 @@ function check_performamance_status()
                         append_no = i + 1;
                         to_append += `<tr>
                         <td><span>`+ append_no + `</span></td>
-                        <td> <select name="block_connectivity[]" id="block_connectivity" onchange='get_panchayat_datas_for_borders(this.value,this)' class="form-control">
+                        <td> <select name="block_connectivity[]"  onchange='get_panchayat_datas_for_borders(this.value,this)' class="form-control">
                                 <option value="">---Select---</option>`;
                         for (j = 0; j < data.block_datas.length; j++) {
                             if (data.block_datas[j].geo_id == data.connectivity[i].conn_block_id)
@@ -1055,7 +1056,7 @@ function check_performamance_status()
                         }
                         to_append += ` </select>    
                         </td>
-                        <td> <select name="panchayay_connectivity[]" id="panchayay_connectivity" class="form-control">
+                        <td> <select name="panchayay_connectivity[]" class="form-control">
                             <option value="">--Select--</option>`;
                         for (j = 0; j < data.panchayat_datas[i].length; j++) {
                             if (data.panchayat_datas[i][j].geo_id == data.connectivity[i].conn_panchayat_id)
