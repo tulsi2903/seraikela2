@@ -68,6 +68,11 @@ class CheckMatchingPerformanceController extends Controller
          
           $tmp_matching=count(explode(",",$datas->matching_performance_id));
           $tmp_matching_array=explode(",",$datas->matching_performance_id);
+          $created_at=$datas->created_at;
+          $updated_at=$datas->updated_at;
+          $scheme_performance_id_to_append = $datas->scheme_performance_id;
+          // $get_scheme_performance_id=$datas->scheme_performance_id;
+
           $CheckMatchingPerformance_id=$datas->id;
           $datas=SchemePerformance::leftJoin('year','scheme_performance.year_id','=','year.year_id')
                     ->leftJoin('scheme_assets','scheme_performance.scheme_asset_id','=','scheme_assets.scheme_asset_id')
@@ -77,11 +82,14 @@ class CheckMatchingPerformanceController extends Controller
                     ->whereIn('scheme_performance_id',$tmp_matching_array)
                     ->get();
 
-
           foreach($datas as $data)
           {
                
                 //panchayat data
+                $data->created_at=$created_at;
+                $data->updated_at=$updated_at;
+               //  $data->scheme_performance_id = $get_scheme_performance_id;
+
                $tmp = GeoStructure::select('geo_name')->where('geo_id', $data['panchayat_id'])->first();
                $data->panchayat_name = $tmp->geo_name;
                $attribute[0]=unserialize($data['attribute']);
@@ -97,37 +105,79 @@ class CheckMatchingPerformanceController extends Controller
 
           // return $datas;
 
-          return ['Matching'=>$datas,'tmp_matching'=>$tmp_matching];
+          return ['Matching'=>$datas,'tmp_matching'=>$tmp_matching, 'id'=>$id, 'scheme_performance_id_to_append'=>$scheme_performance_id_to_append];
    }
 
 
 
-   public function delete(Request $request){
-          $tmp_revert = $request->hidden_input_for_revert;
-          $tmp_revert = ltrim($tmp_revert,","); 
+//    public function delete(Request $request){
+//      //    return $request;
+//           $tmp_revert = $request->hidden_input_for_revert;
+//           $tmp_revert = ltrim($tmp_revert,","); 
 
-          $CheckMatchingPerformance_id=$request->matching_id;
-          $tmp_inprogress = $request->hidden_input_for_inprogress;
-          $tmp_inprogress = ltrim($tmp_inprogress,",");
+//           $CheckMatchingPerformance_id=$request->matching_id;
+//           $tmp_inprogress = $request->hidden_input_for_inprogress;
+//           $tmp_inprogress = ltrim($tmp_inprogress,",");
 
-          $tmp_inprogress_array=explode(",",$tmp_inprogress);
-          $sort_array=rsort($request->scheme_performance_id);
+//           $tmp_inprogress_array=explode(",",$tmp_inprogress);
+//           $sort_array=rsort($request->scheme_performance_id);
           
-          if(in_array($tmp_revert,$request->scheme_performance_id))
-          {
-               CheckMatchingPerformance::where('id',$CheckMatchingPerformance_id)->update(array('status'=>0));
-          }
+//           if(in_array($tmp_revert,$request->scheme_performance_id))
+//           {
+//                CheckMatchingPerformance::where('id',$CheckMatchingPerformance_id)->update(array('status'=>0));
+//                // $scheme_performance = SchemePerformance::where('scheme_performance_id',$CheckMatchingPerformance_deatils->scheme_performance_id)->update(array('status'=>3));
+
+//           }
         
-          if($tmp_inprogress_array==$request->scheme_performance_id)
-          {
-               $CheckMatchingPerformance_deatils=CheckMatchingPerformance::where('id',$CheckMatchingPerformance_id)->first();
-               $scheme_performance = SchemePerformance::where('scheme_performance_id',$CheckMatchingPerformance_deatils->scheme_performance_id)->update(array('status'=>0));
-               echo $CheckMatchingPerformance_deatils->scheme_performance_id;
-               CheckMatchingPerformance::where('id',$CheckMatchingPerformance_id)->update(array('status'=>1));
+//           if($tmp_inprogress_array==$request->scheme_performance_id)
+//           {
+//                $CheckMatchingPerformance_deatils=CheckMatchingPerformance::where('id',$CheckMatchingPerformance_id)->first();
+//                $scheme_performance = SchemePerformance::where('scheme_performance_id',$CheckMatchingPerformance_deatils->scheme_performance_id)->update(array('status'=>0));
+//                // echo $CheckMatchingPerformance_deatils->scheme_performance_id;
+//                CheckMatchingPerformance::where('id',$CheckMatchingPerformance_id)->update(array('status'=>1));
 
-          }
+//           }
 
+
+//      return redirect('matching-schemes');
+//  }
+
+ public function get_data(Request $request)
+ {
+     $check_matching_performance = CheckMatchingPerformance::where('id',$request->id)->first();
+     $scheme_performance = SchemePerformance::select('scheme_performance_id','status')->get();
+
+    //getting data from front end
+     $check_matching_performance->duplicate = $request->hidden_input_for_revert ?? "";
+     $check_matching_performance->not_duplicate = $request->hidden_input_for_inprogress ?? "";
+
+     if($request->hidden_input_for_revert !="")
+     {
+          $check_matching_performance->status = 0;
+     }
+     else{
+          $check_matching_performance->status = 1;
+     }
+
+     $CheckMatchingPerformance_id=$request->get_scheme_performance_id;
+
+     if($check_matching_performance->status == 1 && $check_matching_performance->scheme_performance_id!="")
+     {
+          
+          $get_scheme_performance_id = $request->get_scheme_performance_id;//getting data from front end
+          SchemePerformance::where('scheme_performance_id',$CheckMatchingPerformance_id)->update(array('status'=>0));
+
+
+     }
+     // return $request;
+    
+          $check_matching_performance->save();
+   
+    
+    
      return redirect('matching-schemes');
+
+
  }
 
 }
