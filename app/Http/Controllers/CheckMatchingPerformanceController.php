@@ -144,13 +144,16 @@ class CheckMatchingPerformanceController extends Controller
 
  public function get_data(Request $request)
  {
-     $check_matching_performance = CheckMatchingPerformance::where('id',$request->id)->first();
-     $scheme_performance = SchemePerformance::select('scheme_performance_id','status')->get();
+     //  return $request;
+     $check_matching_performance = CheckMatchingPerformance::where('id',$request->matching_id)->first();
+     // $scheme_performance = SchemePerformance::select('scheme_performance_id','status')->get();
+     // return $check_matching_performance ;
+     $scheme_performance = SchemePerformance::where('scheme_performance_id',$check_matching_performance->scheme_performance_id)->select('scheme_performance_id','status')->first();
 
     //getting data from front end
      $check_matching_performance->duplicate = $request->hidden_input_for_revert ?? "";
      $check_matching_performance->not_duplicate = $request->hidden_input_for_inprogress ?? "";
-
+     $check_matching_performance->probable_duplicate="";
      if($request->hidden_input_for_revert !="")
      {
           $check_matching_performance->status = 0;
@@ -170,8 +173,9 @@ class CheckMatchingPerformanceController extends Controller
 
      }
      // return $request;
-    
+
           $check_matching_performance->save();
+              return $check_matching_performance;
    
     
     
