@@ -367,6 +367,7 @@ class SchemeReviewController extends Controller
                         ->where('panchayat_id', $panchayat_data->geo_id)
                         ->where('scheme_id', $scheme_data->scheme_id)
                         ->where('year_id', $year_id)
+                        // ->whereIn('scheme_performance_id', [107,122])
                         ->get();
                     if ($scheme_asset_id) { // if scheme asset selected
                         $performance_datas = $performance_datas->where('scheme_asset_id', $scheme_asset_id);
@@ -389,16 +390,16 @@ class SchemeReviewController extends Controller
                         }
 
                         // for attributes
-                        // foreach($attributes as $attribute){
-                        //     // print_r($attribute);
-                        //     // print_r($performance_attributes);
-                        //     // exit();
-                        //     // return $attribute['id'];
-                        //     // return $performance_attributes[$attribute['id']];
-                        //     // return $attribute['name'];
-                        //     array_push($tabular_data_tmp, $performance_attributes[$attribute['id']]);
-                        //     array_push($map_datas_tmp["attributes"], [$attribute['name'], $performance_attributes[$attribute['id']]]);
-                        // }
+                        foreach($attributes as $attribute){
+                            // print_r($attribute);
+                            // print_r($performance_attributes);
+                            // exit();
+                            // return $attribute['id'];
+                            // return $performance_attributes[$attribute['id']];
+                            // return $attribute['name'];
+                            array_push($tabular_data_tmp, $performance_attributes[$attribute['id']]);
+                            array_push($map_datas_tmp["attributes"], [$attribute['name'], $performance_attributes[$attribute['id']]]);
+                        }
 
                         // for assets
                         if ($performance_data->scheme_asset_name) {

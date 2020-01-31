@@ -22,27 +22,6 @@
 
     }
 
-    .no-data {
-        padding: 15px;
-        text-align: center;
-        font-size: 16px;
-        display: block;
-    }
-
-    #tabular-view,
-    #graphical-view,
-    #map-view {
-        display: none;
-    }
-    .show-details{
-        display: none;
-    }
-
-    .review-for-buttons:hover,
-    .review-for-buttons.active {
-        color: white !important;
-    }
-
     svg text {
         fill: white;
         font-weight: bold;
@@ -148,10 +127,6 @@
         }
     }
 
-    #tabular-view .tab-content{
-        overflow: auto;
-    }
-
     #search-results-block{
         position: relative;
         overflow: auto;
@@ -215,81 +190,35 @@
     }
     #duplicate-data-block .show-duplicate-details td{
         padding: 15px !important;
-        background: #ececec;
+        background: #f4f4f4;
     }
     #duplicate-data-block .show-duplicate-details table td{
         background: white;
-    }  
+    }
 
-    #map-view{
-        position: relative;
+    .no-data {
+        padding: 15px;
+        text-align: center;
+        font-size: 16px;
+        display: block;
+    }
+    #duplicate-data-block{
         overflow: hidden;
     }
-    #gallery-view-outer{
-        position: absolute;
-        right: -100%;
-        opacity: 0;
-        top: 0;
-        height: 100%;
-        width: 100%;
-        background: rgba(0, 0, 0, 0.5);
-        transition: all 0.3s ease;
+    #tabular-view-block{
+        float: left;
+        width: 50%;
+        border-right: 1px solid #7393e4;
     }
-    #gallery-view-outer.active{
-        right: 0;
-        opacity: 1;
+    #tabular-view{
+        display: none;
     }
-    #gallery-view-block{
+    #map-view-block{
         float: right;
-        width: 450px;
-        height: 100%;
-        overflow: auto;
-        background: white;
-        border: 1px solid grey;
+        width: 50%;
     }
-    #gallery-view-heading, #gallery-view-heading-gallery{
-        border-bottom: 1px solid rgb(182, 182, 182);
-        font-size: 18px;
-        font-weight: bold;
-        padding:15px;
-        color: rgb(42, 12, 111);
-        background: rgb(234, 234, 234);
-    }
-    #gallery-view-heading-gallery{
-        margin: -15px -15px 15px -15px;
-    }
-    #gallery-view-close-button{
-        float:right;
-    }
-    #gallery-view-close-button .btn{
-        border-radius: unset !important;
-    }
-    #gallery-view{
-        padding: 15px;
-    }
-    .gallery-view-thumb{
-        margin-bottom: 15px;
-    }
-    .gallery-view-thumb-info{
-        line-height: 150%;
-        margin-left: -15px;
-        margin-right: -15px;
-        padding: 0 15px 15px 15px;
-        border-bottom: 1px solid rgb(182, 182, 182);
-    }
-    .gallery-view-thumb-img{
-        width: 100%;
-        height: 250px;
-        background-position: center;
-        background-size: auto 100%;
-        background-repeat: no-repeat;
-        background-color: #272727;
-        border: 1px solid #1f1f1f;
-        border-radius: 5px;
-        transition: all 0.3s ease;
-    }
-    .gallery-view-thumb-img:hover{
-        background-size: auto 105%;
+    #map-view{
+        display: none;
     }
 </style>
 @endsection
@@ -302,7 +231,7 @@
         <div id="search-block">
             <div class="card-body">
                 <div class="row">
-                    <div class="col-12">
+                    <div class="col-6">
                         <div class="form-group">
                             <label for="scheme_id">Scheme</label>
                             <select name="scheme_id" id="scheme_id" class="form-control">
@@ -312,6 +241,40 @@
                                 @endforeach
                             </select>
                             <div class="invalid-feedback">Please select department</div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <!-- <div class="form-group">
+                            <label for="distance_to_measure">Radius/Distance</label>
+                            <select name="distance_to_measure" id="distance_to_measure" class="form-control">
+                                <option value="30">30 Meter</option>
+                                <option value="30">50 Meter</option>
+                                <option value="30">80 Meter</option>
+                                <option value="30">100 Meter</option>
+                                <option value="30">150 Meter</option>
+                            </select>
+                            <div class="invalid-feedback">Please select year</div>
+                        </div> -->
+                        <div class="form-group">
+                            <label for="distance_to_measure">Radius/ Distance</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="distance_to_measure" id="distance_to_measure" aria-label="Text input with dropdown button" value="2">
+                                <div class="input-group-append">
+                                    <!-- <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</button>
+                                    <div class="dropdown-menu">
+                                    <a class="dropdown-item" href="#">Action</a>
+                                    <a class="dropdown-item" href="#">Another action</a>
+                                    <a class="dropdown-item" href="#">Something else here</a>
+                                    <div role="separator" class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="#">Separated link</a>
+                                    </div> -->
+                                    <select name="uom" id="uom" class="form-control">
+                                        <option value="1">Mtr</option>
+                                        <option value="2">Ft</option>
+                                        <option value="3">Yard</option>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="col-6">
@@ -965,6 +928,21 @@
                     </div>
                 </div>
                 <div id="duplicate-data-block">
+                    <div id="tabular-view-block">
+                        <div id="tabular-view">
+                        </div>
+                        <div class="no-data">
+                            <i class="fas fa-info-circle text-success"></i>&nbsp;&nbsp;No duplicate data to show
+                        </div>
+                    </div>
+                    <div id="map-view-block">
+                        <div id="map-view">
+                            <div id="mapCanvas" style="width: 100%; height: 400px; border-radius: 3px; border: 1px solid rgb(140, 140, 140);"></div>
+                        </div>
+                        <div class="no-data">
+                            <i class="fas fa-info-circle text-success"></i>&nbsp;&nbsp;No coordinates to show
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1211,6 +1189,8 @@
             scheme_asset_id_tmp = null;
         }
         geo_id_tmp = $("#geo_id").val(); // string, have convert to array in controller// panchayat ids
+        var distance_to_measure_tmp = $("#distance_to_measure").val();
+        var uom_tmp = $("#uom").val();
 
         $.ajaxSetup({
             headers: {
@@ -1219,7 +1199,7 @@
         });
         $.ajax({
             url: "{{url('scheme-review/duplicate-review/get-datas')}}",
-            data: { 'scheme_id': scheme_id_tmp, 'year_id': year_id_tmp, 'scheme_asset_id': scheme_asset_id_tmp, 'panchayat_id': geo_id_tmp },
+            data: { 'scheme_id': scheme_id_tmp, 'year_id': year_id_tmp, 'scheme_asset_id': scheme_asset_id_tmp, 'panchayat_id': geo_id_tmp, 'distance_to_measure': distance_to_measure_tmp, 'uom': uom_tmp },
             method: "GET",
             contentType: 'application/json',
             dataType: "json",
@@ -1270,6 +1250,7 @@
                 content+=`<th>Sl.No.</th>`;
                 content+=`<th>Year</th>`;
                 content+=`<th>Scheme</th>`;
+                content+=`<th>Attributes</th>`;
                 content+=`<th>Status</th>`;
                 content+=`<th>Matches Found</th>`;
                 content+=`<th>View Details</a></th>`;
@@ -1279,8 +1260,9 @@
         duplicate_datas.forEach(function(duplicate_data){
             content += `<tr>`;
                 content+=`<td>`+(i+1)+`</td>`;
-                content+=`<td>`+duplicate_data[0].year_id+`</td>`;
-                content+=`<td>`+duplicate_data[0].scheme_id+`</td>`;
+                content+=`<td>`+duplicate_data[0].year_value+`</td>`;
+                content+=`<td>`+duplicate_data[0].scheme_short_name+`</td>`;
+                content+=`<td>`+duplicate_data[0].attribute_details+`</td>`;
                 content+=`<td>`+duplicate_data[0].status+`</td>`;
                 content+=`<td>`+(duplicate_data.length - 1)+`</td>`;
                 content+=`<td><a href="javascript:void();" onclick="show_duplicate_details(this);">Details</a></td>`;
@@ -1294,6 +1276,7 @@
                                             <th>Sl.No.</th>
                                             <th>Year</th>
                                             <th>Scheme</th>
+                                            <th>Attribute</th>
                                             <th>Status</th>
                                         </tr>`;
 
@@ -1301,8 +1284,9 @@
             for(var j=1; j<duplicate_data.length; j++){
                 content_tmp += `<tr>`;
                     content_tmp+=`<td>`+(j)+`</td>`;
-                    content_tmp+=`<td>`+duplicate_data[j].year_id+`</td>`;
-                    content_tmp+=`<td>`+duplicate_data[j].scheme_id+`</td>`;
+                    content_tmp+=`<td>`+duplicate_data[j].year_value+`</td>`;
+                    content_tmp+=`<td>`+duplicate_data[j].scheme_short_name+`</td>`;
+                    content_tmp+=`<td>`+duplicate_data[j].attribute_details+`</td>`;
                     content_tmp+=`<td>`+duplicate_data[j].status+`</td>`;
                 content_tmp += `</tr>`;
             }
@@ -1318,46 +1302,14 @@
 
 
         // console.log(content);
-        $("#duplicate-data-block").html(content);
+        $("#tabular-view").html(content);
+        $("#tabular-view").show();
+        $("#tabular-view + .no-data").hide();
     }
     function resetTabularView() {
         $("#tabular-view").html("");
         $("#tabular-view").hide();
         $("#tabular-view + .no-data").show();
-    }
-
-
-    function initializeTabularViewIndividualEntries(data){
-        toShowTabularForm = `<table id="target-table" class="table order-list" style="margin-top: 10px;">`;
-        for(var i = 0; i < data.length; i++){
-            if (i == 0) { // for first row
-                toShowTabularForm += `<tr style='background: #d6dcff;color: #000;'>`;
-                toShowTabularForm+=`<th>Sl.No.</th>`;
-            }
-            else { // for others
-                toShowTabularForm += `<tr>`;
-                toShowTabularForm+=`<td>` + (i)+ `</td>`;
-            }
-
-            for(var j=0; j< data[i].length; j++){
-                if (i == 0) {
-                    toShowTabularForm+=`<th>` + (data[i][j] || "")+ `</th>`;
-                }
-                else{
-                    toShowTabularForm+=`<td>` + (data[i][j] || "")+ `</td>`;
-                }
-            }
-
-            toShowTabularForm += `</tr>`;
-        }
-
-        if(data.length<=1){
-            toShowTabularForm += `<tr><td colspan="`+(data[0].length+1)+`"><center>No data found!</center></td></tr>`;
-        }
-
-        toShowTabularForm += `</table>`;
-
-        $("#tabular-view").html(toShowTabularForm);
     }
 </script>
 
@@ -1366,16 +1318,31 @@
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCuYbCxfGw_c6lasAlpExIOFj55MVY6xSo"></script>
 <script>
     var marker_icon = null;
-    function initializeMapView(map_datas) {
-        if(map_datas.length>0){ 
-            $("#map-view").show();
-            $("#mapCanvas").show();
-            $("#map-view + .no-data").hide();
-            resetGallery(); // ressting gallery tab
-            showMap(map_datas); 
-        }
+    function initializeMapView(index) {
+        // console.log(duplicate_datas_obj);
+        // if(map_datas.length>0){ 
+        //     $("#map-view").show();
+        //     $("#mapCanvas").show();
+        //     $("#map-view + .no-data").hide();
+        //     resetGallery(); // ressting gallery tab
+        //     showMap(map_datas); 
+        // }
+        $("#map-view").show();
+        $("#mapCanvas").show();
+        $("#map-view + .no-data").hide();
+        showMap(duplicate_datas_obj[index]);
     }
+    // function initializeMapView(map_datas) {
+    //     if(map_datas.length>0){ 
+    //         $("#map-view").show();
+    //         $("#mapCanvas").show();
+    //         $("#map-view + .no-data").hide();
+    //         resetGallery(); // ressting gallery tab
+    //         showMap(map_datas); 
+    //     }
+    // }
     function showMap(data) {
+        // console.log(data);
         var icon = {
             url: marker_icon, // url
             scaledSize: new google.maps.Size(50, 50), // scaled size
@@ -1384,7 +1351,7 @@
         };
         var mapCanvas = document.getElementById('mapCanvas');
         var mapOptions = {
-            zoom: 15,
+            zoom: 18,
             mapTypeId: google.maps.MapTypeId.ROADMAP
         };
         var map = new google.maps.Map(mapCanvas, mapOptions);
@@ -1393,45 +1360,71 @@
         //console.log(data[0].lng);
         //Loop through each location.
         // Sample use of first data
-        centerLat = data[0].latitude;
-        centerLng = data[0].longitude;
+        centerLat = data[0].coordinates_details[0].latitude;
+        centerLng = data[0].coordinates_details[0].longitude;
+
         $.each(data, function () {
-            //Plot the location as a marker
-            var theposition = new google.maps.LatLng(this.latitude, this.longitude);
-            icon.url = this.scheme_map_marker || null;
-            var marker = new google.maps.Marker({
-                position: theposition,
-                map: map,
-                title: 'Scheme Data',
-                icon: icon,
-                animation: google.maps.Animation.DROP
-            });
+            var data_to_send = this;
 
-
-            var contentString = '<span style="color: black;"';
-            if(this.attributes){
-                if(this.attributes.length>0)
-                {
-                    this.attributes.forEach(function(element){
-                        contentString+='<br/><b>'+element[0]+'</b>: '+element[1];
-                    })
-                }
+            var tmp_coordinates = [];
+            for(var a=0; a<this.coordinates_details.length; a++){
+                tmp_coordinates[a] = {lat:parseFloat(this.coordinates_details[a].latitude) , lng:parseFloat(this.coordinates_details[a].longitude)};
             }
-            contentString+='<br/><b>Asset</b>: '+this.asset_name;
-            contentString+='<br/><b>Block</b>: '+this.block_name;
-            contentString+='<br/><b>Panchayat</b>: '+this.panchayat_name;
-            contentString+='<br/><b>Status</b>: '+this.status;
-            contentString+='</span>';
+            console.log(tmp_coordinates);
+
+            if(this.coordinates_details.length>1)
+            {
+                var img_url="public/map_image/road.svg";
+                icon.url = img_url || null;
+
+                // var flightPath = new google.maps.Polyline({
+                //     path: tmp_coordinates,
+                //     geodesic: true,
+                //     strokeColor: '#FF0000',
+                //     strokeOpacity: 1.0,
+                //     strokeWeight: 2
+                // });
+
+                var flightPath = new google.maps.Polyline({
+                    path: tmp_coordinates,
+                    geodesic: true,
+                    icon: icon,
+                    strokeColor: '#FF0000',
+                    strokeOpacity: 1.0,
+                    strokeWeight: 6  
+                });
+
+                flightPath.setMap(map);
+                
+                // flightPath.addListener('click', function () {
+                //     // infowindow.open(map, marker);
+                //     showGallery(data_to_send);
+                // });
+            }
+            else{
+                var theposition = new google.maps.LatLng(this.coordinates_details[0].latitude, this.coordinates_details[0].longitude);
+                icon.url = this.scheme_map_marker || null;
+                var marker = new google.maps.Marker({
+                    position: theposition,
+                    map: map,
+                    title: 'Scheme Data',
+                    icon: icon,
+                    animation: google.maps.Animation.DROP
+                });
+                // if(marker!=null)
+                // {
+                
+                // }
+                marker.addListener('click', function () {
+                    // infowindow.open(map, marker);
+                    showGallery(data_to_send);
+                });
+            }
+
+            var contentString = '';
 
             var infowindow = new google.maps.InfoWindow({
                 content: contentString
-            });
-
-            var data_to_send = this;
-
-            marker.addListener('click', function () {
-                // infowindow.open(map, marker);
-                showGallery(data_to_send);
             });
         });
         //map.setCenter(centerLat,centerLng);
@@ -1441,8 +1434,6 @@
         $("#map-view").hide();
         $("#mapCanvas").hide();
         $("#map-view + .no-data").show();
-        $("#map-view-block").removeClass("is-invalid");
-        $("#map-view-asset").removeClass("is-invalid");
     }
 </script>
 @endsection

@@ -28,6 +28,18 @@ class SchemeReviewDuplicateDataCheckController extends Controller
 
 
     public function get_datas(Request $request){
+        // echo "<pre>";
+        // print_r(SchemePerformance::select('scheme_performance_id','attribute')->get()->toArray());
+        // exit();
+
+        // unit related
+        // 1 ft = 0.3048 m
+        // 1 inch = 0.0254 m;
+        $uom = $request->uom;
+        $conversion_unit = 1; // pending: from uom table
+        $distance_to_measure = $request->distance_to_measure * $conversion_unit;
+        
+
         // to send back
         $duplicate_datas = [];
         /*
@@ -76,8 +88,12 @@ class SchemeReviewDuplicateDataCheckController extends Controller
 
 
         // get performance datas
-        $performance_datas_tmp = SchemePerformance::whereIn('panchayat_id', $panchayat_ids_selected)
-                                ->where('scheme_asset_id', $scheme_asset_id_selected);
+        $performance_datas_tmp = SchemePerformance::LeftJoin('year','scheme_performance.year_id','=','year.year_id')
+                                                ->LeftJoin('scheme_structure','scheme_performance.scheme_id','=','scheme_structure.scheme_id')
+                                                ->select('scheme_performance.*','year.year_value','scheme_structure.scheme_short_name','scheme_structure.attributes as scheme_attributes')
+                                                ->whereIn('scheme_performance.panchayat_id', $panchayat_ids_selected)
+                                                ->where('scheme_performance.scheme_asset_id', $scheme_asset_id_selected)
+                                                ->whereIn('scheme_performance_id', [101,124]);
         $performance_datas_selected = $performance_datas_tmp->get();
         $performance_datas_to_test = $performance_datas_tmp->get();
 
@@ -89,15 +105,60 @@ class SchemeReviewDuplicateDataCheckController extends Controller
             $datas_tmp = [];
             $found = false;
             $coordinates_selected = unserialize($performance_data_selected->coordinates);
+            /* some details to show */
+                $performance_data_selected->coordinates_details = $coordinates_selected;
+                if($performance_data_selected->status==1){
+                    $performance_data_selected->status = "Completed";
+                }
+                else{
+                    $performance_data_selected->status = "Incomplete";
+                }
+                // for attributes
+                $attributes = unserialize($performance_data_selected->scheme_attributes); // getting attrubutes
+                $performance_attributes = [];
+                $per_attr_tmps = unserialize($performance_data_selected->attribute);
+                foreach ($per_attr_tmps as $per_attr_tmp) {
+                    $performance_attributes[key($per_attr_tmp)] = $per_attr_tmp[key($per_attr_tmp)];
+                }
+                $tmp = '';
+                foreach($attributes as $attribute){
+                    $tmp .= ''.$attribute['name'].': '.$performance_attributes[$attribute['id']].'<br/>';
+                }
+                $performance_data_selected->attribute_details = $tmp;
+            /* some details to show */
             if(count($coordinates_selected) > 0)
             {
                 foreach($performance_datas_to_test as $performance_data_to_test){
                     $coordinates_to_test = unserialize($performance_data_to_test->coordinates);
                     if(count($coordinates_to_test) > 0 && $performance_data_selected->scheme_performance_id!=$performance_data_to_test->scheme_performance_id)
                     {
+                        /* some details to show */
+                            $performance_data_to_test->coordinates_details = $coordinates_to_test;
+                            if($performance_data_to_test->status==1){
+                                $performance_data_to_test->status = "Completed";
+                            }
+                            else{
+                                $performance_data_to_test->status = "Incomplete";
+                            }
+                            // for attributes
+                            $attributes = unserialize($performance_data_to_test->scheme_attributes); // getting attrubutes
+                            $performance_attributes = [];
+                            $per_attr_tmps = unserialize($performance_data_to_test->attribute);
+                            foreach ($per_attr_tmps as $per_attr_tmp) {
+                                $performance_attributes[key($per_attr_tmp)] = $per_attr_tmp[key($per_attr_tmp)];
+                            }
+                            $tmp = '';
+                            foreach($attributes as $attribute){
+                                $tmp .= ''.$attribute['name'].': '.$performance_attributes[$attribute['id']].'<br/>';
+                            }
+                            $performance_data_to_test->attribute_details = $tmp;
+                        /* some details to show */
+
+
                         // testing first & last point within a radius
-                        if($this->test_first_and_last_point($coordinates_selected, $coordinates_to_test, 30)){ // matched
-                            if($this->test_all_coordinates($coordinates_selected, $coordinates_to_test, 30)){
+                        if($this->test_first_and_last_point($coordinates_selected, $coordinates_to_test, $distance_to_measure)){ // matched
+                            if($this->test_all_coordinates($coordinates_selected, $coordinates_to_test, $distance_to_measure)){
+                                echo "yes\n";
                                 array_push($datas_tmp, $performance_data_to_test);
                                 $found = true;
                             }
@@ -125,14 +186,6 @@ class SchemeReviewDuplicateDataCheckController extends Controller
                                 // no duplicate
                             }
                         }
-
-                        // testing direction of points, if other then return false (not on same direction), true(same direction)
-
-                        // testing each coordinates of testing entry with each coordinates of selected entry and return true/false
-                        // if($this->test_duplicate_coordinates($coordinates_selected, $coordinates_to_test)){
-                        //     array_push($datas_tmp, $performance_data_to_test);
-                        //     $found = true;
-                        // }
                     }
                 }
             }
@@ -149,7 +202,11 @@ class SchemeReviewDuplicateDataCheckController extends Controller
             $response="no_data";
         }
 
-        return ["duplicate_datas"=>$duplicate_datas, "response"=>$response];
+        // echo "<pre>";
+        // print_r($duplicate_datas);
+        // exit();
+
+        return ["duplicate_datas"=>$duplicate_datas, "response"=>$response, 'count'=>count($duplicate_datas)];
     }
 
     public function test_first_and_last_point($coordinates_selected_datas, $coordinates_to_test_datas, $distance_to_measure){
@@ -164,6 +221,7 @@ class SchemeReviewDuplicateDataCheckController extends Controller
             $distance_1 = $this->get_distance($coordinates_selected_datas[0]["latitude"], $coordinates_selected_datas[0]["longitude"], $coordinates_to_test_datas[0]["latitude"], $coordinates_to_test_datas[0]["longitude"]);
             $distance_2 = $this->get_distance($coordinates_selected_datas[count($coordinates_selected_datas) - 1]["latitude"], $coordinates_selected_datas[count($coordinates_selected_datas) - 1]["longitude"], $coordinates_to_test_datas[count($coordinates_to_test_datas) - 1]["latitude"], $coordinates_to_test_datas[count($coordinates_to_test_datas) - 1]["longitude"]);
             if($distance_1<=$distance_to_measure && $distance_2<=$distance_to_measure){
+                // echo $distance_1." - ".$distance_2."\n";
                 return true;
             }
         }
@@ -171,30 +229,32 @@ class SchemeReviewDuplicateDataCheckController extends Controller
         return false;
     }
 
-    public function test_all_coordinates($coordinates_selected_datas, $coordinates_to_test_datas, $distance_duplicate){
+    public function test_all_coordinates($coordinates_selected_datas, $coordinates_to_test_datas, $distance_to_measure){
         $earth_radius = 6371;
         $total_test_count = 0;
         $total_test_match = 0;
 
-
-        foreach($coordinates_selected_datas as $coordinates_selected_data){
-            foreach($coordinates_to_test_datas as $coordinates_to_test_data){
+        foreach($coordinates_selected_datas as $key_1=>$coordinates_selected_data){
+            foreach($coordinates_to_test_datas as $key_2=>$coordinates_to_test_data){
                 // assigning latitude longitude
                 $latitude1 = $coordinates_selected_data["latitude"];
                 $longitude1 = $coordinates_selected_data["longitude"];
                 $latitude2 = $coordinates_to_test_data["latitude"];
                 $longitude2 = $coordinates_to_test_data["longitude"];
                 $d = $this->get_distance($latitude1, $longitude1, $latitude2, $longitude2);
-        
                 // appending in count/
                 $total_test_count+=1;
-                if($d<=$distance_duplicate){
+                if($d<=$distance_to_measure){
                     $total_test_match+=1;
+                    echo $key_1." - ".$key_2.", Distance: ".$d."\n";;
                 }
             }
         }
 
-        if((($total_test_match/$total_test_count)*100)>=50){
+        $sqrt = round(sqrt($total_test_count));
+        echo $total_test_match." - ".sqrt($total_test_count)."\n\n";
+        // if((($total_test_match/$total_test_count)*100)>=50){
+        if($total_test_match>=$sqrt){
             return true;
         }
         else{
@@ -215,7 +275,7 @@ class SchemeReviewDuplicateDataCheckController extends Controller
         return $d;
     }
 
-    public function test_distance_if_any($coordinates_selected_datas, $coordinates_to_test_datas, $distance_to_test){
+    public function test_distance_if_any($coordinates_selected_datas, $coordinates_to_test_datas, $distance_to_measure){
         $earth_radius = 6371;
 
         foreach($coordinates_selected_datas as $coordinates_selected_data){
@@ -227,7 +287,7 @@ class SchemeReviewDuplicateDataCheckController extends Controller
                 $longitude2 = $coordinates_to_test_data["longitude"];
                 $d = $this->get_distance($latitude1, $longitude1, $latitude2, $longitude2);
 
-                if($d<$distance_to_test){
+                if($d<$distance_to_measure){
                     return true;
                 }
             }
