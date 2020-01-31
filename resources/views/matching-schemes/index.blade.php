@@ -66,6 +66,8 @@
             </div>
         </div>
     </div>
+    <br>
+    <a href="{{url('matching-schemes/view')}}"><button type="button" class="btn btn-info" style="border-radius:50px;width:200px;margin-left:50px;">View Matching Schemes</button></a>
     <div class="col-md-12">
         <div class="card-body">
             <table class="table-datatable display table table-striped table-hover">
@@ -153,9 +155,9 @@
                                 <th>Attributes</th>
 
                                 <th>Status Is</th>
-                                <th>Date</th>
+                                <!-- <th>Date</th> -->
                                 <th>Comment</th>
-                                <th>Cancel</th>
+                                <!-- <th>Cancel</th> -->
                             </tr>
                         </thead>
                         <tbody id="dublicate_data">
@@ -204,14 +206,14 @@
                 $("#dublicate_data").html("");
                 $("#hidden_input_for_inprogress").val("");
                 $("#hidden_input_for_revert").val("");
-                // $("#hidden_input_for_scheme_performance_id").val("");
+               
                 selected_inprogress = [];
                 selected_revert = [];
                 total_duplicate_record = 0;
 
             },
             success: function(data) {
-                // console.log(data);
+                 console.log(data.append_comment);
                 total_duplicate_record =parseInt(data.tmp_matching);
                 var append;
                 var s_no = 0;
@@ -222,12 +224,33 @@
                             <td>` + data.Matching[i].attribute + `</td>
                             <td>
                             <input type="text" name="matching_id" value="` + id + `" hidden>
-                            <input type="text" name="scheme_performance_id[]" value="` + data.Matching[i].scheme_performance_id + `" hidden>
-                            <button type="button" class="btn btn-primary inprogress"  onclick="inprogress_request(` + data.Matching[i].scheme_performance_id + `,this)">
-                            Not Duplicate</button><span class="notduplicate_record">This particular record is not duplicate
-                            </span><button type="button" class="btn btn-primary revert" onclick="revert_request(` + data.Matching[i].scheme_performance_id + `,this)">
-                            Duplicate</button><span style="color:red" class="duplicate_record">This particular record is duplicate</span></td><td>` + data.Matching[i].updated_at + `</td>
-                            <td><textarea class="form-control"></textarea></td><td><i class="fa fa-undo" aria-hidden="true"></i></td></tr>`;
+                            <input type="text" name="scheme_performance_id[]" value="` + data.Matching[i].scheme_performance_id + `" hidden>`;
+
+                    // console.log(data.Matching[i].type);
+
+                    if(data.Matching[i].type=="not_duplicate"){
+                        append += `<span class="">This particular record is not duplicate</span><i class="fa fa-undo" aria-hidden="true" style="color:blue;></i>`;
+                    }
+                    else if(data.Matching[i].type=="duplicate"){
+                        append += `<span class="" style="color:red;">This particular record is duplicate</span><i class="fa fa-undo" aria-hidden="true" style="color:blue;></i>`;
+                    }
+                    else{
+                        append += `<button type="button" class="btn btn-primary inprogress"  onclick="inprogress_request(` + data.Matching[i].scheme_performance_id + `,this)">Not Duplicate</button><span class="notduplicate_record">This particular record is not duplicate</span>
+                        <button type="button" class="btn btn-primary revert" onclick="revert_request(` + data.Matching[i].scheme_performance_id + `,this)">Duplicate</button><span style="color:red" class="duplicate_record">This particular record is duplicate</span>`;
+                    }
+                            
+                    // append += `</td><td>` + data.Matching[i].updated_at + `</td>`;
+
+
+
+                if(data.append_comment[i]!= null){
+                append += `<td><textarea class="form-control" name="comment[]">`+data.append_comment[i]+`</textarea></td>`;
+                }
+                else{
+                    append += `<td><textarea class="form-control" name="comment[]"></textarea></td>`;
+                }
+
+                    // append +=`<td><a href="#"><i class="fa fa-undo" aria-hidden="true"></i></a></td></tr>`;
                 }
                 $("#dublicate_data").append(append);
 
@@ -260,6 +283,8 @@
             $(tr).find(".revert").hide();
         }
     }
+
+  
    
 </script>
 <script>

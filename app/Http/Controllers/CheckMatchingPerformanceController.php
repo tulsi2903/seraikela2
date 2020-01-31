@@ -9,6 +9,8 @@ use App\SchemeStructure;
 use App\CheckMatchingPerformance;
 Use Auth;
 use App\GeoStructure;
+use App\Year;
+
 
 class CheckMatchingPerformanceController extends Controller
 {
@@ -71,6 +73,11 @@ class CheckMatchingPerformanceController extends Controller
           $created_at=$datas->created_at;
           $updated_at=$datas->updated_at;
           $scheme_performance_id_to_append = $datas->scheme_performance_id;
+          $append_comment = unserialize($datas->comment);
+
+
+          $get_not_duplicate_array = explode(",",$datas->not_duplicate);
+          $get_duplicate_array = explode(",",$datas->duplicate);
           // $get_scheme_performance_id=$datas->scheme_performance_id;
 
           $CheckMatchingPerformance_id=$datas->id;
@@ -81,6 +88,8 @@ class CheckMatchingPerformanceController extends Controller
                     ->select('scheme_performance.scheme_performance_id','scheme_performance.attribute','geo_structure.geo_name as block_name ','scheme_performance.panchayat_id as panchayat_id','year.year_value','scheme_assets.scheme_asset_name','scheme_structure.scheme_name','scheme_structure.scheme_short_name','geo_structure.geo_name')
                     ->whereIn('scheme_performance_id',$tmp_matching_array)
                     ->get();
+
+         
 
           foreach($datas as $data)
           {
@@ -100,60 +109,59 @@ class CheckMatchingPerformanceController extends Controller
                }
                $data->attribute = $print_att;
 
-          //  print_r( $print_att);
+               // if performance id is in array, then $data->type="duplicate"  OR "not_duplicate" 
+               if(in_array($data->scheme_performance_id, $get_not_duplicate_array))
+               {
+                    $data->type = "not_duplicate";
+               }
+               else if(in_array($data->scheme_performance_id, $get_duplicate_array))
+               {
+                    $data->type = "duplicate";
+               }
+               else{
+                    $data->type = "probable_duplicate";
+               }
+
+        
           }
 
-          // return $datas;
 
-          return ['Matching'=>$datas,'tmp_matching'=>$tmp_matching, 'id'=>$id, 'scheme_performance_id_to_append'=>$scheme_performance_id_to_append];
+
+       
+
+          return ['Matching'=>$datas,'tmp_matching'=>$tmp_matching, 'id'=>$id, 'scheme_performance_id_to_append'=>$scheme_performance_id_to_append,'append_comment'=>$append_comment];
    }
 
 
 
-//    public function delete(Request $request){
-//      //    return $request;
-//           $tmp_revert = $request->hidden_input_for_revert;
-//           $tmp_revert = ltrim($tmp_revert,","); 
-
-//           $CheckMatchingPerformance_id=$request->matching_id;
-//           $tmp_inprogress = $request->hidden_input_for_inprogress;
-//           $tmp_inprogress = ltrim($tmp_inprogress,",");
-
-//           $tmp_inprogress_array=explode(",",$tmp_inprogress);
-//           $sort_array=rsort($request->scheme_performance_id);
-          
-//           if(in_array($tmp_revert,$request->scheme_performance_id))
-//           {
-//                CheckMatchingPerformance::where('id',$CheckMatchingPerformance_id)->update(array('status'=>0));
-//                // $scheme_performance = SchemePerformance::where('scheme_performance_id',$CheckMatchingPerformance_deatils->scheme_performance_id)->update(array('status'=>3));
-
-//           }
-        
-//           if($tmp_inprogress_array==$request->scheme_performance_id)
-//           {
-//                $CheckMatchingPerformance_deatils=CheckMatchingPerformance::where('id',$CheckMatchingPerformance_id)->first();
-//                $scheme_performance = SchemePerformance::where('scheme_performance_id',$CheckMatchingPerformance_deatils->scheme_performance_id)->update(array('status'=>0));
-//                // echo $CheckMatchingPerformance_deatils->scheme_performance_id;
-//                CheckMatchingPerformance::where('id',$CheckMatchingPerformance_id)->update(array('status'=>1));
-
-//           }
-
-
-//      return redirect('matching-schemes');
-//  }
 
  public function get_data(Request $request)
  {
-     //  return $request;
+     $diff = $request->scheme_performance_id;
+     $duplicate = explode(",",$request->hidden_input_for_revert);
+     $progress = explode(",",$request->hidden_input_for_inprogress);
+
+     if(count($duplicate)!=0){
+          $diff = array_diff($diff, $duplicate);
+     }
+     if(count($progress)!=0){
+          $diff = array_diff($diff, $progress);
+     }
+     $diff = array_values($diff);
+
+    
      $check_matching_performance = CheckMatchingPerformance::where('id',$request->matching_id)->first();
-     // $scheme_performance = SchemePerformance::select('scheme_performance_id','status')->get();
-     // return $check_matching_performance ;
+    
      $scheme_performance = SchemePerformance::where('scheme_performance_id',$check_matching_performance->scheme_performance_id)->select('scheme_performance_id','status')->first();
 
     //getting data from front end
      $check_matching_performance->duplicate = $request->hidden_input_for_revert ?? "";
      $check_matching_performance->not_duplicate = $request->hidden_input_for_inprogress ?? "";
-     $check_matching_performance->probable_duplicate="";
+     
+
+
+     $check_matching_performance->probable_duplicate = implode(",",$diff);
+
      if($request->hidden_input_for_revert !="")
      {
           $check_matching_performance->status = 0;
@@ -172,16 +180,80 @@ class CheckMatchingPerformanceController extends Controller
 
 
      }
-     // return $request;
 
-          $check_matching_performance->save();
-              return $check_matching_performance;
+     if($request->comment!="")
+     {
+          $check_matching_performance->comment =  serialize($request->comment);
+
+     }
+     else{
+          $check_matching_performance->comment="";  
+     }
+
    
+     $check_matching_performance->save();
     
     
      return redirect('matching-schemes');
 
 
  }
+
+ //functions for view page
+
+public function view()
+ {
+
+
+     $year_datas = Year::orderBy('year_id')->where('status',1)->get();
+
+     $scheme_datas = SchemeStructure::orderBy('scheme_id')->where('org_id',1)->get();
+
+     $block_datas = GeoStructure::orderBy('geo_id')->where('level_id',3)->get();
+
+     return view('matching-schemes.view')->with(compact('year_datas','scheme_datas','block_datas'));
+}
+
+public function get_panchayat_datas(Request $request)
+{
+    
+   
+     $datas = GeoStructure::where('bl_id', $request->block_id)->get();
+    
+    return $datas;
+}
+
+public function search_datas(Request $request)
+{
+    
+     if($request->year_id && $request->scheme_id && $request->block_id && $request->panchayat_id !="")
+     {
+          $get_datas = SchemePerformance::where('year_id',$request->year_id)
+               ->where('scheme_id',$request->scheme_id)
+               ->where('block_id',$request->block_id)
+               ->where('panchayat_id',$request->panchayat_id)
+               ->get()->pluck('scheme_performance_id'); 
+          
+     }
+     else{
+          $get_datas = SchemePerformance::where('year_id',$request->year_id)
+               ->where('scheme_id',$request->scheme_id)
+               ->where('block_id',$request->block_id)
+               ->get()->pluck('scheme_performance_id');
+     }
+      
+
+     $get_matching_inprogress_performance_id = CheckMatchingPerformance::whereIn('scheme_performance_id',$get_datas)->where('status',1)->get();
+
+     $get_matching_revert_performance_id = CheckMatchingPerformance::whereIn('scheme_performance_id',$get_datas)->where('status',0)->get();
+
+     //  return $get_matching_scheme_performance_id;
+    
+
+    
+
+      return view('matching-schemes.view');
+}
+
 
 }
