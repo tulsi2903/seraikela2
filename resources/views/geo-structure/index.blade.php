@@ -121,14 +121,11 @@
                                     <p class="card-title-print-2">Date & Time: <?php $currentDateTime = date('d-m-Y H:i:s'); echo $currentDateTime; ?>
                                     <p class="card-title-print-3">User Name: {{session()->get('user_full_name')}}</p>
                                 </div>
-                                <table class="table table-datatable" id="printable-area">
+                                <table class="table" id="printable-area">
                                     <thead style="background: #d6dcff;color: #000;">
                                         <tr>
                                             <th>#</th>
                                             <th>{{$phrase->name}}</th>
-                                            <th>{{$phrase->level}}</th>
-                                            <th>{{$phrase->village}}</th>
-                                            <th>{{$phrase->parent}}</th>
                                             <th>{{$phrase->organisation}}</th>
                                             @if($desig_permissions["mod12"]["edit"] || $desig_permissions["mod12"]["del"] )
                                             <th class="action-buttons">{{$phrase->action}}</th>
@@ -142,9 +139,6 @@
                                                 <tr>
                                                     <td width="40px;">{{$count++}}   <input type="hidden" value="{{$data->geo_id}}" name="district_geo_id[]"></td>
                                                     <td>{{$data->geo_name}}</td>
-                                                    <td>{{$data->level_name}}</td>
-                                                    <td>{{$data->no_of_villages}}</td>
-                                                    <td>{{$data->parent_name}} <small>{{$data->parent_level_name}}</small></td>
                                                     <td>{{$data->org_name}}</td>
                                                     @if($desig_permissions["mod12"]["edit"] || $desig_permissions["mod12"]["del"] )
                                                     <td class="action-buttons">
@@ -176,14 +170,12 @@
                                     <p class="card-title-print-2">Date & Time: <?php $currentDateTime = date('d-m-Y H:i:s'); echo $currentDateTime; ?>
                                     <p class="card-title-print-3">User Name: {{session()->get('user_full_name')}}</p>
                                 </div>
-                                <table class="table table-datatable" id="printable-area">
+                                <table class="table" id="printable-area">
                                     <thead style="background: #d6dcff;color: #000;">
                                         <tr>
                                             <th>#</th>
                                             <th>{{$phrase->name}}</th>
-                                            <th>{{$phrase->level}}</th>
-                                            <th>{{$phrase->village}}</th>
-                                            <th>{{$phrase->parent}}</th>
+                                            <th>{{$phrase->district}}</th>
                                             <th>{{$phrase->organisation}}</th>
                                             <th class="action-buttons">{{$phrase->action}}</th>
                                         </tr>
@@ -195,8 +187,6 @@
                                                 <tr>
                                                     <td width="40px;">{{$count++}}   <input type="hidden" value="{{$data->geo_id}}" name="sub_div_geo_id[]"></td>
                                                     <td>{{$data->geo_name}}</td>
-                                                    <td>{{$data->level_name}}</td>
-                                                    <td>{{$data->no_of_villages}}</td>
                                                     <td>{{$data->parent_name}} <small>{{$data->parent_level_name}}</small></td>
                                                     <td>{{$data->org_name}}</td>
                                                     <td class="action-buttons">
@@ -230,14 +220,12 @@
                                     <p class="card-title-print-2">Date & Time: <?php $currentDateTime = date('d-m-Y H:i:s'); echo $currentDateTime; ?>
                                     <p class="card-title-print-3">User Name: {{session()->get('user_full_name')}}</p>
                                 </div>
-                                <table class="table table-datatable" id="printable-area">
+                                <table class="table" id="printable-area">
                                     <thead style="background: #d6dcff;color: #000;">
                                         <tr>
                                             <th>#</th>
                                             <th>{{$phrase->name}}</th>
-                                            <th>{{$phrase->level}}</th>
-                                            <th>{{$phrase->village}}</th>
-                                            <th>{{$phrase->parent}}</th>
+                                            <th>{{$phrase->sub_divisin}}</th>
                                             <th>{{$phrase->organisation}}</th>
                                             <th class="action-buttons">{{$phrase->action}}</th>
                                         </tr>
@@ -249,8 +237,6 @@
                                                 <tr>
                                                     <td width="40px;">{{$count++}}  <input type="hidden" value="{{$data->geo_id}}" name="block_geo_id[]"></td>
                                                     <td>{{$data->geo_name}}</td>
-                                                    <td>{{$data->level_name}}</td>
-                                                    <td>{{$data->no_of_villages}}</td>
                                                     <td>{{$data->parent_name}} <small>{{$data->parent_level_name}}</small></td>
                                                     <td>{{$data->org_name}}</td>
                                                     <td class="action-buttons">
@@ -286,9 +272,8 @@
                                         <tr>
                                             <th>#</th>
                                             <th>{{$phrase->name}}</th>
-                                            <th>{{$phrase->level}}</th>
+                                            <th>{{$phrase->block}}</th>
                                             <th>{{$phrase->village}}</th>
-                                            <th>{{$phrase->parent}}</th>
                                             <th>{{$phrase->organisation}}</th>
                                             <th class="action-buttons">{{$phrase->action}}</th>
                                         </tr>
@@ -300,9 +285,8 @@
                                                 <tr>
                                                     <td width="40px;">{{$count++}}  <input type="hidden" value="{{$data->geo_id}}" name="payanchat_geo_id[]"></td>
                                                     <td>{{$data->geo_name}}</td>
-                                                    <td>{{$data->level_name}}</td>
+                                                    <td>{{$data->parent_name}}</td>
                                                     <td>{{$data->no_of_villages}}</td>
-                                                    <td>{{$data->parent_name}} <small>{{$data->parent_level_name}}</small></td>
                                                     <td>{{$data->org_name}}</td>
                                                     <td class="action-buttons">
                                                         <a href="{{url('geo-structure/delete')}}/{{$data->geo_id}}" class="btn btn-danger btn-sm delete-button"><i class="fas fa-trash-alt"></i></a>

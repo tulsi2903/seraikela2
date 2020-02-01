@@ -83,6 +83,7 @@ Route::get('geo-structure/add','GeoStructureController@add');
 Route::post('geo-structure/store','GeoStructureController@store');
 Route::get('geo-structure/delete/{geo_id}','GeoStructureController@delete');
 Route::get('geo-structure/get-block-data','GeoStructureController@get_block_data');
+Route::get('geo-structure/get-officer-data','GeoStructureController@get_officer_data');
 Route::get('geo-structure/export/excelURL','GeoStructureController@exportExcelFunctiuonforgeostructure');
 Route::get('geo-structure/pdf/pdfURL','GeoStructureController@exportpdfFunctiuonforgeostructure');
 

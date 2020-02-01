@@ -48,6 +48,12 @@
 
     <!-- all pages styling -->
     <style>
+        /****** custom styling ******/
+        .active-record, .inactive-record{ }
+        .active-record i, .inactive-record i{ padding-right: 5px; }
+        .active-record i{ color: #13ca11; }
+        .inactive-record i{ color:grey; }
+
         /* page loader */
         .custom-loader {
             position: fixed;

@@ -87,8 +87,7 @@
                     </div>
                     <div class="col-md-2 scheme-form-elements">
                         <div class="form-group">
-                            <label for="spans_across_borders">{{$phrase->spans_across_borders}}</label>
-                            <input type="checkbox" name="spans_across_borders" id="spans_across_borders" class="form-control" value="1" <?php echo ($data['spans_across_borders']==1 ? 'checked' : '');?>>
+                            <input type="checkbox" name="spans_across_borders" id="spans_across_borders" value="1" <?php echo ($data['spans_across_borders']==1 ? 'checked' : '');?>>&nbsp;&nbsp;<label for="spans_across_borders">{{$phrase->spans_across_borders}}</label>
                             <div class="invalid-feedback" id="spans_across_borders_error_msg"></div>
                         </div>
                     </div>
@@ -150,14 +149,16 @@
                         </div>
                     </div>
                     <div class="col-2 scheme-form-elements  ind_att " style="display: none;" >
-                        <label for="scheme_asset_id">{{$phrase->select_asset}}<span style="color:red;margin-left:5px;">*</span></label>
-                        <select name="scheme_asset_id"  class="form-control">
-                            <option value="">--Select--</option>
-                            @foreach($scheme_asset_datas as $scheme_asset_data)
-                            <option value="{{$scheme_asset_data->scheme_asset_id}}" <?php if ($data->scheme_asset_id == $scheme_asset_data->scheme_asset_id) { echo "selected"; } ?>>{{$scheme_asset_data->scheme_asset_name}}</option>
-                            @endforeach
-                        </select>
-                        <div class="invalid-feedback" id="scheme_asset_id_error_msg"></div>
+                        <div class="form-group">
+                            <label for="scheme_asset_id">{{$phrase->select_asset}}<span style="color:red;margin-left:5px;">*</span></label>
+                            <select name="scheme_asset_id" id="scheme_asset_id"  class="form-control">
+                                <option value="">--Select--</option>
+                                @foreach($scheme_asset_datas as $scheme_asset_data)
+                                <option value="{{$scheme_asset_data->scheme_asset_id}}" <?php if ($data->scheme_asset_id == $scheme_asset_data->scheme_asset_id) { echo "selected"; } ?>>{{$scheme_asset_data->scheme_asset_name}}</option>
+                                @endforeach
+                            </select>
+                            <div class="invalid-feedback" id="scheme_asset_id_error_msg"></div>
+                        </div>
                     </div>
                 </div>
 
@@ -320,7 +321,7 @@
 
 <script>
     // global variables to use
-    scheme_is = 1; // 1 = independent, 2 = under a group
+    scheme_is = 1; // 1 =  single, 2 = multiple asset
 
 
 
@@ -451,11 +452,18 @@
     function scheme_asset_id_validate() {
         var scheme_asset_id_val = $("#scheme_asset_id").val();
 
-        if (scheme_asset_id_val == "") {
-            scheme_asset_id_error = true;
-            $("#scheme_asset_id").addClass('is-invalid');
-            $("#scheme_asset_id_error_msg").html("Please select scheme asset");
-        } else {
+        if($("input[name='scheme_is']:checked").val()==1){
+            if (scheme_asset_id_val == "") {
+                scheme_asset_id_error = true;
+                $("#scheme_asset_id").addClass('is-invalid');
+                $("#scheme_asset_id_error_msg").html("Please select scheme asset");
+            } 
+            else {
+                scheme_asset_id_error = false;
+                $("#scheme_asset_id").removeClass('is-invalid');
+            }
+        }
+        else{
             scheme_asset_id_error = false;
             $("#scheme_asset_id").removeClass('is-invalid');
         }
@@ -601,6 +609,7 @@
         scheme_map_marker_validate();
 
         if (scheme_name_error || scheme_short_name_error || scheme_type_id_error || dept_id_error || status_error || scheme_asset_id_error || description_error || attachment_error || scheme_logo_error || scheme_map_marker_error) {
+            console.log(scheme_asset_id_error);
             return false;
         } // error occured
         else {

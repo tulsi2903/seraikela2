@@ -71,7 +71,7 @@ class GeoStructureController extends Controller
         }
 
         $geo_structure->geo_name = $request->geo_name;
-        $geo_structure->org_id = $request->org_id;
+        $geo_structure->org_id = 1;
         $geo_structure->level_id = $request->level_id;
         $geo_structure->officer_id = $request->officer_id;
 
@@ -127,6 +127,11 @@ class GeoStructureController extends Controller
 
     public function get_block_data(Request $request){
         $datas = GeoStructure::where('level_id','3')->where('sd_id', $request->sd_id)->get();
+        return $datas;
+    }
+
+    public function get_officer_data(Request $request){
+        $datas = User::select('id','title','first_name','middle_name','last_name')->where('userRole', $request->level_id)->get();
         return $datas;
     }
 

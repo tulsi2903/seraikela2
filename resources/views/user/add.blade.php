@@ -231,14 +231,10 @@
                             <td>{{$val->address}}</td>
                             <td>
                                 @if($val->status==1)
-                                <span style="padding:5px 10px; border: 2px solid #00b100;">Active</span>
-                               
+                                    <span class="active-record"><i class="fas fa-check-circle"></i>Active</span>
                                 @else
-                                <span style="padding:5px 10px; border: 2px solid #ff1c1c;">Inactive</span>
-                                
+                                    <span class="inactive-record"><i class="fas fa-dot-circle"></i>Inactive</span>
                                 @endif
-                              
-                                
                             </td>
                            
                             <td>

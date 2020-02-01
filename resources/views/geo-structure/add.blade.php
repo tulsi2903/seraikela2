@@ -34,7 +34,7 @@
                     </div>
                 </div>
 
-                <div class="col-md-4">
+                <!-- <div class="col-md-4">
                     <div class="form-group">
                         <label for="org_id">{{$phrase->organisation}}<span style="color:red;margin-left:5px;">*</span></label>
                         <select name="org_id" id="org_id" class="form-control">
@@ -45,7 +45,7 @@
                         </select>
                         <div class="invalid-feedback" id="org_id_error_msg"></div>
                     </div>
-                </div>
+                </div> -->
 
                 <div class="col-md-4">
                     <div class="form-group">
@@ -63,7 +63,7 @@
 
                 <div class="col-md-4" id="select-div-district" style="display: none;">
                     <div class="form-group">
-                        <label for="dist_id">{{$phrase->district}}</label>
+                        <label for="dist_id">{{$phrase->district}}<span style="color:red;margin-left:5px;">*</span></label>
                         <select name="dist_id" id="dist_id" class="form-control">
                             <option value="">--Select--</option>
                             @foreach($geo_structure_datas as $geo_structure_data)
@@ -78,7 +78,7 @@
 
                 <div class="col-md-4" id="select-div-sub-division" style="display: none;">
                     <div class="form-group">
-                        <label for="sd_id">{{$phrase->sub_divisin}} </label>
+                        <label for="sd_id">{{$phrase->sub_divisin}}<span style="color:red;margin-left:5px;">*</span></label>
                         <select name="sd_id" id="sd_id" class="form-control">
                             <option value="">--Select--</option>
                             @foreach($geo_structure_datas as $geo_structure_data)
@@ -93,7 +93,7 @@
 
                 <div class="col-md-4" id="select-div-block"  style="display: none;">
                     <div class="form-group">
-                        <label for="bl_id">{{$phrase->block}}</label>
+                        <label for="bl_id">{{$phrase->block}}<span style="color:red;margin-left:5px;">*</span></label>
                         <select name="bl_id" id="bl_id" class="form-control">
                             <option value="">--Select--</option>
                         </select>
@@ -128,7 +128,7 @@
                         <input type="text" name="hidden_input_id" id="hidden_input_id" value="{{$hidden_input_id}}" data-sd-id="{{$data->sd_id}}" data-bl-id="{{$data->bl_id}}" data-no-of-villages="{{$data->no_of_villages}}" hidden>
                         <button type="submit" class="btn btn-primary" onclick="return submitForm()">{{$phrase->save}}&nbsp;&nbsp;<i class="fas fa-check"></i></button>
                         <!-- <button type="button" class="btn btn-secondary" onclick="initialize()">{{$phrase->reset}}&nbsp;&nbsp;<i class="fas fa-undo"></i></button> -->
-                        <button type="reset" class="btn btn-secondary">{{$phrase->reset}}&nbsp;&nbsp;<i class="fas fa-undo"></i></button>
+                        <button type="reset" onclick="resetInputs()" class="btn btn-secondary">{{$phrase->reset}}&nbsp;&nbsp;<i class="fas fa-undo"></i></button>
                     </div>
                 </div>
         </form>
@@ -343,16 +343,18 @@
 
     // officer_id validation
     function officer_id_validate() {
-        var officer_id_val = $("#officer_id").val();
-        if (officer_id_val == "") {
-            officer_id_error = true;
-            $("#officer_id").addClass('is-invalid');
-            $("#officer_id_error_msg").html("Please assign officer");
-        }
-        else {
-            officer_id_error = false;
-            $("#officer_id").removeClass('is-invalid');
-        }
+        // var officer_id_val = $("#officer_id").val();
+        // if (officer_id_val == "") {
+        //     officer_id_error = true;
+        //     $("#officer_id").addClass('is-invalid');
+        //     $("#officer_id_error_msg").html("Please assign officer");
+        // }
+        // else {
+        //     officer_id_error = false;
+        //     $("#officer_id").removeClass('is-invalid');
+        // }
+        officer_id_error = false;
+        $("#officer_id").removeClass('is-invalid');
     }
 
 
@@ -387,6 +389,7 @@
             });
         }
     }
+    
 
     function level_id_changed(type){
         $(".custom-loader").fadeIn(300);
@@ -425,7 +428,36 @@
         }
 
         $(".custom-loader").fadeOut(300);
+        // get_officer_datas();
     }
+
+    // function get_officer_datas(){
+    //     $("#officer_id").html("<option value=''>--Select--</option>");
+    //     if($("#level_id").val()){
+    //         $.ajax({
+    //             url: "{{url('geo-structure/get-officer-data')}}",
+    //             data: { 'level_id': $("#level_id").val()},
+    //             method: "GET",
+    //             contentType: 'application/json',
+    //             dataType: "json",
+    //             beforeSend: function (data) {
+    //                 $(".custom-loader").fadeIn(300);
+    //             },
+    //             error: function (xhr){
+    //                 $(".custom-loader").fadeOut(300);
+    //                 alert("error" + xhr.status + "," + xhr.statusText);
+    //             },
+    //             success: function (data){
+    //                 console.log(data);
+    //                 $("#officer_id").html("<option value=''>--Select--</option>");
+    //                 for(var i=0; i<data.length; i++){
+    //                     $("#officer_id").append("<option value='"+data[i].id+"'>"+data[i].first_name+"</option>");
+    //                 }
+    //                 $(".custom-loader").fadeOut(300);
+    //             }
+    //         });
+    //     }
+    // }
 
     // // final submission
     function submitForm() {
@@ -462,6 +494,10 @@
 
     function initialize() {
         $("input, textarea, select").removeClass('is-invalid');
+    }
+
+    function resetInputs(){
+        initialize();
     }
 
     // function changeSelect() {

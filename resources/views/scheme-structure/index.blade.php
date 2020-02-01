@@ -146,9 +146,9 @@
                             <td>{{$data->dept_name}}</td>
                             <td>
                                 <?php if($data->status=="1"){
-                                    ?><i class="fas fa-check-circle text-success"></i>&nbsp;&nbsp;Active<?php
+                                    ?><span class="active-record"><i class="fas fa-check-circle"></i>Active</span><?php
                                 } else{
-                                    ?><i class="fas fa-dot-circle text-dark"></i>&nbsp;&nbsp;Inactive<?php
+                                    ?><span class="inactive-record"><i class="fas fa-dot-circle"></i>Inactive</span><?php
                                 } ?>
                             </td>
                             @if($desig_permissions["mod15"]["edit"] || $desig_permissions["mod15"]["del"])
