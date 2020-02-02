@@ -39,7 +39,7 @@ class SchemeStructureController extends Controller
         $hidden_input_id = "NA";
 
         $scheme_type_datas = SchemeType::orderBy('sch_type_name', 'asc')->get();
-        $department_datas = Department::orderBy('dept_name')->get();
+        $department_datas = Department::orderBy('dept_name')->where('is_active',1)->get();
         $scheme_group_datas = Group::get();
         $block_datas = GeoStructure::where('level_id', 3)->get();
         $scheme_asset_datas = SchemeAsset::get();

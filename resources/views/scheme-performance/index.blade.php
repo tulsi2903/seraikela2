@@ -616,9 +616,9 @@
         append_no++;
         to_append = `<tr>
             <td>  <span class="index_no">`+ append_no + `</span></td>
-                <td> <input type="text" name="coordinates_lat_value[]" id="coordinates_lat_value" placeholder="Latitude" class="form-control" Required >        
+                <td> <input type="text" name="coordinates_lat_value[]" maxlength="8"   placeholder="Latitude" class="form-control" required >        
                     </td>
-                    <td><input type="text" name="coordinates_lang_value[]" id="coordinates_lang_value" placeholder="Longitude" class="form-control" Required >
+                    <td><input type="text" name="coordinates_lang_value[]" maxlength="8" placeholder="Longitude" class="form-control" required >
                 </td>
                     <td><button type="button" class="btn btn-danger btn-xs" onclick="delete_lat_lon(this)"><i class="fas fa-trash-alt"></i></button></td>
                     </tr>`;
@@ -768,22 +768,7 @@ function checkStatusOld(e,id)
     if(status_id==0)
     {
         var  result="true";
-        $.ajax({
-            url: "{{url('scheme-performance/checkduplicate/')}}" + "/" + id+"/"+result,
-            method: "GET",
-            contentType: 'application/json',
-            dataType: "json",
-            beforeSend: function (data) {
-                $(".custom-loader").fadeIn(300);
-            },
-            error: function (xhr) {
-                alert("error" + xhr.status + "," + xhr.statusText);
-                $(".custom-loader").fadeOut(300);
-            },
-            success: function (data) {
-                $(".custom-loader").fadeOut(300);
-            }
-        });
+       
     }
     if(status_id==1)
     {
