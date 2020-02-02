@@ -257,6 +257,7 @@
                 <hr style="margin-top:-13px;border-top: 1px dashed #717070;">
             </div>
             <div style="display:flex; padding: 1em;">
+            @if($departments!="")
             @foreach($departments as $key_dep=>$value_dept)
     <div class="col-md-1 focus-grid" style="padding-right: 5px;padding-left: 5px;">
         <div class="focus-border">
@@ -278,6 +279,9 @@
         </div>
     </div>
     @endforeach
+    @else
+    No Found
+    @endif
     
 </div><br>
 </div>

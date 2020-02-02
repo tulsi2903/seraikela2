@@ -137,7 +137,7 @@ class DashboardController extends Controller
 
         $asset_count = Asset::where('org_id', '1')->count();
         $get_schemes = SchemeStructure::where('org_id', '1')->get();
-        $departments = Department::where('org_id', '1')->get();
+        $departments = Department::where('org_id', '1')->where('is_active',1)->get();
         $health_scheme_count = SchemeStructure::where('dept_id', '1')->count();
         $land_revenue_count = SchemeStructure::where('dept_id', '2')->count();
         $welfare_count = SchemeStructure::where('dept_id', '3')->count();
@@ -148,8 +148,6 @@ class DashboardController extends Controller
         $social_welfare_count = SchemeStructure::where('dept_id', '9')->count();
         $drinking_water_and_sanitation_count = SchemeStructure::where('dept_id', '10')->count();
         $social_security_scheme_count = SchemeStructure::where('dept_id', '11')->count();
-
-
         $scheme_performance_details = SchemePerformance::get()->toArray();
         $year_details = Year::get()->toArray();
 

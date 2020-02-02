@@ -51,7 +51,7 @@ class GeoStructureController extends Controller
 
         $organisation_datas = Organisation::orderBy('org_name','asc')->get();
         $geo_structure_datas = GeoStructure::select('geo_id','geo_name','level_id','parent_id')->get();
-        $user_datas = User::leftJoin("designation","users.desig_id","=","designation.desig_id")->select('users.*','designation.name as desig_name')->get();
+        $user_datas = User::leftJoin("designation","users.desig_id","=","designation.desig_id")->where('status',1)->select('users.*','designation.name as desig_name')->get();
 
         if(isset($request->purpose)&&isset($request->id)){
             $hidden_input_purpose=$request->purpose;

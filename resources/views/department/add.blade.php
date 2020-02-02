@@ -25,7 +25,7 @@
         <div class="card-body">
             <div class="row justify-content-center">
                 <div class="col-md-6">
-                    <form action="{{url('department/store')}}" method="POST">
+                    <form action="{{url('department/store')}}" id=dept_form method="POST">
                     @csrf
                         <div class="form-group">
                             <label for="dept_name">Department Name<span style="color:red;margin-left:5px;">*</span></label>
@@ -55,7 +55,7 @@
                             <input type="text" name="hidden_input_purpose" value="{{$hidden_input_purpose}}" hidden>
                             <input type="text" name="hidden_input_id" value="{{$hidden_input_id}}" hidden>
                             <button type="submit" class="btn btn-primary" onclick="return submitForm()">Save&nbsp;&nbsp;<i class="fas fa-check"></i></button>
-                            <button type="reset" class="btn btn-secondary">Reset&nbsp;&nbsp;<i class="fas fa-undo"></i></button>
+                            <button type="reset" class="btn btn-secondary" onclick="reset_from()">Reset&nbsp;&nbsp;<i class="fas fa-undo"></i></button>
                         </div>
                     </form>
                 </div>
@@ -65,6 +65,10 @@
 
 
 <script>
+     function reset_from()
+        {
+        $("select").removeClass("is-invalid");
+        }
     /* validation starts */
     // error variables as true = error occured
     var dept_name_error = true;

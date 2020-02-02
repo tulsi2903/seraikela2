@@ -150,7 +150,7 @@
                                     <div class="form-group">
                                         <div style="height:30px;"></div>
                                         <button type="submit" class="btn btn-primary" onclick="return submitForm()">{{$phrase->save}}&nbsp;&nbsp;<i class="fas fa-check"></i></button>
-                                        <button type="reset" class="btn btn-secondary">{{$phrase->reset}}&nbsp;&nbsp;<i class="fas fa-undo"></i></button>
+                                        <button type="reset" class="btn btn-secondary" onclick="reset_from()" >{{$phrase->reset}}&nbsp;&nbsp;<i class="fas fa-undo"></i></button>
                                     </div>
                                 </div>
                             </div>
@@ -236,6 +236,10 @@
             }
         </script>
 <script>
+    function reset_from()
+    {
+        $("input, select").removeClass("is-invalid");
+    }
     /*
     *
     for appending inline form
