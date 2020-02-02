@@ -162,33 +162,31 @@ class SchemePerformanceController extends Controller
                     $to_append_tbody .= '<td> <select name="assest_name[]" class="form-control status_readonly" required>';
                     if ($value_SchemePerformance['status'] == 1 || $value_SchemePerformance['status'] == 3) {
                         if ($value_SchemePerformance['scheme_asset_id'] != "") {
-                        foreach ($scheme_asset_data as $key_asset => $value_assest) {
-                            if ($value_SchemePerformance['scheme_asset_id'] == $value_assest["scheme_asset_id"]) {
-                                $to_append_tbody .= "<option  value=\"" . $value_assest["scheme_asset_id"] . "\" selected>" . $value_assest["scheme_asset_name"] . "  </option>";
+                            foreach ($scheme_asset_data as $key_asset => $value_assest) {
+                                if ($value_SchemePerformance['scheme_asset_id'] == $value_assest["scheme_asset_id"]) {
+                                    $to_append_tbody .= "<option  value=\"" . $value_assest["scheme_asset_id"] . "\" selected>" . $value_assest["scheme_asset_name"] . "  </option>";
+                                }
+                                // $to_append_tbody .= "<option  value=\"" . $value_assest["scheme_asset_id"] . "\">" . $value_assest["scheme_asset_name"] . "</option>";
                             }
-                            // $to_append_tbody .= "<option  value=\"" . $value_assest["scheme_asset_id"] . "\">" . $value_assest["scheme_asset_name"] . "</option>";
-                        }
-                    }
-                    }
-                    else
-                    {
-                    if ($value_SchemePerformance['scheme_asset_id'] != "") {
-                        foreach ($scheme_asset_data as $key_asset => $value_assest) {
-                            if ($value_SchemePerformance['scheme_asset_id'] == $value_assest["scheme_asset_id"]) {
-                                $to_append_tbody .= "<option  value=\"" . $value_assest["scheme_asset_id"] . "\" selected>" . $value_assest["scheme_asset_name"] . "  </option>";
-                            }
-                            $to_append_tbody .= "<option  value=\"" . $value_assest["scheme_asset_id"] . "\">" . $value_assest["scheme_asset_name"] . "</option>";
                         }
                     } else {
-                        $to_append_tbody .= "<option  value=''>--Select--</option>";
-                        foreach ($scheme_asset_data as $key_asset => $value_assest) {
-                            $to_append_tbody .= "<option  value=\"" . $value_assest["scheme_asset_id"] . "\">" . $value_assest["scheme_asset_name"] . "</option>";
+                        if ($value_SchemePerformance['scheme_asset_id'] != "") {
+                            foreach ($scheme_asset_data as $key_asset => $value_assest) {
+                                if ($value_SchemePerformance['scheme_asset_id'] == $value_assest["scheme_asset_id"]) {
+                                    $to_append_tbody .= "<option  value=\"" . $value_assest["scheme_asset_id"] . "\" selected>" . $value_assest["scheme_asset_name"] . "  </option>";
+                                }
+                                $to_append_tbody .= "<option  value=\"" . $value_assest["scheme_asset_id"] . "\">" . $value_assest["scheme_asset_name"] . "</option>";
+                            }
+                        } else {
+                            $to_append_tbody .= "<option  value=''>--Select--</option>";
+                            foreach ($scheme_asset_data as $key_asset => $value_assest) {
+                                $to_append_tbody .= "<option  value=\"" . $value_assest["scheme_asset_id"] . "\">" . $value_assest["scheme_asset_name"] . "</option>";
+                            }
                         }
-                    }
                     }
                     $to_append_tbody .= '</select>';
                 }
-                
+
                 $attributes  = unserialize($scheme_data->attributes);
                 foreach ($attributes as $key_att => $attribute) {
                     $to_append_tbody .= '<td><input type="text" name="' . $attribute['id'] . '[]" class=" status_readonly form-control" value="' . @$SchemePerformance_attributes[$key_att][$attribute['id']] . '" placeholder="' . $attribute['name'] . '"></td>';
@@ -215,14 +213,13 @@ class SchemePerformanceController extends Controller
                     $to_append_tbody .= '<option value="2" selected >Sanctioned</option>';
                 }
                 $to_append_tbody .= '</select></td>';
-                 /*Spans Across Borders */
-                 if($scheme_data->spans_across_borders==1)
-                 {
-                     $to_append_tbody .='<td> 
-                                     <input type="checkbox" name="connectivity_details[]" value="x'.$checkboxIdentifier.'" onclick="showbutton(this.value,this)" '. ($value_SchemePerformance["connectivity_status"]==1 ? "checked" : "") .'>
+                /*Spans Across Borders */
+                if ($scheme_data->spans_across_borders == 1) {
+                    $to_append_tbody .= '<td> 
+                                     <input type="checkbox" name="connectivity_details[]" value="x' . $checkboxIdentifier . '" onclick="showbutton(this.value,this)" ' . ($value_SchemePerformance["connectivity_status"] == 1 ? "checked" : "") . '>
                                      </td>';
-                 }
-                 /* End Spans Across Borders */
+                }
+                /* End Spans Across Borders */
                 $to_append_tbody .= '<td><input type="text" name="comments[]" value="' . $value_SchemePerformance['comments'] . '" class="form-control status_readonly" placeholder="comments"></td>';
                 // for gallery & coordinates
                 if ($value_SchemePerformance['status'] == 3) {
@@ -236,10 +233,10 @@ class SchemePerformanceController extends Controller
                     // $to_append_tbody .= '</td>';
                 }
                 /*Spans Across Borders */
-                if($value_SchemePerformance["connectivity_status"] == 0)
-                $to_append_tbody .= '<br/><a  onclick="border_connectivity_details(' . $value_SchemePerformance['scheme_performance_id'] . ');" href="javascript:void();" style="display:none" class="showconnectivity"><i class="fas fa-plus"></i>Connectivity</a>';
+                if ($value_SchemePerformance["connectivity_status"] == 0)
+                    $to_append_tbody .= '<br/><a  onclick="border_connectivity_details(' . $value_SchemePerformance['scheme_performance_id'] . ');" href="javascript:void();" style="display:none" class="showconnectivity"><i class="fas fa-plus"></i>Connectivity</a>';
                 else
-                $to_append_tbody .= '<br/><a  onclick="border_connectivity_details(' . $value_SchemePerformance['scheme_performance_id'] . ');" href="javascript:void();" class="showconnectivity"><i class="fas fa-plus"></i>Connectivity</a>';
+                    $to_append_tbody .= '<br/><a  onclick="border_connectivity_details(' . $value_SchemePerformance['scheme_performance_id'] . ');" href="javascript:void();" class="showconnectivity"><i class="fas fa-plus"></i>Connectivity</a>';
                 /* End Spans Across Borders */
                 $to_append_tbody .= '</td>';
                 $to_append_tbody .= '<td><button type="button" class="btn btn-danger btn-xs" onclick="delete_row(this,' . $value_SchemePerformance['scheme_performance_id'] . ')"><i class="fas fa-trash-alt"></i></button></td>';
@@ -296,11 +293,10 @@ class SchemePerformanceController extends Controller
                         </td>';
 
         /*Spans Across Borders */
-        if($scheme_data->spans_across_borders==1)
-        {
+        if ($scheme_data->spans_across_borders == 1) {
             $to_append_thead .= '<th>Connectivity Details</th>';
-            $to_append_row .='<td> <input type="checkbox" name="connectivity_details[]" value="x'.$checkboxIdentifier.'"></td>';
-            
+            $to_append_row .= '<td> <input type="checkbox" name="connectivity_details[]" value="x' . $checkboxIdentifier . '"></td>';
+
             // $to_append_row .='<td></td>';
         }
         /*Spans Across Borders */
@@ -361,23 +357,20 @@ class SchemePerformanceController extends Controller
                     $scheme_performance->year_id = $year_id;
                     $scheme_performance->subdivision_id = $subdivision_id;
                     $scheme_performance->block_id = $block_id;
-                     /*  Spans Across Borders */
-                     
-                    if($request->connectivity_details!="")
-                    {
-                    if(in_array('x'.$key_request, $request->connectivity_details)){
-                        $scheme_performance->connectivity_status = 1;
+                    /*  Spans Across Borders */
+
+                    if ($request->connectivity_details != "") {
+                        if (in_array('x' . $key_request, $request->connectivity_details)) {
+                            $scheme_performance->connectivity_status = 1;
+                        } else {
+                            $scheme_performance->connectivity_status = 0;
+                            $scheme_performance->borders_connectivity = null;
+                        }
                     } else {
                         $scheme_performance->connectivity_status = 0;
                         $scheme_performance->borders_connectivity = null;
                     }
-                    }
-                    else
-                    {
-                        $scheme_performance->connectivity_status = 0;
-                            $scheme_performance->borders_connectivity = null;
-                    }
-                        /* End Spans Across Borders */
+                    /* End Spans Across Borders */
                     $scheme_performance->panchayat_id = $panchayat_id;
                     $scheme_performance->attribute = serialize($value_request) ?? "";
                     $scheme_performance->status = $request->status[$key_request];
@@ -397,19 +390,16 @@ class SchemePerformanceController extends Controller
                 $scheme_performance->panchayat_id = $panchayat_id;
                 $scheme_performance->attribute = serialize($value_request) ?? "";
                 $scheme_performance->status = $request->status[$key_request];
-                if($request->connectivity_details!="")
-                {
-                /* Spans Across Borders */
-                    if(in_array('x'.$key_request, $request->connectivity_details)){
+                if ($request->connectivity_details != "") {
+                    /* Spans Across Borders */
+                    if (in_array('x' . $key_request, $request->connectivity_details)) {
                         $scheme_performance->connectivity_status = 1;
                     } else {
                         $scheme_performance->connectivity_status = 0;
                     }
-                }
-                else
-                {
+                } else {
                     $scheme_performance->connectivity_status = 0;
-                        $scheme_performance->borders_connectivity = null;
+                    $scheme_performance->borders_connectivity = null;
                 }
                 /* End Spans Across Borders */
                 $scheme_performance->scheme_asset_id = $request->assest_name[$key_request] ?? $scheme_data->scheme_asset_id;
@@ -452,13 +442,13 @@ class SchemePerformanceController extends Controller
             // return $scheme_block_performance;
         }
         // return $scheme_block_performance_details;
-        
+
         if ($countTempData == 0) {
             return ["message" => "error"];
         } else {
             return ["message" => "success"];
         }
-        
+
         session()->put('alert-class', 'alert-success');
         session()->put('alert-content', 'New performance data(s) has been saved successfully!');
         // return back();
@@ -533,9 +523,8 @@ class SchemePerformanceController extends Controller
             'work_start_fin_year',
             'status'
         );
-        if($scheme_datas->scheme_is==2)
-        {
-            array_push($tableHeadingsAndAtributes,'scheme_asset_name');
+        if ($scheme_datas->scheme_is == 2) {
+            array_push($tableHeadingsAndAtributes, 'scheme_asset_name');
         }
         foreach ($unserialDatas as $key_un => $value_un) {
             array_push($tableHeadingsAndAtributes, strtolower(str_replace(" ", "_", $value_un['name'])));
@@ -575,13 +564,14 @@ class SchemePerformanceController extends Controller
                             // $serializationAttributes[] = $unserializedAtributesData;
                             // $unserializedAtributesData = [];
                         }
-
+                        
                         $filename = "SchemePerformance-errorLog" . session()->get('user_id') . ".txt";   /* error file name */
                         // session()->put('filename',$filename);
                         $myfile = fopen($filename, "w"); /* open error file name by using fopen function */
                         $noOfSuccess = 0;
                         $noOfFails = 0;
                         $ErrorTxt = "";
+                        $total_record=0;
                         foreach ($readExcel as $key => $row) { /* Insert Data By using for each one by one */
                             $block_name =  ucwords($row['block_name']);
                             $panchayat_name =   ucwords($row['panchayat_name']);
@@ -591,11 +581,12 @@ class SchemePerformanceController extends Controller
                             $fetch_panchayat_id = GeoStructure::where('geo_name', $panchayat_name)->where('level_id', '4')->value('geo_id'); /* for Panchayat ID */
                             $fetch_subdivision_id = GeoStructure::where('geo_id', $fetch_block_id)->value('sd_id'); /* for subdivision_id ID */
                             $fetch_year_id = Year::where('year_value', $row['work_start_fin_year'])->value('year_id'); /* for Year ID */
-                            $assest_details=SchemeAsset::get();
-                            // foreach($assest_details as $key_asset=>$value_assest)
-                            // {
-                            //     if($value_assest['scheme_asset_name']==$row['panchayat_name'])
-                            // }
+                            if ($scheme_datas->scheme_is == 2) {
+                                $scheme_assest_id = SchemeAsset::where('scheme_asset_name', $row['scheme_asset_name'])->value('scheme_asset_id');
+                            }
+                            if($row['sno.']!=null)
+                            {
+                                $total_record=$total_record+1;
                             /* if those id avilable then insert data on the base */
                             if ($row['sno.'] != null && $fetch_block_id != null && $fetch_panchayat_id != null && $fetch_year_id != null && $fetch_subdivision_id != null && in_array($panchayat_name, $geo_names_array) && in_array($block_name, $geo_block_names_array)) {
                                 $noOfSuccess++;
@@ -619,19 +610,22 @@ class SchemePerformanceController extends Controller
                                     $scheme_performance->block_id = $fetch_block_id;
                                     $scheme_performance->panchayat_id = $fetch_panchayat_id;
                                     $scheme_performance->subdivision_id = $fetch_subdivision_id;
-                                    if($scheme_datas->scheme_is==2)
-                                    {
-                                        $scheme_performance->subdivision_id = $fetch_subdivision_id;
+                                    if ($scheme_datas->scheme_is == 2) {
+                                        $scheme_performance->scheme_asset_id  = $scheme_assest_id;
                                     }
-
                                     $scheme_performance->attribute = serialize($unserializedAtributesData[$key]);
 
                                     if (strtolower($status) == strtolower("Completed")) {
                                         $scheme_performance->status = 1;
                                     } elseif (strtolower($status) == strtolower("inprogress")) {
                                         $scheme_performance->status = 0;
-                                    } elseif (strtolower($status) != strtolower("inprogress") && strtolower($status) != strtolower("Completed")) {
-                                        $scheme_performance->status = 0;
+                                    }
+                                    elseif (strtolower($status) == strtolower("Sanctioned")) {
+                                        $scheme_performance->status = 2;
+                                    }elseif (strtolower($status) == strtolower("Cancel")) {
+                                        $scheme_performance->status = 3;
+                                    } elseif (strtolower($status) != strtolower("inprogress") && strtolower($status) != strtolower("Completed")&& strtolower($status) != strtolower("Sanctioned")&& strtolower($status) != strtolower("Cancel")) {
+                                        $scheme_performance->status = 2;
                                     }
                                     $scheme_performance->created_by = Session::get('user_id');
                                     $scheme_performance->save();
@@ -660,6 +654,8 @@ class SchemePerformanceController extends Controller
                                 }
                             }
                         }
+                        }
+                        
                         $SchemePerformance_forblock = SchemePerformance::get();
                         foreach ($SchemePerformance_forblock as $key_get => $value_get) {
                             $SchemePerformance = SchemePerformance::where('scheme_id', $value_get['scheme_id'])->where('year_id', $value_get['year_id'])->where('block_id', $value_get['block_id'])->get();
@@ -695,7 +691,7 @@ class SchemePerformanceController extends Controller
                         $txt = "District Resource and Scheme Management\n";
                         $txt .= "----------------------------------------------------------------------------------------------------------------------------------\n";
                         $txt .= "DATE: " . date('d/m/Y h:i A') . "\n";
-                        $txt .= "TOTAL RECORD COUNT: " . count($readExcel) . "\n";
+                        $txt .= "TOTAL RECORD COUNT: " . $total_record. "\n";
                         $txt .= "TOTAL SUCCESS COUNT: " . $noOfSuccess . "\n";
                         $txt .= "TOTAL FAIL COUNT: " . $noOfFails . "\n";
                         // $txt .= "USER NAME: ". $getUserName->first_name." ". $getUserName->middle_name." ". $getUserName->last_name." \n";
@@ -715,16 +711,10 @@ class SchemePerformanceController extends Controller
                             session()->put('alert-class', 'alert-success');
                             session()->put('alert-content', 'Scheme details has been saved');
                             return back();
-                        } else { //Else download the error notepad file
-                            // header("Cache-Control: public");
-                            // header("Content-Description: File Transfer");
-                            // header("Content-Length: " . filesize("$filename") . ";");
-                            // header("Content-Disposition: attachment; filename=$filename");
-                            // header("Content-Type: application/octet-stream; ");
-                            // header("Content-Transfer-Encoding: binary");
+                        } else { 
                             $this->saveFile($filename, file_get_contents($filename));
                             session()->put('currentdate', date('d/m/Y h:i:sa'));
-                            session()->put('totalCount', count($readExcel));
+                            session()->put('totalCount', $total_record);
                             session()->put('totalsuccess', $noOfSuccess);
                             session()->put('totalfail', $noOfFails);
                             session()->put('scheme_name', $scheme_datas['scheme_name']);
@@ -797,9 +787,8 @@ class SchemePerformanceController extends Controller
             'Panchayat Name',
             'Work Start Fin Year',
         );
-        if($scheme_datas->scheme_is==2)
-        {
-            array_push($data,'Scheme Asset Name');
+        if ($scheme_datas->scheme_is == 2) {
+            array_push($data, 'Scheme Asset Name');
         }
         foreach ($unserialDatas as $key_un => $value_un) {
             array_push($data, $value_un['name']);
@@ -812,7 +801,7 @@ class SchemePerformanceController extends Controller
             // Chain the setters
             $excel->setCreator('Seraikela')->setCompany('Seraikela');
             $excel->sheet('Scheme-Format', function ($sheet) use ($data) {
-                 $sheet->fromArray($data, null, 'A1', true, false);
+                $sheet->fromArray($data, null, 'A1', true, false);
             });
             $excel->sheet('Second sheet', function ($sheet)  use ($asset_data) {
                 $sheet->fromArray($asset_data);
@@ -942,29 +931,26 @@ class SchemePerformanceController extends Controller
         if ($SchemePerformance_connectivity->borders_connectivity != "") {
             $connectivity_details = unserialize($SchemePerformance_connectivity->borders_connectivity);
         }
-        $panchayat_datas=array();
+        $panchayat_datas = array();
         if ($connectivity_details) {
             foreach ($connectivity_details as $key => $value) {
-                $panchayat_datas[] = GeoStructure::select('geo_id', 'geo_name')->orderBy('geo_name', 'asc')->where('bl_id',$value['conn_block_id'])->get();
+                $panchayat_datas[] = GeoStructure::select('geo_id', 'geo_name')->orderBy('geo_name', 'asc')->where('bl_id', $value['conn_block_id'])->get();
             }
         }
-        return ["block_datas" => $block_datas,"scheme_id" => $scheme_id,"connectivity" => $connectivity_details,"panchayat_datas" => $panchayat_datas];
+        return ["block_datas" => $block_datas, "scheme_id" => $scheme_id, "connectivity" => $connectivity_details, "panchayat_datas" => $panchayat_datas];
     }
 
     public function savebl_pl_connectivity(Request $request)
     {
         // return $request;
         $countval = 0;
-        if(count(array_unique($request->panchayay_connectivity)) != count($request->panchayay_connectivity))
-        {
+        if (count(array_unique($request->panchayay_connectivity)) != count($request->panchayay_connectivity)) {
             $countval++;
-        }
-        else {
+        } else {
             $countval;
         }
         $connectivity = array();
-        if($countval == 0)
-        {
+        if ($countval == 0) {
             foreach ($request->block_connectivity as $key_connectivity => $value_connectivity) {
                 $connectivity[] = array('conn_block_id' => $request->block_connectivity[$key_connectivity], 'conn_panchayat_id' => $request->panchayay_connectivity[$key_connectivity]);
             }
@@ -976,8 +962,7 @@ class SchemePerformanceController extends Controller
                 }
             }
             return ["message" => "success"];
-        }
-        else {
+        } else {
             return ["message" => "error"];
         }
     }

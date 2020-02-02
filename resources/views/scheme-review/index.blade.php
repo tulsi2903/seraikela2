@@ -1576,13 +1576,35 @@
                 });
                 for(var c=0;c<this.coordinates_details.length;c++)
                 {
+                    var no=c+1;
                 icon.url = this.scheme_map_marker || null;
                 var marker = new google.maps.Marker({
                     position: this.coordinates_details[c],
                     map: map,
+                    // position: pointA,
+                    title: "point"+no,
+                    // label: ""+no,
+                    label: {
+        color: '#0a77f1', // <= HERE
+        fontSize: '16px',
+        fontWeight: '900',
+        text:""+no
+      },
                     icon: icon,
                     animation: google.maps.Animation.DROP
                 });
+                //  infowindow.open(map, marker);
+                 var contentString = '<span style="color: black;"';
+           
+            contentString += '<br/><b>Asset</b>: ';
+            contentString += '<br/><b>Block</b>: ' ;
+            contentString += '<br/><b>Panchayat</b>: ';
+            contentString += '<br/><b>Status</b>: ' ;
+            contentString += '</span>';
+
+            var infowindow = new google.maps.InfoWindow({
+                content: contentString
+            });
                 }
                 flightPath.setMap(map);
 
@@ -1626,17 +1648,11 @@
             //             flightPath.setMap(map);
             // }
             var contentString = '<span style="color: black;"';
-            if (this.attributes) {
-                if (this.attributes.length > 0) {
-                    this.attributes.forEach(function (element) {
-                        contentString += '<br/><b>' + element[0] + '</b>: ' + element[1];
-                    })
-                }
-            }
-            contentString += '<br/><b>Asset</b>: ' + this.asset_name;
-            contentString += '<br/><b>Block</b>: ' + this.block_name;
-            contentString += '<br/><b>Panchayat</b>: ' + this.panchayat_name;
-            contentString += '<br/><b>Status</b>: ' + this.status;
+           
+            contentString += '<br/><b>Asset</b>: ';
+            contentString += '<br/><b>Block</b>: ' ;
+            contentString += '<br/><b>Panchayat</b>: ';
+            contentString += '<br/><b>Status</b>: ' ;
             contentString += '</span>';
 
             var infowindow = new google.maps.InfoWindow({
