@@ -243,13 +243,10 @@
                                 <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     {{$phrase->action}}
                                 </button>
-                                @if(@$desig_permissions["mod1"]["edit"])
                                 <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                                   
                                     <button class="dropdown-item" type="button" onclick="editUser('{{$val->id}}')">{{$phrase->edit_profile}}</button>
                                     <button class="dropdown-item" type="button" onclick="myFun({{$val->id}})"> {{$phrase->changePassword}}</button>
                                 </div>
-                                @endif
                                 </div>
                             </td>
                         </tr>

@@ -88,7 +88,7 @@
         if(asset_name_val==""){
             asset_name_error=true;
             $("#asset_name").addClass('is-invalid');
-            $("#asset_name_error_msg").html("Asset Name should not be blank");
+            $("#asset_name_error_msg").html("Resource Name should not be blank");
         }
         else if(!regAlphaNumericSpace.test(asset_name_val)){
             asset_name_error=true;

@@ -41,7 +41,12 @@ class UoMType_Controller extends Controller
                 else{
                     if($uom_type->save()){
                         session()->put('alert-class','alert-success');
-                        session()->put('alert-content','UOM details have been successfully submitted !');
+                        if($purpose=="edit"){
+                            session()->put('alert-content','UOM details edited successfully!');
+                        }
+                        else{
+                            session()->put('alert-content','UOM details have been successfully submitted !');
+                        }
                     }
                     else{
                         session()->put('alert-class','alert-danger');
@@ -56,7 +61,12 @@ class UoMType_Controller extends Controller
         }
         else if($uom_type->save()){
             session()->put('alert-class','alert-success');
-            session()->put('alert-content','UOM details have been successfully submitted !');
+            if($purpose=="edit"){
+                session()->put('alert-content','UOM details edited successfully!');
+            }
+            else{
+                session()->put('alert-content','UOM details have been successfully submitted !');
+            }
         }
         else{
             session()->put('alert-class','alert-danger');

@@ -65,7 +65,7 @@
                         <input type="text" name="hidden_input_purpose" value="{{$hidden_input_purpose}}" hidden>
                         <input type="text" name="hidden_input_id" value="{{$hidden_input_id}}" hidden>
                         <button type="submit" class="btn btn-primary" onclick="return submitForm()">{{$phrase->save}}&nbsp;&nbsp;<i class="fas fa-check"></i></button>
-                        <button type="reset" class="btn btn-secondary">{{$phrase->reset}}&nbsp;&nbsp;<i class="fas fa-undo"></i></button>
+                        <button type="reset" class="btn btn-secondary" onclick="resetForm();">{{$phrase->reset}}&nbsp;&nbsp;<i class="fas fa-undo"></i></button>
                     </div>
                 </div>
         </form>
@@ -129,18 +129,20 @@
 
     // department name validation
     function department_validate() {
-        var department_val = $("#asset_sub_cat_description").val();
+        // var department_val = $("#asset_sub_cat_description").val();
 
 
-        if (department_val == "") {
-            department_error = true;
-            $("#asset_sub_cat_description").addClass('is-invalid');
-            $("#movable_error_msg").html("Resource Subcategory Description should not be blank");
-        }
-        else {
-            department_error = false;
-            $("#asset_sub_cat_description").removeClass('is-invalid');
-        }
+        // if (department_val == "") {
+        //     department_error = true;
+        //     $("#asset_sub_cat_description").addClass('is-invalid');
+        //     $("#movable_error_msg").html("Resource Subcategory Description should not be blank");
+        // }
+        // else {
+        //     department_error = false;
+        //     $("#asset_sub_cat_description").removeClass('is-invalid');
+        // }
+        department_error = false;
+        $("#asset_sub_cat_description").removeClass('is-invalid');
     }
 
     // final submission
@@ -151,6 +153,10 @@
 
         if (asset_name_error || movable_error || department_error) { return false; } // error occured
         else { return true; } // proceed to submit form data
+    }
+
+    function resetForm(){
+        $("input, select, textarea").removeClass("is-invalid");
     }
 </script>
 @endsection

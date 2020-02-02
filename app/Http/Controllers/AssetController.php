@@ -29,7 +29,7 @@ class AssetController extends Controller
             ->orderBy('asset.asset_id', 'desc')
             ->get();
 
-        $departments = Department::orderBy('dept_name')->get();
+        $departments = Department::where('is_active', 1)->orderBy('dept_name')->get();
 
         $categories = asset_cat::orderBy('asset_cat_name')->get();
 
@@ -44,7 +44,7 @@ class AssetController extends Controller
         $hidden_input_purpose = "add";
         $hidden_input_id = "NA";
 
-        $departments = Department::orderBy('dept_name')->get();
+        $departments = Department::where('is_active', 1)->orderBy('dept_name')->get();
 
         $categorys = asset_cat::orderBy('asset_cat_name')->get();
 
@@ -352,7 +352,12 @@ class AssetController extends Controller
             session()->put('alert-content', 'This Resource  ' . $request->asset_cat_name . ' already exist !');
         } else if ($asset_cat->save()) {
             session()->put('alert-class', 'alert-success');
-            session()->put('alert-content', 'Resource Category Details have been Saved Successfully !');
+            if ($request->hidden_input_purpose == "edit") {
+                session()->put('alert-content', 'Resource Category edited Successfully !');
+            }
+            else{
+                session()->put('alert-content', 'Resource Category added successfully !');
+            }
         } else {
             session()->put('alert-class', 'alert-danger');
             session()->put('alert-content', 'Something went wrong while adding new Resource Category !');
@@ -417,7 +422,12 @@ class AssetController extends Controller
             session()->put('alert-content', 'This Resource ' . $request->asset_subcat_name . ' already exist !');
         } else if ($asset_subcat->save()) {
             session()->put('alert-class', 'alert-success');
-            session()->put('alert-content', 'Resource SubCategory Details have been saved Successfully !');
+            if ($request->hidden_input_purpose == "edit") {
+                session()->put('alert-content', 'Resource SubCategory edited successfully !');
+            }
+            else{
+                session()->put('alert-content', 'Resource SubCategory added successfully !');
+            }
         } else {
             session()->put('alert-class', 'alert-danger');
             session()->put('alert-content', 'Something went wrong while adding new Resource SubCategory !');

@@ -43,7 +43,12 @@ class SchemeTypeController extends Controller
 
         if($scheme_type->save()){
             session()->put('alert-class','alert-success');
-            session()->put('alert-content','Scheme Type  Add Successfully !');
+            if($request->hidden_input_purpose=="edit"){
+                session()->put('alert-content','Scheme Type edited successfully !');
+            }
+            else{
+                session()->put('alert-content','Scheme Type added successfully !');
+            }
         }
         else{
             session()->put('alert-class','alert-danger');

@@ -91,7 +91,7 @@
          
                 <div class="card-header">
                     <div class="card-head-row card-tools-still-right" style="background:#fff;">
-                        <h4 class="card-title">{{$phrase->sub_catagory}}</h4>
+                        <h4 class="card-title">{{$phrase->resourcesub_catagory}}</h4>
                         <div class="card-tools">
                             <!-- <a href="#" data-toggle="tooltip" title="Send Mail"><button type="button" class="btn btn-icon btn-round btn-success" data-target="#create-email" data-toggle="modal" ><i class="fa fa-envelope" aria-hidden="true"></i></button></a> -->
                             <button type="button" class="btn btn-icon btn-round btn-success"  onclick="openmodel();" ><i class="fa fa-envelope" aria-hidden="true"></i></button>
