@@ -40,7 +40,7 @@
 					<div class="collapse" id="scheme">
 						<ul class="nav nav-collapse">
 							@if(array_key_exists("mod15", $desig_permissions))
-								<li class="nav-item"><a href="{{url('scheme-structure')}}"><i class="fas fa-receipt"></i><p>{{$phrase->define_scheme}}</p></a></li>
+							<li class="nav-item"><a href="{{url('scheme-structure')}}"><i class="fas fa-receipt"></i><p>{{$phrase->define_scheme}}</p></a></li>
 							@endif
 							@if(array_key_exists("mod16", $desig_permissions))
 							<li class="nav-item"><a href="{{url('scheme-asset')}}"><i class="fas fa-users-cog"></i><p>{{$phrase->scheme_assets}}</p></a></li>
@@ -49,7 +49,7 @@
 							<!-- <li class="nav-item"><a href="{{url('scheme-geo-target')}}"><i class="fas fa-receipt"></i><p>Scheme Geo Target</p></a></li> -->
 							<li class="nav-item"><a href="{{url('scheme-performance')}}"><i class="fas fa-receipt"></i><p>{{$phrase->scheme_performance}}</p></a></li>
 							@if(session()->get('user_designation')=="1")
-							<li class="nav-item"><a href="{{url('matching-schemes')}}"><i class="fas fa-receipt"></i><p>Matching Schemes</p></a></li>
+							<!-- <li class="nav-item"><a href="{{url('matching-schemes')}}"><i class="fas fa-receipt"></i><p>Matching Schemes</p></a></li> -->
 							@endif
 							@endif
 						</ul>
@@ -70,7 +70,7 @@
 							@if(array_key_exists("mod20", $desig_permissions))
 							<li class="nav-item"><a href="{{url('scheme-review')}}"><i class="fas fa-receipt"></i><p>{{$phrase->scheme_review}}</p></a></li>
 							@endif
-							<li class="nav-item"><a href="{{url('scheme-review/duplicate-review')}}"><i class="fas fa-receipt"></i><p>Duplicate Review</p></a></li>
+							<!-- <li class="nav-item"><a href="{{url('scheme-review/duplicate-review')}}"><i class="fas fa-receipt"></i><p>Duplicate Review</p></a></li> -->
 					</div>
 				</li>
 				<li class="nav-item">
@@ -129,8 +129,8 @@
 								<li class="nav-item"><a href="{{url('asset_subcat')}}"><i class="fas fa-receipt"></i><p>  {{$phrase->resourcesub_catagory}}</p></a></li>
 							@endif
 							@if(session()->get('user_designation')=="1")
-								<li class="nav-item"><a href="{{url('module')}}"><i class="fas fa-indent"></i><p>{{$phrase->module}}</p></a></li>
-								<li class="nav-item"><a href="{{url('designation-permission')}}"><i class="fas fa-users-cog"></i><p>{{$phrase->designation_permission}}</p></a></li>
+								<!-- <li class="nav-item"><a href="{{url('module')}}"><i class="fas fa-indent"></i><p>{{$phrase->module}}</p></a></li>
+								<li class="nav-item"><a href="{{url('designation-permission')}}"><i class="fas fa-users-cog"></i><p>{{$phrase->designation_permission}}</p></a></li> -->
 							@endif
 								<li class="nav-item"><a href="{{url('uom_type')}}"><i class="fas fa-receipt"></i><p>{{$phrase->uom_type}}</p></a></li>
 								<li class="nav-item"><a href="{{url('uom')}}"><i class="fas fa-receipt"></i><p>{{$phrase->uom}}</p></a></li>
