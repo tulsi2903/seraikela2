@@ -27,8 +27,8 @@
            
             <div class="col-md-12">
                     <div class="card-header">
-                        <div class="row">
-                            <div class="col-6">
+                        <div class="row" >
+                            <div class="col-6" style="margin-left:50%;" class="pull-right">
                                 <h3>Import guide For Scheme</h3>
                                 <p>
                                    -:  Select Scheme from scheme dropdown.
