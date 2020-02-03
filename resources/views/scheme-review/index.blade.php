@@ -1293,9 +1293,9 @@
         }
         else {
             // resetting all views because we are now getting panchayat datas
-            resetTabularView();
-            resetMapView();
-            resetCommon(); // to reset common things among all views
+            // resetTabularView();
+            // resetMapView();
+            // resetCommon(); // to reset common things among all views
         }
     }
 
@@ -1360,15 +1360,12 @@
 
 
     function getAllDatasIndividually(id, name, scheme_id) {
-        // id = panchayat_id, to get indivisual entry datas, name =  selected panchayat name
+        // id = panchayat_id, to get individual entry datas, name =  selected panchayat name
 
         // getting datas before send to controller
         scheme_id_tmp = scheme_id;
         year_id_tmp = $("#year_id").val();
         scheme_asset_id_tmp = $("#scheme_asset_id").val();
-        if ($("#scheme_id :selected").data('scheme-is') == 1) { // sending null data for scheme asset id for single asset scheme
-            scheme_asset_id_tmp = null;
-        }
         geo_id_tmp = id; // single panchayat after panchayat clicked
 
         $.ajaxSetup({
@@ -1680,6 +1677,7 @@
     function showGallery(data) {
         if (data) { // has data
             var contentString = '<div class="gallery-view-thumb gallery-view-thumb-info">';
+            contentString += '<b>Scheme</b>: ' + data.scheme_name + '<br/>';
             if (data.attributes) {
                 if (data.attributes.length > 0) {
                     data.attributes.forEach(function (element) {
