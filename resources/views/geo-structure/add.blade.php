@@ -111,7 +111,7 @@
 
                 <div class="col-md-4">
                     <div class="form-group">
-                        <label for="officer_id">{{$phrase->officer}}<span style="color:red;margin-left:5px;">*</span></label>
+                        <label for="officer_id">{{$phrase->officer}}</label>
                         <select name="officer_id" id="officer_id" class="form-control">
                             <option value="">--Select--</option>
                             @foreach($user_datas as $user_data)

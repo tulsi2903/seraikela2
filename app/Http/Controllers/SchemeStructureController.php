@@ -37,7 +37,6 @@ class SchemeStructureController extends Controller
     {
         $hidden_input_purpose = "add";
         $hidden_input_id = "NA";
-
         $scheme_type_datas = SchemeType::orderBy('sch_type_name', 'asc')->get();
         $department_datas = Department::orderBy('dept_name')->where('is_active',1)->get();
         $scheme_group_datas = Group::get();

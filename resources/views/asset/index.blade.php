@@ -157,7 +157,7 @@
                 <div class="row">
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label for="category">{{$phrase->catagory}}</label>
+                            <label for="category">{{$phrase->resource_catagory}}</label>
                             <select name="category" id="category" class="form-control">
                                 <option value="">--Select--</option>
                                 @foreach( $categories as $category )
@@ -171,7 +171,7 @@
 
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label for="subcategory">{{$phrase->sub_catagory}} </label>
+                            <label for="subcategory">{{$phrase->resourcesub_catagory}} </label>
                             <select name="subcategory" id="subcategory" class="form-control">
                                 <option value="">--Select--</option>
                                 @foreach( $sub_categories as $sub_category )
@@ -369,7 +369,7 @@
         if (asset_name_val == "") {
             asset_name_error = true;
             $("#asset_name").addClass('is-invalid');
-            $("#asset_name_error_msg").html("Asset Name should not be blank");
+            $("#asset_name_error_msg").html("Resource should not be blank");
         } else if (!regAlphaNumericSpace.test(asset_name_val)) {
             asset_name_error = true;
             $("#asset_name").addClass('is-invalid');

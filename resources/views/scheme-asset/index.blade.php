@@ -124,7 +124,7 @@
                                     <th>{{$phrase->geo_related}}</th>
                                     <th>{{$phrase->multiple_geo_tags}}</th>
                                     <th>{{$phrase->uom}}</th>
-                                    <th>{{$phrase->action}}</th>
+                                    <th class="action-buttons">{{$phrase->action}}</th>
                                 </tr>
                             </thead>
                             <?php $count=1; ?>
@@ -155,7 +155,7 @@
                                                 @endif
                                             </td> 
                                             <td>{{$data->uom_name}}</td>   
-                                            <td>
+                                            <td class="action-buttons">
                                                 <a href="{{url('scheme-asset/view')}}/{{$data->scheme_asset_id}}" class="btn btn-secondary btn-sm"><i class="fas fa-eye"></i></a>
                                                 &nbsp;&nbsp;<a href="{{url('scheme-asset/add')}}?purpose=edit&id={{$data->scheme_asset_id}}" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></a>
                                                 &nbsp;&nbsp;<a href="{{url('scheme-asset/delete')}}/{{$data->scheme_asset_id}}" class="btn btn-danger btn-sm delete-button"><i class="fas fa-trash-alt"></i></a>

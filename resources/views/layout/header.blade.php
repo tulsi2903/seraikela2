@@ -127,7 +127,7 @@
                             <div class="user-box">
                                 <div class="avatar-sm">
                                     @if(Auth::user()->profile_picture)
-                                    <img src="{{Auth::user()->profile_picture}}" alt="..." class="avatar-img rounded-circle" style="margin-top: 12px;">
+                                    <img src="{{url('')}}/{{Auth::user()->profile_picture}}" alt="..." class="avatar-img rounded-circle" style="margin-top: 12px;">
                                     @else
                                     <img src="{{url('public/images/user.png')}}" alt="..." class="avatar-img rounded-circle" style="margin-top: 12px;">
                                     @endif
