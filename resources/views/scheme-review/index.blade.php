@@ -329,7 +329,7 @@
                     </div>
                     <div class="col-6">
                         <div class="form-group">
-                            <label for="year_id">Year<span style="color:red;margin-left:5px;">*</span></label>
+                            <label for="year_id">Year</label>
                             <select name="year_id" id="year_id" class="form-control">
                                 <option value="">All Years</option>
                                 @foreach($year_datas as $year_data)

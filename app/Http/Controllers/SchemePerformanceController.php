@@ -565,7 +565,7 @@ class SchemePerformanceController extends Controller
                             // $unserializedAtributesData = [];
                         }
                         
-                        $filename = "SchemePerformance-errorLog" . session()->get('user_id') . ".txt";   /* error file name */
+                        $filename = "public/uploaded_documents/SchemePerformance-errorLog" . session()->get('user_id') . ".txt";   /* error file name */
                         // session()->put('filename',$filename);
                         $myfile = fopen($filename, "w"); /* open error file name by using fopen function */
                         $noOfSuccess = 0;
@@ -702,7 +702,7 @@ class SchemePerformanceController extends Controller
                         } else {
                             $txt .= $ErrorTxt;
                         }
-                        0($myfile, $txt);
+                        fwrite($myfile, $txt);
                         // exit;
 
                         fclose($myfile); //close file
@@ -765,7 +765,7 @@ class SchemePerformanceController extends Controller
     public function download_error_log()
     {
         # code...
-        $filename = "SchemePerformance-errorLog" . session()->get('user_id') . ".txt";   /* error file name */
+        $filename = "public/uploaded_documents/SchemePerformance-errorLog" . session()->get('user_id') . ".txt";   /* error file name */
 
         header("Cache-Control: public");
         header("Content-Description: File Transfer");

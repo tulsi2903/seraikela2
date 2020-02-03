@@ -1,8 +1,9 @@
 District Resource and Scheme Management
 ----------------------------------------------------------------------------------------------------------------------------------
-DATE: 03/02/2020 12:59 PM
+DATE: 03/02/2020 02:20 PM
 TOTAL RECORD COUNT: 1
-TOTAL SUCCESS COUNT: 1
-TOTAL FAIL COUNT: 0
+TOTAL SUCCESS COUNT: 0
+TOTAL FAIL COUNT: 1
 ----------------------------------------------------------------------------------------------------------------------------------
-No Error Found
+ ON row sno. 1 Panchayat Not Found 
+ On SNo. 1 Wrong panchayat Name 
