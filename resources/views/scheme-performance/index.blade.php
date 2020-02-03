@@ -616,9 +616,9 @@
         append_no++;
         to_append = `<tr>
             <td>  <span class="index_no">`+ append_no + `</span></td>
-                <td> <input type="text" name="coordinates_lat_value[]" maxlength="8"   placeholder="Latitude" class="form-control" required >        
+                <td> <input type="text" name="coordinates_lat_value[]" maxlength="13"   placeholder="Latitude" class="form-control" required >        
                     </td>
-                    <td><input type="text" name="coordinates_lang_value[]" maxlength="8" placeholder="Longitude" class="form-control" required >
+                    <td><input type="text" name="coordinates_lang_value[]" maxlength="13" placeholder="Longitude" class="form-control" required >
                 </td>
                     <td><button type="button" class="btn btn-danger btn-xs" onclick="delete_lat_lon(this)"><i class="fas fa-trash-alt"></i></button></td>
                     </tr>`;

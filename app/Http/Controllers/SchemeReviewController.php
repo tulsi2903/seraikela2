@@ -321,7 +321,11 @@ class SchemeReviewController extends Controller
         } else {
             $scheme_datas = SchemeStructure::where('scheme_id', $request->scheme_id)->get();
         }
-        $year_id = $request->year_id;
+        if (!$request->year_id) {
+            $year_id = Year::where('status', 1)->get()->pluck("year_id");
+        } else {
+            $year_id = [(int)($request->year_id)];
+        }
         $scheme_asset_id = $request->scheme_asset_id;
 
 
@@ -366,8 +370,7 @@ class SchemeReviewController extends Controller
                         ->select('scheme_performance.*', 'scheme_assets.scheme_asset_name', 'geo_structure.geo_name as panchayat_name')
                         ->where('panchayat_id', $panchayat_data->geo_id)
                         ->where('scheme_id', $scheme_data->scheme_id)
-                        ->where('year_id', $year_id)
-                        // ->whereIn('scheme_performance_id', [107,122])
+                        ->whereIn('year_id', $year_id)
                         ->get();
                     if ($scheme_asset_id) { // if scheme asset selected
                         $performance_datas = $performance_datas->where('scheme_asset_id', $scheme_asset_id);

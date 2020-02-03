@@ -22,7 +22,7 @@ class AssetReviewController extends Controller
     public function index(){
        $block_datas = GeoStructure::where('level_id','3')->get();
        $department_datas = Department::orderBy('dept_name')->get();
-       $year_datas = Year::select('year_id','year_value')->get();
+       $year_datas = Year::select('year_id','year_value')->where('status', 1)->get();
        // return view('asset-review.index')->with(compact('block_datas','department_datas','year_datas'));
        return view('asset-review.index-new')->with(compact('block_datas','department_datas','year_datas'));
     }

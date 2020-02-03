@@ -331,7 +331,7 @@
                         <div class="form-group">
                             <label for="year_id">Year<span style="color:red;margin-left:5px;">*</span></label>
                             <select name="year_id" id="year_id" class="form-control">
-                                <option value="">-Select-</option>
+                                <option value="">All Years</option>
                                 @foreach($year_datas as $year_data)
                                 <option value="{{$year_data->year_id}}" <?php if($data['year_id']==$year_data->year_id){ echo "selected"; } ?>>{{$year_data->year_value}}</option>
                                 @endforeach
@@ -1253,25 +1253,29 @@
         scheme_id_error = false;
 
         // year
-        if ($("#year_id").val() == "") {
-            $("#year_id").addClass('is-invalid');
-            year_id_error = true;
-        }
-        else {
-            $("#year_id").removeClass('is-invalid');
-            year_id_error = false;
-        }
+        // if ($("#year_id").val() == "") {
+        //     $("#year_id").addClass('is-invalid');
+        //     year_id_error = true;
+        // }
+        // else {
+        //     $("#year_id").removeClass('is-invalid');
+        //     year_id_error = false;
+        // }
+        $("#year_id").removeClass('is-invalid');
+        year_id_error = false;
 
         // scheme asset selected
-        if ($("#scheme_asset_id").val() == "" && $("#scheme_id").val() == "") {
-            $("#scheme_asset_id").addClass('is-invalid');
-            $("#scheme_asset_id + .invalid-feedback").html("Please select an asset");
-            scheme_asset_id_error = true;
-        }
-        else {
-            $("#scheme_asset_id").removeClass('is-invalid');
-            scheme_asset_id_error = false;
-        }
+        // if ($("#scheme_asset_id").val() == "" && $("#scheme_id").val() == "") {
+        //     $("#scheme_asset_id").addClass('is-invalid');
+        //     $("#scheme_asset_id + .invalid-feedback").html("Please select an asset");
+        //     scheme_asset_id_error = true;
+        // }
+        // else {
+        //     $("#scheme_asset_id").removeClass('is-invalid');
+        //     scheme_asset_id_error = false;
+        // }
+        $("#scheme_asset_id").removeClass('is-invalid');
+        scheme_asset_id_error = false;
 
         // geo/block/panchayat selected
         if ($("#geo_id").val() == "") {

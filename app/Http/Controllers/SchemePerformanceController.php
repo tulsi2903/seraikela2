@@ -584,6 +584,9 @@ class SchemePerformanceController extends Controller
                             if ($scheme_datas->scheme_is == 2) {
                                 $scheme_assest_id = SchemeAsset::where('scheme_asset_name', $row['scheme_asset_name'])->value('scheme_asset_id');
                             }
+                            else{
+                                $scheme_assest_id = $scheme_datas->scheme_asset_id;
+                            }
                             if($row['sno.']!=null)
                             {
                                 $total_record=$total_record+1;
@@ -610,9 +613,7 @@ class SchemePerformanceController extends Controller
                                     $scheme_performance->block_id = $fetch_block_id;
                                     $scheme_performance->panchayat_id = $fetch_panchayat_id;
                                     $scheme_performance->subdivision_id = $fetch_subdivision_id;
-                                    if ($scheme_datas->scheme_is == 2) {
-                                        $scheme_performance->scheme_asset_id  = $scheme_assest_id;
-                                    }
+                                    $scheme_performance->scheme_asset_id  = $scheme_assest_id;
                                     $scheme_performance->attribute = serialize($unserializedAtributesData[$key]);
 
                                     if (strtolower($status) == strtolower("Completed")) {
@@ -701,7 +702,7 @@ class SchemePerformanceController extends Controller
                         } else {
                             $txt .= $ErrorTxt;
                         }
-                        fwrite($myfile, $txt);
+                        0($myfile, $txt);
                         // exit;
 
                         fclose($myfile); //close file
