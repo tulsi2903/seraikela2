@@ -229,10 +229,10 @@
                     // console.log(data.Matching[i].type);
 
                     if(data.Matching[i].type=="not_duplicate"){
-                        append += `<span class="">This particular record is not duplicate</span><i class="fa fa-undo" aria-hidden="true" style="color:blue;></i>`;
+                        append += `<span class="">This particular record is not duplicate</span><a href="javascript:void();"><i class="fa fa-undo" aria-hidden="true" style="color:blue;></i></a>`;
                     }
                     else if(data.Matching[i].type=="duplicate"){
-                        append += `<span class="" style="color:red;">This particular record is duplicate</span><i class="fa fa-undo" aria-hidden="true" style="color:blue;></i>`;
+                        append += `<span class="" style="color:red;">This particular record is duplicate</span><a href="javascript:void();");"><i class="fa fa-undo" aria-hidden="true" style="color:blue;></i></a>`;
                     }
                     else{
                         append += `<button type="button" class="btn btn-primary inprogress"  onclick="inprogress_request(` + data.Matching[i].scheme_performance_id + `,this)">Not Duplicate</button><span class="notduplicate_record">This particular record is not duplicate</span>
@@ -283,6 +283,11 @@
             $(tr).find(".revert").hide();
         }
     }
+
+    // function undo_datas(matching_id,performance_id)
+    // {
+    //     alert("hi");
+    // }
 
   
    

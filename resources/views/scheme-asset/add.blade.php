@@ -60,7 +60,7 @@
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
-                        <label for="radius">{{$phrase->radius}}</label>
+                        <label for="radius">{{$phrase->radius}}<font style="color:red;">*</font></label>
                         <input name="radius" id="radius" class="form-control" autocomplete="off" value="{{$data->radius}}">
                         <div class="invalid-feedback" id="radius_error_msg"></div>
                     </div>
@@ -155,6 +155,7 @@
         var attribute_uom_error = true;
         var marker_icon_error=true;
         var uom_type_error=true;
+        var radius_error = true;
 
         $(document).ready(function() {
             $("#scheme_asset_name").change(function() {
@@ -166,8 +167,30 @@
             $("#uom_type").change(function(){
                 uom_type_validate();
         });
+        $("#radius").change(function(){
+            radius_validate();
+        });
 
         });
+
+        function radius_validate(){
+            var radius_val = $("#radius").val();
+            var regNumericSpace = new RegExp('^[0-9.]*$');
+            if (radius_val == "") {
+                radius_error = true;
+                $("#radius").addClass('is-invalid');
+                $("#radius_error_msg").html("Radius should not be blank");
+            }
+            else if (!regNumericSpace.test(radius_val)) { 
+                radius_error = true;
+                $("#radius").addClass('is-invalid');
+                $("#radius_error_msg").html("Please enter valid radius");
+            }
+            else{
+                radius_error = false;
+                $("#radius").removeClass('is-invalid');
+            }
+        }
 
         function scheme_asset_name_validate() {
             var scheme_asset_name_val = $("#scheme_asset_name").val();
@@ -270,8 +293,9 @@
             attribute_uom_validate();
             mapmarker_validate();
             uom_type_validate();
+            radius_validate();
 
-            if (scheme_asset_name_error || attribute_name_error || attribute_uom_error || marker_icon_error || uom_type_error) {
+            if (scheme_asset_name_error || attribute_name_error || attribute_uom_error || marker_icon_error || uom_type_error || radius_error) {
                 return false;
             } // error occured
             else {

@@ -325,4 +325,5 @@ public function search_datas(Request $request)
 }
 
 
+
 }
