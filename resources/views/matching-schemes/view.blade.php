@@ -3,6 +3,9 @@
 .table{
     display: none;
 }
+#toggle_div{
+    display: none;
+}
 </style>
 @endsection @section('page-content')
 <div class="card">
@@ -119,7 +122,7 @@
             </div>
             <hr/>
 
-            <div id="toggle_div" style="display:none;">
+<div id="toggle_div">
     <form action="{{url('scheme_performance/status_update')}}" name="myForm" id="duplicate-form" method="POST">
         @csrf
         <div class="modal-body">
