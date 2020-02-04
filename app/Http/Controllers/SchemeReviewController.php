@@ -319,14 +319,23 @@ class SchemeReviewController extends Controller
         if (!$request->scheme_id) {
             $scheme_datas = SchemeStructure::where('status', 1)->get();
         } else {
-            $scheme_datas = SchemeStructure::where('scheme_id', $request->scheme_id)->get();
+            $scheme_datas = SchemeStructure::whereIn('scheme_id', $request->scheme_id)->get();
         }
         if (!$request->year_id) {
-            $year_id = Year::where('status', 1)->get()->pluck("year_id");
+            $year_ids = Year::where('status', 1)->get();
+            $year_values = $year_ids->pluck("year_value");
+            $year_ids = $year_ids->pluck("year_id");
         } else {
-            $year_id = [(int)($request->year_id)];
+            $year_ids = Year::whereIn('year_id', $request->year_id)->get();
+            $year_values = $year_ids->pluck("year_value");
+            $year_ids = $year_ids->pluck("year_id");
         }
-        $scheme_asset_id = $request->scheme_asset_id;
+        if (!$request->scheme_asset_id) {
+            $scheme_asset_id = null;
+        }
+        else{
+            $scheme_asset_id = $request->scheme_asset_id;
+        }
 
 
         // assigning block datas
@@ -352,11 +361,16 @@ class SchemeReviewController extends Controller
             /* for heading starts */
             $tmp_1 = [""];
             $tmp_2 = [""]; // for complete, incomplete, total
+            $tmp_3 = [""]; // for years
             foreach ($scheme_datas as $scheme_data) {
                 array_push($tmp_1, $scheme_data->scheme_short_name . ":" . $scheme_data->scheme_logo);
-                array_push($tmp_2, "Sanctioned", "Completed", "Inprogress");
+                foreach($year_values as $year_value){
+                    array_push($tmp_2, "Sanctioned", "Completed", "Inprogress");
+                    array_push($tmp_3, $year_value);
+                }
             }
             array_push($tabular_view_block_wise, $tmp_1);
+            array_push($tabular_view_block_wise, $tmp_3);
             array_push($tabular_view_block_wise, $tmp_2);
             /* for heading ends */
 
@@ -364,150 +378,154 @@ class SchemeReviewController extends Controller
             foreach ($panchayat_datas as $panchayat_data) {
                 $scheme_wise_tabular_datas = [];
                 foreach ($scheme_datas as $scheme_data) {
-                    // retriving rows from performance table/DB
-                    $performance_datas = SchemePerformance::LeftJoin('scheme_assets', 'scheme_performance.scheme_asset_id', '=', 'scheme_assets.scheme_asset_id')
-                        ->LeftJoin('geo_structure', 'scheme_performance.panchayat_id', '=', 'geo_structure.geo_id')
-                        ->select('scheme_performance.*', 'scheme_assets.scheme_asset_name', 'geo_structure.geo_name as panchayat_name')
-                        ->where('panchayat_id', $panchayat_data->geo_id)
-                        ->where('scheme_id', $scheme_data->scheme_id)
-                        ->whereIn('year_id', $year_id)
-                        ->get();
-                    if ($scheme_asset_id) { // if scheme asset selected
-                        $performance_datas = $performance_datas->where('scheme_asset_id', $scheme_asset_id);
-                    }
-
-
-                    /******* map starts *******/
-                    foreach ($performance_datas as $performance_data) {
-                        $map_datas_tmp = [];
-                        $map_datas_tmp["attributes"] = [];
-
-                        // getting all attributes value in single dimentional associative array (before it is multidimnentional assiciative array)
-                        // $scheme_data = SchemeStructure::find($scheme_id); // getting scheme details (attributes, id etc)
-                        $attributes = unserialize($scheme_data->attributes); // getting attrubutes
-                        $tabular_data_tmp = array();
-                        $performance_attributes = [];
-                        $per_attr_tmps = unserialize($performance_data->attribute);
-                        foreach ($per_attr_tmps as $per_attr_tmp) {
-                            $performance_attributes[key($per_attr_tmp)] = $per_attr_tmp[key($per_attr_tmp)];
+                    foreach($year_ids as $year_index=>$year_id)
+                    {
+                        // retriving rows from performance table/DB
+                        $performance_datas = SchemePerformance::LeftJoin('scheme_assets', 'scheme_performance.scheme_asset_id', '=', 'scheme_assets.scheme_asset_id')
+                            ->LeftJoin('geo_structure', 'scheme_performance.panchayat_id', '=', 'geo_structure.geo_id')
+                            ->select('scheme_performance.*', 'scheme_assets.scheme_asset_name', 'geo_structure.geo_name as panchayat_name')
+                            ->where('panchayat_id', $panchayat_data->geo_id)
+                            ->where('scheme_id', $scheme_data->scheme_id)
+                            ->where('year_id', $year_id)
+                            ->get();
+                        if ($scheme_asset_id) { // if scheme asset selected
+                            $performance_datas = $performance_datas->whereIn('scheme_asset_id', $scheme_asset_id);
                         }
 
-                        // for attributes
-                        foreach($attributes as $attribute){
-                            // print_r($attribute);
-                            // print_r($performance_attributes);
-                            // exit();
-                            // return $attribute['id'];
-                            // return $performance_attributes[$attribute['id']];
-                            // return $attribute['name'];
-                            array_push($tabular_data_tmp, $performance_attributes[$attribute['id']]);
-                            array_push($map_datas_tmp["attributes"], [$attribute['name'], $performance_attributes[$attribute['id']]]);
-                        }
 
-                        // for assets
-                        if ($performance_data->scheme_asset_name) {
-                            array_push($tabular_data_tmp, $performance_data->scheme_asset_name);
-                            $map_datas_tmp["asset_name"] = $performance_data->scheme_asset_name;
-                        } else {
-                            if ($scheme_data->scheme_asset_id) {
-                                array_push($tabular_data_tmp, SchemeAsset::find($scheme_data->scheme_asset_id)->scheme_asset_name);
-                                $map_datas_tmp["asset_name"] = SchemeAsset::find($scheme_data->scheme_asset_id)->scheme_asset_name;
+                        /******* map starts *******/
+                        foreach ($performance_datas as $performance_data) {
+                            $map_datas_tmp = [];
+                            $map_datas_tmp["attributes"] = [];
+
+                            // getting all attributes value in single dimentional associative array (before it is multidimnentional assiciative array)
+                            // $scheme_data = SchemeStructure::find($scheme_id); // getting scheme details (attributes, id etc)
+                            $attributes = unserialize($scheme_data->attributes); // getting attrubutes
+                            $tabular_data_tmp = array();
+                            $performance_attributes = [];
+                            $per_attr_tmps = unserialize($performance_data->attribute);
+                            foreach ($per_attr_tmps as $per_attr_tmp) {
+                                $performance_attributes[key($per_attr_tmp)] = $per_attr_tmp[key($per_attr_tmp)];
+                            }
+
+                            // for attributes
+                            foreach($attributes as $attribute){
+                                // print_r($attribute);
+                                // print_r($performance_attributes);
+                                // exit();
+                                // return $attribute['id'];
+                                // return $performance_attributes[$attribute['id']];
+                                // return $attribute['name'];
+                                array_push($tabular_data_tmp, $performance_attributes[$attribute['id']]);
+                                array_push($map_datas_tmp["attributes"], [$attribute['name'], $performance_attributes[$attribute['id']]]);
+                            }
+
+                            // for assets
+                            if ($performance_data->scheme_asset_name) {
+                                array_push($tabular_data_tmp, $performance_data->scheme_asset_name);
+                                $map_datas_tmp["asset_name"] = $performance_data->scheme_asset_name;
                             } else {
-                                $map_datas_tmp["asset_name"] = "";
+                                if ($scheme_data->scheme_asset_id) {
+                                    array_push($tabular_data_tmp, SchemeAsset::find($scheme_data->scheme_asset_id)->scheme_asset_name);
+                                    $map_datas_tmp["asset_name"] = SchemeAsset::find($scheme_data->scheme_asset_id)->scheme_asset_name;
+                                } else {
+                                    $map_datas_tmp["asset_name"] = "";
+                                }
                             }
-                        }
 
-                        // for status
-                        if ($performance_data->status == 0) {
-                            array_push($tabular_data_tmp, "Incomplete");
-                            $map_datas_tmp["status"] = "In progess";
-                            $map_datas_tmp["road_color"] = "#3232FF";
-                            if ($performance_data->connectivity_status == 1) {
-                                $map_datas_tmp["road_color"] = "#43F40B";
+                            // for status
+                            if ($performance_data->status == 0) {
+                                array_push($tabular_data_tmp, "Incomplete");
+                                $map_datas_tmp["status"] = "In progess";
+                                $map_datas_tmp["road_color"] = "#3232FF";
+                                if ($performance_data->connectivity_status == 1) {
+                                    $map_datas_tmp["road_color"] = "#43F40B";
+                                }
+                            } else if ($performance_data->status == 1) {
+                                array_push($tabular_data_tmp, "Completed");
+                                $map_datas_tmp["status"] = "Completed";
+                                $map_datas_tmp["road_color"] = "#3c3c3c";
+                                if ($performance_data->connectivity_status == 1) {
+                                    $map_datas_tmp["road_color"] = "#43F40B";
+                                }
+                            } else if ($performance_data->status == 2) {
+                                array_push($tabular_data_tmp, "Sanctioned");
+                                $map_datas_tmp["status"] = "Sanctioned";
+                                $map_datas_tmp["road_color"] = "#ed3900";
+                                if ($performance_data->connectivity_status == 1) {
+                                    $map_datas_tmp["road_color"] = "#43F40B";
+                                }
+                            } else if ($performance_data->status == 3) {
+                                array_push($tabular_data_tmp, "Cancel");
+                                $map_datas_tmp["status"] = "Cancel";
+                                $map_datas_tmp["road_color"] = "#FF0000";
+                                if ($performance_data->connectivity_status == 1) {
+                                    $map_datas_tmp["road_color"] = "#43F40B";
+                                }
                             }
-                        } else if ($performance_data->status == 1) {
-                            array_push($tabular_data_tmp, "Completed");
-                            $map_datas_tmp["status"] = "Completed";
-                            $map_datas_tmp["road_color"] = "#3c3c3c";
-                            if ($performance_data->connectivity_status == 1) {
-                                $map_datas_tmp["road_color"] = "#43F40B";
+
+                            // for year
+                            $map_datas_tmp["year_value"] = $year_values[$year_index];
+
+                            // for coordinates
+                            if ($performance_data->coordinates) {
+                                $coordinates_tmp = unserialize($performance_data->coordinates);
+                                $map_datas_tmp["latitude"] = $coordinates_tmp[0]["latitude"];
+                                $map_datas_tmp["longitude"] = $coordinates_tmp[0]["longitude"];
                             }
-                        } else if ($performance_data->status == 2) {
-                            array_push($tabular_data_tmp, "Sanctioned");
-                            $map_datas_tmp["status"] = "Sanctioned";
-                            $map_datas_tmp["road_color"] = "#ed3900";
-                            if ($performance_data->connectivity_status == 1) {
-                                $map_datas_tmp["road_color"] = "#43F40B";
+
+
+                            if ($performance_data->coordinates) {
+                                $coordinates_multi = array();
+                                $coordinates_details = unserialize($performance_data->coordinates);
+                                foreach ($coordinates_details as $key_coor => $value_coor) {
+                                    $coordinates_multi[$key_coor]['lat'] = (float) $value_coor['latitude'];
+                                    $coordinates_multi[$key_coor]['lng'] = (float) $value_coor['longitude'];
+                                    // print_r($value_coor);
+                                }
+                                $map_datas_tmp["coordinates_details"] = $coordinates_multi;
+                                // print_r($map_datas_tmp["coordinates_details"]);
                             }
-                        } else if ($performance_data->status == 3) {
-                            array_push($tabular_data_tmp, "Cancel");
-                            $map_datas_tmp["status"] = "Cancel";
-                            $map_datas_tmp["road_color"] = "#FF0000";
-                            if ($performance_data->connectivity_status == 1) {
-                                $map_datas_tmp["road_color"] = "#43F40B";
-                            }
-                        }
 
+                            // for scheme name
+                            $map_datas_tmp["scheme_name"] = "(".$scheme_data->scheme_short_name.") ".$scheme_data->scheme_name;
 
+                            // for gallery
+                            $map_datas_tmp["gallery"] = unserialize($performance_data->gallery);
 
-                        // for coordinates
-                        if ($performance_data->coordinates) {
-                            $coordinates_tmp = unserialize($performance_data->coordinates);
-                            $map_datas_tmp["latitude"] = $coordinates_tmp[0]["latitude"];
-                            $map_datas_tmp["longitude"] = $coordinates_tmp[0]["longitude"];
-                        }
-
-
-                        if ($performance_data->coordinates) {
-                            $coordinates_multi = array();
-                            $coordinates_details = unserialize($performance_data->coordinates);
-                            foreach ($coordinates_details as $key_coor => $value_coor) {
-                                $coordinates_multi[$key_coor]['lat'] = (float) $value_coor['latitude'];
-                                $coordinates_multi[$key_coor]['lng'] = (float) $value_coor['longitude'];
-                                // print_r($value_coor);
-                            }
-                            $map_datas_tmp["coordinates_details"] = $coordinates_multi;
-                            // print_r($map_datas_tmp["coordinates_details"]);
-                        }
-
-                        // for scheme name
-                        $map_datas_tmp["scheme_name"] = "(".$scheme_data->scheme_short_name.") ".$scheme_data->scheme_name;
-
-                        // for gallery
-                        $map_datas_tmp["gallery"] = unserialize($performance_data->gallery);
-
-                        // for block_name, panchayat_name
-                        $map_datas_tmp["panchayat_name"] = $performance_data->panchayat_name;
-                        $map_datas_tmp["block_name"] = GeoStructure::where('geo_id', GeoStructure::find($performance_data->panchayat_id)->bl_id)->first()->geo_name;
-                        
-                        // for map marker
-                        if ($scheme_data->scheme_is == 2) {
-                            if ($performance_data->scheme_asset_id != "") {
-                                $SchemeAsset_deatails = SchemeAsset::where('scheme_asset_id', $performance_data->scheme_asset_id)->first();
-                                $map_datas_tmp["scheme_map_marker"] = $SchemeAsset_deatails->mapmarkericon;
+                            // for block_name, panchayat_name
+                            $map_datas_tmp["panchayat_name"] = $performance_data->panchayat_name;
+                            $map_datas_tmp["block_name"] = GeoStructure::where('geo_id', GeoStructure::find($performance_data->panchayat_id)->bl_id)->first()->geo_name;
+                            
+                            // for map marker
+                            if ($scheme_data->scheme_is == 2) {
+                                if ($performance_data->scheme_asset_id != "") {
+                                    $SchemeAsset_deatails = SchemeAsset::where('scheme_asset_id', $performance_data->scheme_asset_id)->first();
+                                    $map_datas_tmp["scheme_map_marker"] = $SchemeAsset_deatails->mapmarkericon;
+                                } else {
+                                    $map_datas_tmp["scheme_map_marker"] = $scheme_data->scheme_map_marker;
+                                }
                             } else {
+                                // for map marker
                                 $map_datas_tmp["scheme_map_marker"] = $scheme_data->scheme_map_marker;
                             }
-                        } else {
-                            // for map marker
-                            $map_datas_tmp["scheme_map_marker"] = $scheme_data->scheme_map_marker;
+                            // final push, if coordinates available
+                            if ($performance_data->coordinates) {
+                                array_push($map_datas, $map_datas_tmp);
+                            }
                         }
-                        // final push, if coordinates available
-                        if ($performance_data->coordinates) {
-                            array_push($map_datas, $map_datas_tmp);
-                        }
+
+                        /******** map ends ********/
+
+                        $total_count_tmp = "<a href='javascript:void();' onclick=\"getAllDatasIndividually('" . $panchayat_data->geo_id . "', '" . $panchayat_data->geo_name . "', '" . $scheme_data->scheme_id . "')\">" . $performance_datas->count() . "</a>";
+                        array_push($scheme_wise_tabular_datas, $total_count_tmp, $performance_datas->where('status', '1')->count(), $performance_datas->where('status', '')->count());
+
+
+                        // // assigning datas to variable that has to be returned (tmp)
+                        // $tabular_view_tmp = [$panchayat_data->geo_id.":".$panchayat_data->geo_name, $performance_datas->where('status','0')->count(), $performance_datas->where('status','1')->count(), $performance_datas->count()];
+                        // // appedning datas to array to be send (tmp)
+                        // array_push($tabular_view_block_wise, $tabular_view_tmp);
                     }
-
-                    /******** map ends ********/
-
-                    $total_count_tmp = "<a href='javascript:void();' onclick=\"getAllDatasIndividually('" . $panchayat_data->geo_id . "', '" . $panchayat_data->geo_name . "', '" . $scheme_data->scheme_id . "')\">" . $performance_datas->count() . "</a>";
-                    array_push($scheme_wise_tabular_datas, $total_count_tmp, $performance_datas->where('status', '1')->count(), $performance_datas->where('status', '')->count());
-
-
-                    // // assigning datas to variable that has to be returned (tmp)
-                    // $tabular_view_tmp = [$panchayat_data->geo_id.":".$panchayat_data->geo_name, $performance_datas->where('status','0')->count(), $performance_datas->where('status','1')->count(), $performance_datas->count()];
-                    // // appedning datas to array to be send (tmp)
-                    // array_push($tabular_view_block_wise, $tabular_view_tmp);
                 }
 
                 // assigning datas to variable that has to be returned (tmp)
@@ -528,7 +546,7 @@ class SchemeReviewController extends Controller
             $response = "no_data";
         }
 
-        return ["response" => $response, "tabular_view" => $tabular_view, "map_datas" => $map_datas];
+        return ["response" => $response, "year_count"=>count($year_ids), "tabular_view" => $tabular_view, "map_datas" => $map_datas];
     }
     /* to test */
 
@@ -783,6 +801,8 @@ class SchemeReviewController extends Controller
                 $map_datas_tmp["longitude"] = $coordinates_tmp[0]["longitude"];
             }
 
+            // for year
+            $map_datas_tmp["year_value"] = Year::where('year_id', $performance_data->year_id)->first()->year_value;
 
             if ($performance_data->coordinates) {
                 $coordinates_multi = array();

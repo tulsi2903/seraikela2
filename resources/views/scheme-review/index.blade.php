@@ -3,6 +3,8 @@
 @section('title', 'Scheme Review')
 
 @section('page-style')
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.12/css/bootstrap-select.min.css">
 <style>
     .card,
     .card-light {
@@ -212,6 +214,9 @@
     #tabular-view td a {
         font-weight: bold;
     }
+    #tabular-view tr:hover{
+        background: #ffffe8;
+    }
 
     #map-view {
         position: relative;
@@ -296,6 +301,19 @@
     .gallery-view-thumb-img:hover {
         background-size: auto 105%;
     }
+
+
+    /* bootstrap-select*/
+    .bootstrap-select .dropdown-toggle{
+        border: 1px solid #ced4da !important;
+        color: #5a5a5a !important;
+    }
+    .select-all-link{
+        font-size: 12px;
+    }
+    .select-all-link:hover{
+        text-decoration: none;
+    }
 </style>
 @endsection
 
@@ -317,38 +335,41 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="form-group">
-                            <label for="scheme_id">Scheme</label>
-                            <select name="scheme_id" id="scheme_id" class="form-control">
-                                <option value="">All Schemes</option>
+                            <div><label for="scheme_id">Scheme<span style="color:red;margin-left:5px;">*</span></label><a class="select-all-link" style="float:right;" href="javscript:void();" onclick="selectUnselectAll('scheme_id', this)">Select All</a></div>
+                            <select name="scheme_id" id="scheme_id" class="form-control selectpicker" data-size="5" multiple>
+                                <!-- <option value="">All Schemes</option> -->
                                 @foreach($scheme_datas as $scheme_data)
-                                <option value="{{$scheme_data->scheme_id}}" data-scheme-is="{{$scheme_data->scheme_is}}" data-scheme-asset-id="{{$scheme_data->scheme_asset_id}}" <?php if($data['scheme_id']==$scheme_data->scheme_id){ echo "selected"; } ?>>({{$scheme_data->scheme_short_name}}) {{$scheme_data->scheme_name}}</option>
+                                <option value="{{$scheme_data->scheme_id}}" data-scheme-is="{{$scheme_data->scheme_is}}" data-scheme-asset-id="{{$scheme_data->scheme_asset_id}}" <?php if($data['scheme_id']==$scheme_data->scheme_id){ echo "selected"; } ?>>{{$scheme_data->scheme_short_name}}</option>
                                 @endforeach
                             </select>
-                            <div class="invalid-feedback">Please select department</div>
+                            <div class="invalid-feedback" id="scheme_id_error">Please select department</div>
                         </div>
                     </div>
+                </div>
+                <hr />
+                <div class="row">
                     <div class="col-6">
                         <div class="form-group">
-                            <label for="year_id">Year</label>
-                            <select name="year_id" id="year_id" class="form-control">
-                                <option value="">All Years</option>
+                            <div><label for="year_id">Year<span style="color:red;margin-left:5px;">*</span></label><a class="select-all-link" style="float:right;" href="javscript:void();" onclick="selectUnselectAll('year_id', this)">Select All</a class="select-all-link"></div>
+                            <select name="year_id" id="year_id" class="form-control selectpicker" data-size="5" multiple>
+                                <!-- <option value="">All Years</option> -->
                                 @foreach($year_datas as $year_data)
                                 <option value="{{$year_data->year_id}}" <?php if($data['year_id']==$year_data->year_id){ echo "selected"; } ?>>{{$year_data->year_value}}</option>
                                 @endforeach
                             </select>
-                            <div class="invalid-feedback">Please select year</div>
+                            <div class="invalid-feedback" id="year_id_error">Please select year</div>
                         </div>
                     </div>
                     <div class="col-6">
                         <div class="form-group">
-                            <label for="scheme_asset_id">Asset</label>
-                            <select name="scheme_asset_id" id="scheme_asset_id" class="form-control">
-                                <option value="">All Assets</option>
+                            <div><label for="scheme_asset_id">Asset<span style="color:red;margin-left:5px;">*</span></label><a class="select-all-link" style="float:right;" href="javscript:void();" onclick="selectUnselectAll('scheme_asset_id', this)">Select All</a class="select-all-link"></div>
+                            <select name="scheme_asset_id" id="scheme_asset_id" class="form-control selectpicker" data-size="5" multiple>
+                                <!-- <option value="">All Assets</option> -->
                                 @foreach($scheme_asset_datas as $scheme_asset_data)
                                 <option value="{{$scheme_asset_data->scheme_asset_id}}">{{$scheme_asset_data->scheme_asset_name}}</option>
                                 @endforeach
                             </select>
-                            <div class="invalid-feedback">Please select asset</div>
+                            <div class="invalid-feedback" id="scheme_asset_id_error">Please select asset</div>
                         </div>
                     </div>
                 </div>
@@ -356,7 +377,7 @@
                     <div id="marquee" style="color: black">
                     </div>
                     <hr />
-                    <label for="">Block<span style="color:red;margin-left:5px;">*</span></label>
+                    <label for="">Location<span style="color:red;margin-left:5px;">*</span></label>
                     <div class="map-content-all">
                         <div class="block-map-content active">
                             <svg viewBox="0 0 739 752" stroke-linecap="round" stroke-linejoin="round">
@@ -1174,7 +1195,7 @@
     // removing is-invalid on change
     $(document).ready(function () {
         $("#scheme_id").change(function () {
-            get_scheme_asset(); // to hide/show scheme asset options, depends on scheme_id (single, multiple)
+            // get_scheme_asset(); // to hide/show scheme asset options, depends on scheme_id (single, multiple)
 
             if ($("#scheme_id").val()) {
                 $("#scheme_id").removeClass('is-invalid');
@@ -1241,41 +1262,47 @@
         var geo_id_error = true;
 
         // scheme
-        // if ($("#scheme_id").val() == "") {
-        //     $("#scheme_id").addClass('is-invalid');
-        //     scheme_id_error = true;
-        // }
-        // else {
-        //     $("#scheme_id").removeClass('is-invalid');
-        //     scheme_id_error = false;
-        // }
-        $("#scheme_id").removeClass('is-invalid');
-        scheme_id_error = false;
+        if ($("#scheme_id").val() == "") {
+            $("#scheme_id").addClass('is-invalid');
+            $("#scheme_id_error").show();
+            scheme_id_error = true;
+        }
+        else {
+            $("#scheme_id").removeClass('is-invalid');
+            $("#scheme_id_error").hide();
+            scheme_id_error = false;
+        }
+        // $("#scheme_id").removeClass('is-invalid');
+        // scheme_id_error = false;
 
         // year
-        // if ($("#year_id").val() == "") {
-        //     $("#year_id").addClass('is-invalid');
-        //     year_id_error = true;
-        // }
-        // else {
-        //     $("#year_id").removeClass('is-invalid');
-        //     year_id_error = false;
-        // }
-        $("#year_id").removeClass('is-invalid');
-        year_id_error = false;
+        if ($("#year_id").val() == "") {
+            $("#year_id").addClass('is-invalid');
+            $("#year_id_error").show();
+            year_id_error = true;
+        }
+        else {
+            $("#year_id").removeClass('is-invalid');
+            $("#year_id_error").hide();
+            year_id_error = false;
+        }
+        // $("#year_id").removeClass('is-invalid');
+        // year_id_error = false;
 
         // scheme asset selected
-        // if ($("#scheme_asset_id").val() == "" && $("#scheme_id").val() == "") {
-        //     $("#scheme_asset_id").addClass('is-invalid');
-        //     $("#scheme_asset_id + .invalid-feedback").html("Please select an asset");
-        //     scheme_asset_id_error = true;
-        // }
-        // else {
-        //     $("#scheme_asset_id").removeClass('is-invalid');
-        //     scheme_asset_id_error = false;
-        // }
-        $("#scheme_asset_id").removeClass('is-invalid');
-        scheme_asset_id_error = false;
+        if ($("#scheme_asset_id").val() == "") {
+            $("#scheme_asset_id").addClass('is-invalid');
+            $("#scheme_asset_id_error").html("Please select an asset");
+            $("#scheme_asset_id_error").show();
+            scheme_asset_id_error = true;
+        }
+        else {
+            $("#scheme_asset_id").removeClass('is-invalid');
+            $("#scheme_asset_id_error").hide();
+            scheme_asset_id_error = false;
+        }
+        // $("#scheme_asset_id").removeClass('is-invalid');
+        // scheme_asset_id_error = false;
 
         // geo/block/panchayat selected
         if ($("#geo_id").val() == "") {
@@ -1305,9 +1332,6 @@
         scheme_id_tmp = $("#scheme_id").val();
         year_id_tmp = $("#year_id").val();
         scheme_asset_id_tmp = $("#scheme_asset_id").val();
-        if ($("#scheme_id :selected").data('scheme-is') == 1) { // sending null data for scheme asset id for single asset scheme
-            scheme_asset_id_tmp = null;
-        }
         geo_id_tmp = $("#geo_id").val(); // string, have convert to array in controller// block ids
 
         $.ajaxSetup({
@@ -1326,8 +1350,8 @@
             },
             error: function (xhr) {
                 alert("error" + xhr.status + ", " + xhr.statusText);
-                $(".custom-loader").fadeOut(300);
-                $("#search-results-block").removeClass("active-search");
+                // $(".custom-loader").fadeOut(300);
+                // $("#search-results-block").removeClass("active-search");
             },
             success: function (data) {
                 console.log(data);
@@ -1349,7 +1373,7 @@
                 else { // data.response  == success
                     // calling/initialiazing all views
                     to_export_datas = data.tabular_view;
-                    initializeTabularView(data.tabular_view);
+                    initializeTabularView(data.tabular_view, data.year_count);
                     initializeMapView(data.map_datas);
                 }
                 $(".custom-loader").fadeOut(300);
@@ -1416,7 +1440,7 @@
 
 <!-- tabular view -->
 <script>
-    function initializeTabularView(data) { //received data.tabular_view
+    function initializeTabularView(data, year_count) { //received data.tabular_view
         /*
         data[i].block_name
         data[i].performance_datas ====> ["","p1","p2"]["50,"2","3"]["50,"2","3"]
@@ -1449,8 +1473,8 @@
             toShowTabularForm += `" id="tabluar-view-table-` + (i + 1) + `" role="tabpanel">`;
             toShowTabularForm += `<table id="target-table" class="table order-list" style="margin-top: 10px;">`;
             for (var j = 0; j < data[i].performance_datas.length; j++) {
-                if (j == 0 || j == 1) { // for first row
-                    toShowTabularForm += `<tr style='background: #d6dcff;color: #000; font-weight: bold;'>`;
+                if (j == 0 || j == 1 || j==2) { // for first row
+                    toShowTabularForm += `<tr style='background: #d6dcff;color: #000;font-weight: bold;'>`;
                 }
                 else { // for others
                     toShowTabularForm += `<tr>`;
@@ -1465,15 +1489,18 @@
                                 toShowTabularForm += `<th></th>`;
                             } else {
                                 scheme_name_and_logo_arr = data[i].performance_datas[j][k].split(":");
-                                toShowTabularForm += `<th colspan="3"><img src="<?php echo url(''); ?>/` + scheme_name_and_logo_arr[1] + `" style="height: 50px; margin-right: 5px;">` + scheme_name_and_logo_arr[0] + `</th>`;
+                                toShowTabularForm += `<th colspan="`+(year_count*3)+`"><img src="<?php echo url(''); ?>/` + scheme_name_and_logo_arr[1] + `" style="height: 50px; margin-right: 5px;">` + scheme_name_and_logo_arr[0] + `</th>`;
                             }
                         }
                     }
                 }
                 else {
                     for (k = 0; k < data[i].performance_datas[j].length; k++) {
-                        if (j == 1) {
-                            toShowTabularForm += `<td>` + data[i].performance_datas[j][k] + `</td>`;
+                        if (j == 1 && k!= 0) {
+                            toShowTabularForm += `<td colspan="3">` + data[i].performance_datas[j][k] + `</td>`;
+                        }
+                        else if(j == 2 && k!=0){
+                            toShowTabularForm += `<td style="background:`+statusRandomColourGenerate(k)+`;">` + data[i].performance_datas[j][k] + `</td>`;
                         }
                         else {
                             toShowTabularForm += `<td>` + data[i].performance_datas[j][k] + `</td>`;
@@ -1496,6 +1523,14 @@
         $("#tabular-view").html("");
         $("#tabular-view").hide();
         $("#tabular-view + .no-data").show();
+    }
+    // function yearRandomColourGenerate(i, year_count){
+    //     var colours = ["#8288ff","#ec82ff","#ffa982","#d7ff82","#82baff"];
+    //     return colours[(i%year_count)];
+    // }
+    function statusRandomColourGenerate(i){
+        var colours = ["#c2f7fd","#ffcccc","#e2ffbc"];
+        return colours[(i%3)];
     }
 
 
@@ -1678,6 +1713,7 @@
         if (data) { // has data
             var contentString = '<div class="gallery-view-thumb gallery-view-thumb-info">';
             contentString += '<b>Scheme</b>: ' + data.scheme_name + '<br/>';
+            contentString += '<b>Year</b>: ' + data.year_value + '<br/>';
             if (data.attributes) {
                 if (data.attributes.length > 0) {
                     data.attributes.forEach(function (element) {
@@ -1759,6 +1795,7 @@
 </script>
 
 <script>
+
     // for direct page load/ direct search form dashboard
     var initiate = "{{$initiate}}";
     if (initiate == "initiate") {
@@ -1783,5 +1820,22 @@
             setTimeout(function () { $(".custom-loader").fadeOut(); search(); }, 3000);
         }
     });
+
+</script>
+
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.12/js/bootstrap-select.min.js"></script>
+<script>
+    function selectUnselectAll(id, e){
+        if($(e).html()=='Select All'){
+            $("#"+id+"").selectpicker('selectAll');
+            $(e).html('Deselect All');
+        }
+        else{
+            $("#"+id+"").selectpicker('deselectAll');
+            $(e).html('Select All');
+        }
+    }
 </script>
 @endsection
