@@ -506,7 +506,7 @@
                                                                     <tr>
                                                                         <td class="wel_text" align="center" style="font-size: 1.5em;
                                                                         color: #6f8fdd;font-family:Candara;text-align:center;font-weight:600;"> 
-                                                                         Sub category List
+                                                                         Sub Category List
                                                                         </td>
                                                                     </tr>
 																

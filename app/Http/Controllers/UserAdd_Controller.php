@@ -29,12 +29,14 @@ class UserAdd_Controller extends Controller
         if(Auth::user()->userRole==1){
             $results=User::leftjoin('designation','users.desig_id','designation.desig_id')
             ->select('designation.name as desig_name','users.*')
+            ->orderBy('id','desc')
             ->get();
          }
          else{
            
              $results=User::leftjoin('designation','users.desig_id','designation.desig_id')
              ->select('designation.name as desig_name','users.*')
+             ->orderBy('id','desc')
              ->where('users.id',Auth::user()->id)
              ->get();
          }

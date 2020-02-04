@@ -126,9 +126,6 @@ class CheckMatchingPerformanceController extends Controller
           }
 
 
-
-       
-
           return ['Matching'=>$datas,'tmp_matching'=>$tmp_matching, 'id'=>$id, 'scheme_performance_id_to_append'=>$scheme_performance_id_to_append,'append_comment'=>$append_comment];
    }
 
@@ -203,14 +200,14 @@ class CheckMatchingPerformanceController extends Controller
 
 public function view()
  {
-     // return  "test" ;
+   
 
      $year_datas = Year::orderBy('year_id')->where('status',1)->get();
 
      $scheme_datas = SchemeStructure::orderBy('scheme_id')->where('org_id',1)->get();
 
      $block_datas = GeoStructure::orderBy('geo_id')->where('level_id',3)->get();
-     // return $year_datas;
+   
 
      return view('matching-schemes.view')->with(compact('year_datas','scheme_datas','block_datas'));
 }
@@ -226,7 +223,8 @@ public function get_panchayat_datas(Request $request)
 
 public function search_datas(Request $request)
 {
-//     return $request;
+    
+     // return $request;
      if($request->year_id && $request->scheme_id && $request->block_id && $request->panchayat_id !="")
      {
           $get_datas = SchemePerformance::where('year_id',$request->year_id)
@@ -253,19 +251,19 @@ public function search_datas(Request $request)
      $datas = CheckMatchingPerformance::where('status',$request->matching_schemes)->get()->pluck('scheme_performance_id');
      $matching_datas=$datas;
      //     return $datas;
-     // $tmp_matching=count(explode(",",$datas->matching_performance_id));
+     //  $tmp_matching=count(explode(",",$datas->matching_performance_id));
      // $tmp_matching_array=explode(",",$datas->matching_performance_id);
      // $created_at=$datas->created_at;
      // $updated_at=$datas->updated_at;
      // $scheme_performance_id_to_append = $datas->scheme_performance_id;
-     // $append_comment = unserialize($datas->comment);
-
+     //  $append_comment = unserialize($datas->comment);
+     //  $scheme_performance_id_to_append = $datas->scheme_performance_id;
      
      // $get_not_duplicate_array = explode(",",$datas->not_duplicate);
      // $get_duplicate_array = explode(",",$datas->duplicate);
      // // $get_scheme_performance_id=$datas->scheme_performance_id;
 
-     // $CheckMatchingPerformance_id=$datas->id;
+     //  $CheckMatchingPerformance_id=$datas->id;
      $datas=SchemePerformance::leftJoin('chck_matching_performance','scheme_performance.scheme_performance_id','=','chck_matching_performance.scheme_performance_id')
                ->leftJoin('year','scheme_performance.year_id','=','year.year_id')
                ->leftJoin('scheme_assets','scheme_performance.scheme_asset_id','=','scheme_assets.scheme_asset_id')
@@ -315,7 +313,7 @@ public function search_datas(Request $request)
 
    
      }
-
+     // $data = CheckMatchingPerformance::where('id',$id)->first();
 
      return ['Matching'=>$datas,'tmp_matching'=>$tmp_matching, 'id'=>$id, 'scheme_performance_id_to_append'=>$scheme_performance_id_to_append,'append_comment'=>$append_comment];
 

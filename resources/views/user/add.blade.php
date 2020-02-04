@@ -575,7 +575,7 @@ function passwordSubmit(){
         } else {
             desig_id_error = true;
             $("#desig_id").addClass("is-invalid");
-            $("#desig_id_error_msg").html("Please select organisation");
+            $("#desig_id_error_msg").html("Please select designation");
         }
     }
 

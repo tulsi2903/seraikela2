@@ -234,11 +234,11 @@
                         </div>
                     </div>
               
-              
+                    <hr />
                 <div class="row">
                     <div class="col-md-4">
                         <div class="form-group">
-                            <hr />
+                          
                             <input type="text" name="hidden_input_purpose" id="hidden_input_purpose" value="add" hidden>
                             <input type="text" name="hidden_input_id" id="hidden_input_id" value="NA" hidden>
                             <input type="text" name="deleted_asset_child_id" id="deleted_asset_child_id" value="" hidden>
@@ -845,7 +845,7 @@ function openmodel()
                                 <input type="text" name="to" class="form-control" placeholder="{{$phrase->to}}" required="">
                             </div>
                             <div class="form-group">
-                                <input type="text" name="cc" class="form-control" placeholder="{{$phrase->cc}}" required="">
+                                <input type="text" name="cc" class="form-control" placeholder="{{$phrase->cc}}">
                             </div>
 
                             <div class="form-group">

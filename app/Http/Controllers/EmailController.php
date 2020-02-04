@@ -164,7 +164,7 @@ class EmailController extends Controller
                 session()->put('alert-content','Email send');
             });
             // return view('mail.scheme_type')->with('user',$user);
-            return redirect('scheme_type');
+            return redirect('scheme-type');
         }
         elseif($request->asset_numbers=="asset_numbers"){
             $email_from=$request->from;
@@ -211,7 +211,7 @@ class EmailController extends Controller
                 session()->put('alert-class','alert-success');
                 session()->put('alert-content','Email send');
             });
-            return redirect('asset_numbers');
+            return redirect('asset-numbers');
             // return view('mail.asset_numbers')->with('user',$user);
         }
         elseif($request->geo_structure=="geo_structure"){
@@ -467,7 +467,7 @@ class EmailController extends Controller
             //      session()->put('alert-class','alert-success');
             //      session()->put('alert-content','Email send');
             //  });
-            //   return redirect('scheme-geo-target');                      // lol
+            //   return redirect('scheme-geo-target');                     
             return view('mail.scheme-geo-target')->with('user',$user);
 
         }
@@ -581,29 +581,29 @@ class EmailController extends Controller
 
             $user = array('email_from'=>$email_from,'email_to'=>$email_to, 'cc'=>$email_cc, 'subject'=>$request->subject, 'content'=>$request->message,'results'=>$details);
             
-            // Mail::send('mail.uom',['user'=> $user], function($message) use ($user)
-            //  {
-            //      $email_to=explode(',',$user['email_to']);
-            //      foreach($email_to as $key=>$value)
-            //     {
-            //         $message->to($email_to[$key]);
-            //     }
+            Mail::send('mail.uom',['user'=> $user], function($message) use ($user)
+             {
+                 $email_to=explode(',',$user['email_to']);
+                 foreach($email_to as $key=>$value)
+                {
+                    $message->to($email_to[$key]);
+                }
 
-            //     if(@$user['cc'])
-            //     {
-            //      $email_cc=explode(',',$user['cc']);
-            //         foreach($email_cc as $key=>$value)
-            //         {
-            //             $message->cc($email_cc[$key]);
-            //         }
-            //     }
-            //     $message->subject($user['subject']);
-            //     $message->from('dsrm.skla@gmail.com','seraikela'); 
-            //      session()->put('alert-class','alert-success');
-            //      session()->put('alert-content','Email send');
-            //  });
-            //   return redirect('uom');                            // lol
-            return view('mail.uom')->with('user',$user);
+                if(@$user['cc'])
+                {
+                 $email_cc=explode(',',$user['cc']);
+                    foreach($email_cc as $key=>$value)
+                    {
+                        $message->cc($email_cc[$key]);
+                    }
+                }
+                $message->subject($user['subject']);
+                $message->from('dsrm.skla@gmail.com','seraikela'); 
+                 session()->put('alert-class','alert-success');
+                 session()->put('alert-content','Email send');
+             });
+              return redirect('uom');                            // lol
+            // return view('mail.uom')->with('user',$user);
 
         }
 
@@ -792,6 +792,41 @@ class EmailController extends Controller
             
           
         }
+
+        elseif($request->category=="uom_type"){
+    
+            $email_from=$request->from;
+            $email_to=$request->to;
+            $email_cc=$request->cc;
+            $send_subject=$request->subject;
+            $details=json_decode($request->data);
+
+            $user = array('email_from'=>$email_from,'email_to'=>$email_to, 'cc'=>$email_cc, 'subject'=>$request->subject, 'content'=>$request->message,'results'=>$details);
+            
+            Mail::send('mail.uom',['user'=> $user], function($message) use ($user)
+             {
+                 $email_to=explode(',',$user['email_to']);
+                 foreach($email_to as $key=>$value)
+                {
+                    $message->to($email_to[$key]);
+                }
+
+                if(@$user['cc'])
+                {
+                 $email_cc=explode(',',$user['cc']);
+                    foreach($email_cc as $key=>$value)
+                    {
+                        $message->cc($email_cc[$key]);
+                    }
+                }
+                $message->subject($user['subject']);
+                $message->from('dsrm.skla@gmail.com','seraikela'); 
+                 session()->put('alert-class','alert-success');
+                 session()->put('alert-content','Email send');
+             });
+              return redirect('uom');       
+        }
+
     }
 
 

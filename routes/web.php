@@ -257,7 +257,8 @@ Route::get('get/matching-schemes/details/{id}','CheckMatchingPerformanceControll
 Route::post('scheme_performance/status_update','CheckMatchingPerformanceController@get_data');
 Route::get('matching-schemes/get-undo-datas','CheckMatchingPerformanceController@undo_results');
 Route::get('matching-schemes/view','CheckMatchingPerformanceController@view');
-Route::post('matching-schemes/view-searched-results','CheckMatchingPerformanceController@search_datas');
+// Route::post('matching-schemes/view-searched-results','CheckMatchingPerformanceController@search_datas');
+Route::get('fetch/matching-schemes/details','CheckMatchingPerformanceController@search_datas');
 
 /* scheme review */
 Route::get('scheme-review', 'SchemeReviewController@index');

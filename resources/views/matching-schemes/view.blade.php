@@ -1,6 +1,8 @@
 @extends('layout.layout') @section('title', 'View Matching Schemes') @section('page-style')
 <style>
-
+.table{
+    display: none;
+}
 </style>
 @endsection @section('page-content')
 <div class="card">
@@ -88,7 +90,7 @@
                             </div>
                         </div>
                         <div id="table-data">
-                            <table class="table table-striped">
+                            <table class="table table-striped" id="get-table">
                                 <thead>
                                     <tr>
                                         <th scope="col">#</th>
@@ -117,12 +119,7 @@
             </div>
             <hr/>
 
-        </div>
-    </div>
-
-</div>
-
-<div id="toggle_div" style="display:none;">
+            <div id="toggle_div" style="display:none;">
     <form action="{{url('scheme_performance/status_update')}}" name="myForm" id="duplicate-form" method="POST">
         @csrf
         <div class="modal-body">
@@ -167,9 +164,18 @@
     </form>
 </div>
 
+        </div>
+    </div>
+
+</div>
+
+
+
 <script>
     function view_matching_datas() {
+        $("#get-table").show();
         var year_id = $("#year_id").val();
+        $("#append-matching-datas").html("");
         var scheme_id = $("#scheme_id").val();
         var block_id = $("#block_id").val();
         var panchayat_id = $("#panchayat_id").val();
@@ -200,13 +206,13 @@
                     var str = data.Matching[i].matching_performance_id;
                     var count_matching = str.split(",");
 
-                    to_append += `<td>` + s_no + `</td><td>` + data.Matching[i].year_value + `</td>
+                    to_append += `<tr><td>` + s_no + `</td><td>` + data.Matching[i].year_value + `</td>
                     <td>` + data.Matching[i].block_name + `</td>
                     <td>` + data.Matching[i].panchayat_name + `</td>
                     <td>` + data.Matching[i].scheme_name + `</td>
                     <td>` + data.Matching[i].scheme_asset_name + `</td>
                     <td>` + count_matching.length + `</td><td>` + data.Matching[i].attribute + `</td>
-                    <td><i class="fa fa-eye" aria-hidden="true" onclick="get_view_data(` + data.Matching[i].chck_matching_performance_id + `)";></i></td>`;
+                    <td><i class="fa fa-eye" aria-hidden="true" onclick="get_view_data(` + data.Matching[i].chck_matching_performance_id + `)";></i></td></tr>`;
 
                 }
                 $("#append-matching-datas").append(to_append);
@@ -221,7 +227,7 @@
     var total_duplicate_record = 0;
     //
     function get_view_data(id) {
-        // alert(id);
+        //  alert(id);
 
         $("#toggle_div").slideDown(300);
         $.ajax({

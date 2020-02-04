@@ -29,15 +29,15 @@
                 <div class="col-md-12">
                         <h3>Import Guide For Resource Number</h3>
                         <p>
-                            i. &nbsp;&nbsp;We can import recource number data using excel sheet. here we are Providing two types of upload sheet(Excel).
+                            i. &nbsp;&nbsp;We can import recource number data using excel sheet. Here we are providing two types of upload sheet(Excel).
                             <br>
-                            ii. &nbsp;<span style="color:#FFC107;">Download Format</span> button downloads a upload sheet format in which we can add a Resource.
+                            ii. &nbsp;<span style="color:#FFC107;">Download Format</span> button downloads an upload sheet format in which we can add a Resource.
                             <br>
-                            iii. <span style="color: #00BCD4;">Download Format With Location</span> button downloads a upload sheet format in which we can add a Resource with, <br>&nbsp;&nbsp;&nbsp;&nbsp;<b>1.</b> location of the Resource, <b>2.</b> Lattitude, <b>3.</b> Longitude & <b>4.</b> No. of Sub-Resources.
+                            iii. <span style="color: #00BCD4;">Download Format With Location</span> button downloads an upload sheet format in which we can add a Resource with, <br>&nbsp;&nbsp;&nbsp;&nbsp;<b>1.</b> Location of the Resource, <b>2.</b> Latitude, <b>3.</b> Longitude & <b>4.</b> No. of Sub-Resources.
                         </p>
 
                         <p>
-                            <h5 style="color:#704d2f;">Note*</h5>
+                            <h5 style="color:red;">Note*</h5>
                             <span>For <span style="color: #00BCD4;">Download Format With Location</span></span><br>
                             &nbsp;&nbsp;<span>If we are adding main resource data then, "<b>Main Resource SNo</b>" & "<b>Count</b>" columns must be left empty.<br></span>
                             &nbsp;&nbsp;<span>If we are adding sub-resource data then, "<b>Location/Landmark</b>", "<b>Latitude</b>" & "<b>Longitude</b>" columns must be left empty.<br></span>

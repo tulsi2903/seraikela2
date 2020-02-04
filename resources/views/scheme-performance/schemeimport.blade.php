@@ -29,15 +29,15 @@
                     <div class="card-header">
                         <div class="row" >
                             <div class="col-6" style="margin-left:50%;" class="pull-right">
-                                <h3>Import guide For Scheme</h3>
+                                <h3 style="color:#00ace6;">Import Guide For Scheme</h3>
                                 <p>
-                                   -:  Select Scheme from scheme dropdown.
+                                  &nbsp;&nbsp;&nbsp;&nbsp; -  Select Scheme from scheme dropdown.
                                     <br>
-                                    -:  Click on Download Template button to download the template. Please note, every scheme has a different template.
+                                    &nbsp;&nbsp;&nbsp;&nbsp;-  Click on Download Template button to download the template. Please note, every scheme has a different template.
                                     <br>
-                                    -:  Enter the data to be imported in the given excel format and save. Make sure, the excel is saved properly.
+                                    &nbsp;&nbsp;&nbsp;&nbsp;-  Enter the data to be imported in the given excel format and save. Make sure, the excel is saved properly.
                                     <br>
-                                    -:  Choose the saved excel file from File to import section and click on Import button.
+                                    &nbsp;&nbsp;&nbsp;&nbsp; -  Choose the saved excel file from File to import section and click on Import button.
                                 </p>
                             </div>
                         </div>

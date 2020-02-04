@@ -506,7 +506,7 @@
                                                                     <tr>
                                                                         <td class="wel_text" align="center" style="font-size: 1.5em;
                                                                         color: #6f8fdd;font-family:Candara;text-align:center;font-weight:600;"> 
-                                                                         Asset Numbers
+                                                                         Resource Numbers
                                                                         </td>
                                                                     </tr>
 																
