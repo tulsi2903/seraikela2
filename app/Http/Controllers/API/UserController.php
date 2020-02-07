@@ -40,11 +40,11 @@ class UserController extends Controller
         }
     }
 
-    public function details() 
+    public function user_details() 
     { 
-        // $id = Auth::user()->id;
-        // $user = User::select('id','userRole','title','first_name','middle_name','last_name','email')->where('id', $id)->first();
-        $user = Auth::user();
+        $id = Auth::user()->id;
+        $user = User::select('id','userRole','title','first_name','middle_name','last_name','email')->where('id', $id)->first();
+        // $user = Auth::user();
         return response()->json(['success' => $user]); 
     } 
 }

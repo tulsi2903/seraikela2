@@ -335,7 +335,7 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="form-group">
-                            <div><label for="scheme_id">Scheme<span style="color:red;margin-left:5px;">*</span></label><a class="select-all-link" style="float:right;" href="javscript:void();" onclick="selectUnselectAll('scheme_id', this)">Select All</a></div>
+                            <div><label for="scheme_id">Scheme<span style="color:red;margin-left:5px;">*</span></label><a class="select-all-link" style="float:right;" href="javscript:void();" onclick="selectUnselectAll('scheme_id', this)" data-selected="select">Select All</a></div>
                             <select name="scheme_id" id="scheme_id" class="form-control selectpicker" data-size="5" multiple>
                                 <!-- <option value="">All Schemes</option> -->
                                 @foreach($scheme_datas as $scheme_data)
@@ -350,7 +350,7 @@
                 <div class="row">
                     <div class="col-6">
                         <div class="form-group">
-                            <div><label for="year_id">Year<span style="color:red;margin-left:5px;">*</span></label><a class="select-all-link" style="float:right;" href="javscript:void();" onclick="selectUnselectAll('year_id', this)">Select All</a class="select-all-link"></div>
+                            <div><label for="year_id">Year<span style="color:red;margin-left:5px;">*</span></label><a class="select-all-link" style="float:right;" href="javscript:void();" onclick="selectUnselectAll('year_id', this)" data-selected="select">Select All</a class="select-all-link"></div>
                             <select name="year_id" id="year_id" class="form-control selectpicker" data-size="5" multiple>
                                 <!-- <option value="">All Years</option> -->
                                 @foreach($year_datas as $year_data)
@@ -362,7 +362,7 @@
                     </div>
                     <div class="col-6">
                         <div class="form-group">
-                            <div><label for="scheme_asset_id">Asset<span style="color:red;margin-left:5px;">*</span></label><a class="select-all-link" style="float:right;" href="javscript:void();" onclick="selectUnselectAll('scheme_asset_id', this)">Select All</a class="select-all-link"></div>
+                            <div><label for="scheme_asset_id">Asset<span style="color:red;margin-left:5px;">*</span></label><a class="select-all-link" style="float:right;" href="javscript:void();" onclick="selectUnselectAll('scheme_asset_id', this)" data-selected="select">Select All</a class="select-all-link"></div>
                             <select name="scheme_asset_id" id="scheme_asset_id" class="form-control selectpicker" data-size="5" multiple>
                                 <!-- <option value="">All Assets</option> -->
                                 @foreach($scheme_asset_datas as $scheme_asset_data)
@@ -1199,33 +1199,21 @@
 
             if ($("#scheme_id").val()) {
                 $("#scheme_id").removeClass('is-invalid');
-                // resetTabularView();
-                // resetMapView();
-                // resetCommon(); // to reset common things among all views
             }
         });
         $("#year_id").change(function () {
             if ($("#year_id").val()) {
                 $("#year_id").removeClass('is-invalid');
-                // resetTabularView();
-                // resetMapView();
-                // resetCommon(); // to reset common things among all views
             }
         });
         $("#scheme_asset_id").change(function () {
             if ($("#scheme_asset_id").val()) {
                 $("#scheme_asset_id").removeClass('is-invalid');
-                // resetTabularView();
-                // resetMapView();
-                // resetCommon(); // to reset common things among all views
             }
         });
         $("#geo_id").change(function () {
             if ($("#geo_id").val()) {
                 $("#geo_id").removeClass('is-invalid');
-                // resetTabularView();
-                // resetMapView();
-                // resetCommon(); // to reset common things among all views
             }
         });
     });
@@ -1361,9 +1349,15 @@
                 resetCommon(); // to reset common things among all views
 
                 // show basic details
-                $("#all-view-details").html("<b>Scheme: </b>" + $("#scheme_id option:selected").text());
-                $("#all-view-details").append("&nbsp;&nbsp;&nbsp;&bull;&nbsp;&nbsp;&nbsp;<b>Year: </b>" + $("#year_id option:selected").text());
-                $("#all-view-details").append("&nbsp;&nbsp;&nbsp;&bull;&nbsp;&nbsp;&nbsp;<b>Asset: </b>" + $("#scheme_asset_id option:selected").text());
+                $("#all-view-details").html("<b>Scheme: </b>" + $("#scheme_id option:selected").map(function () {
+                    return $(this).text();
+                }).get().join(', '));
+                $("#all-view-details").append("&nbsp;&nbsp;&nbsp;&bull;&nbsp;&nbsp;&nbsp;<b>Year: </b>" + $("#year_id option:selected").map(function () {
+                    return $(this).text();
+                }).get().join(', '));
+                $("#all-view-details").append("&nbsp;&nbsp;&nbsp;&bull;&nbsp;&nbsp;&nbsp;<b>Asset: </b>" + $("#scheme_asset_id option:selected").map(function () {
+                    return $(this).text();
+                }).get().join(', '));
                 $("#all-view-details").append("&nbsp;&nbsp;&nbsp;&bull;&nbsp;&nbsp;&nbsp;<b>Block: </b><span></span>");
                 $("#all-view-details").append(`&nbsp;&nbsp;&nbsp;&bull;&nbsp;&nbsp;&nbsp;<a href="javascript:void();" onclick="showSearch()" class="btn btn-secondary btn-sm"><i class="fas fa-sync"></i>&nbsp;&nbsp;Change</a>`);
 
@@ -1828,13 +1822,15 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.12/js/bootstrap-select.min.js"></script>
 <script>
     function selectUnselectAll(id, e){
-        if($(e).html()=='Select All'){
+        if($(e).attr("data-selected")=="select"){
             $("#"+id+"").selectpicker('selectAll');
             $(e).html('Deselect All');
+            $(e).attr("data-selected", "deselect");
         }
         else{
-            $("#"+id+"").selectpicker('deselectAll');
+            $("#"+id+"").selectpicker('val', '');
             $(e).html('Select All');
+            $(e).attr("data-selected", "select");
         }
     }
 </script>
