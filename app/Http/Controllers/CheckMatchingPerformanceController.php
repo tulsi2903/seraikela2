@@ -67,6 +67,8 @@ class CheckMatchingPerformanceController extends Controller
    public function get_matching_entries($id="")
    {
           $datas = CheckMatchingPerformance::where('id',$id)->first();
+          $get_data = $datas;
+
          
           $tmp_matching=count(explode(",",$datas->matching_performance_id));
           $tmp_matching_array=explode(",",$datas->matching_performance_id);
@@ -126,7 +128,7 @@ class CheckMatchingPerformanceController extends Controller
           }
 
 
-          return ['Matching'=>$datas,'tmp_matching'=>$tmp_matching, 'id'=>$id, 'scheme_performance_id_to_append'=>$scheme_performance_id_to_append,'append_comment'=>$append_comment];
+          return ['Data'=>$get_data,'Matching'=>$datas,'tmp_matching'=>$tmp_matching, 'id'=>$id, 'scheme_performance_id_to_append'=>$scheme_performance_id_to_append,'append_comment'=>$append_comment];
    }
 
 
@@ -324,6 +326,50 @@ public function search_datas(Request $request)
       return view('matching-schemes.view');
 }
 
+public function get_undo_datas(Request $request){
+     // return $request;
 
+     $undo_data = CheckMatchingPerformance::find($request->id);
+
+     $matching_id = $request->matching_id;
+     
+     $probable_duplicate_array = explode(",",$undo_data->probable_duplicate);
+     $not_duplicate_array  =  explode(",",$undo_data->not_duplicate);
+     $duplicate_array = explode(",",$undo_data->duplicate);
+
+     if(in_array($matching_id, $not_duplicate_array))
+     {
+          // remove form not duplicate => add in probable duplicate => update both entries (probable, no duplicate);
+          $key = array_search($matching_id, $not_duplicate_array);
+          unset($not_duplicate_array[$key]); // remove form not duplicate
+          $not_duplicate_array = array_values($not_duplicate_array); // reindexing
+          array_push($probable_duplicate_array, $matching_id); // add in probable duplicate
+     }
+     else if(in_array($matching_id, $duplicate_array))
+     {
+          // remove form duplicate => add in probable duplicate => update both entries (probable, duplicate);
+          $key = array_search($matching_id, $duplicate_array);
+          unset($duplicate_array[$key]); // remove form not duplicate
+          $duplicate_array = array_values($duplicate_array); // reindexing
+          array_push($probable_duplicate_array, $matching_id); // add in probable duplicate
+     }
+     else{
+          return ["response"=>false];
+     }
+
+     $undo_data->probable_duplicate = implode(",",$probable_duplicate_array);
+     $undo_data->not_duplicate = implode(",",$not_duplicate_array);
+     $undo_data->duplicate = implode(",",$duplicate_array);
+     if($undo_data->save()){
+          return ["response"=>true];
+     }
+     else{
+          return ["response"=>false];
+     }
+     
+
+
+      
+}
 
 }

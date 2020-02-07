@@ -173,7 +173,6 @@
 </div>
 
 
-
 <script>
     function view_matching_datas() {
         $("#get-table").show();

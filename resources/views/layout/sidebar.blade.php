@@ -49,7 +49,7 @@
 							<!-- <li class="nav-item"><a href="{{url('scheme-geo-target')}}"><i class="fas fa-receipt"></i><p>Scheme Geo Target</p></a></li> -->
 							<li class="nav-item"><a href="{{url('scheme-performance')}}"><i class="fas fa-receipt"></i><p>{{$phrase->scheme_performance}}</p></a></li>
 							@if(session()->get('user_designation')=="1")
-							<!-- <li class="nav-item"><a href="{{url('matching-schemes')}}"><i class="fas fa-receipt"></i><p>Matching Schemes</p></a></li>  -->
+							<li class="nav-item"><a href="{{url('matching-schemes')}}"><i class="fas fa-receipt"></i><p>Matching Schemes</p></a></li> 
 							@endif
 							@endif
 						</ul>
