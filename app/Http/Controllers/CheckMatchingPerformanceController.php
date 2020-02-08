@@ -136,61 +136,71 @@ class CheckMatchingPerformanceController extends Controller
 
  public function get_data(Request $request)
  {
-     $diff = $request->scheme_performance_id;
-     $duplicate = explode(",",$request->hidden_input_for_revert);
-     $progress = explode(",",$request->hidden_input_for_inprogress);
+     // $diff = $request->scheme_performance_id;
+     // $duplicate = explode(",",$request->hidden_input_for_revert);
+     // $progress = explode(",",$request->hidden_input_for_inprogress);
 
-     if(count($duplicate)!=0){
-          $diff = array_diff($diff, $duplicate);
-     }
-     if(count($progress)!=0){
-          $diff = array_diff($diff, $progress);
-     }
-     $diff = array_values($diff);
+     // if(count($duplicate)!=0){
+     //      $diff = array_diff($diff, $duplicate);
+     // }
+     // if(count($progress)!=0){
+     //      $diff = array_diff($diff, $progress);
+     // }
+     // $diff = array_values($diff);
 
     
      $check_matching_performance = CheckMatchingPerformance::where('id',$request->matching_id)->first();
     
-     $scheme_performance = SchemePerformance::where('scheme_performance_id',$check_matching_performance->scheme_performance_id)->select('scheme_performance_id','status')->first();
+     // $scheme_performance = SchemePerformance::where('scheme_performance_id',$check_matching_performance->scheme_performance_id)->select('scheme_performance_id','status')->first();
 
     //getting data from front end
-     $check_matching_performance->duplicate = $request->hidden_input_for_revert ?? "";
-     $check_matching_performance->not_duplicate = $request->hidden_input_for_inprogress ?? "";
+     // $check_matching_performance->duplicate = $request->hidden_input_for_revert ?? "";
+     // $check_matching_performance->not_duplicate = $request->hidden_input_for_inprogress ?? "";
      
 
 
-     $check_matching_performance->probable_duplicate = implode(",",$diff);
+     // $check_matching_performance->probable_duplicate = implode(",",$diff);
 
-     if($request->hidden_input_for_revert !="")
-     {
-          $check_matching_performance->status = 0;
-     }
-     else{
-          $check_matching_performance->status = 1;
-     }
+     // if($request->hidden_input_for_revert !="")
+     // {
+     //      $check_matching_performance->status = 0;
+     // }
+     // else{
+     //      $check_matching_performance->status = 1;
+     // }
 
-     $CheckMatchingPerformance_id=$request->get_scheme_performance_id;
+     // $CheckMatchingPerformance_id=$request->get_scheme_performance_id;
 
-     if($check_matching_performance->status == 1 && $check_matching_performance->scheme_performance_id!="")
-     {
+     // if($check_matching_performance->status == 1 && $check_matching_performance->scheme_performance_id!="")
+     // {
           
-          $get_scheme_performance_id = $request->get_scheme_performance_id;//getting data from front end
-          SchemePerformance::where('scheme_performance_id',$CheckMatchingPerformance_id)->update(array('status'=>0));
+     //      $get_scheme_performance_id = $request->get_scheme_performance_id;//getting data from front end
+     //      SchemePerformance::where('scheme_performance_id',$CheckMatchingPerformance_id)->update(array('status'=>0));
 
 
-     }
+     // }
 
      if($request->comment!="")
      {
           $check_matching_performance->comment =  serialize($request->comment);
 
      }
-     else{
+     else
+     {
           $check_matching_performance->comment="";  
      }
 
-   
-     $check_matching_performance->save();
+     if($check_matching_performance->duplicate != "")
+     {
+          $check_matching_performance->status = 0;
+     }
+     else
+     {
+          $check_matching_performance->status = 1; 
+     }
+
+
+      $check_matching_performance->save();
     
     
      return redirect('matching-schemes');
@@ -302,19 +312,7 @@ public function search_datas(Request $request)
           }
           $data->attribute = $print_att;
 
-          // if performance id is in array, then $data->type="duplicate"  OR "not_duplicate" 
-          // if(in_array($data->scheme_performance_id, $get_not_duplicate_array))
-          // {
-          //      $data->type = "not_duplicate";
-          // }
-          // else if(in_array($data->scheme_performance_id, $get_duplicate_array))
-          // {
-          //      $data->type = "duplicate";
-          // }
-          // else{
-          //      $data->type = "probable_duplicate";
-          // }
-
+        
    
      }
      // $data = CheckMatchingPerformance::where('id',$id)->first();
@@ -326,19 +324,91 @@ public function search_datas(Request $request)
       return view('matching-schemes.view');
 }
 
+
+public function get_matching_entries_view($id="")
+   {
+          $datas = CheckMatchingPerformance::where('id',$id)->first();
+          $get_data = $datas;
+
+         
+          $tmp_matching=count(explode(",",$datas->matching_performance_id));
+          $tmp_matching_array=explode(",",$datas->matching_performance_id);
+          $created_at=$datas->created_at;
+          $updated_at=$datas->updated_at;
+          $scheme_performance_id_to_append = $datas->scheme_performance_id;
+          $append_comment = unserialize($datas->comment);
+
+
+          $get_not_duplicate_array = explode(",",$datas->not_duplicate);
+          $get_duplicate_array = explode(",",$datas->duplicate);
+          // $get_scheme_performance_id=$datas->scheme_performance_id;
+
+          $CheckMatchingPerformance_id=$datas->id;
+          $datas=SchemePerformance::leftJoin('year','scheme_performance.year_id','=','year.year_id')
+                    ->leftJoin('scheme_assets','scheme_performance.scheme_asset_id','=','scheme_assets.scheme_asset_id')
+                    ->leftJoin('scheme_structure','scheme_performance.scheme_id','=','scheme_structure.scheme_id')
+                    ->leftJoin('geo_structure','scheme_performance.block_id','=','geo_structure.geo_id')
+                    ->select('scheme_performance.scheme_performance_id','scheme_performance.attribute','geo_structure.geo_name as block_name ','scheme_performance.panchayat_id as panchayat_id','year.year_value','scheme_assets.scheme_asset_name','scheme_structure.scheme_name','scheme_structure.scheme_short_name','geo_structure.geo_name')
+                    ->whereIn('scheme_performance_id',$tmp_matching_array)
+                    ->get();
+
+         
+
+          foreach($datas as $data)
+          {
+               
+                //panchayat data
+                $data->created_at=$created_at;
+                $data->updated_at=$updated_at;
+               //  $data->scheme_performance_id = $get_scheme_performance_id;
+
+               $tmp = GeoStructure::select('geo_name')->where('geo_id', $data['panchayat_id'])->first();
+               $data->panchayat_name = $tmp->geo_name;
+               $attribute[0]=unserialize($data['attribute']);
+               $print_att="";
+               foreach($attribute[0][0] as $key_at=>$value_att)
+               {
+                   $print_att=$value_att;
+               }
+               $data->attribute = $print_att;
+
+               // if performance id is in array, then $data->type="duplicate"  OR "not_duplicate" 
+               if(in_array($data->scheme_performance_id, $get_not_duplicate_array))
+               {
+                    $data->type = "not_duplicate";
+               }
+               else if(in_array($data->scheme_performance_id, $get_duplicate_array))
+               {
+                    $data->type = "duplicate";
+               }
+               else{
+                    $data->type = "probable_duplicate";
+               }
+
+        
+          }
+
+
+          return ['Data'=>$get_data,'Matching'=>$datas,'tmp_matching'=>$tmp_matching, 'id'=>$id, 'scheme_performance_id_to_append'=>$scheme_performance_id_to_append,'append_comment'=>$append_comment];
+   }
+
+
 public function get_undo_datas(Request $request){
-     // return $request;
+     //   return $request;
 
      $undo_data = CheckMatchingPerformance::find($request->id);
+    
 
      $matching_id = $request->matching_id;
      
      $probable_duplicate_array = explode(",",$undo_data->probable_duplicate);
      $not_duplicate_array  =  explode(",",$undo_data->not_duplicate);
      $duplicate_array = explode(",",$undo_data->duplicate);
+     
 
      if(in_array($matching_id, $not_duplicate_array))
      {
+         
           // remove form not duplicate => add in probable duplicate => update both entries (probable, no duplicate);
           $key = array_search($matching_id, $not_duplicate_array);
           unset($not_duplicate_array[$key]); // remove form not duplicate
@@ -347,6 +417,7 @@ public function get_undo_datas(Request $request){
      }
      else if(in_array($matching_id, $duplicate_array))
      {
+          
           // remove form duplicate => add in probable duplicate => update both entries (probable, duplicate);
           $key = array_search($matching_id, $duplicate_array);
           unset($duplicate_array[$key]); // remove form not duplicate
@@ -370,6 +441,92 @@ public function get_undo_datas(Request $request){
 
 
       
+}
+
+public function status_duplicate(Request $request)
+{
+     
+
+     $status_change = CheckMatchingPerformance::find($request->id);
+    
+
+     $matching_id = $request->matching_id; 
+     $probable_duplicate_array = explode(",",$status_change->probable_duplicate);
+     $duplicate_array = explode(",",$status_change->duplicate);
+
+     if($status_change->duplicate == "")
+     {
+          $status_change->duplicate =  $matching_id;
+          $key = array_search($matching_id, $probable_duplicate_array);
+          unset($probable_duplicate_array[$key]);
+
+         
+     }
+     else{
+          $status_change->duplicate = $status_change->duplicate.",".$matching_id;
+          $key = array_search($matching_id, $probable_duplicate_array);
+          unset($probable_duplicate_array[$key]);
+
+     }
+     $status_change->probable_duplicate = implode(",",$probable_duplicate_array);
+
+
+
+     if($status_change->save()){
+          return ["response"=>true];
+     }
+     else{
+          return ["response"=>false];
+     }
+     
+    
+     
+}
+
+public function status_not_duplicate(Request $request)
+{
+     
+
+     $status_change = CheckMatchingPerformance::find($request->id);
+
+
+     $matching_id = $request->matching_id;
+     $probable_duplicate_array = explode(",",$status_change->probable_duplicate);
+     $not_duplicate_array = explode(",",$status_change->not_duplicate);
+    
+
+     if($status_change->not_duplicate == "")
+     {
+          
+          $status_change->not_duplicate =  $matching_id;
+          
+          $key = array_search($matching_id, $probable_duplicate_array);
+          unset($probable_duplicate_array[$key]); 
+
+         
+     }
+     else{
+         
+          $status_change->not_duplicate = $status_change->not_duplicate.",".$matching_id;
+          $key = array_search($matching_id, $probable_duplicate_array);
+          unset($probable_duplicate_array[$key]);
+
+         
+     }
+
+     $status_change->probable_duplicate = implode(",",$probable_duplicate_array);
+
+
+     // return $status_change->probable_duplicate;
+    
+     if($status_change->save()){
+          return ["response"=>true];
+     }
+     else{
+          return ["response"=>false];
+     }
+   
+    
 }
 
 }

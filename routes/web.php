@@ -254,12 +254,16 @@ Route::post('scheme_performance/savebl_pl_connectivity','SchemePerformanceContro
 
 Route::get('matching-schemes','CheckMatchingPerformanceController@index');
 Route::get('get/matching-schemes/details/{id}','CheckMatchingPerformanceController@get_matching_entries');
-Route::post('scheme_performance/status_update','CheckMatchingPerformanceController@get_data');
+ Route::post('scheme_performance/status_update','CheckMatchingPerformanceController@get_data');
 Route::get('matching-schemes/get-undo-datas','CheckMatchingPerformanceController@undo_results');
 Route::get('matching-schemes/view','CheckMatchingPerformanceController@view');
 // Route::post('matching-schemes/view-searched-results','CheckMatchingPerformanceController@search_datas');
 Route::get('fetch/matching-schemes/details','CheckMatchingPerformanceController@search_datas');
 Route::get('undo/matching-scheme/data','CheckMatchingPerformanceController@get_undo_datas');
+Route::get('status-duplicate/change/matching-scheme/data','CheckMatchingPerformanceController@status_duplicate');
+Route::get('status-not-duplicate/change/matching-scheme/data','CheckMatchingPerformanceController@status_not_duplicate');
+Route::get('fetch/matching-schemes/{id}','CheckMatchingPerformanceController@get_matching_entries_view');
+
 
 /* scheme review */
 Route::get('scheme-review', 'SchemeReviewController@index');

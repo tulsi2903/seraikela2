@@ -1,12 +1,5 @@
 @extends('layout.layout') @section('title', 'View Matching Schemes') @section('page-style')
-<style>
-.table{
-    display: none;
-}
-#toggle_div{
-    display: none;
-}
-</style>
+
 @endsection @section('page-content')
 <div class="card">
     <div class="col-md-12">
@@ -122,11 +115,11 @@
             </div>
             <hr/>
 
-<div id="toggle_div">
-    <form action="{{url('scheme_performance/status_update')}}" name="myForm" id="duplicate-form" method="POST">
+<div id="toggle_div" style="">
+    <form name="myForm" id="duplicate-form" method="GET">
         @csrf
         <div class="modal-body">
-            <div class="row" style="padding:2em;margin-top: -3em;">
+            <div class="row" style="padding:2em;">
                 <table class="table table-bordered table-head-bg-info table-bordered-bd-info mt-4">
                     <thead>
                         <tr>
@@ -154,15 +147,9 @@
         </div>
 
         <div class="modal-footer">
-            <!-- <input type="text" name="count_value" id="count_value" hidden> -->
-            <!-- <input type="text" name="hidden_input_for_scheme_performance_id" id="hidden_input_for_scheme_performance_id"> -->
-            <input type="text" name="hidden_input_for_inprogress" id="hidden_input_for_inprogress" value="" hidden>
-            <input type="text" name="hidden_input_for_revert" id="hidden_input_for_revert" value="" hidden>
-
+         
             <button type="button" class="btn btn-secondary waves-effect" onclick="return hide_div();">Cancel</button>
-            <!-- <button type="submit" class="btn btn-info waves-effect waves-light" onclick="return before_save({{$data->id}})">Save</button> -->
-            <!-- <button type="button" class="btn btn-info waves-effect waves-light" onclick="return validateForm()">Save</button> -->
-
+           
         </div>
     </form>
 </div>
@@ -199,7 +186,7 @@
             },
             success: function(data) {
 
-                console.log(data);
+                // console.log(data);
                 $("#table-data").show();
                 var to_append = "";
                 var s_no = 0;
@@ -223,32 +210,23 @@
     }
 </script>
 <script>
-    // variable to use globally
-    var selected_inprogress = new Array;
-    var selected_revert = new Array;
-    var total_duplicate_record = 0;
-    //
+    
     function get_view_data(id) {
-        //  alert(id);
+        //   alert(id);
 
         $("#toggle_div").slideDown(300);
         $.ajax({
-            url: "fetch/matching-schemes/details" + "/" + id,
+            url: "{{url('')}}/fetch/matching-schemes" + "/" + id,
             method: "GET",
             contentType: 'application/json',
             dataType: "json",
             beforeSend: function() {
-                $("#dublicate_data").html("");
-                $("#hidden_input_for_inprogress").val("");
-                $("#hidden_input_for_revert").val("");
-
-                selected_inprogress = [];
-                selected_revert = [];
-                total_duplicate_record = 0;
+                 $("#dublicate_data").html("");
+                
             },
             success: function(data) {
-                console.log(data.append_comment);
-                total_duplicate_record = parseInt(data.tmp_matching);
+                // alert("hi");
+                console.log(data.Matching);
                 var append;
                 var s_no = 0;
                 for (var i = 0; i < data.tmp_matching; i++) {
@@ -259,23 +237,22 @@
                             <td>
                             <input type="text" name="matching_id" value="` + id + `" hidden>
                             <input type="text" name="scheme_performance_id[]" value="` + data.Matching[i].scheme_performance_id + `" hidden>`;
-                    // console.log(data.Matching[i].type);
                     if (data.Matching[i].type == "not_duplicate") {
-                        append += `<span class="">This particular record is not duplicate</span><i class="fa fa-undo" aria-hidden="true" style="color:blue;></i>`;
+                        append += `<span class="">This particular record is not duplicate</span>`;
                     } else if (data.Matching[i].type == "duplicate") {
-                        append += `<span class="" style="color:red;">This particular record is duplicate</span><i class="fa fa-undo" aria-hidden="true" style="color:blue;></i>`;
+                        append += `<span class="" style="color:red;">This particular record is duplicate</span>`;
                     } else {
-                        append += `<button type="button" class="btn btn-primary inprogress"  onclick="inprogress_request(` + data.Matching[i].scheme_performance_id + `,this)">Not Duplicate</button><span class="notduplicate_record">This particular record is not duplicate</span>
-                        <button type="button" class="btn btn-primary revert" onclick="revert_request(` + data.Matching[i].scheme_performance_id + `,this)">Duplicate</button><span style="color:red" class="duplicate_record">This particular record is duplicate</span>`;
+                        append += `<span class="" style="color:blue;">This particular record is not been checked</span>`;
                     }
+                    append += `</td>`;  
 
-                    // append += `</td><td>` + data.Matching[i].updated_at + `</td>`;
+                   
                     if (data.append_comment[i] != null) {
-                        append += `<td><textarea class="form-control" name="comment[]">` + data.append_comment[i] + `</textarea></td>`;
+                        append += `<td>` + data.append_comment[i] + `</td>`;
                     } else {
-                        append += `<td><textarea class="form-control" name="comment[]"></textarea></td>`;
+                        append += `<td></td>`;
                     }
-                    // append +=`<td><a href="#"><i class="fa fa-undo" aria-hidden="true"></i></a></td></tr>`;
+                   
                 }
                 $("#dublicate_data").append(append);
             }
@@ -286,27 +263,7 @@
         $("#toggle_div").slideUp(300);
     }
 
-    function revert_request(id, e) {
-        if (!selected_revert.includes(id)) {
-            selected_revert.push(id);
-            $("#hidden_input_for_revert").val(selected_revert);
-            var tr = $(e).closest("tr");
-            $(tr).find(".duplicate_record").show();
-            $(tr).find(".inprogress").hide();
-            $(tr).find(".revert").hide();
-        }
-    }
-
-    function inprogress_request(id, e) {
-        if (!selected_inprogress.includes(id)) {
-            selected_inprogress.push(id);
-            $("#hidden_input_for_inprogress").val(selected_inprogress);
-            var tr = $(e).closest("tr");
-            $(tr).find(".notduplicate_record").show();
-            $(tr).find(".inprogress").hide();
-            $(tr).find(".revert").hide();
-        }
-    }
+    
 </script>
 <script>
     // defining error = true as default

@@ -172,12 +172,12 @@
             <div class="modal-footer">
                 <!-- <input type="text" name="count_value" id="count_value" hidden> -->
                 <!-- <input type="text" name="hidden_input_for_scheme_performance_id" id="hidden_input_for_scheme_performance_id"> -->
-                <input type="text" name="hidden_input_for_inprogress" id="hidden_input_for_inprogress" value="" >
-                <input type="text" name="hidden_input_for_revert" id="hidden_input_for_revert" value="" >
+                <input type="text" name="hidden_input_for_inprogress" id="hidden_input_for_inprogress" value="" hidden>
+                <input type="text" name="hidden_input_for_revert" id="hidden_input_for_revert" value="" hidden>
 
 
                 <button type="button" class="btn btn-secondary waves-effect" onclick="return hide_div();">Cancel</button>
-                <!-- <button type="submit" class="btn btn-info waves-effect waves-light" onclick="return before_save({{$data->id}})">Save</button> -->
+                <!-- <button type="submit" class="btn btn-info waves-effect waves-light">Save</button> -->
                 <button type="button" class="btn btn-info waves-effect waves-light" onclick="return validateForm()">Save</button>
                 <input type="text" name="to_data" id="to_data" hidden>
 
@@ -193,9 +193,9 @@
     // variable to use globally
   
 
-    var selected_inprogress = new Array;
-    var selected_revert = new Array;
-    var total_duplicate_record = 0;
+    // var selected_inprogress = new Array;
+    // var selected_revert = new Array;
+    // var total_duplicate_record = 0;
     //
 
     function get_view_data(id) {
@@ -218,20 +218,20 @@
 
             },
             success: function(data) {
-                //   console.log(data.Data.not_duplicate);
+                
 
-                 $("#hidden_input_for_inprogress").val(data.Data.not_duplicate);
                  selected_inprogress = data.Data.not_duplicate.split(",");
-                //  console.log(data.Data.not_duplicate);
-                alert(selected_inprogress);
+               
+              console.log(selected_inprogress);
+               
 
-
-                $("#hidden_input_for_revert").val(data.Data.duplicate);
                 selected_revert = data.Data.duplicate.split(",");
-                // console.log(data.Data.duplicate);
+               
+                  console.log(selected_revert);
+               
              
                 total_duplicate_record =parseInt(data.tmp_matching);
-                // console.log(total_duplicate_record);
+                
 
                 var append;
                 var s_no = 0;
@@ -243,19 +243,23 @@
                             <td>` + data.Matching[i].attribute + `</td>
                             <td>
                             <input type="text" name="matching_id" value="` + id + `" hidden>
-                            <input type="text" name="scheme_performance_id[]" value="` + data.Matching[i].scheme_performance_id + `" hidden>`;
+                            <input type="text" name="scheme_performance_id[]" value="` + data.Matching[i].scheme_performance_id + `" hidden>
+                            <span class="" style="display:none;">This particular record is not duplicate</span><a href="javascript:void();" style="display:none;" class="undo_icon_not_duplicate" onclick="undo_data(`+id+`,`+data.scheme_performance_id_to_append+`,`+data.Matching[i].scheme_performance_id+`,this);"><i class="fa fa-undo" aria-hidden="true" style="color:blue;"></i></a>
+                            <span class="" style="color:red;display:none;">This particular record is duplicate</span><a href="javascript:void();" style="display:none;" class="undo_icon_duplicate" onclick="undo_data(`+id+`,`+data.scheme_performance_id_to_append+`,`+data.Matching[i].scheme_performance_id+`,this);"><i class="fa fa-undo" aria-hidden="true" style="color:blue;"></i></a>
+                            <span class="notduplicate_record_view" style="display:none;">This particular record is not duplicate</span>
+                            <span style="color:red;display:none;" class="duplicate_record_view">This particular record is duplicate</span>`;
 
                    
 
                     if(data.Matching[i].type=="not_duplicate"){
-                        append += `<span class="">This particular record is not duplicate</span><a href="javascript:void();" onclick="undo_data(`+id+`,`+data.scheme_performance_id_to_append+`,`+data.Matching[i].scheme_performance_id+`,this);"><i class="fa fa-undo" aria-hidden="true" style="color:blue;"></i></a>`;
+                        append += `<span class="not_duplicate_msg">This particular record is not duplicate</span><a href="javascript:void();" class="not_duplicate_icon" onclick="undo_data(`+id+`,`+data.scheme_performance_id_to_append+`,`+data.Matching[i].scheme_performance_id+`,this);"><i class="fa fa-undo" aria-hidden="true" style="color:blue;"></i></a>`;
                     }
                     else if(data.Matching[i].type=="duplicate"){
-                        append += `<span class="" style="color:red;">This particular record is duplicate</span><a href="javascript:void();" onclick="undo_data(`+id+`,`+data.scheme_performance_id_to_append+`,`+data.Matching[i].scheme_performance_id+`,this);"><i class="fa fa-undo" aria-hidden="true" style="color:blue;"></i></a>`;
+                        append += `<span class="duplicate_msg" style="color:red;">This particular record is duplicate</span><a href="javascript:void();" class="duplicate_icon" onclick="undo_data(`+id+`,`+data.scheme_performance_id_to_append+`,`+data.Matching[i].scheme_performance_id+`,this);"><i class="fa fa-undo" aria-hidden="true" style="color:blue;"></i></a>`;
                     }
                     else{
-                        append += `<button type="button" class="btn btn-primary inprogress"  onclick="inprogress_request(`+ data.Matching[i].scheme_performance_id + `,this)">Not Duplicate</button><span class="notduplicate_record">This particular record is not duplicate</span>
-                        <button type="button" class="btn btn-primary revert" onclick="revert_request(`+ data.Matching[i].scheme_performance_id + `,this)">Duplicate</button><span style="color:red" class="duplicate_record">This particular record is duplicate</span>`;
+                        append += `<button type="button" class="btn btn-primary inprogress" onclick="status_not_duplicate_matching_schemes(`+id+`,`+data.scheme_performance_id_to_append+`,`+data.Matching[i].scheme_performance_id+`,this)");">Not Duplicate</button><span class="notduplicate_record" style="display:none">This particular record is not duplicate</span>
+                        <button type="button" class="btn btn-primary revert" onclick="status_duplicate_matching_schemes(`+id+`,`+data.scheme_performance_id_to_append+`,`+data.Matching[i].scheme_performance_id+`,this)">Duplicate</button><span style="color:red" class="duplicate_record" style="display:none">This particular record is duplicate</span>`;
                     }
                   
                       append += `</td>`;      
@@ -292,7 +296,7 @@
             $(tr).find(".duplicate_record").show();
             $(tr).find(".inprogress").hide();
             $(tr).find(".revert").hide();
-            // console.log(selected_revert);
+          
         }
     }
     function inprogress_request(id, e) {
@@ -320,18 +324,20 @@
 
             },
             success: function(data) {
-               console.log(primary_id_value);
-               console.log(scheme_performance_id_value);
-               console.log(matching_id_value);
-               console.log(data.response);
+        
 
                //fetching buttons in view page
 
-            //    var tr = $(e).closest("tr");
-            //    $(tr).find(".notduplicate_record").hide(); //not duplicate message
-            //    $(tr).find(".duplicate").hide(); //duplicate message
-            //    $(tr).find(".inprogress").show(); //not duplicate button
-            //     $(tr).find(".revert").show(); //duplicate button
+               var tr = $(e).closest("tr");
+               $(tr).find(".not_duplicate_msg").hide(); //not duplicate message
+               $(tr).find(".duplicate_msg").hide(); //duplicate message
+               $(tr).find(".inprogress").show(); //not duplicate button
+                $(tr).find(".revert").show(); //duplicate button
+                $(tr).find(".notduplicate_record_view").hide();
+                $(tr).find(".duplicate_record_view").hide();
+                $(tr).find(".not_duplicate_icon").hide();
+                $(tr).find(".duplicate_icon").hide();
+                $(tr).find(".undo_icon_not_duplicate").hide();
                
            
             }
@@ -339,9 +345,65 @@
     }
 </script>
 <script>
+    function status_duplicate_matching_schemes(primary_id_value,scheme_performance_id_value,matching_id_value,e)
+    {
+        $.ajax({
+            url: "status-duplicate/change/matching-scheme/data"+ "?id=" +primary_id_value+ "&scheme_performance_id=" +scheme_performance_id_value+ "&matching_id="+matching_id_value,
+            method: "GET",
+            contentType: 'application/json',
+            dataType: "json",
+            beforeSend: function(){
+
+            },
+            success:function(data){
+                console.log(data.response);
+
+                if(data.response == true)
+                {
+                    var tr = $(e).closest("tr");
+                    $(tr).find(".duplicate_record_view").show(); //duplicate message
+                    $(tr).find(".undo_icon_duplicate").show();
+                    $(tr).find(".notduplicate_record_view").hide(); //not duplicate message
+                   
+                    $(tr).find(".inprogress").hide(); //not duplicate button
+                    $(tr).find(".revert").hide(); //duplicate button 
+                }
+            }
+        });
+    }
+</script>
+<script>
+     function status_not_duplicate_matching_schemes(primary_id_value,scheme_performance_id_value,matching_id_value,e)
+    {
+        $.ajax({
+            url: "status-not-duplicate/change/matching-scheme/data"+ "?id=" +primary_id_value+ "&scheme_performance_id=" +scheme_performance_id_value+ "&matching_id="+matching_id_value,
+            method: "GET",
+            contentType: 'application/json',
+            dataType: "json",
+            beforeSend: function(){
+
+            },
+            success:function(data){
+                console.log(data.response);
+
+                if(data.response == true)
+                {
+                    var tr = $(e).closest("tr");
+                    $(tr).find(".notduplicate_record_view").show(); //not duplicate message
+                    $(tr).find(".undo_icon_not_duplicate").show();
+                    $(tr).find(".duplicate_record_view").hide(); //duplicate message
+                    $(tr).find(".inprogress").hide(); //not duplicate button
+                    $(tr).find(".revert").hide(); //duplicate button 
+                }
+            }
+        });
+    }
+</script>
+<script>
     function validateForm() {
-        //   alert(selected_inprogress.length);
-        //  alert(selected_revert.length);
+
+        // alert(selected_inprogress.length);
+        // alert(selected_revert.length);
         //  alert(total_duplicate_record);
 
         if((selected_inprogress.length + selected_revert.length) == total_duplicate_record){
