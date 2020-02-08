@@ -28,6 +28,14 @@ class SchemeReviewDuplicateDataCheckController extends Controller
 
 
     public function get_datas(Request $request){
+        $str = "sc";
+        $str = trim($str);
+        $str = preg_replace('/\s+/', ' ', $str);
+
+        return strlen($str);
+
+
+        // return $request;
         // echo "<pre>";
         // print_r(SchemePerformance::select('scheme_performance_id','attribute')->get()->toArray());
         // exit();
@@ -92,11 +100,10 @@ class SchemeReviewDuplicateDataCheckController extends Controller
                                                 ->LeftJoin('scheme_structure','scheme_performance.scheme_id','=','scheme_structure.scheme_id')
                                                 ->select('scheme_performance.*','year.year_value','scheme_structure.scheme_short_name','scheme_structure.attributes as scheme_attributes')
                                                 ->whereIn('scheme_performance.panchayat_id', $panchayat_ids_selected)
-                                                ->where('scheme_performance.scheme_asset_id', $scheme_asset_id_selected)
-                                                ->whereIn('scheme_performance_id', [101,124]);
+                                                ->where('scheme_performance.scheme_asset_id', $scheme_asset_id_selected);
+                                                // ->whereIn('scheme_performance_id', [101,124]);
         $performance_datas_selected = $performance_datas_tmp->get();
         $performance_datas_to_test = $performance_datas_tmp->get();
-
 
         /* 
         actual testing started

@@ -1,6 +1,11 @@
-@extends('layout.layout') @section('title', 'View Matching Schemes') @section('page-style')
+@extends('layout.layout') 
 
-@endsection @section('page-content')
+@section('title', 'View Matching Schemes') 
+
+@section('page-style') 
+@endsection 
+
+@section('page-content')
 <div class="card">
     <div class="col-md-12">
 
@@ -85,7 +90,7 @@
                                 <button type="button" class="btn btn-secondary" onclick="view_matching_datas();"><i class="fas fa-search"></i>&nbsp;&nbsp;{{$phrase->search}}</button>
                             </div>
                         </div>
-                        <div id="table-data">
+                        <div id="table-data" style="display: none;">
                             <table class="table table-striped" id="get-table">
                                 <thead>
                                     <tr>
@@ -115,50 +120,49 @@
             </div>
             <hr/>
 
-<div id="toggle_div" style="">
-    <form name="myForm" id="duplicate-form" method="GET">
-        @csrf
-        <div class="modal-body">
-            <div class="row" style="padding:2em;">
-                <table class="table table-bordered table-head-bg-info table-bordered-bd-info mt-4">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Year</th>
-                            <th>Block</th>
-                            <th>Panchayat</th>
-                            <th>Schemes</th>
-                            <th>Assests</th>
-                            <th>Attributes</th>
+            <div id="toggle_div" style="display: none;">
+                <form name="myForm" id="duplicate-form" method="GET">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="row" style="padding:2em;">
+                            <table class="table table-bordered table-head-bg-info table-bordered-bd-info mt-4">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Year</th>
+                                        <th>Block</th>
+                                        <th>Panchayat</th>
+                                        <th>Schemes</th>
+                                        <th>Assests</th>
+                                        <th>Attributes</th>
 
-                            <th>Status Is</th>
-                            <!-- <th>Date</th> -->
-                            <th>Comment</th>
-                            <!-- <th>Cancel</th> -->
-                        </tr>
-                    </thead>
-                    <tbody id="dublicate_data">
-                        <!-- append details -->
-                    </tbody>
+                                        <th>Status Is</th>
+                                        <!-- <th>Date</th> -->
+                                        <th>Comment</th>
+                                        <!-- <th>Cancel</th> -->
+                                    </tr>
+                                </thead>
+                                <tbody id="dublicate_data">
+                                    <!-- append details -->
+                                </tbody>
 
-                </table>
+                            </table>
 
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+
+                        <button type="button" class="btn btn-secondary waves-effect" onclick="return hide_div();">Cancel</button>
+
+                    </div>
+                </form>
             </div>
-        </div>
-
-        <div class="modal-footer">
-         
-            <button type="button" class="btn btn-secondary waves-effect" onclick="return hide_div();">Cancel</button>
-           
-        </div>
-    </form>
-</div>
 
         </div>
     </div>
 
 </div>
-
 
 <script>
     function view_matching_datas() {
@@ -182,7 +186,7 @@
             contentType: 'application/json',
             dataType: "json",
             beforeSend: function() {
-                
+
             },
             success: function(data) {
 
@@ -210,7 +214,6 @@
     }
 </script>
 <script>
-    
     function get_view_data(id) {
         //   alert(id);
 
@@ -221,8 +224,8 @@
             contentType: 'application/json',
             dataType: "json",
             beforeSend: function() {
-                 $("#dublicate_data").html("");
-                
+                $("#dublicate_data").html("");
+
             },
             success: function(data) {
                 // alert("hi");
@@ -244,15 +247,14 @@
                     } else {
                         append += `<span class="" style="color:blue;">This particular record is not been checked</span>`;
                     }
-                    append += `</td>`;  
+                    append += `</td>`;
 
-                   
                     if (data.append_comment[i] != null) {
                         append += `<td>` + data.append_comment[i] + `</td>`;
                     } else {
                         append += `<td></td>`;
                     }
-                   
+
                 }
                 $("#dublicate_data").append(append);
             }
@@ -262,8 +264,6 @@
     function hide_div() {
         $("#toggle_div").slideUp(300);
     }
-
-    
 </script>
 <script>
     // defining error = true as default
@@ -360,12 +360,15 @@
     }
 </script>
 <script>
-    $("#matching_schemes").change(function() {
+    $("#matching_schemes").change(function(){
         $("#form-data").show();
         $("#year_id").val("");
         $("#scheme_id").val("");
         $("#block_id").val("");
         $("#panchayat_id").val("");
+
+        $("#table-data").hide(50);
+        $("#toggle_div").hide(50);
     });
 </script>
 

@@ -428,14 +428,25 @@ public function get_undo_datas(Request $request){
           return ["response"=>false];
      }
 
-     $undo_data->probable_duplicate = implode(",",$probable_duplicate_array);
+     $undo_data->probable_duplicate = ltrim(",",implode(",",$probable_duplicate_array));
      $undo_data->not_duplicate = implode(",",$not_duplicate_array);
      $undo_data->duplicate = implode(",",$duplicate_array);
+
+
+     $matching_performance_ids_count = count(explode(",",$undo_data->matching_performance_id));
+     $selected_performance_ids_count= 0;
+     if($undo_data->not_duplicate){
+          $selected_performance_ids_count += count(explode(",", $undo_data->not_duplicate));
+     }
+     if($undo_data->duplicate){
+          $selected_performance_ids_count += count(explode(",", $undo_data->duplicate));
+     }
+
      if($undo_data->save()){
-          return ["response"=>true];
+          return ["response"=>true, "matching_performance_ids_count"=>$matching_performance_ids_count, "selected_performance_ids_count"=>$selected_performance_ids_count];
      }
      else{
-          return ["response"=>false];
+          return ["response"=>false, "matching_performance_ids_count"=>$matching_performance_ids_count, "selected_performance_ids_count"=>$selected_performance_ids_count];
      }
      
 
@@ -471,12 +482,21 @@ public function status_duplicate(Request $request)
      $status_change->probable_duplicate = implode(",",$probable_duplicate_array);
 
 
+     $matching_performance_ids_count = count(explode(",",$status_change->matching_performance_id));
+     $selected_performance_ids_count= 0;
+     if($status_change->not_duplicate){
+          $selected_performance_ids_count += count(explode(",", $status_change->not_duplicate));
+     }
+     if($status_change->duplicate){
+          $selected_performance_ids_count += count(explode(",", $status_change->duplicate));
+     }
+
 
      if($status_change->save()){
-          return ["response"=>true];
+          return ["response"=>true, "matching_performance_ids_count"=>$matching_performance_ids_count, "selected_performance_ids_count"=>$selected_performance_ids_count];
      }
      else{
-          return ["response"=>false];
+          return ["response"=>false, "matching_performance_ids_count"=>$matching_performance_ids_count, "selected_performance_ids_count"=>$selected_performance_ids_count];
      }
      
     
@@ -517,13 +537,21 @@ public function status_not_duplicate(Request $request)
      $status_change->probable_duplicate = implode(",",$probable_duplicate_array);
 
 
-     // return $status_change->probable_duplicate;
-    
+     $matching_performance_ids_count = count(explode(",",$status_change->matching_performance_id));
+     $selected_performance_ids_count= 0;
+     if($status_change->not_duplicate){
+          $selected_performance_ids_count += count(explode(",", $status_change->not_duplicate));
+     }
+     if($status_change->duplicate){
+          $selected_performance_ids_count += count(explode(",", $status_change->duplicate));
+     }
+
+
      if($status_change->save()){
-          return ["response"=>true];
+          return ["response"=>true, "matching_performance_ids_count"=>$matching_performance_ids_count, "selected_performance_ids_count"=>$selected_performance_ids_count];
      }
      else{
-          return ["response"=>false];
+          return ["response"=>false, "matching_performance_ids_count"=>$matching_performance_ids_count, "selected_performance_ids_count"=>$selected_performance_ids_count];
      }
    
     

@@ -498,15 +498,15 @@ class SchemePerformanceController extends Controller
             }
         }
 
-        $geo_names = (array) $geo_names;
-        $geo_block_names = (array) $geo_block_names;
+        // $geo_names = (array) $geo_names;
+        // $geo_block_names = (array) $geo_block_names;
         $geo_names_array = array();
         $geo_block_names_array = array();
         foreach ($geo_names as $key_geo => $value_geo) {
-            $geo_names_array = $value_geo;
+            array_push($geo_names_array, preg_replace('/\s+/', ' ', trim(strtolower($value_geo))));
         }
         foreach ($geo_block_names as $key_block => $value_block) {
-            $geo_block_names_array = $value_block;
+            array_push($geo_block_names_array, preg_replace('/\s+/', ' ', trim(strtolower($value_block))));
         }
         // echo "<pre>";
         // print_r($geo_block_names_array);
@@ -532,8 +532,8 @@ class SchemePerformanceController extends Controller
         }
         // array_push($tableHeadingsAndAtributes, 0);
         if ($_FILES['excelcsv']['tmp_name']) {
-            $readExcel = \Excel::selectSheets('Scheme-Format')->load($_FILES['excelcsv']['tmp_name'], function ($reader) { })->get()->toArray();
-            $readExcelHeader = \Excel::selectSheets('Scheme-Format')->load($_FILES['excelcsv']['tmp_name'])->get();
+            @$readExcel = \Excel::selectSheets('Scheme-Format')->load($_FILES['excelcsv']['tmp_name'], function ($reader) { })->get()->toArray();
+            @$readExcelHeader = \Excel::selectSheets('Scheme-Format')->load($_FILES['excelcsv']['tmp_name'])->get();
             if (count($readExcelHeader) != 0) {
                 $excelSheetHeadings = $readExcelHeader->first()->keys()->toArray(); /* this is for excel sheet heading */
             }
@@ -573,16 +573,16 @@ class SchemePerformanceController extends Controller
                         $ErrorTxt = "";
                         $total_record=0;
                         foreach ($readExcel as $key => $row) { /* Insert Data By using for each one by one */
-                            $block_name =  ucwords($row['block_name']);
-                            $panchayat_name =   ucwords($row['panchayat_name']);
-                            $status =   ucwords($row['status']);
+                            $block_name =  preg_replace('/\s+/', ' ', trim(strtolower($row['block_name'])));
+                            $panchayat_name =   preg_replace('/\s+/', ' ', trim(strtolower($row['panchayat_name'])));
+                            $status =   preg_replace('/\s+/', ' ', trim(strtolower($row['status'])));
 
                             $fetch_block_id = GeoStructure::where('geo_name', $block_name)->where('level_id', '3')->value('geo_id'); /* for block ID */
                             $fetch_panchayat_id = GeoStructure::where('geo_name', $panchayat_name)->where('level_id', '4')->value('geo_id'); /* for Panchayat ID */
                             $fetch_subdivision_id = GeoStructure::where('geo_id', $fetch_block_id)->value('sd_id'); /* for subdivision_id ID */
                             $fetch_year_id = Year::where('year_value', $row['work_start_fin_year'])->value('year_id'); /* for Year ID */
                             if ($scheme_datas->scheme_is == 2) {
-                                $scheme_assest_id = SchemeAsset::where('scheme_asset_name', $row['scheme_asset_name'])->value('scheme_asset_id');
+                                $scheme_assest_id = SchemeAsset::where(preg_replace('/\s+/', ' ', trim(strtolower('scheme_asset_name'))), preg_replace('/\s+/', ' ', trim(strtolower($row['scheme_asset_name']))))->value('scheme_asset_id');
                             }
                             else{
                                 $scheme_assest_id = $scheme_datas->scheme_asset_id;
@@ -591,7 +591,7 @@ class SchemePerformanceController extends Controller
                             {
                                 $total_record=$total_record+1;
                             /* if those id avilable then insert data on the base */
-                            if ($row['sno.'] != null && $fetch_block_id != null && $fetch_panchayat_id != null && $fetch_year_id != null && $fetch_subdivision_id != null && in_array($panchayat_name, $geo_names_array) && in_array($block_name, $geo_block_names_array)) {
+                            if ($row['sno.'] != null && $fetch_block_id != null && $fetch_panchayat_id != null && $fetch_year_id != null && $fetch_subdivision_id != null && $scheme_assest_id !=null && in_array($panchayat_name, $geo_names_array) && in_array($block_name, $geo_block_names_array)) {
                                 $noOfSuccess++;
                                 $flag = 0;
                                 $scheme_performance_id = "";
@@ -651,6 +651,9 @@ class SchemePerformanceController extends Controller
                                     }
                                     if (in_array($block_name, $geo_block_names_array) == false) {
                                         $ErrorTxt .= " On SNo. " . $row['sno.'] . " Wrong block Name \n";
+                                    }
+                                    if($scheme_assest_id == null){
+                                        $ErrorTxt .= " On SNo. " . $row['sno.'] . " Asset not found \n";
                                     }
                                 }
                             }
