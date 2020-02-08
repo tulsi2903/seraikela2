@@ -700,7 +700,7 @@ class SchemeReviewController extends Controller
         $geo_id = $request->geo_id; // single panchayat
         $scheme_id = $request->scheme_id;
         if($request->year_id){
-            $year_id = [(Int)$request->year_id];
+            $year_id = $request->year_id;
         }
         else{
             $year_id = Year::where('status', 1)->get()->pluck("year_id");
@@ -712,6 +712,7 @@ class SchemeReviewController extends Controller
 
         $scheme_data = SchemeStructure::find($scheme_id); // getting scheme details (attributes, id etc)
         $attributes = unserialize($scheme_data->attributes); // getting attrubutes
+        $scheme_name_tmp = "(".$scheme_data->scheme_short_name.") ".$scheme_data->scheme_name;
 
         // for thead
         $tabular_data_tmp = [];
@@ -731,7 +732,7 @@ class SchemeReviewController extends Controller
             ->limit(1000)
             ->get();
         if ($scheme_asset_id) { // if scheme asset selected
-            $performance_datas = $performance_datas->where('scheme_asset_id', $scheme_asset_id);
+            $performance_datas = $performance_datas->whereIn('scheme_asset_id', $scheme_asset_id);
         }
         
         foreach ($performance_datas as $performance_data) {
@@ -853,6 +854,6 @@ class SchemeReviewController extends Controller
             $response = "no_data";
         }
         // return $map_datas;
-        return ["response" => $response, "block_name" => $block_name_tmp, "tabular_view" => $tabular_view, "map_datas" => $map_datas];
+        return ["response" => $response, "block_name" => $block_name_tmp, "scheme_name"=>$scheme_name_tmp, "tabular_view" => $tabular_view, "map_datas" => $map_datas];
     }
 }

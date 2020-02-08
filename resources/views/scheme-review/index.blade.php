@@ -314,6 +314,22 @@
     .select-all-link:hover{
         text-decoration: none;
     }
+
+    div[title='Click to view details']{
+        animation-name: mapMarkerHighlighter;
+        animation-duration: 2s;
+        animation-timing-function: linear;
+        animation-delay: 2s;
+        animation-iteration-count: infinite;
+        transition: transform 0.3s ease-in;
+        opacity: 1 !important;
+    }
+    @keyframes mapMarkerHighlighter{
+        0%   { transform: scale(1); }
+        50%   { transform: scale(1.2); }
+        100% { transform: scale(1); }
+    }
+
 </style>
 @endsection
 
@@ -1409,10 +1425,14 @@
                 console.log(data);
 
                 // show basic details
-                $("#all-view-details").html("<b>Scheme: </b>" + $("#scheme_id option:selected").text());
-                $("#all-view-details").append("&nbsp;&nbsp;&nbsp;&bull;&nbsp;&nbsp;&nbsp;<b>Year: </b>" + $("#year_id option:selected").text());
-                $("#all-view-details").append("&nbsp;&nbsp;&nbsp;&bull;&nbsp;&nbsp;&nbsp;<b>Asset: </b>" + $("#scheme_asset_id option:selected").text());
-                $("#all-view-details").append("&nbsp;&nbsp;&nbsp;&bull;&nbsp;&nbsp;&nbsp;<b>Block: </b><span></span>");
+                $("#all-view-details").html("<b>Scheme: </b><span id='all-view-scheme-name'></span>");
+                $("#all-view-details").append("&nbsp;&nbsp;&nbsp;&bull;&nbsp;&nbsp;&nbsp;<b>Year: </b>" + $("#year_id option:selected").map(function () {
+                    return $(this).text();
+                }).get().join(', '));
+                $("#all-view-details").append("&nbsp;&nbsp;&nbsp;&bull;&nbsp;&nbsp;&nbsp;<b>Asset: </b>" + $("#scheme_asset_id option:selected").map(function () {
+                    return $(this).text();
+                }).get().join(', '));
+                $("#all-view-details").append("&nbsp;&nbsp;&nbsp;&bull;&nbsp;&nbsp;&nbsp;<b>Block: </b><span id='all-view-block-name'></span>");
                 $("#all-view-details").append("&nbsp;&nbsp;&nbsp;&bull;&nbsp;&nbsp;&nbsp;<b>Panchayat: </b>" + name);
                 $("#all-view-details").append(`&nbsp;&nbsp;&nbsp;&bull;&nbsp;&nbsp;&nbsp;<a href="javascript:void();" onclick="showSearch()" class="btn btn-secondary btn-sm"><i class="fas fa-sync"></i>&nbsp;&nbsp;Change</a>`);
                 $("#all-view-details").append(`&nbsp;&nbsp;&nbsp;<a href="javascript:void();" onclick="getDatas()" class="btn btn-secondary btn-sm"><i class="fas fa-arrow-left"></i>&nbsp;&nbsp;Back</a>`);
@@ -1421,7 +1441,8 @@
 
                 }
                 else { // data.response  == success
-                    $("#all-view-details span").append(data.block_name); // block name
+                    $("#all-view-details #all-view-block-name").html(data.block_name); // block name
+                    $("#all-view-details #all-view-scheme-name").html(data.scheme_name); // block name
                     initializeTabularViewIndividualEntries(data.tabular_view);
                     initializeMapView(data.map_datas);
                 }
@@ -1607,34 +1628,34 @@
                 for(var c=0;c<this.coordinates_details.length;c++)
                 {
                     var no=c+1;
-                icon.url = this.scheme_map_marker || null;
-                var marker = new google.maps.Marker({
-                    position: this.coordinates_details[c],
-                    map: map,
-                    // position: pointA,
-                    title: "point"+no,
-                    // label: ""+no,
-                    label: {
-        color: '#0a77f1', // <= HERE
-        fontSize: '16px',
-        fontWeight: '900',
-        text:""+no
-      },
-                    icon: icon,
-                    animation: google.maps.Animation.DROP
-                });
-                //  infowindow.open(map, marker);
-                 var contentString = '<span style="color: black;"';
-           
-            contentString += '<br/><b>Asset</b>: ';
-            contentString += '<br/><b>Block</b>: ' ;
-            contentString += '<br/><b>Panchayat</b>: ';
-            contentString += '<br/><b>Status</b>: ' ;
-            contentString += '</span>';
+                    icon.url = this.scheme_map_marker || null;
+                    var marker = new google.maps.Marker({
+                        position: this.coordinates_details[c],
+                        map: map,
+                        // position: pointA,
+                        title: "Point - "+no,
+                        // label: ""+no,
+                        label: {
+                            color: '#0a77f1', // <= HERE
+                            fontSize: '16px',
+                            fontWeight: '900',
+                            text:""+no
+                        },
+                        icon: icon,
+                        animation: google.maps.Animation.DROP
+                    });
+                    //  infowindow.open(map, marker);
+                    var contentString = '<span style="color: black;"';
+            
+                    contentString += '<br/><b>Asset</b>: ';
+                    contentString += '<br/><b>Block</b>: ' ;
+                    contentString += '<br/><b>Panchayat</b>: ';
+                    contentString += '<br/><b>Status</b>: ' ;
+                    contentString += '</span>';
 
-            var infowindow = new google.maps.InfoWindow({
-                content: contentString
-            });
+                    var infowindow = new google.maps.InfoWindow({
+                        content: contentString
+                    });
                 }
                 flightPath.setMap(map);
 
@@ -1649,7 +1670,7 @@
                 var marker = new google.maps.Marker({
                     position: theposition,
                     map: map,
-                    title: 'Scheme Data',
+                    title: 'Click to view details',
                     icon: icon,
                     animation: google.maps.Animation.DROP
                 });
