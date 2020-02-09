@@ -219,7 +219,7 @@
                 total_duplicate_record = 0;
             },
             success: function(data) {
-                console.log(data);
+                // console.log(data);
                 if(data.Data.not_duplicate){
                     selected_performance_ids_count+=data.Data.not_duplicate.split(",").length;
                 }  
@@ -227,82 +227,48 @@
                     selected_performance_ids_count+=data.Data.duplicate.split(",").length;
                 }
                 matching_performance_ids_count =parseInt(data.tmp_matching);
-                console.log(selected_performance_ids_count+ ", " +matching_performance_ids_count);
+                // console.log(selected_performance_ids_count+ ", " +matching_performance_ids_count);
                 var append;
                 var s_no = 0;
                 for (var i = 0; i < data.tmp_matching; i++) {
 
                     s_no++;
-                    var append=``;
-                    // append += `<tr>
-                    //             <td><input type="text" name="get_scheme_performance_id" value="`+data.scheme_performance_id_to_append+`" hidden>` + s_no + `</td><td>` + data.Matching[i].year_value + `</td><td>` + data.Matching[i].geo_name + `</td>
-                    //             <td>` + data.Matching[i].panchayat_name + `</td><td>` + data.Matching[i].scheme_short_name + `</td><td>` + data.Matching[i].scheme_asset_name + `</td>
-                    //             <td>` + data.Matching[i].attribute + `</td>
-                    //             <td>
-                    //                 <input type="text" name="matching_id" value="` + id + `" hidden>
-                    //                 <input type="text" name="scheme_performance_id[]" value="` + data.Matching[i].scheme_performance_id + `" hidden>
-                    //                 <span class="" style="display:none;">This particular record is not duplicate</span><a href="javascript:void();" style="display:none;" class="undo_icon_not_duplicate" onclick="undo_data(`+id+`,`+data.scheme_performance_id_to_append+`,`+data.Matching[i].scheme_performance_id+`,this);"><i class="fa fa-undo" aria-hidden="true" style="color:blue;"></i></a>
-                    //                 <span class="" style="color:red;display:none;">This particular record is duplicate</span><a href="javascript:void();" style="display:none;" class="undo_icon_duplicate" onclick="undo_data(`+id+`,`+data.scheme_performance_id_to_append+`,`+data.Matching[i].scheme_performance_id+`,this);"><i class="fa fa-undo" aria-hidden="true" style="color:blue;"></i></a>
-                    //                 <span class="notduplicate_record_view" style="display:none;">This particular record is not duplicate</span>
-                    //                 <span style="color:red;display:none;" class="duplicate_record_view">This particular record is duplicate</span>`;
-
-                   
-
-                    //         if(data.Matching[i].type=="not_duplicate"){
-                    //             append += `<span class="not_duplicate_msg">This particular record is not duplicate</span><a href="javascript:void();" class="not_duplicate_icon" onclick="undo_data(`+id+`,`+data.scheme_performance_id_to_append+`,`+data.Matching[i].scheme_performance_id+`,this);"><i class="fa fa-undo" aria-hidden="true" style="color:blue;"></i></a>`;
-                    //         }
-                    //         else if(data.Matching[i].type=="duplicate"){
-                    //             append += `<span class="duplicate_msg" style="color:red;">This particular record is duplicate</span><a href="javascript:void();" class="duplicate_icon" onclick="undo_data(`+id+`,`+data.scheme_performance_id_to_append+`,`+data.Matching[i].scheme_performance_id+`,this);"><i class="fa fa-undo" aria-hidden="true" style="color:blue;"></i></a>`;
-                    //         }
-                    //         else{
-                    //             append += `<button type="button" class="btn btn-primary inprogress" onclick="status_not_duplicate_matching_schemes(`+id+`,`+data.scheme_performance_id_to_append+`,`+data.Matching[i].scheme_performance_id+`,this)");">Not Duplicate</button><span class="notduplicate_record" style="display:none">This particular record is not duplicate</span>
-                    //             <button type="button" class="btn btn-primary revert" onclick="status_duplicate_matching_schemes(`+id+`,`+data.scheme_performance_id_to_append+`,`+data.Matching[i].scheme_performance_id+`,this)">Duplicate</button><span style="color:red" class="duplicate_record" style="display:none">This particular record is duplicate</span>`;
-                    //         }
-                  
-                    //   append += `</td>`;
-
 
                     append += `<tr>
                                 <td><input type="text" name="get_scheme_performance_id" value="`+data.scheme_performance_id_to_append+`" hidden>` + s_no + `</td><td>` + data.Matching[i].year_value + `</td><td>` + data.Matching[i].geo_name + `</td>
-                                <td>` + data.Matching[i].panchayat_name + `</td><td>` + data.Matching[i].scheme_short_name + `</td><td>` + data.Matching[i].scheme_asset_name + `</td>
+                                <td>` + data.Matching[i].panchayat_name + `</td><td>` + data.Matching[i].scheme_short_name + `</td><td>` + (data.Matching[i].scheme_asset_name || "N/A")+ `</td>
                                 <td>` + data.Matching[i].attribute + `</td>
                                 <td>
-                                    <input type="text" name="matching_id" value="` + id + `" hidden>
-                                    <input type="text" name="scheme_performance_id[]" value="` + data.Matching[i].scheme_performance_id + `" hidden>`;
+                                <input type="text" name="matching_id" value="` + id + `" hidden>
+                                <input type="text" name="scheme_performance_id[]" value="` + data.Matching[i].scheme_performance_id + `" hidden>`;
 
                             if(data.Matching[i].type=="not_duplicate"){
-                                append += `<a href="javascript:void();" class="undo_icon_not_duplicate" onclick="undo_data(`+id+`,`+data.scheme_performance_id_to_append+`,`+data.Matching[i].scheme_performance_id+`,this);"><i class="fa fa-undo" aria-hidden="true" style="color:blue;"></i></a>`;
-                                append += `<span class="duplicate_msg" style="color:red;dispaly: none;">This particular record is duplicate</span>`;
-                                append += `<span class="not_duplicate_msg" style="dispaly: none;">This particular record is not duplicate</span></a>`;
-                                append += `<button type="button" style="dispaly: none;" class="btn btn-primary btn-inprogress" onclick="status_not_duplicate_matching_schemes(`+id+`,`+data.scheme_performance_id_to_append+`,`+data.Matching[i].scheme_performance_id+`,this)");">Not Duplicate</button>
-                                <button type="button" style="dispaly: none;" class="btn btn-primary btn-revert" onclick="status_duplicate_matching_schemes(`+id+`,`+data.scheme_performance_id_to_append+`,`+data.Matching[i].scheme_performance_id+`,this)">Duplicate</button>`;
+                                append += `<span class="duplicate_msg" style="color:red;display:none;">This particular record is duplicate</span>`;
+                                append += `<span class="not_duplicate_msg">This particular record is not duplicate</span></a>`;
+                                append += `<button type="button" style="display:none;" class="btn btn-primary btn-inprogress" onclick="status_not_duplicate_matching_schemes(`+id+`,`+data.scheme_performance_id_to_append+`,`+data.Matching[i].scheme_performance_id+`,this)");">Not Duplicate</button>
+                                <button type="button" style="display:none;" class="btn btn-primary btn-revert" onclick="status_duplicate_matching_schemes(`+id+`,`+data.scheme_performance_id_to_append+`,`+data.Matching[i].scheme_performance_id+`,this)">Duplicate</button>`;
+                                append += ` &nbsp;<a href="javascript:void();" class="undo_icon_not_duplicate" onclick="undo_data(`+id+`,`+data.scheme_performance_id_to_append+`,`+data.Matching[i].scheme_performance_id+`,this);"><i class="fa fa-undo" aria-hidden="true" style="color:blue;"></i></a>`;
                             }
                             else if(data.Matching[i].type=="duplicate"){
-                                append += `<a href="javascript:void();" class="undo_icon_not_duplicate" onclick="undo_data(`+id+`,`+data.scheme_performance_id_to_append+`,`+data.Matching[i].scheme_performance_id+`,this);"><i class="fa fa-undo" aria-hidden="true" style="color:blue;"></i></a>`;
                                 append += `<span class="duplicate_msg" style="color:red;">This particular record is duplicate</span>`;
-                                append += `<span class="not_duplicate_msg" style="dispaly: none;">This particular record is not duplicate</span></a>`;
-                                append += `<button type="button" style="dispaly: none;" class="btn btn-primary btn-inprogress" onclick="status_not_duplicate_matching_schemes(`+id+`,`+data.scheme_performance_id_to_append+`,`+data.Matching[i].scheme_performance_id+`,this)");">Not Duplicate</button>
-                                <button type="button" style="dispaly: none;" class="btn btn-primary btn-revert" onclick="status_duplicate_matching_schemes(`+id+`,`+data.scheme_performance_id_to_append+`,`+data.Matching[i].scheme_performance_id+`,this)">Duplicate</button>`;
+                                append += `<span class="not_duplicate_msg" style="display:none;">This particular record is not duplicate</span></a>`;
+                                append += `<button type="button" style="display:none;" class="btn btn-primary btn-inprogress" onclick="status_not_duplicate_matching_schemes(`+id+`,`+data.scheme_performance_id_to_append+`,`+data.Matching[i].scheme_performance_id+`,this)");">Not Duplicate</button>
+                                <button type="button" style="display:none;" class="btn btn-primary btn-revert" onclick="status_duplicate_matching_schemes(`+id+`,`+data.scheme_performance_id_to_append+`,`+data.Matching[i].scheme_performance_id+`,this)">Duplicate</button>`;
+                                append += ` &nbsp;<a href="javascript:void();" class="undo_icon_not_duplicate" onclick="undo_data(`+id+`,`+data.scheme_performance_id_to_append+`,`+data.Matching[i].scheme_performance_id+`,this);"><i class="fa fa-undo" aria-hidden="true" style="color:blue;"></i></a>`;
                             }
                             else{
-                                append += `<a href="javascript:void();" style="dispaly: none;" class="undo_icon_not_duplicate" onclick="undo_data(`+id+`,`+data.scheme_performance_id_to_append+`,`+data.Matching[i].scheme_performance_id+`,this);"><i class="fa fa-undo" aria-hidden="true" style="color:blue;"></i></a>`;
-                                append += `<span class="duplicate_msg" style="color:red;dispaly: none;">This particular record is duplicate</span>`;
-                                append += `<span class="not_duplicate_msg" style="dispaly: none;">This particular record is not duplicate</span></a>`;
-                                append += `<button type="button" style="dispaly: none;" class="btn btn-primary btn-inprogress" onclick="status_not_duplicate_matching_schemes(`+id+`,`+data.scheme_performance_id_to_append+`,`+data.Matching[i].scheme_performance_id+`,this)");">Not Duplicate</button>
-                                <button type="button" style="dispaly: none;" class="btn btn-primary btn-revert" onclick="status_duplicate_matching_schemes(`+id+`,`+data.scheme_performance_id_to_append+`,`+data.Matching[i].scheme_performance_id+`,this)">Duplicate</button>`;
+                                append += `<span class="duplicate_msg" style="color:red;display:none;">This particular record is duplicate</span>`;
+                                append += `<span class="not_duplicate_msg" style="display:none;">This particular record is not duplicate</span></a>`;
+                                append += `<button type="button"  class="btn btn-primary btn-inprogress" onclick="status_not_duplicate_matching_schemes(`+id+`,`+data.scheme_performance_id_to_append+`,`+data.Matching[i].scheme_performance_id+`,this)");">Not Duplicate</button>
+                                <button type="button"  class="btn btn-primary btn-revert" onclick="status_duplicate_matching_schemes(`+id+`,`+data.scheme_performance_id_to_append+`,`+data.Matching[i].scheme_performance_id+`,this)">Duplicate</button>`;
+                                append += ` &nbsp;<a href="javascript:void();" style="display:none;" class="undo_icon_not_duplicate" onclick="undo_data(`+id+`,`+data.scheme_performance_id_to_append+`,`+data.Matching[i].scheme_performance_id+`,this);"><i class="fa fa-undo" aria-hidden="true" style="color:blue;"></i></a>`;
                             }
                   
                     append += `</td>`;
 
 
 
-                    // <a href="javascript:void();" style="display:none;" class="undo_icon_not_duplicate" onclick="undo_data(`+id+`,`+data.scheme_performance_id_to_append+`,`+data.Matching[i].scheme_performance_id+`,this);"><i class="fa fa-undo" aria-hidden="true" style="color:blue;"></i></a>
-                    // <span class="not_duplicate_msg" style="">This particular record is not duplicate</span>
-                    // <span class="duplicate_msg" style="color:red;">This particular record is duplicate</span>
-                    // <button type="button" class="btn btn-primary inprogress" onclick="status_not_duplicate_matching_schemes(`+id+`,`+data.scheme_performance_id_to_append+`,`+data.Matching[i].scheme_performance_id+`,this)");">Not Duplicate</button><span class="notduplicate_record" style="display:none">This particular record is not duplicate</span>
-                    // <button type="button" class="btn btn-primary revert" onclick="status_duplicate_matching_schemes(`+id+`,`+data.scheme_performance_id_to_append+`,`+data.Matching[i].scheme_performance_id+`,this)">Duplicate</button><span style="color:red" class="duplicate_record" style="display:none">This particular record is duplicate</span>
-
-
+                 
 
                     if(data.append_comment[i]!= null){
                         append += `<td><textarea class="form-control" name="comment[]">`+data.append_comment[i]+`</textarea></td>`;
@@ -313,7 +279,6 @@
 
                    
                 }
-                console.log(append);
                 $("#dublicate_data").append(append);
 
             }
@@ -327,27 +292,6 @@
 
     }
 
-    function revert_request(id, e) {
-        if (!selected_revert.includes(id)) {
-            selected_revert.push(id);
-            $("#hidden_input_for_revert").val(selected_revert);
-            var tr = $(e).closest("tr");
-            $(tr).find(".duplicate_record").show();
-            $(tr).find(".inprogress").hide();
-            $(tr).find(".revert").hide();
-          
-        }
-    }
-    function inprogress_request(id, e) {
-        if (!selected_inprogress.includes(id)) {
-            selected_inprogress.push(id);
-            $("#hidden_input_for_inprogress").val(selected_inprogress);
-            var tr = $(e).closest("tr");
-            $(tr).find(".notduplicate_record").show();
-            $(tr).find(".inprogress").hide();
-            $(tr).find(".revert").hide();
-        }
-    }
   
    
 </script>
@@ -364,7 +308,7 @@
             },
             success: function(data) {
         
-                console.log(data);
+                // console.log(data);
                 // count
                 matching_performance_ids_count = data.matching_performance_ids_count;
                 selected_performance_ids_count = data.selected_performance_ids_count;
@@ -394,7 +338,7 @@
 
             },
             success:function(data){
-                console.log(data);
+                // console.log(data);
                 // count
                 matching_performance_ids_count = data.matching_performance_ids_count;
                 selected_performance_ids_count = data.selected_performance_ids_count;
@@ -424,7 +368,7 @@
 
             },
             success:function(data){
-                console.log(data);
+                // console.log(data);
                 // count
                 matching_performance_ids_count = data.matching_performance_ids_count;
                 selected_performance_ids_count = data.selected_performance_ids_count;
@@ -444,10 +388,6 @@
 </script>
 <script>
     function validateForm() {
-
-        // alert(selected_inprogress.length);
-        // alert(selected_revert.length);
-        //  alert(total_duplicate_record);
 
         if(matching_performance_ids_count == selected_performance_ids_count){
             $("#duplicate-form").submit();
