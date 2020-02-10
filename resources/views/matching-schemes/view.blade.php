@@ -190,25 +190,34 @@
             },
             success: function(data) {
 
-                // console.log(data);
+                //  console.log(data.Matching);
                 $("#table-data").show();
                 var to_append = "";
                 var s_no = 0;
-                for (var i = 0; i < data.Matching.length; i++) {
-                    s_no++;
-                    var str = data.Matching[i].matching_performance_id;
-                    var count_matching = str.split(",");
 
-                    to_append += `<tr><td>` + s_no + `</td><td>` + data.Matching[i].year_value + `</td>
-                    <td>` + data.Matching[i].block_name + `</td>
-                    <td>` + data.Matching[i].panchayat_name + `</td>
-                    <td>` + data.Matching[i].scheme_name + `</td>
-                    <td>` + data.Matching[i].scheme_asset_name + `</td>
-                    <td>` + count_matching.length + `</td><td>` + data.Matching[i].attribute + `</td>
-                    <td><i class="fa fa-eye" aria-hidden="true" onclick="get_view_data(` + data.Matching[i].chck_matching_performance_id + `)";></i></td></tr>`;
+                if(data.Matching.length>0){
+                    for (var i = 0; i < data.Matching.length; i++) {
+                        s_no++;
+                        var str = data.Matching[i].matching_performance_id;
+                        var count_matching = str.split(",");
 
+                        to_append += `<tr><td>` + s_no + `</td><td>` + data.Matching[i].year_value + `</td>
+                        <td>` + data.Matching[i].block_name + `</td>
+                        <td>` + data.Matching[i].panchayat_name + `</td>
+                        <td>` + data.Matching[i].scheme_name + `</td>
+                        <td>` + data.Matching[i].scheme_asset_name + `</td>
+                        <td>` + count_matching.length + `</td><td>` + data.Matching[i].attribute + `</td>
+                        <td><i class="fa fa-eye" aria-hidden="true" onclick="get_view_data(` + data.Matching[i].chck_matching_performance_id + `)";></i></td></tr>`;
+
+                    }
+                    $("#append-matching-datas").append(to_append);
                 }
-                $("#append-matching-datas").append(to_append);
+                else{
+                    $("#append-matching-datas").html("<tr ><td colspan='9' style='color:red;'><center>No record found</center></td></tr>");
+                }
+                
+               
+               
             }
         });
     }

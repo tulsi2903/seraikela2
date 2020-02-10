@@ -297,18 +297,18 @@
 </script>
 <script>
     function undo_data(primary_id_value,scheme_performance_id_value,matching_id_value,e){
-       
+     
         $.ajax({
             url: "undo/matching-scheme/data" + "?id=" + primary_id_value + "&scheme_performance_id=" +scheme_performance_id_value + "&matching_id="+ matching_id_value,
             method: "GET",
             contentType: 'application/json',
             dataType: "json",
             beforeSend: function() {
-
+                // alert("hi");
             },
             success: function(data) {
         
-                // console.log(data);
+                console.log(data);
                 // count
                 matching_performance_ids_count = data.matching_performance_ids_count;
                 selected_performance_ids_count = data.selected_performance_ids_count;

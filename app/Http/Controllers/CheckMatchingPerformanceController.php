@@ -376,67 +376,58 @@ public function get_undo_datas(Request $request){
      $undo_data = CheckMatchingPerformance::find($request->id);
 
 
-     // $get_scheme_performance_id = CheckMatchingPerformance::where('scheme_performance_id',$request->matching_id)->first();
-     // $matching_performance_id_array = explode(",",$get_scheme_performance_id->matching_performance_id);
-     // // $search_record = in_array($request->scheme_performance_id,$matching_performance_id_array);
-     // $new_probable_duplicate_array = explode(",",$get_scheme_performance_id->probable_duplicate);
-     // $get_scheme_performance_id_duplicate_array = explode(",",$get_scheme_performance_id->duplicate);
-     // $get_scheme_performance_id_not_duplicate_array = explode(",",$get_scheme_performance_id->not_duplicate);
+     $get_scheme_performance_id = CheckMatchingPerformance::where('scheme_performance_id',$request->matching_id)->first();
+     $new_probable_duplicate_array = explode(",",$get_scheme_performance_id->probable_duplicate);
+     $get_scheme_performance_id_duplicate_array = explode(",",$get_scheme_performance_id->duplicate);
+     $get_scheme_performance_id_not_duplicate_array = explode(",",$get_scheme_performance_id->not_duplicate);
+     //  return $undo_data->scheme_performance_id;
 
-     // return $get_scheme_performance_id;
+    //For duplicate datas
+    if(in_array($undo_data->scheme_performance_id,$get_scheme_performance_id_duplicate_array) == 1)
+    {
+          $key = array_search($undo_data->scheme_performance_id, $get_scheme_performance_id_duplicate_array);
+          unset($get_scheme_performance_id_duplicate_array[$key]); 
+          if($get_scheme_performance_id_duplicate_array != "")
+          {
+               $duplicate_array = array_values($get_scheme_performance_id_duplicate_array); 
+          }
+          if($get_scheme_performance_id_duplicate_array !="" && $get_scheme_performance_id_not_duplicate_array == "")
+          {
+               CheckMatchingPerformance::where('scheme_performance_id',$undo_data->scheme_performance_id)->update(array('status'=>0));
 
+          }
+          else{
+               CheckMatchingPerformance::where('scheme_performance_id',$undo_data->scheme_performance_id)->update(array('status'=>1)); 
+          }
+         array_push($new_probable_duplicate_array, $undo_data->scheme_performance_id);
+    }
+    //For not duplicate datas
+    else if(in_array($undo_data->scheme_performance_id,$get_scheme_performance_id_not_duplicate_array) == 1)
+    {
+          $key = array_search($undo_data->scheme_performance_id, $get_scheme_performance_id_not_duplicate_array);
+          unset($get_scheme_performance_id_not_duplicate_array[$key]); 
+          if($get_scheme_performance_id_not_duplicate_array != "")
+          {
+               $not_duplicate_array = array_values($get_scheme_performance_id_not_duplicate_array); 
+          }
+          if($get_scheme_performance_id_not_duplicate_array !="" && $get_scheme_performance_id_duplicate_array == "")
+          {
+               CheckMatchingPerformance::where('scheme_performance_id',$undo_data->scheme_performance_id)->update(array('status'=>1));
 
-
-
-// return $matching_performance_id_array;
-
-     // if($search_record == 1)
-     // {
-     //      $get_scheme_performance_id->duplicate = $request->scheme_performance_id;
-     //      $key = array_search($request->scheme_performance_id, $new_probable_duplicate_array);
-     //      // echo $key;
-     //      // exit;
-     //      unset($new_probable_duplicate_array[$key]);
-     //      $get_scheme_performance_id->probable_duplicate = implode(",",$new_probable_duplicate_array);
-
-     //      $key = array_search($request->scheme_performance_id, $get_scheme_performance_id_duplicate_array);
-     //      unset($get_scheme_performance_id_duplicate_array[$key]);
-     //      $temp_details=CheckMatchingPerformance::where('scheme_performance_id',$request->matching_id)->first();
-     //      $temp_probable_duplicate_array=explode(',',$temp_details->probable_duplicate);
-     //      array_push($temp_probable_duplicate_array,$get_scheme_performance_id->not_duplicate);
-     //      print_r($request->scheme_performance_id);
-     //      return $get_scheme_performance_id_not_duplicate_array;
-     //      // return $temp_probable_duplicate_array;
-     //      CheckMatchingPerformance::where('scheme_performance_id',$request->matching_id)->update(array('probable_duplicate'=>implode(",",$temp_probable_duplicate_array)));
-
+          }
+          else{
+               CheckMatchingPerformance::where('scheme_performance_id',$undo_data->scheme_performance_id)->update(array('status'=>0)); 
+          }
          
-     // }
-     // else{
+          array_push($new_probable_duplicate_array, $undo_data->scheme_performance_id);                  
+    }
+    else{
+     // return ["response"=>false];
+    }
 
-     //      $get_scheme_performance_id->not_duplicate = $request->scheme_performance_id;
-     //      $key = array_search($request->scheme_performance_id, $new_probable_duplicate_array);
-     //      unset($new_probable_duplicate_array[$key]);
-     //      $get_scheme_performance_id->probable_duplicate = implode(",",$new_probable_duplicate_array);
-         
-     //      $key = array_search($request->scheme_performance_id, $get_scheme_performance_id_not_duplicate_array);
-     //     if($key==NULL)
-     //     {
-     //      $key=array_search($request->matching_id, $get_scheme_performance_id_not_duplicate_array);
-     //     }
-     //      // echo $key;
-     //      // exit;
-     //      $temp_details=CheckMatchingPerformance::where('scheme_performance_id',$request->matching_id)->first();
-     //      $temp_probable_duplicate_array=explode(',',$temp_details->probable_duplicate);
-     //     array_push($temp_probable_duplicate_array,$get_scheme_performance_id->not_duplicate);
-     //     print_r($request->scheme_performance_id);
-     //      return $get_scheme_performance_id_not_duplicate_array;
-     //      unset($get_scheme_performance_id_not_duplicate_array[$key]);
-     //      CheckMatchingPerformance::where('scheme_performance_id',$request->matching_id)->update(array('probable_duplicate'=>implode(",",$temp_probable_duplicate_array)));
-
-     // }
-    
 
      $matching_id = $request->matching_id;
+     // return $matching_id;
      
      if($undo_data->probable_duplicate){
           $probable_duplicate_array = explode(",",$undo_data->probable_duplicate);
@@ -507,6 +498,7 @@ public function status_duplicate(Request $request)
      if($search_record == 1)
      {
           $get_scheme_performance_id->duplicate = $request->scheme_performance_id;
+          $get_scheme_performance_id->status = 0;
           $key = array_search($request->scheme_performance_id, $new_probable_duplicate_array);
           unset($new_probable_duplicate_array[$key]);
           $get_scheme_performance_id->probable_duplicate = implode(",",$new_probable_duplicate_array);
@@ -575,6 +567,7 @@ public function status_not_duplicate(Request $request)
      if($search_record == 1)
      {
           $get_scheme_performance_id->not_duplicate = $request->scheme_performance_id;
+          $get_scheme_performance_id->status = 1;
           $key = array_search($request->scheme_performance_id, $new_probable_duplicate_array);
           unset($new_probable_duplicate_array[$key]);
           $get_scheme_performance_id->probable_duplicate = implode(",",$new_probable_duplicate_array);
