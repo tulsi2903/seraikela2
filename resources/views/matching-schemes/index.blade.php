@@ -308,7 +308,7 @@
             },
             success: function(data) {
         
-                console.log(data);
+                // console.log(data);
                 // count
                 matching_performance_ids_count = data.matching_performance_ids_count;
                 selected_performance_ids_count = data.selected_performance_ids_count;
