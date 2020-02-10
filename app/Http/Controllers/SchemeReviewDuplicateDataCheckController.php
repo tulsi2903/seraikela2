@@ -28,13 +28,13 @@ class SchemeReviewDuplicateDataCheckController extends Controller
 
 
     public function get_datas(Request $request){
-        $str = "sc";
-        $str = trim($str);
-        $str = preg_replace('/\s+/', ' ', $str);
-
-        return strlen($str);
-
-
+        // $lat1=22.800099;
+        // $long1=86.133800;
+        // $lat2=22.800625;
+        // $long2=86.133784;
+        // // $angle = rad2deg(atan2($long2-$long1,$lat2-$lat1));
+        // // return ["angle"=>$angle];
+        // return ["angle"=>$this->get_angle_between_points($lat2, $long2, $lat1, $long1)];
         // return $request;
         // echo "<pre>";
         // print_r(SchemePerformance::select('scheme_performance_id','attribute')->get()->toArray());
@@ -96,15 +96,30 @@ class SchemeReviewDuplicateDataCheckController extends Controller
 
 
         // get performance datas
-        $performance_datas_tmp = SchemePerformance::LeftJoin('year','scheme_performance.year_id','=','year.year_id')
-                                                ->LeftJoin('scheme_structure','scheme_performance.scheme_id','=','scheme_structure.scheme_id')
-                                                ->select('scheme_performance.*','year.year_value','scheme_structure.scheme_short_name','scheme_structure.attributes as scheme_attributes')
-                                                ->whereIn('scheme_performance.panchayat_id', $panchayat_ids_selected)
-                                                ->where('scheme_performance.scheme_asset_id', $scheme_asset_id_selected);
-                                                // ->whereIn('scheme_performance_id', [101,124]);
-        $performance_datas_selected = $performance_datas_tmp->get();
-        $performance_datas_to_test = $performance_datas_tmp->get();
+        // $performance_datas_tmp = SchemePerformance::LeftJoin('year','scheme_performance.year_id','=','year.year_id')
+        //                                         ->LeftJoin('scheme_structure','scheme_performance.scheme_id','=','scheme_structure.scheme_id')
+        //                                         ->select('scheme_performance.*','year.year_value','scheme_structure.scheme_short_name','scheme_structure.attributes as scheme_attributes')
+        //                                         ->whereIn('scheme_performance.panchayat_id', $panchayat_ids_selected)
+        //                                         ->where('scheme_performance.scheme_asset_id', $scheme_asset_id_selected);
+        //                                         // ->whereIn('scheme_performance_id', [101,124]);
+        $performance_datas_selected = SchemePerformance::LeftJoin('year','scheme_performance.year_id','=','year.year_id')
+                                                        ->LeftJoin('scheme_structure','scheme_performance.scheme_id','=','scheme_structure.scheme_id')
+                                                        ->select('scheme_performance.*','year.year_value','scheme_structure.scheme_short_name','scheme_structure.attributes as scheme_attributes')
+                                                        ->whereIn('scheme_performance.panchayat_id', $panchayat_ids_selected)
+                                                        ->where('scheme_performance.scheme_asset_id', $scheme_asset_id_selected)
+                                                        ->where('scheme_performance.scheme_performance_id', 1)
+                                                        ->get();
+        $performance_datas_to_test = SchemePerformance::LeftJoin('year','scheme_performance.year_id','=','year.year_id')
+                                                        ->LeftJoin('scheme_structure','scheme_performance.scheme_id','=','scheme_structure.scheme_id')
+                                                        ->select('scheme_performance.*','year.year_value','scheme_structure.scheme_short_name','scheme_structure.attributes as scheme_attributes')
+                                                        ->whereIn('scheme_performance.panchayat_id', $panchayat_ids_selected)
+                                                        ->where('scheme_performance.scheme_asset_id', $scheme_asset_id_selected)
+                                                        ->where('scheme_performance.scheme_performance_id', 9)
+                                                        ->get();
 
+        // echo "<pre>";    
+        // print_r($performance_datas_selected);
+        // exit();
         /* 
         actual testing started
         */
@@ -163,21 +178,38 @@ class SchemeReviewDuplicateDataCheckController extends Controller
 
 
                         // testing first & last point within a radius
-                        if($this->test_first_and_last_point($coordinates_selected, $coordinates_to_test, $distance_to_measure)){ // matched
-                            if($this->test_all_coordinates($coordinates_selected, $coordinates_to_test, $distance_to_measure)){
-                                echo "yes\n";
-                                array_push($datas_tmp, $performance_data_to_test);
-                                $found = true;
+                        // echo "<pre>";
+                        // print_r($coordinates_selected);
+                        // echo "\n";
+                        // print_r($coordinates_to_test);
+                        // exit;
+                        if(count($coordinates_selected) == 1 || count($coordinates_to_test) == 1){
+                            $distance = $this->get_distance($coordinates_selected[0]["latitude"], $coordinates_selected[0]["longitude"], $coordinates_to_test[0]["latitude"], $coordinates_to_test[0]["longitude"]);
+                            if($distance<=$distance_to_measure){
+                                return true;
                             }
                             else{
                                 // no duplicate
                             }
                         }
-                        else{ // not matched
-                            // testing if any point is withing a  distance (1KM)
-                            if($this->test_distance_if_any($coordinates_selected, $coordinates_to_test, 1000)){ // yes, inside
-                                if(count($coordinates_selected)>1 && count($coordinates_to_test)>1) // if more then one coordinates has
-                                {
+                        else{
+                            if(!$this->test_first_and_last_point($coordinates_selected, $coordinates_to_test, $distance_to_measure)){ // matched
+                                if($this->test_whole_direction($coordinates_selected, $coordinates_to_test)){
+                                    if($this->test_all_coordinates($coordinates_selected, $coordinates_to_test, $distance_to_measure)){
+                                        array_push($datas_tmp, $performance_data_to_test);
+                                        $found = true;
+                                    }
+                                    else{
+                                        // no duplicate
+                                    }
+                                }
+                                else{
+                                    // no duplicate
+                                }
+                            }
+                            else{ // not matched
+                                // testing if any point is withing a  distance (1KM)
+                                if($this->test_distance_if_any($coordinates_selected, $coordinates_to_test, $distance_to_measure)){ // yes, inside
                                     if($this->direction_wise_check_duplicate($coordinates_selected, $coordinates_to_test)){ // this will test and prepare percentage for changes of same direction
                                         
                                     }
@@ -188,9 +220,6 @@ class SchemeReviewDuplicateDataCheckController extends Controller
                                 else{
                                     // no duplicate
                                 }
-                            }
-                            else{
-                                // no duplicate
                             }
                         }
                     }
@@ -210,27 +239,35 @@ class SchemeReviewDuplicateDataCheckController extends Controller
         }
 
         // echo "<pre>";
-        // print_r($duplicate_datas);
+        // // print_r($duplicate_datas);
+        // // echo count($duplicate_datas);
+        // // exit();
+        // print_r(json_decode($duplicate_datas));
         // exit();
 
         return ["duplicate_datas"=>$duplicate_datas, "response"=>$response, 'count'=>count($duplicate_datas)];
     }
 
     public function test_first_and_last_point($coordinates_selected_datas, $coordinates_to_test_datas, $distance_to_measure){
-        // first test
-        if(count($coordinates_selected_datas) == 1 || count($coordinates_to_test_datas) == 1){
-            $distance = $this->get_distance($coordinates_selected_datas[0]["latitude"], $coordinates_selected_datas[0]["longitude"], $coordinates_to_test_datas[0]["latitude"], $coordinates_to_test_datas[0]["longitude"]);
-            if($distance<=$distance_to_measure){
-                return true;
-            }
-        }
-        else{
-            $distance_1 = $this->get_distance($coordinates_selected_datas[0]["latitude"], $coordinates_selected_datas[0]["longitude"], $coordinates_to_test_datas[0]["latitude"], $coordinates_to_test_datas[0]["longitude"]);
-            $distance_2 = $this->get_distance($coordinates_selected_datas[count($coordinates_selected_datas) - 1]["latitude"], $coordinates_selected_datas[count($coordinates_selected_datas) - 1]["longitude"], $coordinates_to_test_datas[count($coordinates_to_test_datas) - 1]["latitude"], $coordinates_to_test_datas[count($coordinates_to_test_datas) - 1]["longitude"]);
-            if($distance_1<=$distance_to_measure && $distance_2<=$distance_to_measure){
-                // echo $distance_1." - ".$distance_2."\n";
-                return true;
-            }
+        // first-first
+        $distance_1 = $this->get_distance($coordinates_selected_datas[0]["latitude"], $coordinates_selected_datas[0]["longitude"], $coordinates_to_test_datas[0]["latitude"], $coordinates_to_test_datas[0]["longitude"]);
+        // first-last
+        $distance_2 = $this->get_distance($coordinates_selected_datas[0]["latitude"], $coordinates_selected_datas[0]["longitude"], $coordinates_to_test_datas[count($coordinates_to_test_datas) - 1]["latitude"], $coordinates_to_test_datas[count($coordinates_to_test_datas) - 1]["longitude"]);
+        // last-first
+        $distance_3 = $this->get_distance($coordinates_selected_datas[count($coordinates_selected_datas) - 1]["latitude"], $coordinates_selected_datas[count($coordinates_selected_datas) - 1]["longitude"], $coordinates_to_test_datas[0]["latitude"], $coordinates_to_test_datas[0]["longitude"]);
+        // last-last
+        $distance_4 = $this->get_distance($coordinates_selected_datas[count($coordinates_selected_datas) - 1]["latitude"], $coordinates_selected_datas[count($coordinates_selected_datas) - 1]["longitude"], $coordinates_to_test_datas[count($coordinates_to_test_datas) - 1]["latitude"], $coordinates_to_test_datas[count($coordinates_to_test_datas) - 1]["longitude"]);
+        
+        $probable_index = 0;
+        if($distance_1<=$distance_to_measure){ $probable_index+=1; }
+        if($distance_2<=$distance_to_measure){ $probable_index+=1; }
+        if($distance_3<=$distance_to_measure){ $probable_index+=1; }
+        if($distance_4<=$distance_to_measure){ $probable_index+=1; }
+
+        echo $distance_1." - ".$distance_2." - ".$distance_3." - ".$distance_4."\n";
+        
+        if($probable_index>=2){
+            return true;
         }
 
         return false;
@@ -253,13 +290,13 @@ class SchemeReviewDuplicateDataCheckController extends Controller
                 $total_test_count+=1;
                 if($d<=$distance_to_measure){
                     $total_test_match+=1;
-                    echo $key_1." - ".$key_2.", Distance: ".$d."\n";;
+                    // echo $key_1." - ".$key_2.", Distance: ".$d."\n";
                 }
             }
         }
 
         $sqrt = round(sqrt($total_test_count));
-        echo $total_test_match." - ".sqrt($total_test_count)."\n\n";
+        // echo $total_test_match." - ".sqrt($total_test_count)."\n\n";
         // if((($total_test_match/$total_test_count)*100)>=50){
         if($total_test_match>=$sqrt){
             return true;
@@ -304,29 +341,61 @@ class SchemeReviewDuplicateDataCheckController extends Controller
     }
 
     public function direction_wise_check_duplicate($coordinates_selected_datas, $coordinates_to_test_datas){
-        // $angle = rad2deg(atan2(long2-long1, lat2-lat1));
+        // // level 1: test if initial point-to-final-point have same inclination (angle)
+        // $angle_1 = $this->get_angle_between_points($coordinates_selected_datas[0]["latitude"], $coordinates_selected_datas[0]["longitude"], $coordinates_selected_datas[count($coordinates_selected_datas) - 1]["latitude"], $coordinates_selected_datas[count($coordinates_selected_datas) - 1]["longitude"]);
+        // $angle_2 = $this->get_angle_between_points($coordinates_to_test_datas[0]["latitude"], $coordinates_to_test_datas[0]["longitude"], $coordinates_to_test_datas[count($coordinates_to_test_datas) - 1]["latitude"], $coordinates_to_test_datas[count($coordinates_to_test_datas) - 1]["longitude"]);
+        // $angle_1 = round(abs($angle_1));
+        // $angle_2 = round(abs($angle_2));
+        // if($angle_1==$angle_2 || $angle_1>($angle_2-10) || $angle_2<($angle_2-10)){
+        //     return true;
+        // }
+        // else{
+        //     return false;
+        // }
+        
+        // level 2: test no of coordinates
+                    // same: analyse and test each inclination
+                    // not same: analyse and test each inclination serial wise
+        $angles_selected = [];
+        $angles_to_test = [];
+        for($i=0;$i<(count($coordinates_selected_datas)-1);$i++){
+            // coordinates_selected_datas[i]
+            // coordinates_selected_datas[i+1]
+            $angle = round($this->get_angle_between_points($coordinates_selected_datas[i]["latitude"], $coordinates_selected_datas[i]["longitude"], $coordinates_selected_datas[i+1]["latitude"], $coordinates_selected_datas[i+1]["longitude"]));
+            
+            if($angle<0){ // negative
+                $angle = 180 + $angle;
+            }
+            array_push($direction_angle_selected, $angle);
+        }
+        foreach($coordinates_to_test_datas as $coordinates_to_test_data){
 
-        $chances = 0;
+        }
+        return $angles_selected;
+    }
 
-        // level 1: test if initial point-to-final-point have same inclination (angle)
-        $angle_1 = $this->get_angle_between_points($coordinates_selected_datas[0]["latitude"], $coordinates_selected_datas[0]["latitude"], $coordinates_selected_datas[count($coordinates_selected_datas) - 1]["latitude"], $coordinates_selected_datas[count($coordinates_selected_datas) - 1]["longitude"]);
-        $angle_2 = $this->get_angle_between_points($coordinates_to_test_datas[0]["latitude"], $coordinates_to_test_datas[0]["latitude"], $coordinates_to_test_datas[count($coordinates_to_test_datas) - 1]["latitude"], $coordinates_to_test_datas[count($coordinates_to_test_datas) - 1]["longitude"]);
-        $angle_1 = round(abs($angle_1));
-        $angle_2 = round(abs($angle_2));
-        if($angle_1==$angle2 || $angle_1>($angle_2-10) || $angle_2<($angle_2-10)){
+    public function test_whole_direction($coordinates_selected_datas, $coordinates_to_test_datas){
+        $angle_1 = round($this->get_angle_between_points($coordinates_selected_datas[0]["latitude"], $coordinates_selected_datas[0]["longitude"], $coordinates_selected_datas[count($coordinates_selected_datas) - 1]["latitude"], $coordinates_selected_datas[count($coordinates_selected_datas) - 1]["longitude"]));
+        $angle_2 = round($this->get_angle_between_points($coordinates_to_test_datas[0]["latitude"], $coordinates_to_test_datas[0]["longitude"], $coordinates_to_test_datas[count($coordinates_to_test_datas) - 1]["latitude"], $coordinates_to_test_datas[count($coordinates_to_test_datas) - 1]["longitude"]));
+        
+        if($angle_1<0){ // negative
+            $angle_1 = 180 + $angle_1;
+        }
+        if($angle_2<0){ // negative
+            $angle_2 = 180 + $angle_2;
+        }
+
+        // echo $angle_1." - ".$angle_2."\n";
+        if($angle_1>($angle_2-10) && $angle_1<($angle_2+10)){
             return true;
         }
         else{
             return false;
         }
-        
-        // level 2: test no of coordinates
-                    // same: analyse and test each inclination
-                    // not same: analyse and test each inclination serial wise
     }
 
     public function get_angle_between_points($lat1, $long1, $lat2, $long2){
-        $angle = rad2deg(atan2($long2-$long1, $lat2-$lat));
+        $angle = rad2deg(atan2($long2-$long1, $lat2-$lat1));
         return $angle;
     } 
 
