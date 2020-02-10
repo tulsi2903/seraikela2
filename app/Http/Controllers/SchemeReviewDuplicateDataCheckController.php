@@ -361,17 +361,32 @@ class SchemeReviewDuplicateDataCheckController extends Controller
         for($i=0;$i<(count($coordinates_selected_datas)-1);$i++){
             // coordinates_selected_datas[i]
             // coordinates_selected_datas[i+1]
-            $angle = round($this->get_angle_between_points($coordinates_selected_datas[i]["latitude"], $coordinates_selected_datas[i]["longitude"], $coordinates_selected_datas[i+1]["latitude"], $coordinates_selected_datas[i+1]["longitude"]));
+            $angle = round($this->get_angle_between_points($coordinates_selected_datas[$i]["latitude"], $coordinates_selected_datas[$i]["longitude"], $coordinates_selected_datas[$i+1]["latitude"], $coordinates_selected_datas[$i+1]["longitude"]));
             
             if($angle<0){ // negative
                 $angle = 180 + $angle;
             }
-            array_push($direction_angle_selected, $angle);
+            array_push($angles_selected, $angle);
         }
-        foreach($coordinates_to_test_datas as $coordinates_to_test_data){
+        for($i=0;$i<(count($coordinates_to_test_datas)-1);$i++){
+            $angle = round($this->get_angle_between_points($coordinates_to_test_datas[$i]["latitude"], $coordinates_to_test_datas[$i]["longitude"], $coordinates_to_test_datas[$i+1]["latitude"], $coordinates_to_test_datas[$i+1]["longitude"]));
+            
+            if($angle<0){ // negative
+                $angle = 180 + $angle;
+            }
+            array_push($angles_to_test, $angle);
+        }
 
+        // generating index for duplicacy
+        if(count($angles_selected) == count($angles_to_test)){
+            
         }
-        return $angles_selected;
+        echo "<pre>";
+        print_r($angles_selected);
+        ECHO "\n";
+        print_r($angles_to_test);
+        echo "\n\n";
+        exit();
     }
 
     public function test_whole_direction($coordinates_selected_datas, $coordinates_to_test_datas){
