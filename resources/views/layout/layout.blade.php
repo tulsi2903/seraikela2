@@ -10,6 +10,11 @@
         <?php
         exit();
     }
+
+    // for language
+    // $lang_id = Auth::user()->language;
+    // $lang = App\Languages::find($lang_id); 
+    // $phrase=json_decode($lang->languagePhrases);
 ?>
 <!DOCTYPE html>
 <html lang="en">

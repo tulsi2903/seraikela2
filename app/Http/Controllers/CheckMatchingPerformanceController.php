@@ -328,15 +328,17 @@ class CheckMatchingPerformanceController extends Controller
 
      public function get_undo_datas(Request $request)
      {
-
-
           $undo_data = CheckMatchingPerformance::find($request->id);
           $get_scheme_performance_id = CheckMatchingPerformance::where('scheme_performance_id', $request->matching_id)->first();
+
+
 
           if ($get_scheme_performance_id != "") {
                $new_probable_duplicate_array = explode(",", $get_scheme_performance_id->probable_duplicate);
                $get_scheme_performance_id_duplicate_array = explode(",", $get_scheme_performance_id->duplicate);
                $get_scheme_performance_id_not_duplicate_array = explode(",", $get_scheme_performance_id->not_duplicate);
+               $get_matching_performance_id = explode(",",$get_scheme_performance_id->matching_performance_id);
+
           
                //For duplicate datas
                if (in_array($undo_data->scheme_performance_id, $get_scheme_performance_id_duplicate_array) == 1) {
@@ -348,13 +350,25 @@ class CheckMatchingPerformanceController extends Controller
                     else {
                          CheckMatchingPerformance::where('scheme_performance_id', $request->matching_id)->update(['duplicate' => implode(",", $get_scheme_performance_id_duplicate_array)]);
                     }
-                    // if ($get_scheme_performance_id_duplicate_array != "") {
-                    //      CheckMatchingPerformance::where('scheme_performance_id', $undo_data->scheme_performance_id)->update(array('status' => 0));
-                    // } else if (count($get_scheme_performance_id_not_duplicate_array) == count($new_probable_duplicate_array)) {
-                    //      CheckMatchingPerformance::where('scheme_performance_id', $undo_data->scheme_performance_id)->update(array('status' => 1));
-                    // } else {
-                    //      CheckMatchingPerformance::where('scheme_performance_id', $undo_data->scheme_performance_id)->update(array('status' => 2));
-                    // }
+                         //Code for status change in check_matching_performance && scheme_performance table
+                          if($get_scheme_performance_id_duplicate_array != "")
+                         {
+                              CheckMatchingPerformance::where('scheme_performance_id', $get_scheme_performance_id->scheme_performance_id)->update(array('status'=>0));
+                              SchemePerformance::where('scheme_performance_id',$get_scheme_performance_id->scheme_performance_id)->update(array('status'=>3));
+          
+                         }
+                         else if(count($get_scheme_performance_id_not_duplicate_array) == count($get_matching_performance_id)) 
+                         {
+                              CheckMatchingPerformance::where('scheme_performance_id', $get_scheme_performance_id->scheme_performance_id)->update(array('status'=>1));
+                              SchemePerformance::where('scheme_performance_id',$get_scheme_performance_id->scheme_performance_id)->update(array('status'=>0));
+          
+                         }
+                         
+                         else{
+                              CheckMatchingPerformance::where('scheme_performance_id', $get_scheme_performance_id->scheme_performance_id)->update(array('status'=>2));
+                              SchemePerformance::where('scheme_performance_id',$get_scheme_performance_id->scheme_performance_id)->update(array('status'=>2));
+                         }
+                   
                     array_push($new_probable_duplicate_array, $undo_data->scheme_performance_id);
                     CheckMatchingPerformance::where('scheme_performance_id', $request->matching_id)->update(['probable_duplicate' => implode(",", $new_probable_duplicate_array)]);
                }
@@ -363,7 +377,6 @@ class CheckMatchingPerformanceController extends Controller
 
                     $key = array_search($undo_data->scheme_performance_id, $get_scheme_performance_id_not_duplicate_array);
                     unset($get_scheme_performance_id_not_duplicate_array[$key]);
-                    // return $get_scheme_performance_id_not_duplicate_array;
                     if (count($get_scheme_performance_id_not_duplicate_array) != 0) {
                         
                          $not_duplicate_array = array_values($get_scheme_performance_id_not_duplicate_array);
@@ -371,13 +384,25 @@ class CheckMatchingPerformanceController extends Controller
                         
                          CheckMatchingPerformance::where('scheme_performance_id', $request->matching_id)->update(['not_duplicate' => implode(",", $get_scheme_performance_id_not_duplicate_array)]);
                     }
-                    // if ($get_scheme_performance_id_duplicate_array != "") {
-                    //      CheckMatchingPerformance::where('scheme_performance_id', $undo_data->scheme_performance_id)->update(array('status' => 0));
-                    // } else if (count($get_scheme_performance_id_not_duplicate_array) == count($new_probable_duplicate_array)) {
-                    //      CheckMatchingPerformance::where('scheme_performance_id', $undo_data->scheme_performance_id)->update(array('status' => 1));
-                    // } else {
-                    //      CheckMatchingPerformance::where('scheme_performance_id', $undo_data->scheme_performance_id)->update(array('status' => 2));
-                    // }
+                         //Code for status change in check_matching_performance && scheme_performance table
+                         if(count($get_scheme_performance_id_not_duplicate_array) == count($get_matching_performance_id))
+                         {
+                              CheckMatchingPerformance::where('scheme_performance_id', $get_scheme_performance_id->scheme_performance_id)->update(array('status'=>1));
+                              SchemePerformance::where('scheme_performance_id',$get_scheme_performance_id->scheme_performance_id)->update(array('status'=>0));
+          
+                         }
+                         else if($get_scheme_performance_id_duplicate_array != "")
+                         {
+                              CheckMatchingPerformance::where('scheme_performance_id', $get_scheme_performance_id->scheme_performance_id)->update(array('status'=>0));
+                              SchemePerformance::where('scheme_performance_id',$get_scheme_performance_id->scheme_performance_id)->update(array('status'=>3));
+          
+                         }
+                         else
+                         {
+                              CheckMatchingPerformance::where('scheme_performance_id', $get_scheme_performance_id->scheme_performance_id)->update(array('status'=>2));
+                              SchemePerformance::where('scheme_performance_id',$get_scheme_performance_id->scheme_performance_id)->update(array('status'=>2));
+                         }
+                 
                     array_push($new_probable_duplicate_array, $undo_data->scheme_performance_id);
                     CheckMatchingPerformance::where('scheme_performance_id', $request->matching_id)->update(['probable_duplicate' => implode(",", $new_probable_duplicate_array)]);
 
@@ -391,7 +416,6 @@ class CheckMatchingPerformanceController extends Controller
 
 
           $matching_id = $request->matching_id;
-          // return $matching_id;
           
           if ($undo_data->probable_duplicate) {
                $probable_duplicate_array = explode(",", $undo_data->probable_duplicate);
@@ -400,6 +424,7 @@ class CheckMatchingPerformanceController extends Controller
           }
           $not_duplicate_array  =  explode(",", $undo_data->not_duplicate);
           $duplicate_array = explode(",", $undo_data->duplicate);
+          $matching_performance_id = explode(",",$undo_data->matching_performance_id);
           if (in_array($matching_id, $not_duplicate_array)) {
 
                // remove form not duplicate => add in probable duplicate => update both entries (probable, no duplicate);
@@ -407,28 +432,53 @@ class CheckMatchingPerformanceController extends Controller
                unset($not_duplicate_array[$key]); // remove form not duplicate
                $not_duplicate_array = array_values($not_duplicate_array); // reindexing
                array_push($probable_duplicate_array, $matching_id); // add in probable duplicate
-               // if ($duplicate_array != "") {
-               //      CheckMatchingPerformance::where('scheme_performance_id', $undo_data->scheme_performance_id)->update(array('status' => 0));
-               // } else if (count($not_duplicate_array) == count($probable_duplicate_array)) {
-               //      CheckMatchingPerformance::where('scheme_performance_id', $undo_data->scheme_performance_id)->update(array('status' => 1));
-               // } else {
-               //      CheckMatchingPerformance::where('scheme_performance_id', $undo_data->scheme_performance_id)->update(array('status' => 2));
-               // }
-          } else if (in_array($matching_id, $duplicate_array)) {
+                                            
+                    //Code for status change in check_matching_performance && scheme_performance table
+                    if(count($not_duplicate_array) == count($matching_performance_id))
+                    {
+                         CheckMatchingPerformance::where('scheme_performance_id', $undo_data->scheme_performance_id)->update(array('status'=>1));
+                         SchemePerformance::where('scheme_performance_id',$undo_data->scheme_performance_id)->update(array('status'=>0));
+     
+                    }
+                    else if($duplicate_array != "")
+                    {
+                         CheckMatchingPerformance::where('scheme_performance_id', $undo_data->scheme_performance_id)->update(array('status'=>0));
+                         SchemePerformance::where('scheme_performance_id',$undo_data->scheme_performance_id)->update(array('status'=>3));
+                    }
+                    else{
+                         CheckMatchingPerformance::where('scheme_performance_id', $undo_data->scheme_performance_id)->update(array('status'=>2));
+                         SchemePerformance::where('scheme_performance_id',$undo_data->scheme_performance_id)->update(array('status'=>2)); 
+                    }
+          } 
+          else if (in_array($matching_id, $duplicate_array)) {
 
                // remove form duplicate => add in probable duplicate => update both entries (probable, duplicate);
                $key = array_search($matching_id, $duplicate_array);
                unset($duplicate_array[$key]); // remove form not duplicate
                $duplicate_array = array_values($duplicate_array); // reindexing
                array_push($probable_duplicate_array, $matching_id); // add in probable duplicate
-               // if ($duplicate_array != "") {
-               //      CheckMatchingPerformance::where('scheme_performance_id', $undo_data->scheme_performance_id)->update(array('status' => 0));
-               // } else if ($not_duplicate_array == $probable_duplicate_array) {
-               //      CheckMatchingPerformance::where('scheme_performance_id', $undo_data->scheme_performance_id)->update(array('status' => 1));
-               // } else {
-               //      CheckMatchingPerformance::where('scheme_performance_id', $undo_data->scheme_performance_id)->update(array('status' => 2));
-               // }
-          } else {
+                                       
+                    //Code for status change in check_matching_performance && scheme_performance table
+                    if($duplicate_array != "")
+                    {
+                         CheckMatchingPerformance::where('scheme_performance_id', $undo_data->scheme_performance_id)->update(array('status'=>0));
+                         SchemePerformance::where('scheme_performance_id',$undo_data->scheme_performance_id)->update(array('status'=>3));
+     
+                    }
+                    else if($duplicate_array == "")
+                    {
+                         if(count($not_duplicate_array) == count($matching_performance_id))
+                         {
+                              CheckMatchingPerformance::where('scheme_performance_id', $undo_data->scheme_performance_id)->update(array('status'=>1));
+                              SchemePerformance::where('scheme_performance_id',$undo_data->scheme_performance_id)->update(array('status'=>0)); 
+                         }
+                    }
+                    else{
+                         CheckMatchingPerformance::where('scheme_performance_id', $undo_data->scheme_performance_id)->update(array('status'=>2));
+                         SchemePerformance::where('scheme_performance_id',$undo_data->scheme_performance_id)->update(array('status'=>2)); 
+                    }
+          }
+          else {
                return ["response" => false];
           }
 
@@ -465,7 +515,6 @@ class CheckMatchingPerformanceController extends Controller
           //Related button status change after clicking on duplicate button
           if ($search_record == 1) {
                $get_scheme_performance_id->duplicate = $request->scheme_performance_id;
-               // $get_scheme_performance_id->status = 0;
                $key = array_search($request->scheme_performance_id, $new_probable_duplicate_array);
                unset($new_probable_duplicate_array[$key]);
                $get_scheme_performance_id->probable_duplicate = implode(",", $new_probable_duplicate_array);
@@ -473,7 +522,9 @@ class CheckMatchingPerformanceController extends Controller
                $get_scheme_performance_id->save();
                if($duplicate_array != "")
                {
-                    CheckMatchingPerformance::where('scheme_performance_id', $get_scheme_performance_id->scheme_performance_id)->update(array('status'=>0)); 
+                    CheckMatchingPerformance::where('scheme_performance_id', $get_scheme_performance_id->scheme_performance_id)->update(array('status'=>0));
+                    SchemePerformance::where('scheme_performance_id',$get_scheme_performance_id->scheme_performance_id)->update(array('status'=>3));
+ 
                }
           }
          
@@ -513,7 +564,9 @@ class CheckMatchingPerformanceController extends Controller
           if ($status_change->save()) {
                if($duplicate_array != "")
                {
-                    CheckMatchingPerformance::where('scheme_performance_id', $status_change->scheme_performance_id)->update(array('status'=>0)); 
+                    CheckMatchingPerformance::where('scheme_performance_id', $status_change->scheme_performance_id)->update(array('status'=>0));
+                    SchemePerformance::where('scheme_performance_id',$status_change->scheme_performance_id)->update(array('status'=>3));
+ 
                }
 
                return ["response" => true, "matching_performance_ids_count" => $matching_performance_ids_count, "selected_performance_ids_count" => $selected_performance_ids_count];
@@ -524,54 +577,52 @@ class CheckMatchingPerformanceController extends Controller
 
      public function status_not_duplicate(Request $request)
      {
-
+          
           $status_change = CheckMatchingPerformance::find($request->id);
-
+          
           $get_scheme_performance_id = CheckMatchingPerformance::where('scheme_performance_id', $request->matching_id)->first();
           $matching_performance_id_array = explode(",", $get_scheme_performance_id->matching_performance_id);
           $search_record = in_array($request->scheme_performance_id, $matching_performance_id_array);
           $new_probable_duplicate_array = explode(",", $get_scheme_performance_id->probable_duplicate);
-          $not_duplicate = explode(",",$get_scheme_performance_id->not_duplicate);
+          $new_not_duplicate_array = explode(",",$get_scheme_performance_id->not_duplicate);
+          
+          
+          $new_matching_performance_id = explode(",",$get_scheme_performance_id->matching_performance_id);
+          
          
-
-          $new_matching_performance_id = explode(",",$status_change->matching_performance_id);
-          // return $get_scheme_performance_id->scheme_performance_id;
-
-         
-
+          
           if ($search_record == 1) {
                $get_scheme_performance_id->not_duplicate = $request->scheme_performance_id;
-               $get_scheme_performance_id->status = 1;
                $key = array_search($request->scheme_performance_id, $new_probable_duplicate_array);
                unset($new_probable_duplicate_array[$key]);
                $get_scheme_performance_id->probable_duplicate = implode(",", $new_probable_duplicate_array);
-              
+               
                $get_scheme_performance_id->save();
-               if(count($new_matching_performance_id) == count($not_duplicate))
+              
+              
+               if((count($new_not_duplicate_array))== (count($new_matching_performance_id)))
                {
                     CheckMatchingPerformance::where('scheme_performance_id', $get_scheme_performance_id->scheme_performance_id)->update(array('status'=>1));
                     SchemePerformance::where('scheme_performance_id',$get_scheme_performance_id->scheme_performance_id)->update(array('status'=>0));
                }
-          
-              
+               
           }
-    
-
-
-
+       
           $matching_id = $request->matching_id;
           $probable_duplicate_array = explode(",", $status_change->probable_duplicate);
           $not_duplicate_array = explode(",", $status_change->not_duplicate);
           $scheme_performance_id_array = explode(",",$status_change->matching_performance_id);
-
-
+          
+         
+          
           if ($status_change->not_duplicate == "") {
 
                $status_change->not_duplicate =  $matching_id;
 
                $key = array_search($matching_id, $probable_duplicate_array);
                unset($probable_duplicate_array[$key]);
-          } else {
+          } 
+          else {
 
                $status_change->not_duplicate = $status_change->not_duplicate . "," . $matching_id;
                $key = array_search($matching_id, $probable_duplicate_array);
@@ -589,13 +640,15 @@ class CheckMatchingPerformanceController extends Controller
           if ($status_change->duplicate) {
                $selected_performance_ids_count += count(explode(",", $status_change->duplicate));
           }
+        
 
           if ($status_change->save()) {
-               if(count($not_duplicate_array) == count($scheme_performance_id_array))
+               if((count($scheme_performance_id_array)) == (count($not_duplicate_array)))
                {
                     CheckMatchingPerformance::where('scheme_performance_id', $status_change->scheme_performance_id)->update(array('status'=>1));
                     SchemePerformance::where('scheme_performance_id',$status_change->scheme_performance_id)->update(array('status'=>0));
                }
+              
                return ["response" => true, "matching_performance_ids_count" => $matching_performance_ids_count, "selected_performance_ids_count" => $selected_performance_ids_count];
           } else {
                return ["response" => false, "matching_performance_ids_count" => $matching_performance_ids_count, "selected_performance_ids_count" => $selected_performance_ids_count];

@@ -15,11 +15,17 @@ use App\Fav_Scheme;
 use App\Fav_Block;
 use App\Year;
 use App\scheme_block_performance;
+use App\User;
 use DB;
 use App\Languages;
 
 class DashboardController extends Controller
 {
+
+//     public function __construct(){
+//         // $this->middleware('Auth');
+//         $this->middleware('Language');
+//  }
     // function to assign everything related to user logged in (after logged in user id redirected to this method, this method further redirected usaer to its dashboadr page)
     public function index()
     {
@@ -327,7 +333,6 @@ class DashboardController extends Controller
 
     public function language_change($id = "")
     {
-        // echo "heee";
         if ($id == 1) {
             Languages::where('id', $id)->update(array(
                 'status' => 1
@@ -343,9 +348,14 @@ class DashboardController extends Controller
                 'status' => 0
             ));
         }
+            
+        $language_change = User::where('id',Auth::user()->id)->update(array('language'=>$id));
         return back();
     }
-    public function scheme_performance_for_dashborad($year = "")
+
+
+    
+        public function scheme_performance_for_dashborad($year = "")
     {
         // return $year;
         /** dashboard scheme performance **/
