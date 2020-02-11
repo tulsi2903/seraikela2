@@ -107,14 +107,14 @@ class SchemeReviewDuplicateDataCheckController extends Controller
                                                         ->select('scheme_performance.*','year.year_value','scheme_structure.scheme_short_name','scheme_structure.attributes as scheme_attributes')
                                                         ->whereIn('scheme_performance.panchayat_id', $panchayat_ids_selected)
                                                         ->where('scheme_performance.scheme_asset_id', $scheme_asset_id_selected)
-                                                        ->where('scheme_performance.scheme_performance_id', 1)
+                                                        // ->where('scheme_performance.scheme_performance_id', 17)
                                                         ->get();
         $performance_datas_to_test = SchemePerformance::LeftJoin('year','scheme_performance.year_id','=','year.year_id')
                                                         ->LeftJoin('scheme_structure','scheme_performance.scheme_id','=','scheme_structure.scheme_id')
                                                         ->select('scheme_performance.*','year.year_value','scheme_structure.scheme_short_name','scheme_structure.attributes as scheme_attributes')
                                                         ->whereIn('scheme_performance.panchayat_id', $panchayat_ids_selected)
                                                         ->where('scheme_performance.scheme_asset_id', $scheme_asset_id_selected)
-                                                        ->where('scheme_performance.scheme_performance_id', 9)
+                                                        // ->where('scheme_performance.scheme_performance_id', 19)
                                                         ->get();
 
         // echo "<pre>";    
@@ -186,7 +186,8 @@ class SchemeReviewDuplicateDataCheckController extends Controller
                         if(count($coordinates_selected) == 1 || count($coordinates_to_test) == 1){
                             $distance = $this->get_distance($coordinates_selected[0]["latitude"], $coordinates_selected[0]["longitude"], $coordinates_to_test[0]["latitude"], $coordinates_to_test[0]["longitude"]);
                             if($distance<=$distance_to_measure){
-                                return true;
+                                array_push($datas_tmp, $performance_data_to_test);
+                                $found = true;
                             }
                             else{
                                 // no duplicate
@@ -211,7 +212,8 @@ class SchemeReviewDuplicateDataCheckController extends Controller
                                 // testing if any point is withing a  distance (1KM)
                                 if($this->test_distance_if_any($coordinates_selected, $coordinates_to_test, $distance_to_measure)){ // yes, inside
                                     if($this->direction_wise_check_duplicate($coordinates_selected, $coordinates_to_test)){ // this will test and prepare percentage for changes of same direction
-                                        
+                                        array_push($datas_tmp, $performance_data_to_test);
+                                        $found = true;
                                     }
                                     else{
                                         // no duplicate
@@ -264,7 +266,7 @@ class SchemeReviewDuplicateDataCheckController extends Controller
         if($distance_3<=$distance_to_measure){ $probable_index+=1; }
         if($distance_4<=$distance_to_measure){ $probable_index+=1; }
 
-        echo $distance_1." - ".$distance_2." - ".$distance_3." - ".$distance_4."\n";
+        // echo $distance_1." - ".$distance_2." - ".$distance_3." - ".$distance_4."\n";
         
         if($probable_index>=2){
             return true;
@@ -378,15 +380,39 @@ class SchemeReviewDuplicateDataCheckController extends Controller
         }
 
         // generating index for duplicacy
-        if(count($angles_selected) == count($angles_to_test)){
-            
+        $test = 0;
+        $success = 0;
+        if(count($angles_selected) == count($angles_to_test)){ // sam no of points/ angles
+            for($i=0;$i<count($angles_selected);$i++){
+                if($angles_selected[$i]>($angles_to_test[$i]-10) && $angles_selected[$i]<($angles_to_test[$i]+10)){
+                    $success+=1;
+                }
+                $test+=1;
+            }
+            if($test==$success){
+                return true;
+            }
         }
-        echo "<pre>";
-        print_r($angles_selected);
-        ECHO "\n";
-        print_r($angles_to_test);
-        echo "\n\n";
-        exit();
+        else{ // different no of points/ angles
+            for($i=0;$i<count(angles_selected);$i++){
+                if(array_key_exists($i, $angles_to_test)){
+                    if($angles_selected[$i]>($angles_to_test[$i]-10) && $angles_selected[$i]<($angles_to_test[$i]+10)){
+                        $success+=1;
+                    }
+                    $test+=1;
+                }
+            }
+            if($test==$success){
+                return true;
+            }
+        }
+        // echo "<pre>";
+        // print_r($angles_selected);
+        // echo "\n";
+        // print_r($angles_to_test);
+        // echo "\n\n";
+        // exit();
+        return false;
     }
 
     public function test_whole_direction($coordinates_selected_datas, $coordinates_to_test_datas){

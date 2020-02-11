@@ -206,16 +206,14 @@
         overflow: hidden;
     }
     #tabular-view-block{
-        float: left;
-        width: 50%;
+        width: 100%;
         border-right: 1px solid #7393e4;
     }
     #tabular-view{
         display: none;
     }
     #map-view-block{
-        float: right;
-        width: 50%;
+        width: 100%;
     }
     #map-view{
         display: none;
@@ -269,9 +267,9 @@
                                     <a class="dropdown-item" href="#">Separated link</a>
                                     </div> -->
                                     <select name="uom" id="uom" class="form-control">
-                                        <option value="1">Mtr</option>
-                                        <option value="2">Ft</option>
-                                        <option value="3">Yard</option>
+                                        <option value="1" selected>Mtr</option>
+                                        <!-- <option value="2">Ft</option>
+                                        <option value="3">Yard</option> -->
                                     </select>
                                 </div>
                             </div>
@@ -936,6 +934,7 @@
                         </div>
                     </div>
                     <div id="map-view-block">
+                        <button class="btn btn-secondary btn-sm"><i class="fas fa-arrow-left"></i>&nbsp;Back</button>
                         <div id="map-view">
                             <div id="mapCanvas" style="width: 100%; height: 400px; border-radius: 3px; border: 1px solid rgb(140, 140, 140);"></div>
                         </div>
@@ -1270,7 +1269,7 @@
             content += `</tr>`;
 
             content += `<tr class="show-duplicate-details">
-                                <td colspan="7">
+                                <td colspan="8">
                                     <table class="table">
                                         <tr style="background: #baffc9; color: #000; font-weight: bold;">
                                             <th>Sl.No.</th>
