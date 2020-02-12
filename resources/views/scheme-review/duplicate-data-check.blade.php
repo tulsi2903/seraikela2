@@ -19,7 +19,6 @@
 
     hr.new2 {
         border-top: 1px dashed #000;
-
     }
 
     svg text {
@@ -206,17 +205,95 @@
         overflow: hidden;
     }
     #tabular-view-block{
-        width: 100%;
-        border-right: 1px solid #7393e4;
+        
     }
     #tabular-view{
         display: none;
     }
     #map-view-block{
-        width: 100%;
+       /* display: none; */
     }
-    #map-view{
-        display: none;
+    #map-view {
+        position: relative;
+        overflow: hidden;
+    }
+    #gallery-view-outer {
+        position: absolute;
+        right: -100%;
+        opacity: 0;
+        top: 0;
+        height: 100%;
+        width: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        transition: all 0.3s ease;
+    }
+
+    #gallery-view-outer.active {
+        right: 0;
+        opacity: 1;
+    }
+
+    #gallery-view-block {
+        float: right;
+        width: 450px;
+        height: 100%;
+        overflow: auto;
+        background: white;
+        border: 1px solid grey;
+    }
+
+    #gallery-view-heading,
+    #gallery-view-heading-gallery {
+        border-bottom: 1px solid rgb(182, 182, 182);
+        font-size: 18px;
+        font-weight: bold;
+        padding: 15px;
+        color: rgb(42, 12, 111);
+        background: rgb(234, 234, 234);
+    }
+
+    #gallery-view-heading-gallery {
+        margin: -15px -15px 15px -15px;
+    }
+
+    #gallery-view-close-button {
+        float: right;
+    }
+
+    #gallery-view-close-button .btn {
+        border-radius: unset !important;
+    }
+
+    #gallery-view {
+        padding: 15px;
+    }
+
+    .gallery-view-thumb {
+        margin-bottom: 15px;
+    }
+
+    .gallery-view-thumb-info {
+        line-height: 150%;
+        margin-left: -15px;
+        margin-right: -15px;
+        padding: 0 15px 15px 15px;
+        border-bottom: 1px solid rgb(182, 182, 182);
+    }
+
+    .gallery-view-thumb-img {
+        width: 100%;
+        height: 250px;
+        background-position: center;
+        background-size: auto 100%;
+        background-repeat: no-repeat;
+        background-color: #272727;
+        border: 1px solid #1f1f1f;
+        border-radius: 5px;
+        transition: all 0.3s ease;
+    }
+
+    .gallery-view-thumb-img:hover {
+        background-size: auto 105%;
     }
 </style>
 @endsection
@@ -256,7 +333,7 @@
                         <div class="form-group">
                             <label for="distance_to_measure">Radius/ Distance</label>
                             <div class="input-group">
-                                <input type="text" class="form-control" name="distance_to_measure" id="distance_to_measure" aria-label="Text input with dropdown button" value="2">
+                                <input type="text" class="form-control" name="distance_to_measure" id="distance_to_measure" aria-label="Text input with dropdown button" value="100">
                                 <div class="input-group-append">
                                     <!-- <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</button>
                                     <div class="dropdown-menu">
@@ -934,13 +1011,44 @@
                         </div>
                     </div>
                     <div id="map-view-block">
-                        <button class="btn btn-secondary btn-sm"><i class="fas fa-arrow-left"></i>&nbsp;Back</button>
+                        <div style="padding: 15px 0 15px 0;">
+                            <button class="btn btn-secondary btn-sm" onclick="closeMap()"><i class="fas fa-arrow-left"></i>&nbsp;Back to details</button>
+                        </div>
+                        <div id="map-view">
+                            <div id="mapCanvas" style="width: 100%; height: 600px; border-radius: 3px; border: 1px solid rgb(140, 140, 140); box-shadow: -2px 6px 10px 0px #00000052;"></div>
+                            <div id="gallery-view-outer">
+                                <div id="gallery-view-block">
+                                    <div id="gallery-view-heading">
+                                        Details
+                                        <button id="gallery-view-close-button" class="btn btn-danger btn-sm" onclick="resetGallery();">X</button>
+                                    </div>
+                                    <div id="gallery-view">
+                                        <!-- <div class="gallery-view-thumb gallery-view-thumb-info">
+                                            <b>Sanction No</b>: San/01
+                                            <br><b>Beneficiary Name</b>: Sachin
+                                            <br><b>Asset</b>: House
+                                            <br><b>Block</b>: Ichagarh
+                                            <br><b>Panchayat</b>: Dewaltand
+                                            <br><b>Status</b>: Completed
+                                        </div>
+                                        <div class="gallery-view-thumb gallery-view-thumb-img">
+                                        </div> -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="no-data" style="width: 100%; height: 400px; border-radius: 8px;">
+                            <i class="fas fa-info-circle text-success"></i>&nbsp;&nbsp;No geo locations found
+                        </div>
+                        <!-- <div style="">
+                            <button class="btn btn-secondary btn-sm" onclick="closeMap()"><i class="fas fa-arrow-left"></i>&nbsp;Back</button>
+                        </div>
                         <div id="map-view">
                             <div id="mapCanvas" style="width: 100%; height: 400px; border-radius: 3px; border: 1px solid rgb(140, 140, 140);"></div>
                         </div>
                         <div class="no-data">
                             <i class="fas fa-info-circle text-success"></i>&nbsp;&nbsp;No coordinates to show
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </div>
@@ -1215,7 +1323,7 @@
                 // resetting all view's blocks/divs/inputs
                 resetTabularView();
                 resetMapView();
-                // resetCommon(); // to reset common things among all views
+                resetCommon(); // to reset common things among all views
 
                 // // // show basic details
                 $("#all-view-details").html("<b>Scheme: </b>" + $("#scheme_id option:selected").text());
@@ -1245,7 +1353,7 @@
 <script>
     function initializeTabularView(duplicate_datas) { //received data.tabular_view
         var content = `<table class="table">`;
-            content += `<tr style='background: #d6dcff;color: #000; font-weight: bold;'>`;
+            content += `<tr style='background: #a7a9e2;color: #000; font-weight: bold;'>`;
                 content+=`<th>Sl.No.</th>`;
                 content+=`<th>Year</th>`;
                 content+=`<th>Scheme</th>`;
@@ -1326,10 +1434,17 @@
         //     resetGallery(); // ressting gallery tab
         //     showMap(map_datas); 
         // }
+        $("#tabular-view-block").fadeOut(300);
+        $("#map-view-block").fadeIn(300);
         $("#map-view").show();
         $("#mapCanvas").show();
         $("#map-view + .no-data").hide();
+        console.log(duplicate_datas_obj[index]);
         showMap(duplicate_datas_obj[index]);
+    }
+    function closeMap(){
+        $("#map-view-block").hide(0);
+        $("#tabular-view-block").fadeIn(300);
     }
     // function initializeMapView(map_datas) {
     //     if(map_datas.length>0){ 
@@ -1434,5 +1549,56 @@
         $("#mapCanvas").hide();
         $("#map-view + .no-data").show();
     }
+</script>
+
+<script>
+    /* for gallery */
+    function showGallery(data) {
+        if (data) { // has data
+            var contentString = '<div class="gallery-view-thumb gallery-view-thumb-info">';
+            contentString += '<b>Scheme</b>: ' + data.scheme_name + '<br/>';
+            contentString += '<b>Year</b>: ' + data.year_value + '<br/>';
+            if (data.attributes) {
+                if (data.attributes.length > 0) {
+                    data.attributes.forEach(function (element) {
+                        contentString += '<b>' + element[0] + '</b>: ' + element[1] + '<br/>';
+                    })
+                }
+            }
+            contentString += '<b>Asset</b>: ' + data.asset_name;
+            contentString += '<br/><b>Block</b>: ' + data.block_name;
+            contentString += '<br/><b>Panchayat</b>: ' + data.panchayat_name;
+            contentString += '<br/><b>Status</b>: ' + data.status;
+            contentString += '</div>';
+
+            contentString += '<div id="gallery-view-heading-gallery">Gallery</div>';
+            if (data.gallery) { // if gallery
+                data.gallery.forEach(function (element) {
+                    contentString += '<div class="gallery-view-thumb gallery-view-thumb-img" style=" background-image: url(<?php echo url(""); ?>/' + element + '); "></div>';
+                });
+            }
+            else { // no gallery
+                contentString += '<div><i class="fas fa-info-circle"></i>&nbsp;&nbsp;No images found!</div>';
+            }
+            $("#gallery-view").html(contentString);
+            $("#gallery-view-outer").addClass("active");
+        }
+        else {
+            $("#gallery-view-outer").removeClass("active");
+        }
+    }
+
+    function resetGallery() {
+        $("#gallery-view-outer").removeClass("active");
+        $("#gallery-view").html("");
+    }
+</script>
+
+<script>
+    function resetCommon(){
+        $("#map-view-block").hide();
+        $("#tabular-view-block").fadeIn(300);
+    }
+
 </script>
 @endsection

@@ -30,6 +30,13 @@ use Illuminate\Http\Request;
 
 Route::post('login', 'API\UserController@login');
 Route::group(['middleware' => 'auth:api'], function(){
-    Route::post('user-details', 'API\UserController@user_details')->middleware('auth:api');
+    // for user
+    Route::post('user-details', 'API\UserController@user_details');
     Route::post('logout', 'API\UserController@logout');
+
+    // for getting details
+    Route::post('get-schemes', 'API\GetDetailsController@get_schemes');
+    Route::post('get-years', 'API\GetDetailsController@get_years');
+    Route::post('get-blocks', 'API\GetDetailsController@get_blocks');
+    Route::post('get-panchayat', 'API\GetDetailsController@get_panchayat');
 });
