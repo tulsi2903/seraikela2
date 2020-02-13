@@ -80,11 +80,11 @@
                     <h4 class="card-title">{{$phrase->year}}</h4>
                     <div class="card-tools">
                         <!-- <a href="#" data-toggle="tooltip" title="Send Mail"><button type="button" class="btn btn-icon btn-round btn-success" data-target="#create-email" data-toggle="modal"><i class="fa fa-envelope" aria-hidden="true"></i></button></a> -->
-                        <button type="button" data-toggle="tooltip" title="Send Mail" class="btn btn-icon btn-round btn-success" onclick="openmodel();"><i class="fa fa-envelope" aria-hidden="true"></i></button>
-                        <button type="button" data-toggle="tooltip" title="Print" class="btn btn-icon btn-round btn-default" onclick="printViewone();"><i class="fa fa-print" aria-hidden="true"></i></button>
+                        <button type="button" data-toggle="tooltip" title="{{$phrase->send_email}}" class="btn btn-icon btn-round btn-success" onclick="openmodel();"><i class="fa fa-envelope" aria-hidden="true"></i></button>
+                        <button type="button" data-toggle="tooltip" title="{{$phrase->print}}" class="btn btn-icon btn-round btn-default" onclick="printViewone();"><i class="fa fa-print" aria-hidden="true"></i></button>
 
-                        <button type="button" data-toggle="tooltip" title="Export to PDF" onclick="exportSubmit('print_pdf');" class="btn btn-icon btn-round btn-warning"><i class="fas fa-file-export"></i></button>
-                        <button type="button" data-toggle="tooltip" title="Export to Excel" onclick="exportSubmit('excel_sheet');" class="btn btn-icon btn-round btn-success"><i class="fas fa-file-excel"></i></button>
+                        <button type="button" data-toggle="tooltip" title="{{$phrase->export_pdf}}" onclick="exportSubmit('print_pdf');" class="btn btn-icon btn-round btn-warning"><i class="fas fa-file-export"></i></button>
+                        <button type="button" data-toggle="tooltip" title="{{$phrase->export_excel}}" onclick="exportSubmit('excel_sheet');" class="btn btn-icon btn-round btn-success"><i class="fas fa-file-excel"></i></button>
 
                         <!-- <a href="#" data-toggle="tooltip" title="Print"><button type="button" class="btn btn-icon btn-round btn-default" id="print-button" onclick="printView();"><i class="fa fa-print" aria-hidden="true"></i></button></a>
                             <a href="{{url('year/pdf/pdfURL')}}" target="_BLANK" data-toggle="tooltip" title="Export to PDF"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button></a>
@@ -192,10 +192,11 @@
                                             } ?></td>
                                             @if($desig_permissions["mod3"]["del"] ||$desig_permissions["mod3"]["edit"] )
                                             <td class="action-buttons">
-                                                @if($desig_permissions["mod3"]["del"])<a href="{{url('year/delete')}}/{{$data->year_id}}" class="btn btn-danger btn-sm delete-button"><i class="fas fa-trash-alt"></i></a>@endif 
-                                                @if($desig_permissions["mod3"]["edit"])&nbsp;&nbsp;
-                                                <button type="button" class="btn btn-sm btn-secondary" onclick="openInlineForm('{{$data->year_id}}')"><i class="fas fa-edit"></i></button>
+                                            @if($desig_permissions["mod3"]["edit"])&nbsp;&nbsp;
+                                                <button type="button" class="btn btn-sm btn-secondary" onclick="openInlineForm('{{$data->year_id}}')" data-toggle="tooltip" title="{{$phrase->edit}}"><i class="fas fa-edit"></i></button>
                                                 @endif
+                                                @if($desig_permissions["mod3"]["del"])<a href="{{url('year/delete')}}/{{$data->year_id}}" class="btn btn-danger btn-sm delete-button" data-toggle="tooltip" title="{{$phrase->delete}}"><i class="fas fa-trash-alt"></i></a>@endif 
+                                               
                                             </td>
                                             @endif
                                         </tr>

@@ -93,10 +93,10 @@
                         <div class="card-tools">
                             
                             <!-- <a href="#" data-toggle="tooltip" title="Send Mail"><button type="button" class="btn btn-icon btn-round btn-success" data-target="#create-email" data-toggle="modal" ><i class="fa fa-envelope" aria-hidden="true"></i></button></a> -->
-                            <button type="button" data-toggle="tooltip" title="Send Mail" class="btn btn-icon btn-round btn-success"  onclick="openmodel();" ><i class="fa fa-envelope" aria-hidden="true"></i></button>
-                            <button type="button" data-toggle="tooltip" title="Print" class="btn btn-icon btn-round btn-default" onclick="printViewone();"><i class="fa fa-print" aria-hidden="true"></i></button>
-                            <button  type="submit" target="_BLANK" data-toggle="tooltip" title="Export to PDF" name="print" value="print_pdf" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button>
-                            <button type="submit" data-toggle="tooltip" title="Export to Excel" name="print" value="excel_sheet" class="btn btn-icon btn-round btn-success" ><i class="fas fa-file-excel"></i></button>
+                            <button type="button" data-toggle="tooltip" title="{{$phrase->send_email}}" class="btn btn-icon btn-round btn-success"  onclick="openmodel();" ><i class="fa fa-envelope" aria-hidden="true"></i></button>
+                            <button type="button" data-toggle="tooltip" title="{{$phrase->print}}" class="btn btn-icon btn-round btn-default" onclick="printViewone();"><i class="fa fa-print" aria-hidden="true"></i></button>
+                            <button  type="submit" target="_BLANK" data-toggle="tooltip" title="{{$phrase->export_pdf}}" name="print" value="print_pdf" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button>
+                            <button type="submit" data-toggle="tooltip" title="{{$phrase->export_excel}}" name="print" value="excel_sheet" class="btn btn-icon btn-round btn-success" ><i class="fas fa-file-excel"></i></button>
 
 
                             <!-- <a href="#" data-toggle="tooltip" title="Print"><button type="button" class="btn btn-icon btn-round btn-default" id="print-button" onclick="printView();"><i class="fa fa-print" aria-hidden="true"></i></button></a> -->
@@ -155,8 +155,9 @@
                                         </td>
                                         @if($desig_permissions["mod8"]["del"] ||$desig_permissions["mod8"]["edit"])                                 
                                         <td class="action-buttons">
-                                            @if($desig_permissions["mod8"]["del"])<a href="{{url('assetcat/delete')}}/{{$data->asset_cat_id}}" class="btn btn-danger btn-sm delete-button"><i class="fas fa-trash-alt"></i></a>@endif
-                                            @if($desig_permissions["mod8"]["edit"])&nbsp;&nbsp;<a href="{{url('assetcat/add')}}?purpose=edit&id={{$data->asset_cat_id}}" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></a>@endif
+                                            @if($desig_permissions["mod8"]["edit"])&nbsp;&nbsp;<a href="{{url('assetcat/add')}}?purpose=edit&id={{$data->asset_cat_id}}" class="btn btn-secondary btn-sm" data-toggle="tooltip" title="{{$phrase->edit}}"><i class="fas fa-edit"></i></a>@endif
+                                            @if($desig_permissions["mod8"]["del"])<a href="{{url('assetcat/delete')}}/{{$data->asset_cat_id}}" class="btn btn-danger btn-sm delete-button" data-toggle="tooltip" title="{{$phrase->delete}}"><i class="fas fa-trash-alt"></i></a>@endif
+
                                         </td>
                                         @endif
                                     </tr>

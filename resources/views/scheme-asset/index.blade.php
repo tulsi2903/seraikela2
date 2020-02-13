@@ -82,19 +82,23 @@
 @endsection
 
 @section('page-content')
+
+<?php  $desig_permissions = session()->get('desig_permission'); // assigning desig_permission so we can use ?>
+
+
 <div class="card">
         <div class="col-md-12">
             <div class="card-header">
                 <div class="card-head-row card-tools-still-right" style="background:#fff;">
                     <h4 class="card-title">{{$phrase->scheme_assets}} </h4>
                     <div class="card-tools">
-                        <button type="button" data-toggle="tooltip" title="Send Mail" class="btn btn-icon btn-round btn-success"  onclick="openmodel();" ><i class="fa fa-envelope" aria-hidden="true"></i></button>
+                        <button type="button" data-toggle="tooltip" title="{{$phrase->send_email}}" class="btn btn-icon btn-round btn-success"  onclick="openmodel();" ><i class="fa fa-envelope" aria-hidden="true"></i></button>
 
                         <!-- <a href="#" data-toggle="tooltip" title="{{$phrase->send_email}} "><button type="button" class="btn btn-icon btn-round btn-success" data-target="#create-email" data-toggle="modal" ><i class="fa fa-envelope" aria-hidden="true"></i></button></a> -->
                         <!-- <a href="#" data-toggle="tooltip" title="{{$phrase->print}}"><button type="button" class="btn btn-icon btn-round btn-default" id="print-button" onclick="printView();"><i class="fa fa-print" aria-hidden="true"></i></button></a> -->
-                        <button type="button" data-toggle="tooltip" title="Print" class="btn btn-icon btn-round btn-default" onclick="printViewone();"><i class="fa fa-print" aria-hidden="true"></i></button>
-                        <button type="button" data-toggle="tooltip" title="Export to PDF" onclick="exportSubmit('print_pdf');" class="btn btn-icon btn-round btn-warning"><i class="fas fa-file-export"></i></button>
-                        <button type="button" data-toggle="tooltip" title="Export to Excel" onclick="exportSubmit('excel_sheet');" class="btn btn-icon btn-round btn-success"><i class="fas fa-file-excel"></i></button>
+                        <button type="button" data-toggle="tooltip" title="{{$phrase->print}}" class="btn btn-icon btn-round btn-default" onclick="printViewone();"><i class="fa fa-print" aria-hidden="true"></i></button>
+                        <button type="button" data-toggle="tooltip" title="{{$phrase->export_pdf}}" onclick="exportSubmit('print_pdf');" class="btn btn-icon btn-round btn-warning"><i class="fas fa-file-export"></i></button>
+                        <button type="button" data-toggle="tooltip" title="{{$phrase->export_excel}}" onclick="exportSubmit('excel_sheet');" class="btn btn-icon btn-round btn-success"><i class="fas fa-file-excel"></i></button>
                         <!-- <a href="#" data-toggle="tooltip" title="{{$phrase->export_pdf}}"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button></a>
                         <a href="#" data-toggle="tooltip" title="{{$phrase->export_excel}}"><button type="button" class="btn btn-icon btn-round btn-primary" ><i class="fas fa-file-excel"></i></button></a> -->
                         @if($desig_permissions["mod16"]["add"])
@@ -125,7 +129,7 @@
                                     <th>{{$phrase->geo_related}}</th>
                                     <th>{{$phrase->multiple_geo_tags}}</th>
                                     <th>{{$phrase->uom}}</th>
-                                    @if($desig_permissions["mod16"]["del"] || $desig_permissions["mod16"]["edit"])
+                                    @if($desig_permissions["mod16"]["edit"] || $desig_permissions["mod16"]["del"])
                                     <th class="action-buttons">{{$phrase->action}}</th>
                                     @endif
                                 </tr>
@@ -160,14 +164,15 @@
                                             <td>{{$data->uom_name}}</td>  
                                             @if($desig_permissions["mod16"]["view"] ||$desig_permissions["mod16"]["del"] || $desig_permissions["mod16"]["edit"]) 
                                             <td class="action-buttons">
-                                                @if($desig_permissions["mod16"]["view"])
-                                                <a href="{{url('scheme-asset/view')}}/{{$data->scheme_asset_id}}" class="btn btn-secondary btn-sm"><i class="fas fa-eye"></i></a>
-                                                @endif
+                                                
                                                 @if($desig_permissions["mod16"]["edit"])
-                                                &nbsp;&nbsp;<a href="{{url('scheme-asset/add')}}?purpose=edit&id={{$data->scheme_asset_id}}" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></a>
+                                                &nbsp;&nbsp;<a href="{{url('scheme-asset/add')}}?purpose=edit&id={{$data->scheme_asset_id}}" class="btn btn-secondary btn-sm" data-toggle="tooltip" title="{{$phrase->edit}}"><i class="fas fa-edit"></i></a>
+                                                @endif
+                                                @if($desig_permissions["mod16"]["view"])
+                                                <a href="{{url('scheme-asset/view')}}/{{$data->scheme_asset_id}}" class="btn btn-secondary btn-sm"><i class="fas fa-eye" data-toggle="tooltip" title="{{$phrase->view}}"></i></a>
                                                 @endif
                                                 @if($desig_permissions["mod16"]["del"])
-                                                &nbsp;&nbsp;<a href="{{url('scheme-asset/delete')}}/{{$data->scheme_asset_id}}" class="btn btn-danger btn-sm delete-button"><i class="fas fa-trash-alt"></i></a>
+                                                &nbsp;&nbsp;<a href="{{url('scheme-asset/delete')}}/{{$data->scheme_asset_id}}" class="btn btn-danger btn-sm delete-button" data-toggle="tooltip" title="{{$phrase->delete}}"><i class="fas fa-trash-alt"></i></a>
                                                 @endif
                                             </td>
                                             @endif

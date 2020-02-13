@@ -93,9 +93,9 @@
 
                     <!-- <a href="#" data-toggle="tooltip" title="{{$phrase->send_email}}"><button type="button" class="btn btn-icon btn-round btn-success" data-target="#create-email" data-toggle="modal"><i class="fa fa-envelope" aria-hidden="true"></i></button></a> -->
                     <!-- <a href="#" data-toggle="tooltip" title="{{$phrase->print}}"><button type="button" class="btn btn-icon btn-round btn-default" id="print-button" onclick="printView();"><i class="fa fa-print" aria-hidden="true"></i></button></a> -->
-                    <button type="button" data-toggle="tooltip" title="Print" class="btn btn-icon btn-round btn-default" onclick="printViewone();"><i class="fa fa-print" aria-hidden="true"></i></button>
-                    <button type="button" data-toggle="tooltip" title="Export to PDF" onclick="exportSubmit('print_pdf');" class="btn btn-icon btn-round btn-warning"><i class="fas fa-file-export"></i></button>
-                    <button type="button" data-toggle="tooltip" title="Export to Excel" onclick="exportSubmit('excel_sheet');" class="btn btn-icon btn-round btn-success"><i class="fas fa-file-excel"></i></button>
+                    <button type="button" data-toggle="tooltip" title="{{$phrase->send_email}}" class="btn btn-icon btn-round btn-default" onclick="printViewone();"><i class="fa fa-print" aria-hidden="true"></i></button>
+                    <button type="button" data-toggle="tooltip" title="{{$phrase->export_pdf}} onclick="exportSubmit('print_pdf');" class="btn btn-icon btn-round btn-warning"><i class="fas fa-file-export"></i></button>
+                    <button type="button" data-toggle="tooltip" title="{{$phrase->export_excel}}" onclick="exportSubmit('excel_sheet');" class="btn btn-icon btn-round btn-success"><i class="fas fa-file-excel"></i></button>
                     <!-- <a href="{{url('scheme-structure/pdf/pdfURL')}}" data-toggle="tooltip" title="{{$phrase->export_pdf}}"><button type="button" class="btn btn-icon btn-round btn-warning"><i class="fas fa-file-export"></i></button></a>
                     <a href="{{url('scheme-structure/export/excelURL')}}" data-toggle="tooltip" title="{{$phrase->export_excel}}"><button type="button" class="btn btn-icon btn-round btn-primary"><i class="fas fa-file-excel"></i></button></a> -->
                     @if($desig_permissions["mod15"]["add"])
@@ -153,13 +153,13 @@
                             </td>
                             @if($desig_permissions["mod15"]["edit"] || $desig_permissions["mod15"]["del"])
                             <td class="action-buttons">
-                                @if($desig_permissions["mod15"]["edit"]) <a href="{{url('scheme-structure/add')}}?purpose=edit&id={{$data->scheme_id}}" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></a>
+                                @if($desig_permissions["mod15"]["edit"]) <a href="{{url('scheme-structure/add')}}?purpose=edit&id={{$data->scheme_id}}" class="btn btn-secondary btn-sm" data-toggle="tooltip" title="{{$phrase->edit}}"><i class="fas fa-edit"></i></a>
                                 @endif
                                 @if($desig_permissions["mod15"]["view"])
-                                &nbsp;&nbsp;<a href="{{url('scheme-structure/view')}}/{{$data->scheme_id}}" class="btn btn-sm btn-secondary"><i class="fas fa-eye"></i></a>
+                                &nbsp;&nbsp;<a href="{{url('scheme-structure/view')}}/{{$data->scheme_id}}" class="btn btn-sm btn-secondary" data-toggle="tooltip" title="{{$phrase->view}}"><i class="fas fa-eye"></i></a>
                                 @endif
                                 @if($desig_permissions["mod15"]["del"])
-                                &nbsp;&nbsp;<a href="{{url('scheme-structure/delete')}}/{{$data->scheme_id}};" class="btn btn-danger btn-sm delete-button"><i class="fas fa-trash-alt"></i></a>
+                                &nbsp;&nbsp;<a href="{{url('scheme-structure/delete')}}/{{$data->scheme_id}};" class="btn btn-danger btn-sm delete-button" data-toggle="tooltip" title="{{$phrase->delete}}"><i class="fas fa-trash-alt"></i></a>
                                 @endif
                             </td>
                             @endif

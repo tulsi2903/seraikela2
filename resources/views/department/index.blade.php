@@ -97,10 +97,10 @@
                     <div class="card-head-row card-tools-still-right" style="background:#fff;">
                         <h4 class="card-title no-print">{{$phrase->department}}</h4>
                         <div class="card-tools">
-                            <button type="button" data-toggle="tooltip" title="Send Mail" class="btn btn-icon btn-round btn-success"  onclick="openmodel();" ><i class="fa fa-envelope" aria-hidden="true"></i></button>
-                            <button type="button" data-toggle="tooltip" title="Print" class="btn btn-icon btn-round btn-default" onclick="printViewone();"><i class="fa fa-print" aria-hidden="true"></i></button>
-                            <button type="button" data-toggle="tooltip" title="Export to PDF" onclick="exportSubmit('print_pdf');" class="btn btn-icon btn-round btn-warning"><i class="fas fa-file-export"></i></button>
-                            <button type="button" data-toggle="tooltip" title="Export to Excel" onclick="exportSubmit('excel_sheet');" class="btn btn-icon btn-round btn-success"><i class="fas fa-file-excel"></i></button>
+                            <button type="button" data-toggle="tooltip" title="{{$phrase->send_email}}" class="btn btn-icon btn-round btn-success"  onclick="openmodel();" ><i class="fa fa-envelope" aria-hidden="true"></i></button>
+                            <button type="button" data-toggle="tooltip" title="{{$phrase->print}}" class="btn btn-icon btn-round btn-default" onclick="printViewone();"><i class="fa fa-print" aria-hidden="true"></i></button>
+                            <button type="button" data-toggle="tooltip" title="{{$phrase->export_pdf}}" onclick="exportSubmit('print_pdf');" class="btn btn-icon btn-round btn-warning"><i class="fas fa-file-export"></i></button>
+                            <button type="button" data-toggle="tooltip" title="{{$phrase->export_excel}}" onclick="exportSubmit('excel_sheet');" class="btn btn-icon btn-round btn-success"><i class="fas fa-file-excel"></i></button>
 
                             <!-- <a href="{{url('department/changeView')}}" data-toggle="tooltip" title="Import From Excel"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fa fa-upload"></i></button></a> -->
 
@@ -196,8 +196,9 @@
                                             } ?></td>
                                             @if($desig_permissions["mod2"]["del"] ||$desig_permissions["mod2"]["edit"] )
                                             <td class="action-buttons">
-                                                @if($desig_permissions["mod2"]["del"])<a href="{{url('department/delete')}}/{{$data->dept_id}}" class="btn btn-danger btn-sm delete-button"><i class="fas fa-trash-alt"></i></a>@endif
-                                                @if($desig_permissions["mod2"]["edit"])&nbsp;&nbsp;<button type="button" class="btn btn-sm btn-secondary" onclick="openInlineForm('{{$data->dept_id}}')"><i class="fas fa-edit"></i></button>@endif
+                                                @if($desig_permissions["mod2"]["edit"])&nbsp;&nbsp;<button type="button" class="btn btn-sm btn-secondary" onclick="openInlineForm('{{$data->dept_id}}')" data-toggle="tooltip" title="{{$phrase->edit}}"><i class="fas fa-edit"></i></button>@endif
+                                                @if($desig_permissions["mod2"]["del"])<a href="{{url('department/delete')}}/{{$data->dept_id}}" class="btn btn-danger btn-sm delete-button" data-toggle="tooltip" title="{{$phrase->delete}}"><i class="fas fa-trash-alt"></i></a>@endif
+
                                             </td>
                                             @endif
                                         </tr>

@@ -77,11 +77,11 @@
                     <div class="card-head-row card-tools-still-right" style="background:#fff;">
                         <h4 class="card-title">{{$phrase->geo_struture}}</h4>
                         <div class="card-tools">
-                            <a href="#" data-toggle="tooltip" title="Send Mail"><button type="button" class="btn btn-icon btn-round btn-success" data-target="#create-email" data-toggle="modal" ><i class="fa fa-envelope" aria-hidden="true"></i></button></a>
-                            <button type="button" data-toggle="tooltip" title="Print" class="btn btn-icon btn-round btn-default" onclick="printViewone();"><i class="fa fa-print" aria-hidden="true"></i></button>
+                            <a href="#" data-toggle="tooltip" title="{{$phrase->send_email}}"><button type="button" class="btn btn-icon btn-round btn-success" data-target="#create-email" data-toggle="modal" ><i class="fa fa-envelope" aria-hidden="true"></i></button></a>
+                            <button type="button" data-toggle="tooltip" title="{{$phrase->print}}" class="btn btn-icon btn-round btn-default" onclick="printViewone();"><i class="fa fa-print" aria-hidden="true"></i></button>
 
-                            <button  type="button" data-toggle="tooltip" title="Export to PDF" onclick="exportTrigger()" name="print" value="print_pdf" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button>
-                            <button  type="button" data-toggle="tooltip" title="Export to Excel" onclick="exportTriggerexcel()" name="print" value="excel_sheet" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-excel"></i></button>
+                            <button  type="button" data-toggle="tooltip" title="{{$phrase->export_pdf}}" onclick="exportTrigger()" name="print" value="print_pdf" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button>
+                            <button  type="button" data-toggle="tooltip" title="{{$phrase->export_excel}}" onclick="exportTriggerexcel()" name="print" value="excel_sheet" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-excel"></i></button>
                             <!-- <button type="submit" name="print" value="excel_sheet" class="btn btn-icon btn-round btn-success" ><i class="fas fa-file-excel"></i></button> -->
 
 
@@ -142,12 +142,13 @@
                                                     <td>{{$data->org_name}}</td>
                                                     @if($desig_permissions["mod12"]["edit"] || $desig_permissions["mod12"]["del"] )
                                                     <td class="action-buttons">
-                                                    @if($desig_permissions["mod12"]["del"])
-                                                        <a href="{{url('geo-structure/delete')}}/{{$data->geo_id}}" class="btn btn-danger btn-sm delete-button"><i class="fas fa-trash-alt"></i></a>
-                                                    @endif
                                                     @if($desig_permissions["mod12"]["edit"])
-                                                        &nbsp;&nbsp;<a href="{{url('geo-structure/add')}}?purpose=edit&id={{$data->geo_id}}" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></a>
+                                                        &nbsp;&nbsp;<a href="{{url('geo-structure/add')}}?purpose=edit&id={{$data->geo_id}}" class="btn btn-secondary btn-sm" data-toggle="tooltip" title="{{$phrase->edit}}"><i class="fas fa-edit"></i></a>
                                                     @endif
+                                                    @if($desig_permissions["mod12"]["del"])
+                                                        <a href="{{url('geo-structure/delete')}}/{{$data->geo_id}}" class="btn btn-danger btn-sm delete-button" data-toggle="tooltip" title="{{$phrase->delete}}"><i class="fas fa-trash-alt"></i></a>
+                                                    @endif
+                                                    
                                                     </td>
                                                     @endif
                                                 </tr>
@@ -197,12 +198,13 @@
                                                     <td>{{$data->org_name}}</td>
                                                     @if($desig_permissions["mod12"]["edit"] || $desig_permissions["mod12"]["del"] )
                                                     <td class="action-buttons">
-                                                    @if($desig_permissions["mod12"]["del"])
-                                                    <a href="{{url('geo-structure/delete')}}/{{$data->geo_id}}" class="btn btn-danger btn-sm delete-button"><i class="fas fa-trash-alt"></i></a>
-                                                    @endif
                                                     @if($desig_permissions["mod12"]["edit"])
-                                                    &nbsp;&nbsp;<a href="{{url('geo-structure/add')}}?purpose=edit&id={{$data->geo_id}}" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></a>
-                                                     @endif   
+                                                    &nbsp;&nbsp;<a href="{{url('geo-structure/add')}}?purpose=edit&id={{$data->geo_id}}" class="btn btn-secondary btn-sm" data-toggle="tooltip" title="{{$phrase->edit}}"><i class="fas fa-edit"></i></a>
+                                                     @endif 
+                                                    @if($desig_permissions["mod12"]["del"])
+                                                    <a href="{{url('geo-structure/delete')}}/{{$data->geo_id}}" class="btn btn-danger btn-sm delete-button" data-toggle="tooltip" title="{{$phrase->delete}}"><i class="fas fa-trash-alt"></i></a>
+                                                    @endif
+
                                                     </td>
                                                     @endif
                                                 </tr>
@@ -255,12 +257,13 @@
                                                     <td>{{$data->org_name}}</td>
                                                     @if($desig_permissions["mod12"]["edit"] || $desig_permissions["mod12"]["del"] )
                                                     <td class="action-buttons">
+                                                         @if($desig_permissions["mod12"]["edit"])
+                                                        &nbsp;&nbsp;<a href="{{url('geo-structure/add')}}?purpose=edit&id={{$data->geo_id}}" class="btn btn-secondary btn-sm" data-toggle="tooltip" title="{{$phrase->edit}}"><i class="fas fa-edit"></i></a>
+                                                        @endif
                                                          @if($desig_permissions["mod12"]["del"])
-                                                        <a href="{{url('geo-structure/delete')}}/{{$data->geo_id}}" class="btn btn-danger btn-sm delete-button"><i class="fas fa-trash-alt"></i></a>
+                                                        <a href="{{url('geo-structure/delete')}}/{{$data->geo_id}}" class="btn btn-danger btn-sm delete-button" data-toggle="tooltip" title="{{$phrase->delete}}"><i class="fas fa-trash-alt"></i></a>
                                                         @endif
-                                                        @if($desig_permissions["mod12"]["edit"])
-                                                        &nbsp;&nbsp;<a href="{{url('geo-structure/add')}}?purpose=edit&id={{$data->geo_id}}" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></a>
-                                                        @endif
+                                                       
                                                     </td>
                                                     @endif
                                                 </tr>
@@ -312,12 +315,13 @@
                                                     <td>{{$data->org_name}}</td>
                                                     @if($desig_permissions["mod12"]["edit"] || $desig_permissions["mod12"]["del"] )
                                                     <td class="action-buttons">
+                                                    @if($desig_permissions["mod12"]["edit"])
+                                                        &nbsp;&nbsp;<a href="{{url('geo-structure/add')}}?purpose=edit&id={{$data->geo_id}}" class="btn btn-secondary btn-sm" data-toggle="tooltip" title="{{$phrase->edit}}"><i class="fas fa-edit"></i></a>
+                                                        @endif
                                                         @if($desig_permissions["mod12"]["del"])
-                                                        <a href="{{url('geo-structure/delete')}}/{{$data->geo_id}}" class="btn btn-danger btn-sm delete-button"><i class="fas fa-trash-alt"></i></a>
+                                                        <a href="{{url('geo-structure/delete')}}/{{$data->geo_id}}" class="btn btn-danger btn-sm delete-button" data-toggle="tooltip" title="{{$phrase->delete}}"><i class="fas fa-trash-alt"></i></a>
                                                         @endif
-                                                        @if($desig_permissions["mod12"]["edit"])
-                                                        &nbsp;&nbsp;<a href="{{url('geo-structure/add')}}?purpose=edit&id={{$data->geo_id}}" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></a>
-                                                        @endif
+                                                        
                                                     </td>
                                                     @endif
                                                 </tr>

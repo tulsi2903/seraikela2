@@ -105,12 +105,12 @@
                 <div class="card-tools">
                     <!-- <a href="#" data-toggle="tooltip" title="Send Mail"><button type="button" class="btn btn-icon btn-round btn-success" data-target="#create-email" data-toggle="modal"><i class="fa fa-envelope" aria-hidden="true"></i></button></a> -->
                     
-                    <button type="button" data-toggle="tooltip" title="Send Mail" class="btn btn-icon btn-round btn-success"  onclick="openmodel();" ><i class="fa fa-envelope" aria-hidden="true"></i></button>
-                    <button type="button" data-toggle="tooltip" title="Print" class="btn btn-icon btn-round btn-default" onclick="printViewone();"><i class="fa fa-print" aria-hidden="true"></i></button>
+                    <button type="button" data-toggle="tooltip" title="{{$phrase->send_email}}" class="btn btn-icon btn-round btn-success"  onclick="openmodel();" ><i class="fa fa-envelope" aria-hidden="true"></i></button>
+                    <button type="button" data-toggle="tooltip" title="{{$phrase->print}}" class="btn btn-icon btn-round btn-default" onclick="printViewone();"><i class="fa fa-print" aria-hidden="true"></i></button>
 
                     <!-- <a href="#" data-toggle="tooltip" title="Print"><button type="button" class="btn btn-icon btn-round btn-default" id="print-button" onclick="printView();"><i class="fa fa-print" aria-hidden="true"></i></button></a> -->
-                    <button type="button" data-toggle="tooltip" title="Export to PDF" onclick="exportSubmit('print_pdf');" class="btn btn-icon btn-round btn-warning"><i class="fas fa-file-export"></i></button>
-                    <button type="button" data-toggle="tooltip" title="Export to Excel" onclick="exportSubmit('excel_sheet');" class="btn btn-icon btn-round btn-success"><i class="fas fa-file-excel"></i></button>
+                    <button type="button" data-toggle="tooltip" title="{{$phrase->export_pdf}}" onclick="exportSubmit('print_pdf');" class="btn btn-icon btn-round btn-warning"><i class="fas fa-file-export"></i></button>
+                    <button type="button" data-toggle="tooltip" title="{{$phrase->export_excel}}" onclick="exportSubmit('excel_sheet');" class="btn btn-icon btn-round btn-success"><i class="fas fa-file-excel"></i></button>
                     <!-- <a href="{{url('asset_Numbers/pdf/pdfURL')}}" target="_blank" data-toggle="tooltip" title="Export to PDF"><button type="button" class="btn btn-icon btn-round btn-warning"><i class="fas fa-file-export"></i></button></a>
                     <a href="{{url('asset_Numbers/export/excelURL')}}" data-toggle="tooltip" title="Export to Excel"><button type="button" class="btn btn-icon btn-round btn-primary"><i class="fas fa-file-excel"></i></button></a> -->
                     @if($desig_permissions["mod14"]["add"])
@@ -174,10 +174,10 @@
                                     <!--  <a href="{{url('asset_numbers/delete')}}/{{$data->asset_numbers_id}}/{$data->asset_geo_location_id}/{$data->asset_block_count_id}" id="delete-button" class="btn btn-secondary btn-sm"><i class="fas fa-trash-alt"></i></a>-->
                                     @endif
                                     @if($desig_permissions["mod14"]["edit"])
-                                    &nbsp;&nbsp;<a href="{{url('asset-numbers/add')}}?purpose=edit&id={{$data->asset_numbers_id}}" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></a>
+                                    &nbsp;&nbsp;<a href="{{url('asset-numbers/add')}}?purpose=edit&id={{$data->asset_numbers_id}}" class="btn btn-secondary btn-sm" data-toggle="tooltip" title="{{$phrase->edit}}"><i class="fas fa-edit"></i></a>
                                     @endif
                                     @if($desig_permissions["mod14"]["view"])
-                                    &nbsp;&nbsp;<a href="{{url('asset-numbers/view')}}/{{$data->asset_numbers_id}}" class="btn btn-sm btn-secondary"><i class="fas fa-eye"></i></a>
+                                    &nbsp;&nbsp;<a href="{{url('asset-numbers/view')}}/{{$data->asset_numbers_id}}" class="btn btn-sm btn-secondary" data-toggle="tooltip" title="{{$phrase->view}}"><i class="fas fa-eye"></i></a>
                                     @endif
                                 </td>
                                 @endif

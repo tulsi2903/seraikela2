@@ -300,8 +300,9 @@
                             <td>{{$data->dept_name}}</td>
                             @if($desig_permissions["mod13"]["del"] || $desig_permissions["mod13"]["edit"])
                             <td class="action-buttons">
-                                @if($desig_permissions["mod13"]["del"])<a href="{{url('asset/delete')}}/{{$data->asset_id}}" class="btn btn-danger btn-sm delete-button"><i class="fas fa-trash-alt"></i></a>@endif
-                                &nbsp;&nbsp;@if($desig_permissions["mod13"]["edit"])<a href="javascirpt:void();" onclick="editAssetAjax('{{$data->asset_id}}')" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></a>@endif
+                            @if($desig_permissions["mod13"]["edit"])<a href="javascirpt:void();" onclick="editAssetAjax('{{$data->asset_id}}')" class="btn btn-secondary btn-sm" data-toggle="tooltip" title="{{$phrase->edit}}"><i class="fas fa-edit"></i></a>@endif
+
+                                &nbsp;&nbsp;@if($desig_permissions["mod13"]["del"])<a href="{{url('asset/delete')}}/{{$data->asset_id}}" class="btn btn-danger btn-sm delete-button" data-toggle="tooltip" title="{{$phrase->delete}}"><i class="fas fa-trash-alt"></i></a>@endif
                             </td>
                             @endif
                         </tr>
