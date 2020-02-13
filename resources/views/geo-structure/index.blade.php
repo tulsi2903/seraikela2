@@ -142,8 +142,12 @@
                                                     <td>{{$data->org_name}}</td>
                                                     @if($desig_permissions["mod12"]["edit"] || $desig_permissions["mod12"]["del"] )
                                                     <td class="action-buttons">
+                                                    @if($desig_permissions["mod12"]["del"])
                                                         <a href="{{url('geo-structure/delete')}}/{{$data->geo_id}}" class="btn btn-danger btn-sm delete-button"><i class="fas fa-trash-alt"></i></a>
+                                                    @endif
+                                                    @if($desig_permissions["mod12"]["edit"])
                                                         &nbsp;&nbsp;<a href="{{url('geo-structure/add')}}?purpose=edit&id={{$data->geo_id}}" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></a>
+                                                    @endif
                                                     </td>
                                                     @endif
                                                 </tr>
@@ -177,7 +181,9 @@
                                             <th>{{$phrase->name}}</th>
                                             <th>{{$phrase->district}}</th>
                                             <th>{{$phrase->organisation}}</th>
+                                            @if($desig_permissions["mod12"]["edit"] || $desig_permissions["mod12"]["del"])
                                             <th class="action-buttons">{{$phrase->action}}</th>
+                                            @endif
                                         </tr>
                                     </thead>
                                     <?php $count=1; ?>
@@ -189,10 +195,16 @@
                                                     <td>{{$data->geo_name}}</td>
                                                     <td>{{$data->parent_name}} <small>{{$data->parent_level_name}}</small></td>
                                                     <td>{{$data->org_name}}</td>
+                                                    @if($desig_permissions["mod12"]["edit"] || $desig_permissions["mod12"]["del"] )
                                                     <td class="action-buttons">
-                                                        <a href="{{url('geo-structure/delete')}}/{{$data->geo_id}}" class="btn btn-danger btn-sm delete-button"><i class="fas fa-trash-alt"></i></a>
-                                                        &nbsp;&nbsp;<a href="{{url('geo-structure/add')}}?purpose=edit&id={{$data->geo_id}}" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></a>
+                                                    @if($desig_permissions["mod12"]["del"])
+                                                    <a href="{{url('geo-structure/delete')}}/{{$data->geo_id}}" class="btn btn-danger btn-sm delete-button"><i class="fas fa-trash-alt"></i></a>
+                                                    @endif
+                                                    @if($desig_permissions["mod12"]["edit"])
+                                                    &nbsp;&nbsp;<a href="{{url('geo-structure/add')}}?purpose=edit&id={{$data->geo_id}}" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></a>
+                                                     @endif   
                                                     </td>
+                                                    @endif
                                                 </tr>
                                             @endif
                                         @endforeach
@@ -227,7 +239,9 @@
                                             <th>{{$phrase->name}}</th>
                                             <th>{{$phrase->sub_divisin}}</th>
                                             <th>{{$phrase->organisation}}</th>
+                                            @if($desig_permissions["mod12"]["edit"] || $desig_permissions["mod12"]["del"])
                                             <th class="action-buttons">{{$phrase->action}}</th>
+                                            @endif
                                         </tr>
                                     </thead>
                                     <?php $count=1; ?>
@@ -239,10 +253,16 @@
                                                     <td>{{$data->geo_name}}</td>
                                                     <td>{{$data->parent_name}} <small>{{$data->parent_level_name}}</small></td>
                                                     <td>{{$data->org_name}}</td>
+                                                    @if($desig_permissions["mod12"]["edit"] || $desig_permissions["mod12"]["del"] )
                                                     <td class="action-buttons">
+                                                         @if($desig_permissions["mod12"]["del"])
                                                         <a href="{{url('geo-structure/delete')}}/{{$data->geo_id}}" class="btn btn-danger btn-sm delete-button"><i class="fas fa-trash-alt"></i></a>
+                                                        @endif
+                                                        @if($desig_permissions["mod12"]["edit"])
                                                         &nbsp;&nbsp;<a href="{{url('geo-structure/add')}}?purpose=edit&id={{$data->geo_id}}" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></a>
+                                                        @endif
                                                     </td>
+                                                    @endif
                                                 </tr>
                                             @endif
                                         @endforeach
@@ -275,7 +295,9 @@
                                             <th>{{$phrase->block}}</th>
                                             <th>{{$phrase->village}}</th>
                                             <th>{{$phrase->organisation}}</th>
+                                            @if($desig_permissions["mod12"]["edit"] || $desig_permissions["mod12"]["del"])
                                             <th class="action-buttons">{{$phrase->action}}</th>
+                                            @endif
                                         </tr>
                                     </thead>
                                     <?php $count=1; ?>
@@ -288,10 +310,16 @@
                                                     <td>{{$data->parent_name}}</td>
                                                     <td>{{$data->no_of_villages}}</td>
                                                     <td>{{$data->org_name}}</td>
+                                                    @if($desig_permissions["mod12"]["edit"] || $desig_permissions["mod12"]["del"] )
                                                     <td class="action-buttons">
+                                                        @if($desig_permissions["mod12"]["del"])
                                                         <a href="{{url('geo-structure/delete')}}/{{$data->geo_id}}" class="btn btn-danger btn-sm delete-button"><i class="fas fa-trash-alt"></i></a>
+                                                        @endif
+                                                        @if($desig_permissions["mod12"]["edit"])
                                                         &nbsp;&nbsp;<a href="{{url('geo-structure/add')}}?purpose=edit&id={{$data->geo_id}}" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></a>
+                                                        @endif
                                                     </td>
+                                                    @endif
                                                 </tr>
                                             @endif
                                         @endforeach

@@ -97,8 +97,9 @@
                         <button type="button" data-toggle="tooltip" title="Export to Excel" onclick="exportSubmit('excel_sheet');" class="btn btn-icon btn-round btn-success"><i class="fas fa-file-excel"></i></button>
                         <!-- <a href="#" data-toggle="tooltip" title="{{$phrase->export_pdf}}"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button></a>
                         <a href="#" data-toggle="tooltip" title="{{$phrase->export_excel}}"><button type="button" class="btn btn-icon btn-round btn-primary" ><i class="fas fa-file-excel"></i></button></a> -->
+                        @if($desig_permissions["mod16"]["add"])
                         <a class="btn btn-secondary" href="{{url('scheme-asset/add')}}" role="button"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;{{$phrase->add}}</a>
-
+                        @endif
                     </div>
                 </div>
             </div>
@@ -124,7 +125,9 @@
                                     <th>{{$phrase->geo_related}}</th>
                                     <th>{{$phrase->multiple_geo_tags}}</th>
                                     <th>{{$phrase->uom}}</th>
+                                    @if($desig_permissions["mod16"]["del"] || $desig_permissions["mod16"]["edit"])
                                     <th class="action-buttons">{{$phrase->action}}</th>
+                                    @endif
                                 </tr>
                             </thead>
                             <?php $count=1; ?>
@@ -154,12 +157,20 @@
                                                 No
                                                 @endif
                                             </td> 
-                                            <td>{{$data->uom_name}}</td>   
+                                            <td>{{$data->uom_name}}</td>  
+                                            @if($desig_permissions["mod16"]["view"] ||$desig_permissions["mod16"]["del"] || $desig_permissions["mod16"]["edit"]) 
                                             <td class="action-buttons">
+                                                @if($desig_permissions["mod16"]["view"])
                                                 <a href="{{url('scheme-asset/view')}}/{{$data->scheme_asset_id}}" class="btn btn-secondary btn-sm"><i class="fas fa-eye"></i></a>
+                                                @endif
+                                                @if($desig_permissions["mod16"]["edit"])
                                                 &nbsp;&nbsp;<a href="{{url('scheme-asset/add')}}?purpose=edit&id={{$data->scheme_asset_id}}" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></a>
+                                                @endif
+                                                @if($desig_permissions["mod16"]["del"])
                                                 &nbsp;&nbsp;<a href="{{url('scheme-asset/delete')}}/{{$data->scheme_asset_id}}" class="btn btn-danger btn-sm delete-button"><i class="fas fa-trash-alt"></i></a>
+                                                @endif
                                             </td>
+                                            @endif
                                         </tr>
                                         @endforeach
                                    

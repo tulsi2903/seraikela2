@@ -13,7 +13,11 @@
     <div class="col-md-12">
         <div class="card-header">
             <div class="card-head-row card-tools-still-right" style="background:#fff;">
-                <h4 class="card-title">{{$phrase->scheme_performance}} </h4>
+            @if(Auth::user()->language == 1)
+                <h4 class="card-title">Scheme Import</h4>
+                @else
+                <h4 class="card-title">योजना इम्पोर्ट</h4>
+                @endif
                 <div class="card-tools">
                     <!-- <a href="{{url('scheme-geo-target')}}" class="btn btn-sm btn-secondary" style="float:right;"><i class="fas fa-arrow-left"></i>&nbsp;&nbsp;Back</a> -->
                     <!-- <a href="{{url('scheme-performance/download_error_log')}}" class="btn btn-sm btn-secondary" style="float:right;"><i class="fas fa-download"></i>&nbsp;&nbsp;Download Errorlog</a> -->
@@ -29,6 +33,7 @@
                     <div class="card-header">
                         <div class="row" >
                             <div class="col-6" style="margin-left:50%;" class="pull-right">
+                                @if(Auth::user()->language == 1)
                                 <h3 style="color:#00ace6;">Import Guide For Scheme</h3>
                                 <p>
                                   &nbsp;&nbsp;&nbsp;&nbsp; -  Select Scheme from scheme dropdown.
@@ -39,6 +44,18 @@
                                     <br>
                                     &nbsp;&nbsp;&nbsp;&nbsp; -  Choose the saved excel file from File to import section and click on Import button.
                                 </p>
+                                @else
+                                <h3 style="color:#00ace6;">योजनाओं का डेटा इम्पोर्ट के लिए मार्गदर्शन</h3>
+                                <p>
+                                  &nbsp;&nbsp;&nbsp;&nbsp; -  स्कीम ड्रॉपडाउन से स्कीम का चयन करें|
+                                    <br>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;-  टेम्पलेट डाउनलोड करने के लिए डाउनलोड Template बटन पर क्लिक करें| कृपया ध्यान दें, हर योजना का एक अलग टेम्पलेट होता है|
+                                    <br>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;-  दिए गए एक्सेल प्रारूप में इम्पोर्ट किए जाने वाले डेटा दर्ज करें और सहेजें| सुनिश्चित करें, एक्सेल ठीक से सहेजा गया है|
+                                    <br>
+                                    &nbsp;&nbsp;&nbsp;&nbsp; -  इम्पोर्ट अनुभाग में फ़ाइल से सहेजी गई एक्सेल फ़ाइल चुनें और इम्पोर्ट बटन पर क्लिक करें|
+                                </p>
+                                @endif
                             </div>
                         </div>
                         <div class="card-head-row card-tools-still-right">
@@ -69,7 +86,11 @@
                                                 <td class="text-left">
                                                     <div class="form-group">
                                                         <label for="dept_name">{{$phrase->import}}<span style="color:red;margin-left:5px;">*</span></label>
+                                                    @if(Auth::user()->language == 1)
                                                     <span>[Maximum no. of entries that can be imported at a time is 250]</span>
+                                                    @else
+                                                    <span>[अधिकतम 250 डेटा को एक बार में import किया जा सकता है|]</span>
+                                                    @endif
                                                     <input type="file" name="excelcsv" id="excelcsv" class="form-control" required>
                                                     </div> 
                                                 </td>

@@ -192,7 +192,8 @@
                                             } ?></td>
                                             @if($desig_permissions["mod3"]["del"] ||$desig_permissions["mod3"]["edit"] )
                                             <td class="action-buttons">
-                                                @if($desig_permissions["mod3"]["del"])<a href="{{url('year/delete')}}/{{$data->year_id}}" class="btn btn-danger btn-sm delete-button"><i class="fas fa-trash-alt"></i></a>@endif @if($desig_permissions["mod3"]["edit"])&nbsp;&nbsp;
+                                                @if($desig_permissions["mod3"]["del"])<a href="{{url('year/delete')}}/{{$data->year_id}}" class="btn btn-danger btn-sm delete-button"><i class="fas fa-trash-alt"></i></a>@endif 
+                                                @if($desig_permissions["mod3"]["edit"])&nbsp;&nbsp;
                                                 <button type="button" class="btn btn-sm btn-secondary" onclick="openInlineForm('{{$data->year_id}}')"><i class="fas fa-edit"></i></button>
                                                 @endif
                                             </td>

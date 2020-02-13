@@ -40,7 +40,7 @@ class DashboardController extends Controller
                 return redirect()->back();
             }
             session()->put('user_id', Auth::user()->id);
-            session()->put('user_full_name', Auth::user()->title." ".Auth::user()->first_name . " " . Auth::user()->last_name);
+            session()->put('user_full_name', Auth::user()->title.". ".Auth::user()->first_name . " " . Auth::user()->last_name);
             session()->put('user_org_id', Auth::user()->org_id);
             session()->put('user_designation', Auth::user()->userRole);
             switch (Auth::user()->userRole) {

@@ -108,7 +108,7 @@
                             <!-- <a href="{{url('scheme-type/pdf/pdfURL')}}"  target="_BLANK"  data-toggle="tooltip" title="Export to PDF"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button></a> -->
                             <!-- <a href="{{url('scheme-type/export/excelURL')}}" data-toggle="tooltip" title="Export to Excel"><button type="button" class="btn btn-icon btn-round btn-primary" ><i class="fas fa-file-excel"></i></button></a> -->
                             @if($desig_permissions["mod6"]["add"])
-                                <a class="btn btn-secondary" href="{{url('scheme-type/add')}}" role="button"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;Add</a>
+                                <a class="btn btn-secondary" href="{{url('scheme-type/add')}}" role="button"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;{{$phrase->add}}</a>
                             @endif
                         </div>
                     </div>

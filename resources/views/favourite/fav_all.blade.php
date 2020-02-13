@@ -182,7 +182,7 @@
                                         </div><br><br>
                                         @if(session()->get('user_designation') == 1 || session()->get('user_designation') == 3)                                                         
                                             <form action="{{url('fav_panchayat')}}" method="post">
-                                                    @csrf
+                                            @csrf
                                         <div class="card-body" style="margin-top:-32px;">																								
                                             <div class="table-responsive">
                                                 <table class="display table-datatable table table-striped table-hover">

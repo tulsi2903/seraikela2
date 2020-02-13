@@ -194,10 +194,12 @@
                                             else{
                                                 echo '<i class="fas fa-times text-danger"></i> Inactive';
                                             } ?></td>
+                                            @if($desig_permissions["mod2"]["del"] ||$desig_permissions["mod2"]["edit"] )
                                             <td class="action-buttons">
                                                 @if($desig_permissions["mod2"]["del"])<a href="{{url('department/delete')}}/{{$data->dept_id}}" class="btn btn-danger btn-sm delete-button"><i class="fas fa-trash-alt"></i></a>@endif
                                                 @if($desig_permissions["mod2"]["edit"])&nbsp;&nbsp;<button type="button" class="btn btn-sm btn-secondary" onclick="openInlineForm('{{$data->dept_id}}')"><i class="fas fa-edit"></i></button>@endif
                                             </td>
+                                            @endif
                                         </tr>
                                         <?php $count++; ?>
                                         @endforeach

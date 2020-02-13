@@ -16,7 +16,7 @@
         <div class="card" style="border-top: 3px solid #5c76b7;">
             <div class="card-header">
                 <div class="card-title" style="float:left;"><i class="fa fa-user" aria-hidden="true"></i> &nbsp;{{$phrase->user_details}}</div>
-                @if(@$desig_permissions["mod1"]["add"])
+              @if(Auth::user()->desig_id==1)
                 <div id="toggle1">
                     <div style="float:right;margin-bottom: 1em;"><button class="btn btn-secondary" onclick="resetUserForm()"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;{{$phrase->add_users}}</button></div>
                 </div>
@@ -215,8 +215,9 @@
                             <th>{{$phrase->designation}}</th>
                             <th>{{$phrase->address}}</th>
                             <th>{{$phrase->sts}}</th>
+                           
                             <th>{{$phrase->action}}</th>
-
+                            
                         </tr>
                     </thead>
                     <tbody>
@@ -872,7 +873,7 @@ function passwordSubmit(){
                     resetUserForm(); // resetting form
                     hideForm();
                     $("#show-toggle1").click(); // closing form div
-                    swal("Success!", "User has been added successfully.", {
+                    swal("Success!", "User has been submitted successfully.", {
                         icon: "success",
                         buttons: {
                             confirm: {

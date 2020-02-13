@@ -22,9 +22,9 @@
                             <a href="#" data-toggle="tooltip" title="Print"><button type="button" class="btn btn-icon btn-round btn-default" id="print-button" onclick="printView();"><i class="fa fa-print" aria-hidden="true"></i></button></a>
                             <a href="" target="_BLANK" data-toggle="tooltip" title="Export to PDF"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button></a>
                             <a href="" data-toggle="tooltip" title="Export to Excel"><button type="button" class="btn btn-icon btn-round btn-primary" ><i class="fas fa-file-excel"></i></button></a>
-                            
+                            @if($desig_permissions["mod22"]["add"])
                                 <a id="toggle1" class="btn btn-secondary uom-add-button" href="javascript:void();" role="button"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;{{$phrase->add}}</a>
-                          
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -60,9 +60,10 @@
                                 <thead style="background: #d6dcff;color: #000;">
                                     <tr>
                                         <th>#</th>
-                                        <th>{{$phrase->uom_type}}</th>                                       
+                                        <th>{{$phrase->uom_type}}</th>
+                                        @if($desig_permissions["mod22"]["edit"] || $desig_permissions["mod22"]["del"])                                       
                                         <th class="action-buttons">{{$phrase->action}}</th>
-                                        
+                                        @endif
                                     </tr>
                                 </thead>
                                 <?php $count=1; ?>
@@ -71,10 +72,16 @@
                                         <tr data-row-id="{{$data->uom_type_id}}" data-row-values="{{$data->uom_type_name}}">
                                             <td width="40px;">{{$count++}}</td>
                                             <td>{{$data->uom_type_name}}</td> 
+                                            @if(desig_permissions["mod22"]["edit"] || $desig_permissions["mod22"]["del"])
                                             <td class="action-buttons">
+                                                @if(desig_permissions["mod22"]["del"])
                                                 <a href="{{url('uom_type/delete')}}/{{$data->uom_type_id}}" class="btn btn-danger btn-sm delete-button"><i class="fas fa-trash-alt"></i></a>
+                                                @endif
+                                                @if(desig_permissions["mod22"]["edit"])
                                                  &nbsp;&nbsp;<button type="button" class="btn btn-sm btn-secondary" onclick="openInlineForm('{{$data->uom_type_id}}')"><i class="fas fa-edit"></i></button>
-                                            </td>                                       
+                                                 @endif
+                                            </td>
+                                            @endif                                       
                                         </tr>
                                     @endforeach
                                 @endif

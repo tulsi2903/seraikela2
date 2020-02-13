@@ -144,7 +144,7 @@
                         </div> -->
                     </div>
                     <div >
-                        <form action="{{url('scheme-performance/store')}}" id="savedataonschemepertable" method="POST"  enctype="multipart/form-data" onsubmit="return check_performamance_status();">
+                        <form action="{{url('scheme-performance/store')}}" id="savedataonschemepertable" method="POST"  enctype="multipart/form-data" autocomplete="off" onsubmit="return check_performamance_status();">
                             @csrf
                             <table class="table">
                                 <thead id="to_append_thead" style="background: #cedcff">
@@ -272,7 +272,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form action="{{url('scheme_performance/savebl_pl_connectivity')}}" method="post" id="Formsaveborderconnectivity" enctype="multipart/form-data" autocomplete="off">
+            <form action="{{url('scheme_performance/savebl_pl_connectivity')}}" method="post" id="Formsaveborderconnectivity" enctype="multipart/form-data" autocomplete="off" >
                 @csrf
                 <div class="modal-body">
                     <div class="row" style="padding:2em;    margin-top: -3em;">

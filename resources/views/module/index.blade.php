@@ -86,8 +86,9 @@
                                 <!-- <a href="#" data-toggle="tooltip" title="Print"><button type="button" class="btn btn-icon btn-round btn-default" id="print-button" onclick="printView();"><i class="fa fa-print" aria-hidden="true"></i></button></a>
                             <a href="{{url('module/pdf/pdfURL')}}" target="_BLANK" data-toggle="tooltip" title="Export to PDF"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button></a>
                             <a href="{{url('module/export/excelURL')}}" data-toggle="tooltip" title="Export to Excel"><button type="button" class="btn btn-icon btn-round btn-primary" ><i class="fas fa-file-excel"></i></button></a> -->
+                            @if($desig_permissions["mod10"]["add"])
                             <a id="toggle1" class="btn btn-secondary module-add-button" href="javascript:void();" role="button"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;{{$phrase->add}}</a>
-
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -133,7 +134,9 @@
                                     <tr>
                                         <th>#</th>
                                         <th>{{$phrase->module_name}}</th>
+                                        @if($desig_permissions["mod10"]["edit"] || $desig_permissions["mod10"]["del"])
                                         <th class="action-buttons">{{$phrase->action}}</th>
+                                        @endif
                                     </tr>
                                 </thead>
                                 <tbody style="text-transform: capitalize;">
@@ -143,10 +146,16 @@
                                             <tr data-row-id="{{$data->mod_id}}" data-row-values="{{$data->mod_name}}">
                                                 <td width="40px;">{{$count++}} <input type="hidden" value="{{$data->mod_id}}" name="desig_id_to_export[]" hidden></td>
                                                 <td>{{$data->mod_name}}</td>
+                                                @if($desig_permissions["mod10"]["edit"] || $desig_permissions["mod10"]["del"])
                                                 <td class="action-buttons">
+                                                    @if($desig_permissions["mod10"]["del"])
                                                     <a href="{{url('module/delete')}}/{{$data->mod_id}}" class="btn btn-danger btn-sm delete-button"><i class="fas fa-trash-alt"></i></a>
+                                                    @endif
+                                                    @if($desig_permissions["mod10"]["edit"])
                                                     &nbsp;&nbsp;<button type="button" class="btn btn-sm btn-secondary" onclick="openInlineForm('{{$data->mod_id}}')"><i class="fas fa-edit"></i></button>
+                                                    @endif
                                                 </td>
+                                                @endif
                                             </tr>
                                         @endforeach
                                     @endif

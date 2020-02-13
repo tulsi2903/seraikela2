@@ -146,7 +146,7 @@
                                 <th>{{$phrase->panchayat}}</th>
                                 <!-- <th>Pre Value</th> -->
                                 <th>{{$phrase->current_value}}</th>
-                                @if($desig_permissions["mod14"]["view"] ||$desig_permissions["mod14"]["del"] || $desig_permissions["mod14"]["edit"])
+                                @if($desig_permissions["mod14"]["del"] || $desig_permissions["mod14"]["edit"])
                                 <th class="action-buttons">{{$phrase->action}}</th>
                                 @endif
                             </tr>

@@ -27,6 +27,7 @@
         <div class="card-body">
             <div class="row justify-content-center">
                 <div class="col-md-12">
+                    @if(Auth::user()->language == 1)
                         <h3>Import Guide For Resource Number</h3>
                         <p>
                             i. &nbsp;&nbsp;We can import recource number data using excel sheet. Here we are providing two types of upload sheet(Excel).
@@ -43,6 +44,25 @@
                             &nbsp;&nbsp;<span>If we are adding sub-resource data then, "<b>Location/Landmark</b>", "<b>Latitude</b>" & "<b>Longitude</b>" columns must be left empty.<br></span>
                             &nbsp;&nbsp;<span>If we are adding sub-resource data then, "<b>Main Resource SNo</b>" column will have main resource's sl. no. and "<b>Count</b>" column will have current value of Sub-Resources according to main resource's location.</span>
                         </p>
+                        @else
+                        <h3>संसाधन संख्या डेटा इम्पोर्ट के लिए मार्गदर्शन</h3>
+                        <p>
+                            i. &nbsp;&nbsp;हम एक्सेल शीट का उपयोग करके संसाधन संख्या डेटा को आयात कर सकते हैं| यहां हम दो प्रकार की अपलोड शीट प्रदान कर रहे हैं(एक्सेल)|
+                            <br>
+                            ii. &nbsp;<span style="color:#FFC107;">डाउनलोड फार्मेट</span> बटन एक अपलोड शीट प्रारूप डाउनलोड करता है जिसमें हम एक संसाधन जोड़ सकते हैं|
+                            <br>
+                            iii. <span style="color: #00BCD4;">डाउनलोड फार्मेट</span> बटन एक अपलोड शीट प्रारूप डाउनलोड करता है जिसमें हम एक संसाधन जोड़ सकते हैं जिसमे, <br>&nbsp;&nbsp;&nbsp;&nbsp;<b>1.</b> संसाधन का स्थान, <b>2.</b> Latitude, <b>3.</b> Longitude तथा <b>4.</b> उप-संसाधनों की संख्या|
+                        </p>
+
+                        <p>
+                            <h5 style="color:red;">ध्यान दें*</h5>
+                             <span style="color: #00BCD4;">डाउनलोड फार्मेट के लिये</span><br>
+                            &nbsp;&nbsp;<span>- यदि हम मुख्य संसाधन डेटा जोड़ रहे हैं तो, "<b>मुख्य संसाधन क्रमांक</b>" तथा "<b>गिनती</b>" कॉलम खाली छोड़ना चाहिए|<br></span>
+                            &nbsp;&nbsp;<span>- यदि हम उप-संसाधन डेटा जोड़ रहे हैं तो, "<b>स्थान/लैंडमार्क</b>", "<b>Latitude</b>" तथा "<b>Longitude</b>" कॉलम खाली छोड़ना चाहिए|<br></span>
+                            &nbsp;&nbsp;<span>- यदि हम उप-संसाधन डेटा जोड़ रहे हैं तो, "<b>मुख्य संसाधन क्रमांक</b>" कॉलम में मुख्य संसाधन का क्रमांक होगा और "<b>गिनती</b>" कॉलम में मुख्य संसाधन के स्थान के अनुसार उप-संसाधन का वर्तमान मूल्य होगा|</span>
+                        </p>
+
+                        @endif
                         
                     <hr>
                 </div>
@@ -52,7 +72,11 @@
                         <div class="form-group col-6">
                             
                             <label for="dept_name">{{$phrase->file_to_import}}<span style="color:red;margin-left:5px;">*</span></label>
+                            @if(Auth::user()->language == 1)
                             <span>[Maximum no. of entries that can be imported at a time is 250]</span>
+                            @else
+                            <span>[अधिकतम 250 प्रविष्टियाँ एक बार में आयात की जा सकती हैं]</span>
+                            @endif
                             <input type="file" name="excel_for_asset_number" id="excel_for_asset_number" class="form-control" required>
                         </div>
                         <div class="form-group col-6" style="margin-top: 35px;">

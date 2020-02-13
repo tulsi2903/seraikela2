@@ -197,7 +197,7 @@
         <div class="modal-dialog">
             <div class="modal-content" style="margin-top: 11em;">
                 <div class="modal-header" style="border-top: 2px solid #5269a3">
-                    <h4 class="modal-title mt-0" style="font-family: 'Bree Serif', serif;color:#000;">Gallery</h4>
+                    <h4 class="modal-title mt-0" style="font-family: 'Bree Serif', serif;color:#000;">{{$phrase->gallery}}</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -407,7 +407,7 @@
                     alert("error" + xhr.status + ", " + xhr.statusText);
                 },
                 success: function (data) {
-                    console.log(data);
+                    // console.log(data);
 
                     $("#previous_value").val('0');
                     $("#current_value").val('0');
@@ -470,7 +470,7 @@
             $("#show_location_error").html("");
             $("#actionHide").hide();
             step = 3; // assigning steps
-            $("#save-button-text").html("Save");
+            $("#save-button-text").html("{{$phrase->save}}");
             var diff = parseFloat($("#current_value").val()) - parseFloat($("#previous_value").val()); //0-2 = -2
             // alert(diff);
             if (movable == "no") {
