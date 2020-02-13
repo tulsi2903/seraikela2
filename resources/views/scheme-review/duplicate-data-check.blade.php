@@ -189,9 +189,11 @@
     }
     #duplicate-data-block .show-duplicate-details td{
         padding: 15px !important;
-        background: #f4f4f4;
+        background: #dbe5ff;
+        /* background: linear-gradient(to top, #a5baef, #ffffff); */
     }
     #duplicate-data-block .show-duplicate-details table td{
+        padding: 5px !important;
         background: white;
     }
 
@@ -209,6 +211,9 @@
     }
     #tabular-view{
         display: none;
+    }
+    #tabular-view tr:hover{
+        background: #ffffe8;
     }
     #map-view-block{
        /* display: none; */
@@ -295,6 +300,22 @@
     .gallery-view-thumb-img:hover {
         background-size: auto 105%;
     }
+
+    div[title='Click to view details']{
+        animation-name: mapMarkerHighlighter;
+        animation-duration: 2s;
+        animation-timing-function: linear;
+        animation-delay: 2s;
+        animation-iteration-count: infinite;
+        transition: transform 0.3s ease-in;
+        transform-origin: 50% 100%;
+        opacity: 1 !important;
+    }
+    @keyframes mapMarkerHighlighter{
+        0%   { transform: scale(1); }
+        50%   { transform: scale(1.2); }
+        100% { transform: scale(1); }
+    }
 </style>
 @endsection
 
@@ -333,7 +354,7 @@
                         <div class="form-group">
                             <label for="distance_to_measure">Radius/ Distance</label>
                             <div class="input-group">
-                                <input type="text" class="form-control" name="distance_to_measure" id="distance_to_measure" aria-label="Text input with dropdown button" value="100">
+                                <input type="text" class="form-control" name="distance_to_measure" id="distance_to_measure" aria-label="Text input with dropdown button" value="10">
                                 <div class="input-group-append">
                                     <!-- <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</button>
                                     <div class="dropdown-menu">
@@ -1011,8 +1032,14 @@
                         </div>
                     </div>
                     <div id="map-view-block">
-                        <div style="padding: 15px 0 15px 0;">
+                        <div style="padding: 10px 10px 10px 10px;background: #e8eeff;border-radius: 5px 5px 0 0;">
                             <button class="btn btn-secondary btn-sm" onclick="closeMap()"><i class="fas fa-arrow-left"></i>&nbsp;Back to details</button>
+                            <div style="float: right; padding-top: 5px; color: black;">
+                                <span class="fas fa-square" style="color: #b32b2b;"></span> In progess&nbsp;|&nbsp;
+                                <span class="fas fa-square" style="color: #36cc5e;"></span> Completed&nbsp;|&nbsp;
+                                <span class="fas fa-square" style="color: #121896;"></span> Sanctioned&nbsp;|&nbsp;
+                                <span class="fas fa-square" style="color: #404040;"></span> Cancelled
+                            </div>
                         </div>
                         <div id="map-view">
                             <div id="mapCanvas" style="width: 100%; height: 600px; border-radius: 3px; border: 1px solid rgb(140, 140, 140); box-shadow: -2px 6px 10px 0px #00000052;"></div>
@@ -1072,12 +1099,15 @@
     var review_for = 'panchayat';
     // for svg's/ map contents
     var selected_geo = new Array;
+    var selected_block_name = "";
+    var selected_panchayat_name = "";
     var panchayat_map_content_opened = false; // if panchayat map is opened/displays
 
     $(document).ready(function () {
         $(".block-map-content g").click(function () {
             if (review_for == "panchayat") {
                 panchayat_target = $(this).data("panchayat-target");
+                selected_block_name = $(this).data("info");
                 $(".panchayat-map-content svg").css("display", "none"); // hide all svg first
                 $(".panchayat-map-content #panchayat-" + panchayat_target).css("display", "inline-block"); // show respective svg
                 $(".block-map-content").toggleClass("active");
@@ -1103,6 +1133,7 @@
         $(".panchayat-map-content g").click(function () {
             if (review_for == "panchayat") {
                 var geo_id_tmp = $(this).data('geo-id').toString();
+                selected_panchayat_name = $(this).data("info");
                 if (selected_geo.includes(geo_id_tmp)) {
                     $(this).children('path').removeClass("active");
                     selected_geo.splice(selected_geo.indexOf(geo_id_tmp), 1);
@@ -1329,7 +1360,8 @@
                 $("#all-view-details").html("<b>Scheme: </b>" + $("#scheme_id option:selected").text());
                 $("#all-view-details").append("&nbsp;&nbsp;&nbsp;&bull;&nbsp;&nbsp;&nbsp;<b>Year: </b>" + $("#year_id option:selected").text());
                 $("#all-view-details").append("&nbsp;&nbsp;&nbsp;&bull;&nbsp;&nbsp;&nbsp;<b>Asset: </b>" + $("#scheme_asset_id option:selected").text());
-                $("#all-view-details").append("&nbsp;&nbsp;&nbsp;&bull;&nbsp;&nbsp;&nbsp;<b>Block: </b><span></span>");
+                $("#all-view-details").append("&nbsp;&nbsp;&nbsp;&bull;&nbsp;&nbsp;&nbsp;<b>Block: </b>" + selected_block_name);
+                $("#all-view-details").append("&nbsp;&nbsp;&nbsp;&bull;&nbsp;&nbsp;&nbsp;<b>Panchayat: </b>" + selected_panchayat_name);
                 $("#all-view-details").append(`&nbsp;&nbsp;&nbsp;&bull;&nbsp;&nbsp;&nbsp;<a href="javascript:void();" onclick="showSearch()" class="btn btn-secondary btn-sm"><i class="fas fa-sync"></i>&nbsp;&nbsp;Change</a>`);
 
                 if(data.response == "no_data") { // no data found
@@ -1369,7 +1401,11 @@
                 content+=`<td>`+(i+1)+`</td>`;
                 content+=`<td>`+duplicate_data[0].year_value+`</td>`;
                 content+=`<td>`+duplicate_data[0].scheme_short_name+`</td>`;
-                content+=`<td>`+duplicate_data[0].attribute_details+`</td>`;
+                content+=`<td>`;
+                duplicate_data[0].attribute_details.forEach(function(attr){
+                    content+=`<b>`+attr[0]+`</b>: `+(attr[1] || ``)+`, `;
+                });
+                content+=`</td>`;
                 content+=`<td>`+duplicate_data[0].status+`</td>`;
                 content+=`<td>`+(duplicate_data.length - 1)+`</td>`;
                 content+=`<td><a href="javascript:void();" onclick="show_duplicate_details(this);">Details</a></td>`;
@@ -1379,7 +1415,7 @@
             content += `<tr class="show-duplicate-details">
                                 <td colspan="8">
                                     <table class="table">
-                                        <tr style="background: #baffc9; color: #000; font-weight: bold;">
+                                        <tr style="background: #a7a9e2; color: #000; font-weight: bold;">
                                             <th>Sl.No.</th>
                                             <th>Year</th>
                                             <th>Scheme</th>
@@ -1393,7 +1429,11 @@
                     content_tmp+=`<td>`+(j)+`</td>`;
                     content_tmp+=`<td>`+duplicate_data[j].year_value+`</td>`;
                     content_tmp+=`<td>`+duplicate_data[j].scheme_short_name+`</td>`;
-                    content_tmp+=`<td>`+duplicate_data[j].attribute_details+`</td>`;
+                    content_tmp+=`<td>`;
+                    duplicate_data[j].attribute_details.forEach(function(attr){
+                        content_tmp+=`<b>`+attr[0]+`</b>: `+(attr[1] || ``)+`, `;
+                    });
+                    content_tmp+=`</td>`;
                     content_tmp+=`<td>`+duplicate_data[j].status+`</td>`;
                 content_tmp += `</tr>`;
             }
@@ -1446,88 +1486,100 @@
         $("#map-view-block").hide(0);
         $("#tabular-view-block").fadeIn(300);
     }
-    // function initializeMapView(map_datas) {
-    //     if(map_datas.length>0){ 
-    //         $("#map-view").show();
-    //         $("#mapCanvas").show();
-    //         $("#map-view + .no-data").hide();
-    //         resetGallery(); // ressting gallery tab
-    //         showMap(map_datas); 
-    //     }
-    // }
     function showMap(data) {
-        // console.log(data);
         var icon = {
             url: marker_icon, // url
             scaledSize: new google.maps.Size(50, 50), // scaled size
             origin: new google.maps.Point(0, 0), // origin
-            anchor: new google.maps.Point(0, 0) // anchor
+            anchor: new google.maps.Point(25, 50) // anchor
         };
         var mapCanvas = document.getElementById('mapCanvas');
         var mapOptions = {
-            zoom: 18,
+            zoom: 15,
             mapTypeId: google.maps.MapTypeId.ROADMAP
         };
         var map = new google.maps.Map(mapCanvas, mapOptions);
         var centerLat = '';
         var centerLng = '';
-        //console.log(data[0].lng);
-        //Loop through each location.
-        // Sample use of first data
-        centerLat = data[0].coordinates_details[0].latitude;
-        centerLng = data[0].coordinates_details[0].longitude;
-
+        centerLat = data[0].coordinates_details[0].lat;
+        centerLng = data[0].coordinates_details[0].lng;
         $.each(data, function () {
+            //Plot the location as a marker
             var data_to_send = this;
-
-            var tmp_coordinates = [];
-            for(var a=0; a<this.coordinates_details.length; a++){
-                tmp_coordinates[a] = {lat:parseFloat(this.coordinates_details[a].latitude) , lng:parseFloat(this.coordinates_details[a].longitude)};
-            }
-            console.log(tmp_coordinates);
-
-            if(this.coordinates_details.length>1)
-            {
-                var img_url="public/map_image/road.svg";
-                icon.url = img_url || null;
-
-                // var flightPath = new google.maps.Polyline({
-                //     path: tmp_coordinates,
-                //     geodesic: true,
-                //     strokeColor: '#FF0000',
-                //     strokeOpacity: 1.0,
-                //     strokeWeight: 2
-                // });
-
-                var flightPath = new google.maps.Polyline({
-                    path: tmp_coordinates,
-                    geodesic: true,
-                    icon: icon,
-                    strokeColor: '#FF0000',
+            if (this.coordinates_details.length > 1) {   
+                var border = new google.maps.Polyline({
+                    path: this.coordinates_details,
+                    strokeColor: '#191919', // border color
                     strokeOpacity: 1.0,
-                    strokeWeight: 6  
+                    strokeWeight:  13// You can change the border weight here
+                });    
+                var flightPath = new google.maps.Polyline({
+                    path: this.coordinates_details,
+                    geodesic: true,
+                    strokeColor: this.road_color,
+                    strokeOpacity: 1.0,
+                    strokeWeight: 10,
                 });
 
+                for(var c=0;c<this.coordinates_details.length;c++)
+                {
+                    var no=c+1;
+                    icon.url = '../'+(this.scheme_map_marker || null);
+                    var marker = new google.maps.Marker({
+                        position: this.coordinates_details[c],
+                        map: map,
+                        // position: pointA,
+                        title: "Point - "+no,
+                        // title: 'Click to view details',
+                        // label: ""+no,
+                        label: {
+                            color: '#ffffff', // <= HERE
+                            fontSize: '16px',
+                            fontWeight: '900',
+                            text:""+no
+                        },
+                        icon: icon,
+                        animation: google.maps.Animation.DROP
+                    });
+                    //  infowindow.open(map, marker);
+                    var contentString = '<span style="color: black;"';
+            
+                    contentString += '<br/><b>Asset</b>: ';
+                    contentString += '<br/><b>Block</b>: ' ;
+                    contentString += '<br/><b>Panchayat</b>: ';
+                    contentString += '<br/><b>Status</b>: ' ;
+                    contentString += '</span>';
+
+                    var infowindow = new google.maps.InfoWindow({
+                        content: contentString
+                    });
+                }
+                border.setMap(map);
                 flightPath.setMap(map);
-                
-                // flightPath.addListener('click', function () {
-                //     // infowindow.open(map, marker);
-                //     showGallery(data_to_send);
-                // });
+
+                flightPath.addListener('click', function () {
+                    // infowindow.open(map, marker);
+                    showGallery(data_to_send);
+                });
+                border.addListener('click', function () {
+                    // infowindow.open(map, marker);
+                    showGallery(data_to_send);
+                });
             }
-            else{
-                var theposition = new google.maps.LatLng(this.coordinates_details[0].latitude, this.coordinates_details[0].longitude);
-                icon.url = this.scheme_map_marker || null;
+            else {
+                var theposition = new google.maps.LatLng(this.coordinates_details[0].lat, this.coordinates_details[0].lng);
+                icon.url = '../'+(this.scheme_map_marker || null);
+                console.log(this.scheme_map_marker);
                 var marker = new google.maps.Marker({
                     position: theposition,
                     map: map,
-                    title: 'Scheme Data',
+                    title: 'Click to view details',
                     icon: icon,
                     animation: google.maps.Animation.DROP
                 });
                 // if(marker!=null)
                 // {
-                
+
                 // }
                 marker.addListener('click', function () {
                     // infowindow.open(map, marker);
@@ -1535,7 +1587,27 @@
                 });
             }
 
-            var contentString = '';
+
+
+            // if(this.coordinates_details.length!=0)
+            // {
+            //             var flightPath = new google.maps.Polyline({
+            //                 path: this.coordinates_details,
+            //                 geodesic: true,
+            //                 strokeColor: '#FF0000',
+            //                 strokeOpacity: 1.0,
+            //                 strokeWeight: 2
+            //             });
+
+            //             flightPath.setMap(map);
+            // }
+            var contentString = '<span style="color: black;"';
+           
+            contentString += '<br/><b>Asset</b>: ';
+            contentString += '<br/><b>Block</b>: ' ;
+            contentString += '<br/><b>Panchayat</b>: ';
+            contentString += '<br/><b>Status</b>: ' ;
+            contentString += '</span>';
 
             var infowindow = new google.maps.InfoWindow({
                 content: contentString
@@ -1558,14 +1630,14 @@
             var contentString = '<div class="gallery-view-thumb gallery-view-thumb-info">';
             contentString += '<b>Scheme</b>: ' + data.scheme_name + '<br/>';
             contentString += '<b>Year</b>: ' + data.year_value + '<br/>';
-            if (data.attributes) {
-                if (data.attributes.length > 0) {
-                    data.attributes.forEach(function (element) {
-                        contentString += '<b>' + element[0] + '</b>: ' + element[1] + '<br/>';
+            if (data.attribute_details) {
+                if (data.attribute_details.length > 0) {
+                    data.attribute_details.forEach(function (element) {
+                        contentString += '<b>' + element[0] + '</b>: ' + (element[1] || ``) + '<br/>';
                     })
                 }
             }
-            contentString += '<b>Asset</b>: ' + data.asset_name;
+            contentString += '<b>Asset</b>: ' + data.scheme_asset_name;
             contentString += '<br/><b>Block</b>: ' + data.block_name;
             contentString += '<br/><b>Panchayat</b>: ' + data.panchayat_name;
             contentString += '<br/><b>Status</b>: ' + data.status;
@@ -1598,6 +1670,7 @@
     function resetCommon(){
         $("#map-view-block").hide();
         $("#tabular-view-block").fadeIn(300);
+        resetGallery();
     }
 
 </script>

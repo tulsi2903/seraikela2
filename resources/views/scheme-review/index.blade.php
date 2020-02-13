@@ -322,6 +322,7 @@
         animation-delay: 2s;
         animation-iteration-count: infinite;
         transition: transform 0.3s ease-in;
+        transform-origin: 50% 100%;
         opacity: 1 !important;
     }
     @keyframes mapMarkerHighlighter{
@@ -1617,13 +1618,19 @@
         $.each(data, function () {
             //Plot the location as a marker
             var data_to_send = this;
-            if (this.coordinates_details.length > 1) {       
+            if (this.coordinates_details.length > 1) {
+                var border = new google.maps.Polyline({
+                    path: this.coordinates_details,
+                    strokeColor: '#191919', // border color
+                    strokeOpacity: 1.0,
+                    strokeWeight:  13// You can change the border weight here
+                });         
                 var flightPath = new google.maps.Polyline({
                     path: this.coordinates_details,
                     geodesic: true,
                     strokeColor: this.road_color,
                     strokeOpacity: 1.0,
-                    strokeWeight: 6,
+                    strokeWeight: 10,
                 });
                 for(var c=0;c<this.coordinates_details.length;c++)
                 {
@@ -1657,9 +1664,14 @@
                         content: contentString
                     });
                 }
+                border.setMap(map);
                 flightPath.setMap(map);
 
                 flightPath.addListener('click', function () {
+                    // infowindow.open(map, marker);
+                    showGallery(data_to_send);
+                });
+                border.addListener('click', function () {
                     // infowindow.open(map, marker);
                     showGallery(data_to_send);
                 });

@@ -19,6 +19,7 @@ class SchemeReviewDuplicateDataCheckController extends Controller
 {
     //
     public function index(){
+
         $year_datas = Year::select('year_id','year_value')->where('status', 1)->get();
         $scheme_datas = SchemeStructure::select('scheme_id','scheme_asset_id','scheme_name','scheme_is','scheme_short_name')->where('status', 1)->get();
         $scheme_asset_datas = SchemeAsset::select('scheme_asset_id','scheme_asset_name')->get();
@@ -102,19 +103,32 @@ class SchemeReviewDuplicateDataCheckController extends Controller
         //                                         ->whereIn('scheme_performance.panchayat_id', $panchayat_ids_selected)
         //                                         ->where('scheme_performance.scheme_asset_id', $scheme_asset_id_selected);
         //                                         // ->whereIn('scheme_performance_id', [101,124]);
-        $performance_datas_selected = SchemePerformance::LeftJoin('year','scheme_performance.year_id','=','year.year_id')
+
+        // $performance_datas = SchemePerformance::LeftJoin('scheme_assets', 'scheme_performance.scheme_asset_id', '=', 'scheme_assets.scheme_asset_id')
+        //                     ->LeftJoin('geo_structure', 'scheme_performance.panchayat_id', '=', 'geo_structure.geo_id')
+        //                     ->select('scheme_performance.*', 'scheme_assets.scheme_asset_name', 'geo_structure.geo_name as panchayat_name')
+        //                     ->where('panchayat_id', $panchayat_data->geo_id)
+        //                     ->where('scheme_id', $scheme_data->scheme_id)
+        //                     ->where('year_id', $year_id)
+        //                     ->get();
+
+        $performance_datas_selected = SchemePerformance::LeftJoin('scheme_assets', 'scheme_performance.scheme_asset_id', '=', 'scheme_assets.scheme_asset_id')
+                                                        ->LeftJoin('geo_structure', 'scheme_performance.panchayat_id', '=', 'geo_structure.geo_id')
+                                                        ->LeftJoin('year','scheme_performance.year_id','=','year.year_id')
                                                         ->LeftJoin('scheme_structure','scheme_performance.scheme_id','=','scheme_structure.scheme_id')
-                                                        ->select('scheme_performance.*','year.year_value','scheme_structure.scheme_short_name','scheme_structure.attributes as scheme_attributes')
+                                                        ->select('scheme_performance.*','scheme_assets.scheme_asset_name','geo_structure.geo_name as panchayat_name','year.year_value','scheme_structure.scheme_short_name','scheme_structure.scheme_name','scheme_structure.scheme_is','scheme_structure.scheme_map_marker','scheme_structure.attributes as scheme_attributes')
                                                         ->whereIn('scheme_performance.panchayat_id', $panchayat_ids_selected)
                                                         ->where('scheme_performance.scheme_asset_id', $scheme_asset_id_selected)
-                                                        // ->where('scheme_performance.scheme_performance_id', 17)
+                                                        ->where('scheme_performance.scheme_performance_id', 31)
                                                         ->get();
-        $performance_datas_to_test = SchemePerformance::LeftJoin('year','scheme_performance.year_id','=','year.year_id')
+        $performance_datas_to_test = SchemePerformance::LeftJoin('scheme_assets', 'scheme_performance.scheme_asset_id', '=', 'scheme_assets.scheme_asset_id')
+                                                        ->LeftJoin('geo_structure', 'scheme_performance.panchayat_id', '=', 'geo_structure.geo_id')
+                                                        ->LeftJoin('year','scheme_performance.year_id','=','year.year_id')
                                                         ->LeftJoin('scheme_structure','scheme_performance.scheme_id','=','scheme_structure.scheme_id')
-                                                        ->select('scheme_performance.*','year.year_value','scheme_structure.scheme_short_name','scheme_structure.attributes as scheme_attributes')
+                                                        ->select('scheme_performance.*','scheme_assets.scheme_asset_name','geo_structure.geo_name as panchayat_name','year.year_value','scheme_structure.scheme_short_name','scheme_structure.scheme_name','scheme_structure.scheme_is','scheme_structure.scheme_map_marker','scheme_structure.attributes as scheme_attributes')
                                                         ->whereIn('scheme_performance.panchayat_id', $panchayat_ids_selected)
                                                         ->where('scheme_performance.scheme_asset_id', $scheme_asset_id_selected)
-                                                        // ->where('scheme_performance.scheme_performance_id', 19)
+                                                        ->where('scheme_performance.scheme_performance_id', 32)
                                                         ->get();
 
         // echo "<pre>";    
@@ -128,25 +142,69 @@ class SchemeReviewDuplicateDataCheckController extends Controller
             $found = false;
             $coordinates_selected = unserialize($performance_data_selected->coordinates);
             /* some details to show */
-                $performance_data_selected->coordinates_details = $coordinates_selected;
-                if($performance_data_selected->status==1){
+                if ($performance_data_selected->coordinates) {
+                    $coordinates_multi = array();
+                    $coordinates_details = unserialize($performance_data_selected->coordinates);
+                    foreach ($coordinates_details as $key_coor => $value_coor) {
+                        $coordinates_multi[$key_coor]['lat'] = (float) $value_coor['latitude'];
+                        $coordinates_multi[$key_coor]['lng'] = (float) $value_coor['longitude'];
+                        // print_r($value_coor);
+                    }
+                    $performance_data_selected->coordinates_details = $coordinates_multi;
+                }
+
+                // for status
+                if ($performance_data_selected->status == 0) {
+                    $performance_data_selected->status = "In progess";
+                    $performance_data_selected->road_color = "#b32b2b";
+                } else if ($performance_data_selected->status == 1) {
                     $performance_data_selected->status = "Completed";
+                    $performance_data_selected->road_color = "#36cc5e";
+                } else if ($performance_data_selected->status == 2) {
+                    $performance_data_selected->status = "Sanctioned";
+                    $performance_data_selected->road_color = "#121896";
+                } else if ($performance_data_selected->status == 3) {
+                    $performance_data_selected->status = "Cancelled";
+                    $performance_data_selected->road_color = "#404040";
                 }
-                else{
-                    $performance_data_selected->status = "Incomplete";
-                }
+
                 // for attributes
-                $attributes = unserialize($performance_data_selected->scheme_attributes); // getting attrubutes
+                $attributes = unserialize($performance_data_selected->scheme_attributes); // getting scheme attrubutes
                 $performance_attributes = [];
                 $per_attr_tmps = unserialize($performance_data_selected->attribute);
                 foreach ($per_attr_tmps as $per_attr_tmp) {
                     $performance_attributes[key($per_attr_tmp)] = $per_attr_tmp[key($per_attr_tmp)];
                 }
-                $tmp = '';
+                $tmp = [];
                 foreach($attributes as $attribute){
-                    $tmp .= ''.$attribute['name'].': '.$performance_attributes[$attribute['id']].'<br/>';
+                    array_push($tmp, [$attribute['name'], $performance_attributes[$attribute['id']]]);
+                    // $tmp .= ''.$attribute['name'].': '.$performance_attributes[$attribute['id']].'<br/>';
                 }
                 $performance_data_selected->attribute_details = $tmp;
+
+
+                // for scheme name
+                $performance_data_selected->scheme_name = "(".$performance_data_selected->scheme_short_name.") ".$performance_data_selected->scheme_name;
+
+                // for gallery
+                $map_datas_tmp["gallery"] = unserialize($performance_data->gallery);
+
+                // for block_name, panchayat_name
+                $performance_data_selected->panchayat_name = $performance_data_selected->panchayat_name;
+                $performance_data_selected->block_name = GeoStructure::where('geo_id', GeoStructure::find($performance_data_selected->panchayat_id)->bl_id)->first()->geo_name;
+            
+                // for map marker
+                if ($performance_data_selected->scheme_is == 2) {
+                    if ($performance_data_selected->scheme_asset_id != "") {
+                        $SchemeAsset_deatails = SchemeAsset::where('scheme_asset_id', $performance_data_selected->scheme_asset_id)->first();
+                        $performance_data_selected->scheme_map_marker = $SchemeAsset_deatails->mapmarkericon;
+                    } else {
+                        $performance_data_selected->scheme_map_marker = $performance_data_selected->scheme_map_marker;
+                    }
+                } else {
+                    // for map marker
+                    $performance_data_selected->scheme_map_marker = $performance_data_selected->scheme_map_marker;
+                }
             /* some details to show */
             if(count($coordinates_selected) > 0)
             {
@@ -155,25 +213,70 @@ class SchemeReviewDuplicateDataCheckController extends Controller
                     if(count($coordinates_to_test) > 0 && $performance_data_selected->scheme_performance_id!=$performance_data_to_test->scheme_performance_id)
                     {
                         /* some details to show */
-                            $performance_data_to_test->coordinates_details = $coordinates_to_test;
-                            if($performance_data_to_test->status==1){
+                            if ($performance_data_to_test->coordinates) {
+                                $coordinates_multi = array();
+                                $coordinates_details = unserialize($performance_data_to_test->coordinates);
+                                foreach ($coordinates_details as $key_coor => $value_coor) {
+                                    $coordinates_multi[$key_coor]['lat'] = (float) $value_coor['latitude'];
+                                    $coordinates_multi[$key_coor]['lng'] = (float) $value_coor['longitude'];
+                                    // print_r($value_coor);
+                                }
+                                $performance_data_to_test->coordinates_details = $coordinates_multi;
+                            }
+                            
+                            // for status
+                            if ($performance_data_to_test->status == 0) {
+                                $performance_data_to_test->status = "In progess";
+                                $performance_data_to_test->road_color = "#b32b2b";
+                            } else if ($performance_data_to_test->status == 1) {
                                 $performance_data_to_test->status = "Completed";
+                                $performance_data_to_test->road_color = "#36cc5e";
+                            } else if ($performance_data_to_test->status == 2) {
+                                $performance_data_to_test->status = "Sanctioned";
+                                $performance_data_to_test->road_color = "#121896";
+                            } else if ($performance_data_to_test->status == 3) {
+                                $performance_data_to_test->status = "Cancelled";
+                                $performance_data_to_test->road_color = "#404040";
                             }
-                            else{
-                                $performance_data_to_test->status = "Incomplete";
-                            }
+
                             // for attributes
-                            $attributes = unserialize($performance_data_to_test->scheme_attributes); // getting attrubutes
+                            $attributes = unserialize($performance_data_to_test->scheme_attributes); // getting scheme attrubutes
                             $performance_attributes = [];
                             $per_attr_tmps = unserialize($performance_data_to_test->attribute);
                             foreach ($per_attr_tmps as $per_attr_tmp) {
                                 $performance_attributes[key($per_attr_tmp)] = $per_attr_tmp[key($per_attr_tmp)];
                             }
-                            $tmp = '';
+                            $tmp = [];
                             foreach($attributes as $attribute){
-                                $tmp .= ''.$attribute['name'].': '.$performance_attributes[$attribute['id']].'<br/>';
+                                array_push($tmp, [$attribute['name'], $performance_attributes[$attribute['id']]]);
+                                // $tmp .= ''.$attribute['name'].': '.$performance_attributes[$attribute['id']].'<br/>';
                             }
                             $performance_data_to_test->attribute_details = $tmp;
+
+
+                            // for scheme name
+                            // $performance_data_to_test->scheme_name = "(".$performance_data_to_test->scheme_short_name.") ".$performance_data_to_test->scheme_name;
+                            $performance_data_to_test->scheme_name = $performance_data_to_test->scheme_name;
+
+                            // for gallery
+                            $map_datas_tmp["gallery"] = unserialize($performance_data->gallery);
+
+                            // for block_name, panchayat_name
+                            $performance_data_to_test->panchayat_name = $performance_data_to_test->panchayat_name;
+                            $performance_data_to_test->block_name = GeoStructure::where('geo_id', GeoStructure::find($performance_data_to_test->panchayat_id)->bl_id)->first()->geo_name;
+                        
+                            // for map marker
+                            if ($performance_data_to_test->scheme_is == 2) {
+                                if ($performance_data_to_test->scheme_asset_id != "") {
+                                    $SchemeAsset_deatails = SchemeAsset::where('scheme_asset_id', $performance_data_to_test->scheme_asset_id)->first();
+                                    $performance_data_to_test->scheme_map_marker = $SchemeAsset_deatails->mapmarkericon;
+                                } else {
+                                    $performance_data_to_test->scheme_map_marker = $performance_data_to_test->scheme_map_marker;
+                                }
+                            } else {
+                                // for map marker
+                                $performance_data_to_test->scheme_map_marker = $performance_data_to_test->scheme_map_marker;
+                            }
                         /* some details to show */
 
 
@@ -195,6 +298,7 @@ class SchemeReviewDuplicateDataCheckController extends Controller
                         }
                         else{
                             if(!$this->test_first_and_last_point($coordinates_selected, $coordinates_to_test, $distance_to_measure)){ // matched
+                                echo "yes\n";
                                 if($this->test_whole_direction($coordinates_selected, $coordinates_to_test)){
                                     if($this->test_all_coordinates($coordinates_selected, $coordinates_to_test, $distance_to_measure)){
                                         array_push($datas_tmp, $performance_data_to_test);
@@ -242,9 +346,9 @@ class SchemeReviewDuplicateDataCheckController extends Controller
 
         // echo "<pre>";
         // // print_r($duplicate_datas);
-        // // echo count($duplicate_datas);
+        // echo count($duplicate_datas)."\n";
         // // exit();
-        // print_r(json_decode($duplicate_datas));
+        // print_r($duplicate_datas);
         // exit();
 
         return ["duplicate_datas"=>$duplicate_datas, "response"=>$response, 'count'=>count($duplicate_datas)];
@@ -266,7 +370,8 @@ class SchemeReviewDuplicateDataCheckController extends Controller
         if($distance_3<=$distance_to_measure){ $probable_index+=1; }
         if($distance_4<=$distance_to_measure){ $probable_index+=1; }
 
-        // echo $distance_1." - ".$distance_2." - ".$distance_3." - ".$distance_4."\n";
+        echo $distance_1." - ".$distance_2." - ".$distance_3." - ".$distance_4."\n";
+        echo $probable_index."\n";
         
         if($probable_index>=2){
             return true;
