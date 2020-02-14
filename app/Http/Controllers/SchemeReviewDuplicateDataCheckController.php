@@ -119,7 +119,7 @@ class SchemeReviewDuplicateDataCheckController extends Controller
                                                         ->select('scheme_performance.*','scheme_assets.scheme_asset_name','geo_structure.geo_name as panchayat_name','year.year_value','scheme_structure.scheme_short_name','scheme_structure.scheme_name','scheme_structure.scheme_is','scheme_structure.scheme_map_marker','scheme_structure.attributes as scheme_attributes')
                                                         ->whereIn('scheme_performance.panchayat_id', $panchayat_ids_selected)
                                                         ->where('scheme_performance.scheme_asset_id', $scheme_asset_id_selected)
-                                                        ->where('scheme_performance.scheme_performance_id', 31)
+                                                        // ->where('scheme_performance.scheme_performance_id', 31)
                                                         ->get();
         $performance_datas_to_test = SchemePerformance::LeftJoin('scheme_assets', 'scheme_performance.scheme_asset_id', '=', 'scheme_assets.scheme_asset_id')
                                                         ->LeftJoin('geo_structure', 'scheme_performance.panchayat_id', '=', 'geo_structure.geo_id')
@@ -128,7 +128,7 @@ class SchemeReviewDuplicateDataCheckController extends Controller
                                                         ->select('scheme_performance.*','scheme_assets.scheme_asset_name','geo_structure.geo_name as panchayat_name','year.year_value','scheme_structure.scheme_short_name','scheme_structure.scheme_name','scheme_structure.scheme_is','scheme_structure.scheme_map_marker','scheme_structure.attributes as scheme_attributes')
                                                         ->whereIn('scheme_performance.panchayat_id', $panchayat_ids_selected)
                                                         ->where('scheme_performance.scheme_asset_id', $scheme_asset_id_selected)
-                                                        ->where('scheme_performance.scheme_performance_id', 32)
+                                                        // ->where('scheme_performance.scheme_performance_id', 32)
                                                         ->get();
 
         // echo "<pre>";    
@@ -298,7 +298,7 @@ class SchemeReviewDuplicateDataCheckController extends Controller
                         }
                         else{
                             if(!$this->test_first_and_last_point($coordinates_selected, $coordinates_to_test, $distance_to_measure)){ // matched
-                                echo "yes\n";
+                                // echo "yes\n";
                                 if($this->test_whole_direction($coordinates_selected, $coordinates_to_test)){
                                     if($this->test_all_coordinates($coordinates_selected, $coordinates_to_test, $distance_to_measure)){
                                         array_push($datas_tmp, $performance_data_to_test);
@@ -370,8 +370,8 @@ class SchemeReviewDuplicateDataCheckController extends Controller
         if($distance_3<=$distance_to_measure){ $probable_index+=1; }
         if($distance_4<=$distance_to_measure){ $probable_index+=1; }
 
-        echo $distance_1." - ".$distance_2." - ".$distance_3." - ".$distance_4."\n";
-        echo $probable_index."\n";
+        // echo $distance_1." - ".$distance_2." - ".$distance_3." - ".$distance_4."\n";
+        // echo $probable_index."\n";
         
         if($probable_index>=2){
             return true;
