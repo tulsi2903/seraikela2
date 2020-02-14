@@ -521,7 +521,8 @@ class SchemePerformanceController extends Controller
             'block_name',
             'panchayat_name',
             'work_start_fin_year',
-            'status'
+            'status',
+            'coordinate'
         );
         if ($scheme_datas->scheme_is == 2) {
             array_push($tableHeadingsAndAtributes, 'scheme_asset_name');
@@ -543,6 +544,7 @@ class SchemePerformanceController extends Controller
                     sort($tableHeadingsAndAtributes);
                     sort($excelSheetHeadings);
                     $unserializedAtributesData = array();
+                    // print_r($readExcel);
                     // print_r($excelSheetHeadings);
                     // echo "<br>";
                     date_default_timezone_set('Asia/Kolkata');
@@ -564,102 +566,117 @@ class SchemePerformanceController extends Controller
                             // $serializationAttributes[] = $unserializedAtributesData;
                             // $unserializedAtributesData = [];
                         }
-                        
+                        // print_r($unserializedAtributesData);
+                        // exit;
                         $filename = "public/uploaded_documents/SchemePerformance-errorLog" . session()->get('user_id') . ".txt";   /* error file name */
                         // session()->put('filename',$filename);
                         $myfile = fopen($filename, "w"); /* open error file name by using fopen function */
                         $noOfSuccess = 0;
                         $noOfFails = 0;
                         $ErrorTxt = "";
-                        $total_record=0;
+                        $total_record = 0;
                         foreach ($readExcel as $key => $row) { /* Insert Data By using for each one by one */
                             $block_name =  preg_replace('/\s+/', ' ', trim(strtolower($row['block_name'])));
                             $panchayat_name =   preg_replace('/\s+/', ' ', trim(strtolower($row['panchayat_name'])));
                             $status =   preg_replace('/\s+/', ' ', trim(strtolower($row['status'])));
-
+                            $coordinate=preg_replace('/\s+/', ' ', trim(strtolower($row['coordinate'])));
+                            if($row['coordinate']!="")
+                            {
+                            $coordinate_array=explode(",",$coordinate);
+                            $coordinate_count=count($coordinate_array);
+                            // echo $coordinate_count;
+                            $coordinate=array();
+                            $multiple_array=array_chunk($coordinate_array,2);   
+                            foreach ($multiple_array as $key_coordinates => $value_coordinates) {
+                                // print_r($value_coordinates);
+                                $coordinate[] = array('latitude' => $value_coordinates[0], 'longitude' => $value_coordinates[1]);
+                            }
+                            }
+                            // print_r($coordinate);
+                            // exit;
                             $fetch_block_id = GeoStructure::where('geo_name', $block_name)->where('level_id', '3')->value('geo_id'); /* for block ID */
                             $fetch_panchayat_id = GeoStructure::where('geo_name', $panchayat_name)->where('level_id', '4')->value('geo_id'); /* for Panchayat ID */
                             $fetch_subdivision_id = GeoStructure::where('geo_id', $fetch_block_id)->value('sd_id'); /* for subdivision_id ID */
                             $fetch_year_id = Year::where('year_value', $row['work_start_fin_year'])->value('year_id'); /* for Year ID */
                             if ($scheme_datas->scheme_is == 2) {
                                 $scheme_assest_id = SchemeAsset::where(preg_replace('/\s+/', ' ', trim(strtolower('scheme_asset_name'))), preg_replace('/\s+/', ' ', trim(strtolower($row['scheme_asset_name']))))->value('scheme_asset_id');
-                            }
-                            else{
+                            } else {
                                 $scheme_assest_id = $scheme_datas->scheme_asset_id;
                             }
-                            if($row['sno.']!=null)
-                            {
-                                $total_record=$total_record+1;
-                            /* if those id avilable then insert data on the base */
-                            if ($row['sno.'] != null && $fetch_block_id != null && $fetch_panchayat_id != null && $fetch_year_id != null && $fetch_subdivision_id != null && $scheme_assest_id !=null && in_array($panchayat_name, $geo_names_array) && in_array($block_name, $geo_block_names_array)) {
-                                $noOfSuccess++;
-                                $flag = 0;
-                                $scheme_performance_id = "";
-                                $scheme_performance_details = SchemePerformance::get()->toArray();
-                                foreach ($scheme_performance_details as $key_edit => $value_edit) {
-                                    $add_atributes = serialize($unserializedAtributesData[$key]);
-                                    // echo $key_edit;
-                                    if ($value_edit['attribute'] == $add_atributes) {
-                                        $flag = 1;
-                                        $scheme_performance_id = $value_edit['scheme_performance_id'];
+                            if ($row['sno.'] != null) {
+                                $total_record = $total_record + 1;
+                                /* if those id avilable then insert data on the base */
+                                if ($row['sno.'] != null && $fetch_block_id != null && $fetch_panchayat_id != null && $fetch_year_id != null && $fetch_subdivision_id != null && $scheme_assest_id != null && in_array($panchayat_name, $geo_names_array) && in_array($block_name, $geo_block_names_array)) {
+                                    $noOfSuccess++;
+                                    $flag = 0;
+                                    $scheme_performance_id = "";
+                                    $scheme_performance_details = SchemePerformance::get()->toArray();
+                                    foreach ($scheme_performance_details as $key_edit => $value_edit) {
+                                        $add_atributes = serialize($unserializedAtributesData[$key]);
+                                        // echo $key_edit;
+                                        if ($value_edit['attribute'] == $add_atributes) {
+                                            $flag = 1;
+                                            $scheme_performance_id = $value_edit['scheme_performance_id'];
+                                        }
                                     }
-                                }
-                                if ($flag == 1) {
-                                    $edit_scheme_performance = SchemePerformance::where('scheme_performance_id', $scheme_performance_id)->update(array('status' => 1));
-                                } else {
-                                    $scheme_performance = new SchemePerformance;
-                                    $scheme_performance->year_id = $fetch_year_id;
-                                    $scheme_performance->scheme_id = $request->scheme_id;
-                                    $scheme_performance->block_id = $fetch_block_id;
-                                    $scheme_performance->panchayat_id = $fetch_panchayat_id;
-                                    $scheme_performance->subdivision_id = $fetch_subdivision_id;
-                                    $scheme_performance->scheme_asset_id  = $scheme_assest_id;
-                                    $scheme_performance->attribute = serialize($unserializedAtributesData[$key]);
-
-                                    if (strtolower($status) == strtolower("Completed")) {
-                                        $scheme_performance->status = 1;
-                                    } elseif (strtolower($status) == strtolower("inprogress")) {
-                                        $scheme_performance->status = 0;
+                                    if ($flag == 1) {
+                                        $edit_scheme_performance = SchemePerformance::where('scheme_performance_id', $scheme_performance_id)->update(array('status' => 1));
+                                    } else {
+                                        $scheme_performance = new SchemePerformance;
+                                        $scheme_performance->year_id = $fetch_year_id;
+                                        $scheme_performance->scheme_id = $request->scheme_id;
+                                        $scheme_performance->block_id = $fetch_block_id;
+                                        $scheme_performance->panchayat_id = $fetch_panchayat_id;
+                                        $scheme_performance->subdivision_id = $fetch_subdivision_id;
+                                        $scheme_performance->scheme_asset_id  = $scheme_assest_id;
+                                        $scheme_performance->attribute = serialize($unserializedAtributesData[$key]);
+                                        if($row['coordinate']!="")
+                                        {
+                                        $scheme_performance->coordinates= serialize($coordinate);
+                                        }
+                                        if (strtolower($status) == strtolower("Completed")) {
+                                            $scheme_performance->status = 1;
+                                        } elseif (strtolower($status) == strtolower("inprogress")) {
+                                            $scheme_performance->status = 0;
+                                        } elseif (strtolower($status) == strtolower("Sanctioned")) {
+                                            $scheme_performance->status = 2;
+                                        } elseif (strtolower($status) == strtolower("Cancel")) {
+                                            $scheme_performance->status = 3;
+                                        } elseif (strtolower($status) != strtolower("inprogress") && strtolower($status) != strtolower("Completed") && strtolower($status) != strtolower("Sanctioned") && strtolower($status) != strtolower("Cancel")) {
+                                            $scheme_performance->status = 2;
+                                        }
+                                        $scheme_performance->created_by = Session::get('user_id');
+                                        $scheme_performance->save();
                                     }
-                                    elseif (strtolower($status) == strtolower("Sanctioned")) {
-                                        $scheme_performance->status = 2;
-                                    }elseif (strtolower($status) == strtolower("Cancel")) {
-                                        $scheme_performance->status = 3;
-                                    } elseif (strtolower($status) != strtolower("inprogress") && strtolower($status) != strtolower("Completed")&& strtolower($status) != strtolower("Sanctioned")&& strtolower($status) != strtolower("Cancel")) {
-                                        $scheme_performance->status = 2;
-                                    }
-                                    $scheme_performance->created_by = Session::get('user_id');
-                                    $scheme_performance->save();
-                                }
-                            } else {  /* Else find id and error write on the notepad */
-                                $noOfFails++;
-                                if ($row['sno.'] != null) {
-                                    if ($fetch_block_id == null && $fetch_panchayat_id != null) {
-                                        $ErrorTxt .= " ON row sno. " . $row['sno.'] . " Block Not Found \n";
-                                    }
-                                    if ($fetch_panchayat_id == null && $fetch_block_id != null) {
-                                        $ErrorTxt .= " ON row sno. " . $row['sno.'] . " Panchayat Not Found \n";
-                                    }
-                                    if ($fetch_panchayat_id == null && $fetch_block_id == null) {
-                                        $ErrorTxt .= " ON row sno. " . $row['sno.'] . " Both Panchayat And Block Not Found \n";
-                                    }
-                                    if ($fetch_subdivision_id == null || $fetch_year_id == null) {
-                                        $ErrorTxt .= " ON row sno. " . $row['sno.'] . "Both Subdivision And Year Not Found \n";
-                                    }
-                                    if (in_array($panchayat_name, $geo_names_array) == false) {
-                                        $ErrorTxt .= " On SNo. " . $row['sno.'] . " Wrong panchayat Name \n";
-                                    }
-                                    if (in_array($block_name, $geo_block_names_array) == false) {
-                                        $ErrorTxt .= " On SNo. " . $row['sno.'] . " Wrong block Name \n";
-                                    }
-                                    if($scheme_assest_id == null){
-                                        $ErrorTxt .= " On SNo. " . $row['sno.'] . " Asset not found \n";
+                                } else {  /* Else find id and error write on the notepad */
+                                    $noOfFails++;
+                                    if ($row['sno.'] != null) {
+                                        if ($fetch_block_id == null && $fetch_panchayat_id != null) {
+                                            $ErrorTxt .= " ON row sno. " . $row['sno.'] . " Block Not Found \n";
+                                        }
+                                        if ($fetch_panchayat_id == null && $fetch_block_id != null) {
+                                            $ErrorTxt .= " ON row sno. " . $row['sno.'] . " Panchayat Not Found \n";
+                                        }
+                                        if ($fetch_panchayat_id == null && $fetch_block_id == null) {
+                                            $ErrorTxt .= " ON row sno. " . $row['sno.'] . " Both Panchayat And Block Not Found \n";
+                                        }
+                                        if ($fetch_subdivision_id == null || $fetch_year_id == null) {
+                                            $ErrorTxt .= " ON row sno. " . $row['sno.'] . "Both Subdivision And Year Not Found \n";
+                                        }
+                                        if (in_array($panchayat_name, $geo_names_array) == false) {
+                                            $ErrorTxt .= " On SNo. " . $row['sno.'] . " Wrong panchayat Name \n";
+                                        }
+                                        if (in_array($block_name, $geo_block_names_array) == false) {
+                                            $ErrorTxt .= " On SNo. " . $row['sno.'] . " Wrong block Name \n";
+                                        }
+                                        if ($scheme_assest_id == null) {
+                                            $ErrorTxt .= " On SNo. " . $row['sno.'] . " Asset not found \n";
+                                        }
                                     }
                                 }
                             }
                         }
-                        }
-                        
+                        // exit;
                         $SchemePerformance_forblock = SchemePerformance::get();
                         foreach ($SchemePerformance_forblock as $key_get => $value_get) {
                             $SchemePerformance = SchemePerformance::where('scheme_id', $value_get['scheme_id'])->where('year_id', $value_get['year_id'])->where('block_id', $value_get['block_id'])->get();
@@ -695,7 +712,7 @@ class SchemePerformanceController extends Controller
                         $txt = "District Resource and Scheme Management\n";
                         $txt .= "----------------------------------------------------------------------------------------------------------------------------------\n";
                         $txt .= "DATE: " . date('d/m/Y h:i A') . "\n";
-                        $txt .= "TOTAL RECORD COUNT: " . $total_record. "\n";
+                        $txt .= "TOTAL RECORD COUNT: " . $total_record . "\n";
                         $txt .= "TOTAL SUCCESS COUNT: " . $noOfSuccess . "\n";
                         $txt .= "TOTAL FAIL COUNT: " . $noOfFails . "\n";
                         // $txt .= "USER NAME: ". $getUserName->first_name." ". $getUserName->middle_name." ". $getUserName->last_name." \n";
@@ -715,7 +732,7 @@ class SchemePerformanceController extends Controller
                             session()->put('alert-class', 'alert-success');
                             session()->put('alert-content', 'Scheme details has been saved');
                             return back();
-                        } else { 
+                        } else {
                             $this->saveFile($filename, file_get_contents($filename));
                             session()->put('currentdate', date('d/m/Y h:i:sa'));
                             session()->put('totalCount', $total_record);
@@ -798,6 +815,7 @@ class SchemePerformanceController extends Controller
             array_push($data, $value_un['name']);
         }
         array_push($data, 'Status');
+        array_push($data, 'Coordinate');
         $asset_data = SchemeAsset::get('scheme_asset_name');
         \Excel::create($scheme_datas->scheme_short_name . ' Scheme-Format-' . date("d-m-Y"), function ($excel) use ($asset_data, $data) {
             // Set the title
@@ -805,7 +823,8 @@ class SchemePerformanceController extends Controller
             // Chain the setters
             $excel->setCreator('Seraikela')->setCompany('Seraikela');
             $excel->sheet('Scheme-Format', function ($sheet) use ($data) {
-                $sheet->fromArray($data, null, 'A1', true, false);
+                // $sheet->fromArray($data, null, 'A1', true, false);
+                $sheet->fromArray($data)->getStyle()->getAlignment()->setWrapText(true);
             });
             $excel->sheet('Second sheet', function ($sheet)  use ($asset_data) {
                 $sheet->fromArray($asset_data);

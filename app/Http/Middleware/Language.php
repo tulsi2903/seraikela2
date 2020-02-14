@@ -22,14 +22,14 @@ class Language
     public function handle($request, Closure $next)
     {
         
-        $lang_id = Auth::user()->language;
+        @$lang_id = Auth::user()->language;
         if($lang_id!=1&&$lang_id!=2){
             $lang_id = 1;
         }
                
-        $lang = Languages::find($lang_id); 
+        $lang = Languages::find(@$lang_id); 
         $final_lang=json_decode($lang->languagePhrases);
-        \Illuminate\Support\Facades\View::share('phrase',$final_lang);
+        \Illuminate\Support\Facades\View::share('phrase',@$final_lang);
         return $next($request);
     }
 }
