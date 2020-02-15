@@ -69,6 +69,18 @@
                 <form action="{{url('scheme-performance/add-datas')}}" method="GET" onsubmit="return false;">
                     @csrf
                     <div class="row">
+                    <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="year_id">{{$phrase->year}}<span style="color:red;margin-left:5px;">*</span></label>
+                                <select name="year_id" id="year_id" class="form-control">
+                                    <option value="">---Select---</option>
+                                    @foreach($year_datas as $year_data )
+                                    <option value="{{ $year_data->year_id }}">{{ $year_data->year_value }}</option>
+                                    @endforeach
+                                </select>
+                                <div class="invalid-feedback" id="year_id_error_msg"></div>
+                            </div>
+                        </div>
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label for="scheme_id">{{$phrase->scheme}}<span style="color:red;margin-left:5px;">*</span></label>
@@ -82,18 +94,7 @@
                             </div>
                         </div>
 
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label for="year_id">{{$phrase->year}}<span style="color:red;margin-left:5px;">*</span></label>
-                                <select name="year_id" id="year_id" class="form-control">
-                                    <option value="">---Select---</option>
-                                    @foreach($year_datas as $year_data )
-                                    <option value="{{ $year_data->year_id }}">{{ $year_data->year_value }}</option>
-                                    @endforeach
-                                </select>
-                                <div class="invalid-feedback" id="year_id_error_msg"></div>
-                            </div>
-                        </div>
+                       
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label for="block_id">{{$phrase->block}}<span style="color:red;margin-left:5px;">*</span></label>
@@ -191,7 +192,7 @@
                     <div class="row">
                         <div class="card-body p-t-30" style="padding: 11px;">
                             <div class="form-group">
-                                <input type="file" name="galleryFile[]" class="form-control" multiple>
+                                <input type="file" name="galleryFile[]" id="galleryFile" class="form-control" multiple>
                             </div>
                         </div>
                         <div id="show_image_for_location" style="padding: 2em;">
@@ -240,6 +241,7 @@
                             <tbody>
                                 <tr>
                                     <td colspan="4">
+                                        <div style="color:red;" id="error_msg"></div>
                                         <div style="text-align: right;">
                                             <button type="button" class="btn btn-secondary btn-sm btn-circle" onclick="appendcoordinates()">Add&nbsp;&nbsp;<i class="fa fa-plus-circle" aria-hidden="true"></i></button>
                                         </div>
@@ -535,6 +537,7 @@
 </script>
 <script>
     function update_image(id) {
+        $("#galleryFile").val("");
         var scheme_performance = $('#scheme_performance_id').val(id);
         $('#create-gallery').modal('show');
         $.ajax({
@@ -616,10 +619,8 @@
         append_no++;
         to_append = `<tr>
             <td>  <span class="index_no">`+ append_no + `</span></td>
-                <td> <input type="text" name="coordinates_lat_value[]" maxlength="13"   placeholder="Latitude" class="form-control" required >        
-                    </td>
-                    <td><input type="text" name="coordinates_lang_value[]" maxlength="13" placeholder="Longitude" class="form-control" required >
-                </td>
+                <td> <input type="text" name="coordinates_lat_value[]" maxlength="13"   placeholder="Latitude" class="form-control" required></td>
+                    <td><input type="text" name="coordinates_lang_value[]" maxlength="13" placeholder="Longitude" class="form-control" required></td>
                     <td><button type="button" class="btn btn-danger btn-xs" onclick="delete_lat_lon(this)"><i class="fas fa-trash-alt"></i></button></td>
                     </tr>`;
         $("#append_coordinate_section").append(to_append);
@@ -663,6 +664,7 @@
         });
     }
     function coordinates_details(id) {
+        $("#error_msg").html("");
         var scheme_performance = $('#scheme_performance_id_for_coordinates').val(id);
         $('#create-coordinates').modal('show');
         $("#append_coordinate_section").html("");
@@ -680,7 +682,7 @@
                 $(".custom-loader").fadeOut(300);
             },
             success: function (data) {
-                console.log(data.coordinates);
+                // console.log(data.coordinates);
                 $("#append_coordinate_section").html("");
                 if (data.coordinates.length > 0) {
                     append_no = 1;
@@ -710,13 +712,34 @@
     function submitcoordinateAjax() {
         var formElement = $('#FormsaveImagescoordinatesLoacation')[0];
         var form_data = new FormData(formElement);
+        var to_submit = true;
+       
+        var tds = $("#create-coordinates").find("input");
+
+        for(var i=0;i<tds.length;i++)
+        {
+            if($(tds[i]).val() == "")
+            {
+                to_submit = false;
+                $("#error_msg").html("Co-ordinates cannot be kept blank");
+                
+            }
+            
+        }
+
+        // return false;
 
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
-        $.ajax({
+        
+
+        
+if(to_submit){
+
+    $.ajax({
             url: "{{url('scheme_performance/coordinatesupdate')}}",
             data: form_data,
             method: "POST",
@@ -731,7 +754,9 @@
                 $(".custom-loader").fadeOut(300);
             },
             success: function (data) {
-                if (data.message == "success") {
+              
+                 if (data.message == "success") {
+                    $("#error_msg").html("");
                     swal("Success!", "New latitudes longitudes  has been added successfully.", {
                         icon: "success",
                         buttons: {
@@ -743,6 +768,7 @@
                         $('#create-coordinates').modal('hide');
                     });
                 }
+            
                 else {
                     // error occured
                     swal("Error Occured!", data.message, {
@@ -758,6 +784,10 @@
                 $(".custom-loader").fadeOut(300);
             }
         });
+
+}
+
+       
     }
 </script>
 <script>
@@ -874,7 +904,7 @@ function checkStatus(){
 <script>
 function check_performamance_status()
 {
-    alert("dfdf");
+    // alert("dfdf");
     return true;
 }
 </script>
@@ -905,7 +935,7 @@ function check_performamance_status()
                     $(".custom-loader").fadeOut(300);
                 },
                 success: function (data) {
-                    console.log(data);
+                    // console.log(data);
                     if (data.message == "success") {
                         swal({
                             title: 'Do You Want To Enter Further Performance Data(s) Connectivity Details?',
@@ -982,7 +1012,6 @@ function check_performamance_status()
             contentType: 'application/json',
             dataType: "json",
             success: function (data) {
-                console.log(data);
                 to_append = `<tr>
                     <td>  <span class="index_no">`+ append_no + `</span></td>
                         <td> <select name="block_connectivity[]"  onchange='get_panchayat_datas_for_borders(this.value,this)' class="form-control">
