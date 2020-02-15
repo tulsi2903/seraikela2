@@ -14,6 +14,10 @@ class ModuleController extends Controller
 
    public function index()
    {
+    $desig_permissions = session()->get('desig_permission');
+    if(!$desig_permissions["mod10"]["add"]&&!$desig_permissions["mod10"]["edit"]&&!$desig_permissions["mod10"]["view"]&&!$desig_permissions["mod10"]["del"]){
+        return back();
+    }
         $datas = Module::orderBy('mod_name','ASC')->get();
         return view('module.index')->with('datas', $datas);
    }

@@ -13,9 +13,13 @@ use App\UoM_Type;
 class UomController extends Controller
 {
     public function index(){
+        $desig_permissions = session()->get('desig_permission');
+        if(!$desig_permissions["mod4"]["add"]&&!$desig_permissions["mod4"]["edit"]&&!$desig_permissions["mod4"]["view"]&&!$desig_permissions["mod4"]["del"]){
+            return back();
+        }
         $datas = Uom::leftjoin('uom_type','uom_type.uom_type_id','=','uom.uom_type_id')
                         ->select('uom_type.uom_type_name','uom.*')->orderBy('uom_id','desc')->get();
-        // return  $datas;             
+                        
         $uom_type =UoM_Type::orderBy('uom_type_id','asc')->get();
         return view('uom.index',compact('uom_type'))->with('datas', $datas);
     }

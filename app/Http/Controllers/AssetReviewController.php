@@ -20,6 +20,10 @@ class AssetReviewController extends Controller
 {
     //
     public function index(){
+        $desig_permissions = session()->get('desig_permission');
+        if(!$desig_permissions["mod19"]["add"]&&!$desig_permissions["mod19"]["edit"]&&!$desig_permissions["mod19"]["view"]&&!$desig_permissions["mod19"]["del"]){
+            return back();
+        }
        $block_datas = GeoStructure::where('level_id','3')->get();
        $department_datas = Department::orderBy('dept_name')->get();
        $year_datas = Year::select('year_id','year_value')->where('status', 1)->get();

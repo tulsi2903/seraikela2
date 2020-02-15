@@ -11,6 +11,11 @@ use App\GeoStructure;
 class UoMType_Controller extends Controller
 {
     public function index(){
+
+        $desig_permissions = session()->get('desig_permission');
+        if(!$desig_permissions["mod22"]["add"]&&!$desig_permissions["mod22"]["edit"]&&!$desig_permissions["mod22"]["view"]&&!$desig_permissions["mod22"]["del"]){
+            return back();
+        }
         $datas = uom_type::orderBy('uom_type_id','desc')->get();
         return view('uom_type.index',compact('datas'));
     }

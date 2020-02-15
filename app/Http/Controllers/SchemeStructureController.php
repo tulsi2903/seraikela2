@@ -24,6 +24,10 @@ class SchemeStructureController extends Controller
 {
     public function index()
     {
+        $desig_permissions = session()->get('desig_permission');
+        if(!$desig_permissions["mod15"]["add"]&&!$desig_permissions["mod15"]["edit"]&&!$desig_permissions["mod15"]["view"]&&!$desig_permissions["mod15"]["del"]){
+            return back();
+        }
 
         $datas = SchemeStructure::leftJoin('department', 'scheme_structure.dept_id', '=', 'department.dept_id')
             ->select('scheme_structure.*', 'department.dept_name')

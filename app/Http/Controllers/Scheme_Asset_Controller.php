@@ -15,7 +15,11 @@ class Scheme_Asset_Controller extends Controller
 {
 
     public function index()
-    {      
+    {    
+        $desig_permissions = session()->get('desig_permission');
+        if(!$desig_permissions["mod16"]["add"]&&!$desig_permissions["mod16"]["edit"]&&!$desig_permissions["mod16"]["view"]&&!$desig_permissions["mod16"]["del"]){
+            return back();
+        }  
         $datas = SchemeAsset::leftjoin('uom','uom.uom_id','=','scheme_assets.uom_type_id')
         ->select('scheme_assets.*','uom.uom_name')->orderBy('scheme_asset_id','desc')->get();
         // echo "<pre>";

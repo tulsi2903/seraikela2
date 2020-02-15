@@ -24,7 +24,11 @@ class UserAdd_Controller extends Controller
 {
     
 
-    public function adduser(){   
+    public function adduser(){  
+        $desig_permissions = session()->get('desig_permission');
+        if(!$desig_permissions["mod1"]["add"]&&!$desig_permissions["mod1"]["edit"]&&!$desig_permissions["mod1"]["view"]&&!$desig_permissions["mod1"]["del"]){
+            return back();
+        }
         
         if(Auth::user()->userRole==1){
             $results=User::leftjoin('designation','users.desig_id','designation.desig_id')

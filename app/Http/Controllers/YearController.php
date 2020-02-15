@@ -12,6 +12,11 @@ use Auth;
 class YearController extends Controller
 {
      public function index(){
+
+        $desig_permissions = session()->get('desig_permission');
+        if(!$desig_permissions["mod3"]["add"]&&!$desig_permissions["mod3"]["edit"]&&!$desig_permissions["mod3"]["view"]&&!$desig_permissions["mod3"]["del"]){
+            return back();
+        }
         $datas = Year::orderBy('year_id','desc')->get();
         return view('year.index')->with('datas', $datas);
     }

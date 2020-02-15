@@ -11,6 +11,10 @@ class DesignationPermissionController extends Controller
 {
     public function index()
     {
+        $desig_permissions = session()->get('desig_permission');
+        if(!$desig_permissions["mod11"]["add"]&&!$desig_permissions["mod11"]["edit"]&&!$desig_permissions["mod11"]["view"]&&!$desig_permissions["mod11"]["del"]){
+            return back();
+        }
         $datas = DesignationPermission::leftJoin('designation', 'desig_permission.desig_id', '=', 'designation.desig_id')
             ->leftJoin('module', 'desig_permission.mod_id', '=', 'module.mod_id')
             ->select("desig_permission.*", "designation.name", "module.mod_name")

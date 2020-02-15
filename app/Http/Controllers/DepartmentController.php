@@ -15,6 +15,10 @@ use Auth;
 class DepartmentController extends Controller
 {
     public function index(){
+        $desig_permissions = session()->get('desig_permission');
+        if(!$desig_permissions["mod2"]["add"]&&!$desig_permissions["mod2"]["edit"]&&!$desig_permissions["mod2"]["view"]&&!$desig_permissions["mod2"]["del"]){
+            return back();
+        }
         $datas = Department::leftJoin('organisation', 'department.org_id', '=', 'organisation.org_id')
             ->select('department.*','organisation.org_name')
             ->orderBy('department.dept_id','desc')

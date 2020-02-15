@@ -15,6 +15,11 @@ class DesignationController extends Controller
     //
     //
     public function index(){
+        $desig_permissions = session()->get('desig_permission');
+        if(!$desig_permissions["mod5"]["add"]&&!$desig_permissions["mod5"]["edit"]&&!$desig_permissions["mod5"]["view"]&&!$desig_permissions["mod5"]["del"]){
+            return back();
+        }
+
         $datas = Designation::leftJoin('organisation', 'designation.org_id', '=', 'organisation.org_id')
             ->select('designation.*','organisation.org_name')
             ->orderBy('designation.desig_id','desc')

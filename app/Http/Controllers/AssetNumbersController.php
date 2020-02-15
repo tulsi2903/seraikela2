@@ -23,6 +23,10 @@ class AssetNumbersController extends Controller
 
     public function index()
     {
+        $desig_permissions = session()->get('desig_permission');
+        if(!$desig_permissions["mod14"]["add"]&&!$desig_permissions["mod14"]["edit"]&&!$desig_permissions["mod14"]["view"]&&!$desig_permissions["mod14"]["del"]){
+            return back();
+        }
 
         $geo_ids = [];
         if (session()->get('user_designation') == 1) // dc
@@ -811,6 +815,10 @@ class AssetNumbersController extends Controller
 
     public function changeViewforimport()
     {
+        $desig_permissions = session()->get('desig_permission');
+        if(!$desig_permissions["mod24"]["add"]&&!$desig_permissions["mod24"]["edit"]&&!$desig_permissions["mod24"]["view"]&&!$desig_permissions["mod24"]["del"]){
+            return back();
+        }
         # code...
         return view('asset-numbers.importExcel');
     }

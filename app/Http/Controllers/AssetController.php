@@ -21,6 +21,10 @@ class AssetController extends Controller
 {
     public function index()
     {
+        $desig_permissions = session()->get('desig_permission');
+        if(!$desig_permissions["mod13"]["add"]&&!$desig_permissions["mod13"]["edit"]&&!$desig_permissions["mod13"]["view"]&&!$desig_permissions["mod13"]["del"]){
+            return back();
+        }
         $datas = Asset::leftJoin('department', 'asset.dept_id', '=', 'department.dept_id')
             ->leftJoin('asset_cat', 'asset.category_id', '=', 'asset_cat.asset_cat_id')
             ->leftJoin('asset_subcat', 'asset.subcategory_id', '=', 'asset_subcat.asset_sub_id')
@@ -307,6 +311,10 @@ class AssetController extends Controller
 
     public function index_cat()
     {
+        $desig_permissions = session()->get('desig_permission');
+        if(!$desig_permissions["mod8"]["add"]&&!$desig_permissions["mod8"]["edit"]&&!$desig_permissions["mod8"]["view"]&&!$desig_permissions["mod8"]["del"]){
+            return back();
+        }
         $datas = asset_cat::orderBy('asset_cat.asset_cat_id', 'desc')->get();
 
         return view('asset.category.index')->with('datas', $datas);
@@ -376,7 +384,10 @@ class AssetController extends Controller
     }
     public function index_subcat()
     {
-
+        $desig_permissions = session()->get('desig_permission');
+        if(!$desig_permissions["mod9"]["add"]&&!$desig_permissions["mod9"]["edit"]&&!$desig_permissions["mod9"]["view"]&&!$desig_permissions["mod9"]["del"]){
+            return back();
+        }
         $datas = asset_subcat::orderBy('asset_subcat.asset_sub_id', 'desc')
             ->get();
 

@@ -15,6 +15,10 @@ class GeoStructureController extends Controller
 {
     //
     public function index(){
+        $desig_permissions = session()->get('desig_permission');
+        if(!$desig_permissions["mod12"]["add"]&&!$desig_permissions["mod12"]["edit"]&&!$desig_permissions["mod12"]["view"]&&!$desig_permissions["mod12"]["del"]){
+            return back();
+        }
         $datas = GeoStructure::leftJoin('level', 'geo_structure.level_id', '=', 'level.level_id')
                                 ->leftJoin('organisation','geo_structure.org_id','=','organisation.org_id')
                                 ->select('geo_structure.*','level.level_name','organisation.org_name')

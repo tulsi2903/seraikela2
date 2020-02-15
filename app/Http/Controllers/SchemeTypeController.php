@@ -10,6 +10,10 @@ class SchemeTypeController extends Controller
 {
     public function index()
     {
+        $desig_permissions = session()->get('desig_permission');
+        if(!$desig_permissions["mod6"]["add"]&&!$desig_permissions["mod6"]["edit"]&&!$desig_permissions["mod6"]["view"]&&!$desig_permissions["mod6"]["del"]){
+            return back();
+        }
         $datas =SchemeType::orderBy('sch_type_id','desc')->get();
         return view('scheme-type.index')->with('datas',$datas);
     }
