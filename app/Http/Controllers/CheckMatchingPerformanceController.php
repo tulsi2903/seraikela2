@@ -258,7 +258,10 @@ class CheckMatchingPerformanceController extends Controller
           }
           // $data = CheckMatchingPerformance::where('id',$id)->first();
 
-
+          $id = array();
+          $tmp_matching = array();
+          $scheme_performance_id_to_append = array();
+          $append_comment = array();
 
           return ['Matching' => $datas, 'tmp_matching' => $tmp_matching, 'id' => $id, 'scheme_performance_id_to_append' => $scheme_performance_id_to_append, 'append_comment' => $append_comment];
 
