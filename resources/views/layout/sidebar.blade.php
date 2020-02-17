@@ -168,10 +168,10 @@
 							@endif
 							<!-- @if(array_key_exists("mod10", $desig_permissions))
 							<li class="nav-item"><a href="{{url('module')}}"><i class="fas fa-tasks"></i><p>{{$phrase->module}}</p></a></li>
-							@endif
+							@endif -->
 							@if(array_key_exists("mod11", $desig_permissions))
 							<li class="nav-item"><a href="{{url('designation-permission')}}"><i class="fas fa-users-cog"></i><p>{{$phrase->designation_permission}}</p></a></li>
-							@endif -->
+							@endif
 							@if(array_key_exists("mod4", $desig_permissions))
 								<li class="nav-item"><a href="{{url('uom')}}"><i class="fa fa-balance-scale" aria-hidden="true"></i><p>{{$phrase->uom}}</p></a></li>
 							@endif
