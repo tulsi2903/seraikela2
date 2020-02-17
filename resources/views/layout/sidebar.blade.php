@@ -57,8 +57,7 @@
 				</li>
 				@endif
 
-			
-				@if(session()->get('user_designation')=="1")
+				@if(array_key_exists("mod26",$desig_permissions) || array_key_exists("mod23",$desig_permissions))
 				<li class="nav-item">
 					<a data-toggle="collapse" href="#duplicacy" class="collapsed" aria-expanded="false">
 					<i class="fa fa-clone" aria-hidden="true"></i>
@@ -67,8 +66,12 @@
 					</a>
 					<div class="collapse" id="duplicacy">
 						<ul class="nav nav-collapse">
-						<li class="nav-item"><a href="{{url('matching-schemes')}}"><i class="fa fa-check" aria-hidden="true"></i>	<p>Matching Schemes</p></a></li> 
+						@if(array_key_exists("mod16",$desig_permissions))
+						<li class="nav-item"><a href="{{url('matching-schemes')}}"><i class="fa fa-check" aria-hidden="true"></i><p>Matching Schemes</p></a></li> 
+						@endif
+						@if(array_key_exists("mod23",$desig_permissions))
 						<li class="nav-item"><a href="{{url('scheme-review/duplicate-review')}}"><i class="fa fa-clone" aria-hidden="true"></i><p>Duplicate Review</p></a></li>
+						@endif
 						</ul>
 					</div>
 				</li>
@@ -158,17 +161,17 @@
 							@endif
 							
 							@if(array_key_exists("mod8", $desig_permissions))
-								<li class="nav-item"><a href="{{url('assetcat')}}"><i class="fa fa-th"></i><p> {{$phrase->resource_catagory}}</p></a></li>
+								<li class="nav-item"><a href="{{url('assetcat')}}"><i class="fa fa-th"></i><p>{{$phrase->resource_catagory}}</p></a></li>
 							@endif
 							@if(array_key_exists("mod9", $desig_permissions))
-								<li class="nav-item"><a href="{{url('asset_subcat')}}"><i class="fa fa-th-large"></i><p>  {{$phrase->resourcesub_catagory}}</p></a></li>
+								<li class="nav-item"><a href="{{url('asset_subcat')}}"><i class="fa fa-th-large"></i><p>{{$phrase->resourcesub_catagory}}</p></a></li>
 							@endif
-							@if(array_key_exists("mod10", $desig_permissions))
+							<!-- @if(array_key_exists("mod10", $desig_permissions))
 							<li class="nav-item"><a href="{{url('module')}}"><i class="fas fa-tasks"></i><p>{{$phrase->module}}</p></a></li>
 							@endif
 							@if(array_key_exists("mod11", $desig_permissions))
 							<li class="nav-item"><a href="{{url('designation-permission')}}"><i class="fas fa-users-cog"></i><p>{{$phrase->designation_permission}}</p></a></li>
-							@endif
+							@endif -->
 							@if(array_key_exists("mod4", $desig_permissions))
 								<li class="nav-item"><a href="{{url('uom')}}"><i class="fa fa-balance-scale" aria-hidden="true"></i><p>{{$phrase->uom}}</p></a></li>
 							@endif
