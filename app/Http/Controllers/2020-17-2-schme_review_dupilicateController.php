@@ -22,10 +22,7 @@ class SchemeReviewDuplicateDataCheckController extends Controller
     //
     public function index()
     {
-        $desig_permissions = session()->get('desig_permission');
-        if(!$desig_permissions["mod23"]["add"]&&!$desig_permissions["mod23"]["edit"]&&!$desig_permissions["mod23"]["view"]&&!$desig_permissions["mod23"]["del"]){
-            return back();
-        }
+
         $year_datas = Year::select('year_id', 'year_value')->where('status', 1)->get();
         $scheme_datas = SchemeStructure::select('scheme_id', 'scheme_asset_id', 'scheme_name', 'scheme_is', 'scheme_short_name')->where('status', 1)->get();
         $scheme_asset_datas = SchemeAsset::select('scheme_asset_id', 'scheme_asset_name')->get();

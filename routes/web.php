@@ -1,4 +1,6 @@
 <?php
+
+
 if(version_compare(PHP_VERSION, '7.2.0', '>=')) {
     error_reporting(E_ALL ^ E_NOTICE ^ E_WARNING);
 }
@@ -29,6 +31,7 @@ Route::get('clear-cache', function () {
 //     Auth::logout();
 //     return redirect('/');
 // });
+Route::get('check_controller','SchemePerformanceController@duplicate_scheme_perfomamce');
 Auth::routes(['register' => false]); // register fetaure if disabled from laravel auth
 
 /*dashboard*/
@@ -251,6 +254,7 @@ Route::get('scheme-performance/get-connectivity/{scheme_id}','SchemePerformanceC
 Route::get('scheme-performance/getblock_datafor_borders','SchemePerformanceController@getblock_datafor_borders'); /* End Spans Across Borders */
 Route::get('scheme-performance/get-panchayat-datas-for-borders','SchemePerformanceController@getpanchayat_datafor_borders'); /* End Spans Across Borders */
 Route::post('scheme_performance/savebl_pl_connectivity','SchemePerformanceController@savebl_pl_connectivity'); /* End Spans Across Borders */
+Route::get('scheme-performance/check_matching_erformance/{id}/{result}','SchemeReviewDuplicateDataCheckController@insert_mathcingperformance');
 
 Route::get('matching-schemes','CheckMatchingPerformanceController@index');
 Route::get('get/matching-schemes/details/{id}','CheckMatchingPerformanceController@get_matching_entries');

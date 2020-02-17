@@ -24,10 +24,7 @@ class SchemePerformanceController extends Controller
 {
     public function index(Request $request)
     {
-        $desig_permissions = session()->get('desig_permission');
-        if(!$desig_permissions["mod18"]["add"]&&!$desig_permissions["mod18"]["edit"]&&!$desig_permissions["mod18"]["view"]&&!$desig_permissions["mod18"]["del"]){
-            return back();
-        }
+
         $geo_ids = [];
         if (session()->get('user_designation') == 1) // dc
         {
@@ -974,10 +971,6 @@ class SchemePerformanceController extends Controller
 
     public function view_import_forscheme()
     {
-        $desig_permissions = session()->get('desig_permission');
-        if(!$desig_permissions["mod25"]["add"]&&!$desig_permissions["mod25"]["edit"]&&!$desig_permissions["mod25"]["view"]&&!$desig_permissions["mod25"]["del"]){
-            return back();
-        }
         $scheme_datas = SchemeStructure::select('scheme_id', 'scheme_name', 'scheme_short_name')->orderBy('scheme_id', 'DESC')->get(); // only independent scheme (scheme_is == 1)
         $year_datas = Year::select('year_id', 'year_value')->orderBy('year_value', 'asc')->get();
         $block_datas = GeoStructure::select('geo_id', 'geo_name')->orderBy('geo_name', 'asc')->where('level_id', '=', '3')->get();

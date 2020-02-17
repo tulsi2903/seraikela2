@@ -333,7 +333,7 @@
                             <select name="scheme_id" id="scheme_id" class="form-control">
                                 <option value="">All Schemes</option>
                                 @foreach($scheme_datas as $scheme_data)
-                                    <option value="{{$scheme_data->scheme_id}}" data-scheme-is="{{$scheme_data->scheme_is}}" data-scheme-asset-id="{{$scheme_data->scheme_asset_id}}" <?php if($data['scheme_id']==$scheme_data->scheme_id){ echo "selected"; } ?>>({{$scheme_data->scheme_short_name}}) {{$scheme_data->scheme_name}}</option>
+                                    <option value="{{$scheme_data->scheme_id}}" data-scheme-is="{{$scheme_data->scheme_is}}" data-scheme-asset-id="{{$scheme_data->scheme_asset_id}}" <?php if(@$data['scheme_id']==$scheme_data->scheme_id){ echo "selected"; } ?>>({{$scheme_data->scheme_short_name}}) {{$scheme_data->scheme_name}}</option>
                                 @endforeach
                             </select>
                             <div class="invalid-feedback">Please select department</div>
@@ -379,7 +379,7 @@
                             <select name="year_id" id="year_id" class="form-control">
                                 <option value="">All Years</option>
                                 @foreach($year_datas as $year_data)
-                                    <option value="{{$year_data->year_id}}" <?php if($data['year_id']==$year_data->year_id){ echo "selected"; } ?>>{{$year_data->year_value}}</option>
+                                    <option value="{{$year_data->year_id}}" <?php if(@$data['year_id']==$year_data->year_id){ echo "selected"; } ?>>{{$year_data->year_value}}</option>
                                 @endforeach
                             </select>
                             <div class="invalid-feedback">Please select year</div>

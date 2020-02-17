@@ -32,7 +32,7 @@
             <div class="col-md-12">
                     <div class="card-header">
                         <div class="row" >
-                            <div class="col-6" style="margin-left:50%;" class="pull-right">
+                            <div class="col-6"  >
                                 @if(Auth::user()->language == 1)
                                 <h3 style="color:#00ace6;">Import Guide For Scheme</h3>
                                 <p>
