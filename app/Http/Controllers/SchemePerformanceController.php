@@ -607,6 +607,7 @@ class SchemePerformanceController extends Controller
                             $status =   preg_replace('/\s+/', '', trim(strtolower($row['status'])));
                             $coordinate = preg_replace('/\s+/', '', trim(strtolower($row['coordinate'])));
                             if ($row['coordinate'] != "") {
+                                // $coordinate_array=rtrim(",",$coordinate);
                                 $coordinate_array = explode(",", $coordinate);
                                 $coordinate_count = count($coordinate_array);
                                 // echo $coordinate_count;
@@ -647,8 +648,50 @@ class SchemePerformanceController extends Controller
                                             $scheme_performance_id = $value_edit['scheme_performance_id'];
                                         }
                                     }
+
                                     if ($flag == 1) {
-                                        $edit_scheme_performance = SchemePerformance::where('scheme_performance_id', $scheme_performance_id)->update(array('status' => 1,'coordinates'=>serialize($coordinate)));
+                                        if (strtolower($status) == strtolower("Completed")) {
+                                            $edit_status = 1;
+                                        } elseif (strtolower($status) == strtolower("inprogress")) {
+                                            $edit_status = 0;
+                                        } elseif (strtolower($status) == strtolower("Sanctioned")) {
+                                            $edit_status = 2;
+                                        } elseif (strtolower($status) == strtolower("Cancel")) {
+                                            $edit_status = 3;
+                                        } elseif (strtolower($status) == strtolower("Open")) {
+                                            $edit_status = 4;
+                                        } elseif (strtolower($status) != strtolower("inprogress") && strtolower($status) != strtolower("Completed") && strtolower($status) != strtolower("Sanctioned") && strtolower($status) != strtolower("Cancel")) {
+                                            $edit_status = 4;
+                                        }
+                                        $temp_edit_scheme_performance_details=SchemePerformance::where('scheme_performance_id', $scheme_performance_id)->first();
+                                        // echo "<pre>";
+                                        // print_r($temp_edit_scheme_performance_details);
+
+                                        if($temp_edit_scheme_performance_details->status!=4)
+                                        {
+                                            $result = "true";
+                                            $edit_scheme_performance = SchemePerformance::where('scheme_performance_id', $scheme_performance_id)->update(array('coordinates'=>serialize($coordinate)));
+                                            // $duplicate_scheme_perfomamce_details = array();
+                                            // if ($edit_scheme_performance->status == 2) {
+                                                $duplicate_scheme_perfomamce_details = $duplicate_scheme_perfomamce->insert_mathcingperformance($temp_edit_scheme_performance_details->scheme_performance_id, $result);
+                                                // print_r($duplicate_scheme_perfomamce_details);
+                                                if(@$duplicate_scheme_perfomamce_details->message=="data Found")
+                                                {
+                                                $edit_scheme_performance = SchemePerformance::where('scheme_performance_id', $scheme_performance_id)->update(array('status' =>4 ,'coordinates'=>serialize($coordinate)));
+                                                }
+                                                else
+                                                {
+                                                    $edit_scheme_performance = SchemePerformance::where('scheme_performance_id', $scheme_performance_id)->update(array('status' =>$edit_status ,'coordinates'=>serialize($coordinate)));
+                                                }
+                                            //    return  $duplicate_scheme_perfomamce->insert_mathcingperformance(9,$result);
+                                        //    return  $duplicate_scheme_perfomamce_details;
+                                        // }
+                                        }
+                                        else
+                                        {
+                                            $edit_scheme_performance = SchemePerformance::where('scheme_performance_id', $scheme_performance_id)->update(array('status' =>4 ,'coordinates'=>serialize($coordinate)));
+                                        }
+                                        // exit;
                                     } else {
                                         $scheme_performance = new SchemePerformance;
                                         $scheme_performance->year_id = $fetch_year_id;
@@ -680,13 +723,17 @@ class SchemePerformanceController extends Controller
                                         $distance_to_measure = 10;
                                         // $scheme_performance->id=9;
                                         $result = "true";
+                                        // echo "<pre>";
+                                        // print_r($scheme_performance->scheme_performance_id);
+                                        // exit;
                                         $duplicate_scheme_perfomamce_details = array();
-                                        // if ($scheme_performance->status == 2) {
-                                        //     $duplicate_scheme_perfomamce_details = $duplicate_scheme_perfomamce->insert_mathcingperformance($scheme_performance->id, $result);
-                                        //     //    return  $duplicate_scheme_perfomamce->insert_mathcingperformance(9,$result);
-                                        // }
+                                        if ($scheme_performance->status == 2) {
+                                            $duplicate_scheme_perfomamce_details = $duplicate_scheme_perfomamce->insert_mathcingperformance($scheme_performance->scheme_performance_id, $result);
+                                            //    return  $duplicate_scheme_perfomamce->insert_mathcingperformance(9,$result);
+                                        }
                                         // echo "dfdfdfdf";
                                         // print_r($duplicate_scheme_perfomamce_details);
+                                        // exit;
                                     }
                                 } else {  /* Else find id and error write on the notepad */
                                     $noOfFails++;
@@ -718,6 +765,7 @@ class SchemePerformanceController extends Controller
                                     }
                                 }
                             }
+                            // exit;
                         }
                         // exit;
                         $SchemePerformance_forblock = SchemePerformance::get();

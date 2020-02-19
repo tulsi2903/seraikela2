@@ -5,47 +5,48 @@
 @section('page-style')
 <style>
     .modal-content {
-    position: relative;
-    display: -webkit-box;
-    display: flex;
-    -webkit-box-orient: vertical;
-    -webkit-box-direction: normal;
-    flex-direction: column;
-    width: 100%;
-    pointer-events: auto;
-    /* background-color: #fff; */
-    background-clip: padding-box;
-    border: 1px solid rgba(0, 0, 0, .2);
-    border-radius: .3rem;
-    outline: 0;
-    background: linear-gradient(to bottom, #a5baef, #ffffff 70%, #ffffff, #ffffff 100%);
-}
-.modal-header {
-    display: -webkit-box;
-    display: flex;
-    -webkit-box-align: start;
-    align-items: flex-start;
-    -webkit-box-pack: justify;
-    justify-content: space-between;
-    padding: 1rem;
-    border-bottom: 1px dashed #000;
-    border-top-left-radius: .3rem;
-    border-top-right-radius: .3rem;
-}
-.modal-footer {
-    display: -webkit-box;
-    display: flex;
-    -webkit-box-align: center;
-    align-items: center;
-    -webkit-box-pack: end;
-    justify-content: flex-end;
-    padding: 1rem;
-    border-bottom: 1px dashed #999999;
-    border-bottom-right-radius: .3rem;
-    border-bottom-left-radius: .3rem;
-    margin-top: -24px;
-}
+        position: relative;
+        display: -webkit-box;
+        display: flex;
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+        flex-direction: column;
+        width: 100%;
+        pointer-events: auto;
+        /* background-color: #fff; */
+        background-clip: padding-box;
+        border: 1px solid rgba(0, 0, 0, .2);
+        border-radius: .3rem;
+        outline: 0;
+        background: linear-gradient(to bottom, #a5baef, #ffffff 70%, #ffffff, #ffffff 100%);
+    }
 
+    .modal-header {
+        display: -webkit-box;
+        display: flex;
+        -webkit-box-align: start;
+        align-items: flex-start;
+        -webkit-box-pack: justify;
+        justify-content: space-between;
+        padding: 1rem;
+        border-bottom: 1px dashed #000;
+        border-top-left-radius: .3rem;
+        border-top-right-radius: .3rem;
+    }
+
+    .modal-footer {
+        display: -webkit-box;
+        display: flex;
+        -webkit-box-align: center;
+        align-items: center;
+        -webkit-box-pack: end;
+        justify-content: flex-end;
+        padding: 1rem;
+        border-bottom: 1px dashed #999999;
+        border-bottom-right-radius: .3rem;
+        border-bottom-left-radius: .3rem;
+        margin-top: -24px;
+    }
 </style>
 @endsection
 
@@ -69,7 +70,7 @@
                 <form action="{{url('scheme-performance/add-datas')}}" method="GET" onsubmit="return false;">
                     @csrf
                     <div class="row">
-                    <div class="col-md-3">
+                        <div class="col-md-3">
                             <div class="form-group">
                                 <label for="year_id">{{$phrase->year}}<span style="color:red;margin-left:5px;">*</span></label>
                                 <select name="year_id" id="year_id" class="form-control">
@@ -94,7 +95,7 @@
                             </div>
                         </div>
 
-                       
+
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label for="block_id">{{$phrase->block}}<span style="color:red;margin-left:5px;">*</span></label>
@@ -144,8 +145,8 @@
                             <b>Data Saved:</b> <span id="total_date_count"></span>
                         </div> -->
                     </div>
-                    <div >
-                        <form action="{{url('scheme-performance/store')}}" id="savedataonschemepertable" method="POST"  enctype="multipart/form-data" autocomplete="off" onsubmit="return check_performamance_status();">
+                    <div>
+                        <form action="{{url('scheme-performance/store')}}" id="savedataonschemepertable" method="POST" enctype="multipart/form-data" autocomplete="off" onsubmit="return check_performamance_status();">
                             @csrf
                             <table class="table">
                                 <thead id="to_append_thead" style="background: #cedcff">
@@ -215,7 +216,7 @@
 
 <div id="create-coordinates" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none">
     <div class="modal-dialog modal-lg">
-        <div class="modal-content"style="margin-top: 11em;">
+        <div class="modal-content" style="margin-top: 11em;">
             <div class="modal-header" style="border-top: 2px solid #5269a3">
                 <h4 class="modal-title mt-0" style="font-family: 'Bree Serif', serif;color:#000;">Coordinates</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -267,14 +268,14 @@
 
 <div id="create-connectivity" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none">
     <div class="modal-dialog modal-lg">
-        <div class="modal-content"style="margin-top: 11em;">
+        <div class="modal-content" style="margin-top: 11em;">
             <div class="modal-header" style="border-top: 2px solid #5269a3">
                 <h4 class="modal-title mt-0" style="font-family: 'Bree Serif', serif;color:#000;">Connectivity Details</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form action="{{url('scheme_performance/savebl_pl_connectivity')}}" method="post" id="Formsaveborderconnectivity" enctype="multipart/form-data" autocomplete="off" >
+            <form action="{{url('scheme_performance/savebl_pl_connectivity')}}" method="post" id="Formsaveborderconnectivity" enctype="multipart/form-data" autocomplete="off">
                 @csrf
                 <div class="modal-body">
                     <div class="row" style="padding:2em;    margin-top: -3em;">
@@ -484,7 +485,7 @@
                     $("#to_append_tbody").html(data.to_append_tbody);
                     // alert(data.length);
                     to_append_row = data.to_append_row;
-                    setTimeout(function(){ checkStatus(); }, 3000);
+                    setTimeout(function () { checkStatus(); }, 3000);
                     $("#to_append_table").fadeIn(300);
 
                     $(".custom-loader").fadeOut(300);
@@ -713,18 +714,16 @@
         var formElement = $('#FormsaveImagescoordinatesLoacation')[0];
         var form_data = new FormData(formElement);
         var to_submit = true;
-       
+
         var tds = $("#create-coordinates").find("input");
 
-        for(var i=0;i<tds.length;i++)
-        {
-            if($(tds[i]).val() == "")
-            {
+        for (var i = 0; i < tds.length; i++) {
+            if ($(tds[i]).val() == "") {
                 to_submit = false;
                 $("#error_msg").html("Co-ordinates cannot be kept blank");
-                
+
             }
-            
+
         }
 
         // return false;
@@ -734,106 +733,122 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
-        
 
-        
-if(to_submit){
 
-    $.ajax({
-            url: "{{url('scheme_performance/coordinatesupdate')}}",
-            data: form_data,
-            method: "POST",
-            dataType: 'json',
-            processData: false,
-            contentType: false,
-            beforeSend: function (data) {
-                $(".custom-loader").fadeIn(300);
-            },
-            error: function (xhr) {
-                alert("error" + xhr.status + ", " + xhr.statusText);
-                $(".custom-loader").fadeOut(300);
-            },
-            success: function (data) {
-              
-                 if (data.message == "success") {
-                    $("#error_msg").html("");
-                    swal("Success!", "New latitudes longitudes  has been added successfully.", {
-                        icon: "success",
-                        buttons: {
-                            confirm: {
-                                className: 'btn btn-success'
-                            }
-                        },
-                    }).then((ok) => {
-                        $('#create-coordinates').modal('hide');
-                    });
+
+        if (to_submit) {
+
+            $.ajax({
+                url: "{{url('scheme_performance/coordinatesupdate')}}",
+                data: form_data,
+                method: "POST",
+                dataType: 'json',
+                processData: false,
+                contentType: false,
+                beforeSend: function (data) {
+                    $(".custom-loader").fadeIn(300);
+                },
+                error: function (xhr) {
+                    alert("error" + xhr.status + ", " + xhr.statusText);
+                    $(".custom-loader").fadeOut(300);
+                },
+                success: function (data) {
+
+                    if (data.message == "success") {
+                        $("#error_msg").html("");
+                        swal("Success!", "New latitudes longitudes  has been added successfully.", {
+                            icon: "success",
+                            buttons: {
+                                confirm: {
+                                    className: 'btn btn-success'
+                                }
+                            },
+                        }).then((ok) => {
+                            $('#create-coordinates').modal('hide');
+                        });
+                    }
+
+                    else {
+                        // error occured
+                        swal("Error Occured!", data.message, {
+                            icon: "error",
+                            buttons: {
+                                confirm: {
+                                    className: 'btn btn-danger'
+                                }
+                            },
+                        });
+                    }
+
+                    $(".custom-loader").fadeOut(300);
                 }
-            
-                else {
-                    // error occured
-                    swal("Error Occured!", data.message, {
-                        icon: "error",
-                        buttons: {
-                            confirm: {
-                                className: 'btn btn-danger'
-                            }
-                        },
-                    });
-                }
+            });
 
-                $(".custom-loader").fadeOut(300);
-            }
-        });
+        }
 
-}
 
-       
     }
 </script>
 <script>
-    
-function checkStatusOld(e,id)
-{
-    var status_id=$(e).val();
-    if(status_id==0)
-    {
-        var  result="true";
-       
-    }
-    if(status_id==1)
-    {
-        var status_readonly= $(e).closest('tr').find(".status_readonly");
-        for(i=0;i<status_readonly.length;i++)
-        {
-            $(status_readonly[i]).prop('readonly',true);
-        }
-    }
-    if(status_id==3)
-    {
-        var status_readonly= $(e).closest('tr').find(".status_readonly");
-        for(i=0;i<status_readonly.length;i++)
-        {
-            $(status_readonly[i]).prop('readonly',true);
-        }
-    }
-}
 
-function checkStatus(){
-    var trs = $("#to_append_tbody tr");
-    for (var i = 0; i < trs.length; i++) {
-        var status_id = $(trs[i]).find("select[name='status[]']").val();
-        if(status_id==1)
-        {
-            $(trs[i]).find(".status_readonly").prop('readonly',true);
+    function checkStatusOld(e, id) {
+        var status_id = $(e).val();
+        if (status_id == 2) {
+            var result = "true";
+            $.ajax({
+                url: "{{url('scheme-performance/check_matching_erformance/')}}" + "/" + id + "/" + result,
+                method: "get",
+                success: function (data) {
+                    console.log(data);
+                    if (data.message == "data Found") {
+                        $(e).val("4");
+                        swal({
+                            title: 'You Cannot Do Sanction Beacause We Found Proable Duplicate',
+                            icon: 'error',
+                            buttons: {
+                                confirm: {
+                                    text: 'Ok',
+                                    className: 'btn btn-success'
+                                }
+                            }
+                        }).then((willDelete) => {
+                            // $(e).val("0");
+
+                        });
+                    }
+                }
+            });
         }
-        if(status_id==3)
-        {
-            $(trs[i]).find(".status_readonly").prop('readonly',true);
+        if (status_id == 1) {
+            var status_readonly = $(e).closest('tr').find(".status_readonly");
+            for (i = 0; i < status_readonly.length; i++) {
+                $(status_readonly[i]).prop('readonly', true);
+            }
+        }
+        if (status_id == 3) {
+            var status_readonly = $(e).closest('tr').find(".status_readonly");
+            for (i = 0; i < status_readonly.length; i++) {
+                $(status_readonly[i]).prop('readonly', true);
+            }
         }
 
-        // $(trs[i]).find(first_td).html(i + 1);
     }
-}
+
+
+    function checkStatus() {
+        var trs = $("#to_append_tbody tr");
+        for (var i = 0; i < trs.length; i++) {
+            var status_id = $(trs[i]).find("select[name='status[]']").val();
+            if (status_id == 1) {
+                $(trs[i]).find(".status_readonly").prop('readonly', true);
+            }
+            if (status_id == 3) {
+                $(trs[i]).find(".status_readonly").prop('readonly', true);
+            }
+
+            // $(trs[i]).find(first_td).html(i + 1);
+        }
+    }
 
 </script>
 <script>
@@ -902,82 +917,80 @@ function checkStatus(){
     }
 </script>
 <script>
-function check_performamance_status()
-{
-    // alert("dfdf");
-    return true;
-}
+    function check_performamance_status() {
+        // alert("dfdf");
+        return true;
+    }
 </script>
 
 <script>
-    
+
     function submitdatafromajaxonscheme() {
         var formElement = $('#savedataonschemepertable')[0];
         var form_data = new FormData(formElement);
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-            $.ajax({
-                url: "{{url('scheme-performance/store')}}",
-                data: form_data,
-                method: "POST",
-                dataType: 'json',
-                processData: false,
-                contentType: false,
-                beforeSend: function (data) {
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        $.ajax({
+            url: "{{url('scheme-performance/store')}}",
+            data: form_data,
+            method: "POST",
+            dataType: 'json',
+            processData: false,
+            contentType: false,
+            beforeSend: function (data) {
 
-                    $(".custom-loader").fadeIn(300);
-                },
-                error: function (xhr) {
-                    alert("error" + xhr.status + "," + xhr.statusText);
-                    $(".custom-loader").fadeOut(300);
-                },
-                success: function (data) {
-                    // console.log(data);
-                    if (data.message == "success") {
-                        swal({
-                            title: 'Do You Want To Enter Further Performance Data(s) Connectivity Details?',
-                            icon: 'success',
-                            buttons: {
-                                cancel: {
-                                    visible: true,
-                                    text: 'No',
-                                    className: 'btn btn-danger'
-                                },
-                                confirm: {
-                                    text: 'Yes',
-                                    className: 'btn btn-success'
-                                }
+                $(".custom-loader").fadeIn(300);
+            },
+            error: function (xhr) {
+                alert("error" + xhr.status + "," + xhr.statusText);
+                $(".custom-loader").fadeOut(300);
+            },
+            success: function (data) {
+                // console.log(data);
+                if (data.message == "success") {
+                    swal({
+                        title: 'Do You Want To Enter Further Performance Data(s) Connectivity Details?',
+                        icon: 'success',
+                        buttons: {
+                            cancel: {
+                                visible: true,
+                                text: 'No',
+                                className: 'btn btn-danger'
+                            },
+                            confirm: {
+                                text: 'Yes',
+                                className: 'btn btn-success'
                             }
-                        }).then((willDelete) => {
-                            if (willDelete) {
-                                go();
-                            }
-                            else
-                            {
-                                window.location = 'scheme-performance';
-                            }
-                        });
-                    }else if(data.message == "error"){
-                        swal({
-                            title: 'New performance data(s) has been saved successfully!',
-                            icon: 'success',
-                            buttons: {
+                        }
+                    }).then((willDelete) => {
+                        if (willDelete) {
+                            go();
+                        }
+                        else {
+                            window.location = 'scheme-performance';
+                        }
+                    });
+                } else if (data.message == "error") {
+                    swal({
+                        title: 'New performance data(s) has been saved successfully!',
+                        icon: 'success',
+                        buttons: {
                             confirm: {
                                 className: 'btn btn-success'
                             }
                         },
-                        }).then((willDelete) => {
-                            if (willDelete) {
-                                window.location = 'scheme-performance';
-                            }
-                        });
-                    }
-                    $(".custom-loader").fadeOut(300);
+                    }).then((willDelete) => {
+                        if (willDelete) {
+                            window.location = 'scheme-performance';
+                        }
+                    });
                 }
-            });
+                $(".custom-loader").fadeOut(300);
+            }
+        });
         // return true;
     }
     function get_panchayat_datas_for_borders(id, e) {
@@ -1159,7 +1172,7 @@ function check_performamance_status()
         var trs = $("#to_append_tbody tr");
         for (var i = 0; i < trs.length; i++) {
             var connectivity_checkbox = $(trs[i]).find("input[name='connectivity_details[]']")[0];
-            $(trs[i]).find(connectivity_checkbox).val("x"+i+"");
+            $(trs[i]).find(connectivity_checkbox).val("x" + i + "");
         }
     }
 </script>

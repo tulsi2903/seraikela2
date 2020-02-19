@@ -1,8 +1,8 @@
 District Resource and Scheme Management
 ----------------------------------------------------------------------------------------------------------------------------------
-DATE: 14/02/2020 04:02 PM
-TOTAL RECORD COUNT: 1
-TOTAL SUCCESS COUNT: 1
+DATE: 17/02/2020 07:27 PM
+TOTAL RECORD COUNT: 2
+TOTAL SUCCESS COUNT: 2
 TOTAL FAIL COUNT: 0
 ----------------------------------------------------------------------------------------------------------------------------------
 No Error Found

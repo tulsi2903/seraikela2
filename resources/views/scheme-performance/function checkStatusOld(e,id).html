@@ -1,0 +1,49 @@
+function checkStatusOld(e,id)
+{
+    var status_id=$(e).val();
+    if(status_id==0)
+    {
+        var  result="true";
+        $.ajax({
+                url: "{{url('scheme-performance/check_matching_erformance/')}}"+"/"+id+"/"+result,
+                method: "get",
+                success: function (data) {
+                    console.log(data);
+                    if(data.message=="data Found")
+                    {
+                        $(e).val("2");
+                        swal({
+                            title: 'You Cannot Do Sanction Beacause We Found Proable Duplicate',
+                            icon: 'error',
+                            buttons: {
+                                confirm: {
+                                    text: 'Ok',
+                                    className: 'btn btn-success'
+                                }
+                            }
+                        }).then((willDelete) => {
+                            // $(e).val("0");
+
+                        });
+                    }
+                }
+        });
+    }
+    if(status_id==1)
+    {
+        var status_readonly= $(e).closest('tr').find(".status_readonly");
+        for(i=0;i<status_readonly.length;i++)
+        {
+            $(status_readonly[i]).prop('readonly',true);
+        }
+    }
+    if(status_id==3)
+    {
+        var status_readonly= $(e).closest('tr').find(".status_readonly");
+        for(i=0;i<status_readonly.length;i++)
+        {
+            $(status_readonly[i]).prop('readonly',true);
+        }
+    }
+
+}
