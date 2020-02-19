@@ -39,4 +39,5 @@ Route::group(['middleware' => 'auth:api'], function(){
     Route::post('get-years', 'API\GetDetailsController@get_years');
     Route::post('get-blocks', 'API\GetDetailsController@get_blocks');
     Route::post('get-panchayat', 'API\GetDetailsController@get_panchayat');
+    Route::post('get-resources', 'API\GetDetailsController@get_resources');
 });

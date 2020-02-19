@@ -124,6 +124,8 @@ class SchemeReviewDuplicateDataCheckController extends Controller
             ->select('scheme_performance.*', 'scheme_assets.scheme_asset_name', 'geo_structure.geo_name as panchayat_name', 'year.year_value', 'scheme_structure.scheme_short_name', 'scheme_structure.scheme_name', 'scheme_structure.scheme_is', 'scheme_structure.scheme_map_marker', 'scheme_structure.attributes as scheme_attributes')
             ->whereIn('scheme_performance.panchayat_id', $panchayat_ids_selected)
             ->where('scheme_performance.scheme_asset_id', $scheme_asset_id_selected)
+            ->whereIn('scheme_performance.scheme_id', $scheme_ids_selected)
+            ->whereIn('scheme_performance.year_id', $year_ids_selected)
             // ->where('scheme_performance.scheme_performance_id', 31)
             ->get();
         $performance_datas_to_test = SchemePerformance::LeftJoin('scheme_assets', 'scheme_performance.scheme_asset_id', '=', 'scheme_assets.scheme_asset_id')

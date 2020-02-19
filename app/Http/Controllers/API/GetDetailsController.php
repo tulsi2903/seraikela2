@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\SchemeStructure;
 use App\Year;
 use App\GeoStructure;
+use App\Asset;
 
 class GetDetailsController extends Controller
 {
@@ -105,6 +106,41 @@ class GetDetailsController extends Controller
         }
 
         // return after validate
+        if(count($datas)>0){
+            return response()->json(['success' => $datas], $this->successStatus);
+        }
+        else{
+            return response()->json(['error'=>'no_data_found'], 204);
+        }
+    }
+
+
+    // for resources
+    public function get_resources(Request $request){
+        if($request->resources_id){
+            $datas = Asset::where('asset_id', $request->resources_id)->select('asset_id as resources_id', 'asset_name as resources_name', 'movable', 'parent_id as parent')->first();
+            if($datas->parent!='-1'){
+                $child_datas = Asset::where('asset_id', $datas->parent)->select('asset_id as resources_id', 'asset_name as resources_name', 'movable')->get();
+                $datas->child_resources = $child_datas;
+            }
+            else{
+                $datas->child_resources = [];
+            }
+        }
+        else{
+            $datas = Asset::select('asset_id as resources_id', 'asset_name as resources_name', 'movable', 'parent_id as parent')->get();
+            foreach($datas as $data){
+                if($data->parent!='-1'){
+                    $child_datas = Asset::where('asset_id', $data->parent)->select('asset_id as resources_id', 'asset_name as resources_name', 'movable')->get();
+                    $data->child_resources = $child_datas;
+                }
+                else{
+                    $data->child_resources = [];
+                }
+            }
+        }
+
+        // // return after validate
         if(count($datas)>0){
             return response()->json(['success' => $datas], $this->successStatus);
         }

@@ -216,7 +216,7 @@
         background: #ffffe8;
     }
     #map-view-block{
-       /* display: none; */
+       display: none;
     }
     #map-view {
         position: relative;
@@ -1285,7 +1285,7 @@
         year_id_error = false;
 
         // scheme asset selected
-        if ($("#scheme_asset_id").val() == "" && $("#scheme_id").val() =="") {
+        if ($("#scheme_asset_id").val() == "") {
             $("#scheme_asset_id").addClass('is-invalid');
             $("#scheme_asset_id + .invalid-feedback").html("Please select an asset");
             scheme_asset_id_error = true;

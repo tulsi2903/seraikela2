@@ -1035,7 +1035,7 @@
                         <div id="tabular-view">
                         </div>
                         <div class="no-data">
-                            <i class="fas fa-info-circle text-success"></i>&nbsp;&nbsp;No resources data to show
+                            <i class="fas fa-info-circle text-success"></i>&nbsp;&nbsp;No scheme datas to show
                         </div>
                     </div>
                     <!-- map-view -->
