@@ -1232,7 +1232,7 @@
     function get_scheme_asset(){
         var scheme_is_tmp = $("#scheme_id :selected").data('scheme-is');
         var scheme_asset_tmp = $("#scheme_id :selected").data('scheme-asset-id');
-        $("#scheme_asset_id").val("");
+        // $("#scheme_asset_id").val("");
         // var scheme_is_tmp = $("#scheme_id:selected").data("scheme-id");
         if(scheme_is_tmp=="1"){
             // dont show any option of scheme asset

@@ -1020,8 +1020,8 @@
                     <div style="display: inline-block; width: 50%; float: right; text-align: right; margin-top: -5px;">
                         <a href="#" data-toggle="tooltip" title="Send Mail"><button type="button" class="btn btn-icon btn-round btn-success"><i class="fa fa-envelope" aria-hidden="true"></i></button></a>
                         <a href="#" data-toggle="tooltip" title="Print"><button type="button" class="btn btn-icon btn-round btn-default" id="print-button" onclick="printView();"><i class="fa fa-print" aria-hidden="true"></i></button></a>
-                        <a href="{{url('asset-review/pdf/pdfURL')}}" class="asset-review-export-as" data-toggle="tooltip" title="Export as PDF"><button type="button" class="btn btn-icon btn-round btn-warning"><i class="fas fa-file-export"></i></button></a>
-                        <a href="{{url('asset-review/export/excelURL')}}" class="asset-review-export-as" data-toggle="tooltip" title="Export as Excel"><button type="button" class="btn btn-icon btn-round btn-success"><i class="fas fa-file-excel"></i></button></a>
+                        <a href="{{url('scheme-review/export-to-pdf')}}" class="review-export-as" data-toggle="tooltip" title="Export as PDF"><button type="button" class="btn btn-icon btn-round btn-warning"><i class="fas fa-file-export"></i></button></a>
+                        <a href="{{url('scheme-review/export-to-excel')}}" class="review-export-as" data-toggle="tooltip" title="Export as Excel"><button type="button" class="btn btn-icon btn-round btn-success"><i class="fas fa-file-excel"></i></button></a>
                     </div>
                 </div>
                 <br />
@@ -1204,7 +1204,7 @@
             $("#marquee").html("");
         }
 
-        console.log(selected_geo_name);
+        // console.log(selected_geo_name);
     };
 </script>
 
@@ -1359,7 +1359,7 @@
                 // $("#search-results-block").removeClass("active-search");
             },
             success: function (data) {
-                console.log(data);
+                // console.log(data);
                 // resetting all view's blocks/divs/inputs
                 resetTabularView();
                 resetMapView();
@@ -1423,7 +1423,7 @@
                 $("#search-results-block").removeClass("active-search");
             },
             success: function (data) {
-                console.log(data);
+                // console.log(data);
 
                 // show basic details
                 $("#all-view-details").html("<b>Scheme: </b><span id='all-view-scheme-name'></span>");
@@ -1808,20 +1808,6 @@
 </script>
 
 <script>
-    // export to pdf / excel
-    $(document).ready(function () {
-        $('.asset-review-export-as').click(function (e) {
-            e.preventDefault();
-            var href = this.href;
-            if (to_export_datas.length != 0) {
-                console.log(JSON.stringify(to_export_datas));
-                window.location.href = "" + href + "?datas=" + JSON.stringify(to_export_datas);
-            }
-        });
-    });
-</script>
-
-<script>
 
     // for direct page load/ direct search form dashboard
     var initiate = "{{$initiate}}";
@@ -1849,6 +1835,31 @@
     });
 
 </script>
+
+
+
+<!-- for export -->
+<form id="export-form" method="POST" action="{{url('scheme-review/export-to-excel')}}" target="_blank">
+    @csrf
+    <textarea name="to_export_datas"></textarea>
+</form>
+<script>
+    // export to pdf / excel
+    $(document).ready(function () {
+        $('.review-export-as').click(function (e) {
+            e.preventDefault();
+            console.log(to_export_datas);
+            $("#export-form textarea").val(JSON.stringify(to_export_datas));
+            $("#export-form").submit();
+            // var href = this.href;
+            // if (to_export_datas.length != 0) {
+            //     console.log(JSON.stringify(to_export_datas));
+            //     window.location.href = "" + href + "?datas=" + JSON.stringify(to_export_datas);
+            // }
+        });
+    });
+</script>
+
 
 
 <!-- Latest compiled and minified JavaScript -->

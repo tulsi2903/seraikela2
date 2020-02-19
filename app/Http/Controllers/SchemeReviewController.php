@@ -14,6 +14,7 @@ use App\SchemeGeoLocation;
 use App\SchemePerformance;
 use App\SchemeAsset;
 use App\Group;
+use App\asset_subcat;
 use DB;
 
 class SchemeReviewController extends Controller
@@ -860,4 +861,73 @@ class SchemeReviewController extends Controller
         // return $map_datas;
         return ["response" => $response, "block_name" => $block_name_tmp, "scheme_name"=>$scheme_name_tmp, "tabular_view" => $tabular_view, "map_datas" => $map_datas];
     }
+
+
+
+    // export to pdf
+
+
+    // export to excel
+    public function export_to_excel(Request $request){
+        $review_datas = json_decode($request->to_export_datas);
+        echo "<pre>";
+        dump($review_datas);
+        exit();
+
+        for($i=0;$i=$review_datas->performance_datas;$i++){
+            if($i==0){
+                // scheme names
+                for($j=0;$j<$review_datas->performance_datas[$i];$j++){
+                    
+                }
+            }
+            else if($i==1){
+                // years
+            }
+            else if($i==2){
+                // status
+            }
+        }
+        
+
+        $data = array(1 => array("Scheme Review"));
+        $data[] = array('Sl.No.', 'Sub Category Name', 'Sub Category Description', 'Category Name', 'Date');
+
+        $items =  asset_subcat::leftjoin('asset_cat', 'asset_subcat.asset_cat_id', '=', 'asset_cat.asset_cat_id')
+            ->select(
+                'asset_subcat.asset_sub_id as slId',
+                'asset_subcat.asset_sub_cat_name',
+                'asset_subcat.asset_sub_cat_description',
+                'asset_cat.asset_cat_name',
+                'asset_subcat.created_at as createdDate'
+            )->orderBy('asset_subcat.asset_sub_id', 'desc')->get();
+
+        foreach ($items as $key => $value) {
+            $value->createdDate = date('d/m/Y', strtotime($value->createdDate));
+            $data[] = array(
+                $key + 1,
+                $value->asset_sub_cat_name,
+                $value->asset_sub_cat_description,
+                $value->asset_cat_name,
+                $value->createdDate
+            );
+        }
+        \Excel::create('ResourceSubCatagory', function ($excel) use ($data) {
+
+            // Set the title
+            $excel->setTitle('ResourceSubCatagory-Sheet');
+
+            // Chain the setters
+            $excel->setCreator('Seraikela')->setCompany('Seraikela');
+
+            $excel->sheet('Fees', function ($sheet) use ($data) {
+                // $sheet->freezePane('A3');
+                // $sheet->mergeCells('A1:I1');
+                $sheet->fromArray($data, null, 'A1', true, false);
+                $sheet->setColumnFormat(array('I1' => '@'));
+            });
+        })->download('xls');
+    }
+
+
 }

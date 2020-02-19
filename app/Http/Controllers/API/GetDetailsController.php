@@ -8,6 +8,7 @@ use App\SchemeStructure;
 use App\Year;
 use App\GeoStructure;
 use App\Asset;
+use App\SchemeAsset;
 
 class GetDetailsController extends Controller
 {
@@ -138,6 +139,25 @@ class GetDetailsController extends Controller
                     $data->child_resources = [];
                 }
             }
+        }
+
+        // // return after validate
+        if(count($datas)>0){
+            return response()->json(['success' => $datas], $this->successStatus);
+        }
+        else{
+            return response()->json(['error'=>'no_data_found'], 204);
+        }
+    }
+
+
+    // for resources
+    public function get_scheme_asset(Request $request){
+        if($request->scheme_asset_id){
+            $datas = SchemeAsset::where('scheme_asset_id', $request->scheme_asset_id)->select('scheme_asset_id','scheme_asset_name')->first();
+        }
+        else{
+            $datas = SchemeAsset::select('scheme_asset_id','scheme_asset_name')->get();
         }
 
         // // return after validate

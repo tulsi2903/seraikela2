@@ -139,7 +139,7 @@ class SchemeReviewDuplicateDataCheckController extends Controller
             ->get();
 
         // echo "<pre>";    
-        // print_r($performance_datas_selected);
+        // echo count($performance_datas_to_test);
         // exit();
         /* 
         actual testing started
@@ -300,9 +300,10 @@ class SchemeReviewDuplicateDataCheckController extends Controller
                                 // no duplicate
                             }
                         } else {
-                            if (!$this->test_first_and_last_point($coordinates_selected, $coordinates_to_test, $distance_to_measure)) { // matched
-                                // echo "yes\n";
+                            if (!$this->test_first_and_last_point($coordinates_selected, $coordinates_to_test, $distance_to_measure)) { // not matched
+                                // echo "first-last-not-matched\n";
                                 if ($this->test_whole_direction($coordinates_selected, $coordinates_to_test)) {
+                                    // echo "whole direction matched\n";
                                     if ($this->test_all_coordinates($coordinates_selected, $coordinates_to_test, $distance_to_measure)) {
                                         array_push($datas_tmp, $performance_data_to_test);
                                         $found = true;
@@ -312,7 +313,9 @@ class SchemeReviewDuplicateDataCheckController extends Controller
                                 } else {
                                     // no duplicate
                                 }
-                            } else { // not matched
+                            }
+                            else { // matched
+                                // echo "yes\n";
                                 // testing if any point is withing a  distance (1KM)
                                 if ($this->test_distance_if_any($coordinates_selected, $coordinates_to_test, $distance_to_measure)) { // yes, inside
                                     if ($this->direction_wise_check_duplicate($coordinates_selected, $coordinates_to_test)) { // this will test and prepare percentage for changes of same direction
@@ -376,7 +379,8 @@ class SchemeReviewDuplicateDataCheckController extends Controller
             $probable_index += 1;
         }
 
-        // echo $distance_1." - ".$distance_2." - ".$distance_3." - ".$distance_4."\n";
+        // echo "<pre>";
+        // echo $probable_index." - ".$distance_1." - ".$distance_2." - ".$distance_3." - ".$distance_4."\n";
         // echo $probable_index."\n";
 
         if ($probable_index >= 2) {

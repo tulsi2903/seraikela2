@@ -40,4 +40,9 @@ Route::group(['middleware' => 'auth:api'], function(){
     Route::post('get-blocks', 'API\GetDetailsController@get_blocks');
     Route::post('get-panchayat', 'API\GetDetailsController@get_panchayat');
     Route::post('get-resources', 'API\GetDetailsController@get_resources');
+    Route::post('get-scheme-asset', 'API\GetDetailsController@get_scheme_asset');
+
+
+    // for submitting datas
+    Route::post('store-scheme-performance', 'API\SchemePerformanceController@store_datas');
 });
