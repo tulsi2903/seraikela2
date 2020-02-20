@@ -44,5 +44,6 @@ Route::group(['middleware' => 'auth:api'], function(){
 
 
     // for submitting datas
+    Route::post('get-scheme-performance-datas', 'API\SchemePerformanceController@get_scheme_performabnce_datas');
     Route::post('store-scheme-performance', 'API\SchemePerformanceController@store_datas');
 });

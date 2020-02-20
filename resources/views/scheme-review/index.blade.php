@@ -352,7 +352,7 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="form-group">
-                            <div><label for="scheme_id">Scheme<span style="color:red;margin-left:5px;">*</span></label><a class="select-all-link" style="float:right;" href="javscript:void();" onclick="selectUnselectAll('scheme_id', this)" data-selected="select">Select All</a></div>
+                            <div><label for="scheme_id">Scheme<span style="color:red;margin-left:5px;">*</span></label><a class="select-all-link" style="float:right;" href="javascript:void();" onclick="selectUnselectAll('scheme_id', this)" data-selected="select">Select All</a></div>
                             <select name="scheme_id" id="scheme_id" class="form-control selectpicker" data-size="5" multiple>
                                 <!-- <option value="">All Schemes</option> -->
                                 @foreach($scheme_datas as $scheme_data)
@@ -367,7 +367,7 @@
                 <div class="row">
                     <div class="col-6">
                         <div class="form-group">
-                            <div><label for="year_id">Year<span style="color:red;margin-left:5px;">*</span></label><a class="select-all-link" style="float:right;" href="javscript:void();" onclick="selectUnselectAll('year_id', this)" data-selected="select">Select All</a class="select-all-link"></div>
+                            <div><label for="year_id">Year<span style="color:red;margin-left:5px;">*</span></label><a class="select-all-link" style="float:right;" href="javascript:void();" onclick="selectUnselectAll('year_id', this)" data-selected="select">Select All</a class="select-all-link"></div>
                             <select name="year_id" id="year_id" class="form-control selectpicker" data-size="5" multiple>
                                 <!-- <option value="">All Years</option> -->
                                 @foreach($year_datas as $year_data)
@@ -379,7 +379,7 @@
                     </div>
                     <div class="col-6">
                         <div class="form-group">
-                            <div><label for="scheme_asset_id">Asset<span style="color:red;margin-left:5px;">*</span></label><a class="select-all-link" style="float:right;" href="javscript:void();" onclick="selectUnselectAll('scheme_asset_id', this)" data-selected="select">Select All</a class="select-all-link"></div>
+                            <div><label for="scheme_asset_id">Asset<span style="color:red;margin-left:5px;">*</span></label><a class="select-all-link" style="float:right;" href="javascript:void();" onclick="selectUnselectAll('scheme_asset_id', this)" data-selected="select">Select All</a class="select-all-link"></div>
                             <select name="scheme_asset_id" id="scheme_asset_id" class="form-control selectpicker" data-size="5" multiple>
                                 <!-- <option value="">All Assets</option> -->
                                 @foreach($scheme_asset_datas as $scheme_asset_data)
@@ -1078,7 +1078,7 @@
 
 <!-- for review-for (block, punchayat) radio buttons -->
 <script>
-    var to_export_datas = ""; // export datas
+    var to_export_datas = {}; // export datas
     var review_for = 'block';
 
     $(document).ready(function () {
@@ -1379,11 +1379,12 @@
                 $("#all-view-details").append(`&nbsp;&nbsp;&nbsp;&bull;&nbsp;&nbsp;&nbsp;<a href="javascript:void();" onclick="showSearch()" class="btn btn-secondary btn-sm"><i class="fas fa-sync"></i>&nbsp;&nbsp;Change</a>`);
 
                 if (data.response == "no_data") { // no data found
-                    to_export_datas = "";
+                    to_export_datas = {};
                 }
                 else { // data.response  == success
                     // calling/initialiazing all views
-                    to_export_datas = data.tabular_view;
+                    to_export_datas.datas = data.tabular_view;
+                    to_export_datas.year_count = data.year_count;
                     initializeTabularView(data.tabular_view, data.year_count);
                     initializeMapView(data.map_datas);
                 }
@@ -1839,7 +1840,7 @@
 
 
 <!-- for export -->
-<form id="export-form" method="POST" action="{{url('scheme-review/export-to-excel')}}" target="_blank">
+<form id="export-form" method="POST" action="{{url('scheme-review/export-to-excel')}}" target="_blank" style="display: none;">
     @csrf
     <textarea name="to_export_datas"></textarea>
 </form>

@@ -869,63 +869,92 @@ class SchemeReviewController extends Controller
 
     // export to excel
     public function export_to_excel(Request $request){
-        $review_datas = json_decode($request->to_export_datas);
-        echo "<pre>";
-        dump($review_datas);
-        exit();
+        $review_datas = json_decode($request->to_export_datas)->datas; // recieved
+        $year_count = json_decode($request->to_export_datas)->year_count; // received
 
-        for($i=0;$i=$review_datas->performance_datas;$i++){
-            if($i==0){
-                // scheme names
-                for($j=0;$j<$review_datas->performance_datas[$i];$j++){
-                    
+        $export_datas = []; // use to export
+        $sheet_titles =[]; // use to export/ sheet title
+
+
+        foreach($review_datas as $review_data){
+            $block_wise_data = [];
+            $sheet_titles[] = $review_data->block_name;
+            
+            for($i=0;$i<count($review_data->performance_datas);$i++){
+                $data_tmp=[];
+                for($j=0;$j<count($review_data->performance_datas[$i]);$j++)
+                {
+                    if($i==0){
+                        // scheme names
+                        if($j!=0){
+                            array_push($data_tmp, explode(":",$review_data->performance_datas[$i][$j])[0]);
+                            for($tmp=0;$tmp<(($year_count*3)-1);$tmp++){
+                                array_push($data_tmp, "");
+                            }
+                        }
+                        else{
+                            array_push($data_tmp, $review_data->performance_datas[$i][$j]);
+                        }
+                    }
+                    else if($i==1){
+                        // years
+                        if($j!=0){
+                            array_push($data_tmp, $review_data->performance_datas[$i][$j]);
+                            array_push($data_tmp, "");
+                            array_push($data_tmp, "");
+                        }
+                        else{
+                            array_push($data_tmp, $review_data->performance_datas[$i][$j]);
+                        }
+                    }
+                    else if($i==2){
+                        // status
+                        if($j!=0){
+                            array_push($data_tmp, $review_data->performance_datas[$i][$j]);
+                        }
+                        else{
+                            array_push($data_tmp, $review_data->performance_datas[$i][$j]);
+                        }
+                    }
+                    else{
+                        // status
+                        if($j!=0){
+                            if(preg_match('~>\K[^<>]*(?=<)~', $review_data->performance_datas[$i][$j], $only_text))
+                            {
+                                array_push($data_tmp, (int)$only_text[0]);
+                            }
+                            else{
+                                array_push($data_tmp, $review_data->performance_datas[$i][$j]);
+                            }
+                        }
+                        else{
+                            array_push($data_tmp, $review_data->performance_datas[$i][$j]);
+                        }
+                    }
                 }
+
+                $block_wise_data[] = $data_tmp;
             }
-            else if($i==1){
-                // years
-            }
-            else if($i==2){
-                // status
-            }
+
+            $export_datas[] = $block_wise_data;
         }
         
+        // return $sheet_titles;
 
-        $data = array(1 => array("Scheme Review"));
-        $data[] = array('Sl.No.', 'Sub Category Name', 'Sub Category Description', 'Category Name', 'Date');
-
-        $items =  asset_subcat::leftjoin('asset_cat', 'asset_subcat.asset_cat_id', '=', 'asset_cat.asset_cat_id')
-            ->select(
-                'asset_subcat.asset_sub_id as slId',
-                'asset_subcat.asset_sub_cat_name',
-                'asset_subcat.asset_sub_cat_description',
-                'asset_cat.asset_cat_name',
-                'asset_subcat.created_at as createdDate'
-            )->orderBy('asset_subcat.asset_sub_id', 'desc')->get();
-
-        foreach ($items as $key => $value) {
-            $value->createdDate = date('d/m/Y', strtotime($value->createdDate));
-            $data[] = array(
-                $key + 1,
-                $value->asset_sub_cat_name,
-                $value->asset_sub_cat_description,
-                $value->asset_cat_name,
-                $value->createdDate
-            );
-        }
-        \Excel::create('ResourceSubCatagory', function ($excel) use ($data) {
-
+        \Excel::create('Scheme-Review-Datas', function ($excel) use ($export_datas) {
             // Set the title
-            $excel->setTitle('ResourceSubCatagory-Sheet');
-
+            // $excel->setTitle('ResourceSubCatagory-Sheet');
+            
             // Chain the setters
-            $excel->setCreator('Seraikela')->setCompany('Seraikela');
-
-            $excel->sheet('Fees', function ($sheet) use ($data) {
-                // $sheet->freezePane('A3');
-                // $sheet->mergeCells('A1:I1');
-                $sheet->fromArray($data, null, 'A1', true, false);
-                $sheet->setColumnFormat(array('I1' => '@'));
-            });
+            // $excel->setCreator('Seraikela')->setCompany('Seraikela');
+            // for($i=0;$i<count($sheet_titles);$i++){
+                $excel->sheet("Sheet", function ($sheet) use ($export_datas) {
+                    // $sheet->freezePane('A3');
+                    // $sheet->mergeCells('A1:I1');
+                    $sheet->fromArray($export_datas[0], null, 'A1', true, false);
+                    $sheet->setColumnFormat(array('I1' => '@'));
+                });
+            // }
         })->download('xls');
     }
 
