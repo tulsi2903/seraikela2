@@ -1020,8 +1020,8 @@
                     <div style="display: inline-block; width: 50%; float: right; text-align: right; margin-top: -5px;">
                         <a href="#" data-toggle="tooltip" title="Send Mail"><button type="button" class="btn btn-icon btn-round btn-success"><i class="fa fa-envelope" aria-hidden="true"></i></button></a>
                         <a href="#" data-toggle="tooltip" title="Print"><button type="button" class="btn btn-icon btn-round btn-default" id="print-button" onclick="printView();"><i class="fa fa-print" aria-hidden="true"></i></button></a>
-                        <a href="{{url('scheme-review/export-to-pdf')}}" class="review-export-as" data-toggle="tooltip" title="Export as PDF"><button type="button" class="btn btn-icon btn-round btn-warning"><i class="fas fa-file-export"></i></button></a>
-                        <a href="{{url('scheme-review/export-to-excel')}}" class="review-export-as" data-toggle="tooltip" title="Export as Excel"><button type="button" class="btn btn-icon btn-round btn-success"><i class="fas fa-file-excel"></i></button></a>
+                        <a href="{{url('scheme-review/export')}}" class="review-export-as" data-type="pdf" data-toggle="tooltip" title="Export as PDF"><button type="button" class="btn btn-icon btn-round btn-warning"><i class="fas fa-file-export"></i></button></a>
+                        <a href="{{url('scheme-review/export')}}" class="review-export-as" data-type="excel" data-toggle="tooltip" title="Export as Excel"><button type="button" class="btn btn-icon btn-round btn-success"><i class="fas fa-file-excel"></i></button></a>
                     </div>
                 </div>
                 <br />
@@ -1424,7 +1424,7 @@
                 $("#search-results-block").removeClass("active-search");
             },
             success: function (data) {
-                // console.log(data);
+                console.log(data);
 
                 // show basic details
                 $("#all-view-details").html("<b>Scheme: </b><span id='all-view-scheme-name'></span>");
@@ -1440,9 +1440,10 @@
                 $("#all-view-details").append(`&nbsp;&nbsp;&nbsp;<a href="javascript:void();" onclick="getDatas()" class="btn btn-secondary btn-sm"><i class="fas fa-arrow-left"></i>&nbsp;&nbsp;Back</a>`);
 
                 if (data.response == "no_data") { // no data found
-
+                    to_export_datas = {};
                 }
                 else { // data.response  == success
+                    to_export_datas = data.tabular_view;
                     $("#all-view-details #all-view-block-name").html(data.block_name); // block name
                     $("#all-view-details #all-view-scheme-name").html(data.scheme_name); // block name
                     initializeTabularViewIndividualEntries(data.tabular_view);
@@ -1840,9 +1841,11 @@
 
 
 <!-- for export -->
-<form id="export-form" method="POST" action="{{url('scheme-review/export-to-excel')}}" target="_blank" style="display: none;">
+<form id="export-form" method="POST" action="{{url('scheme-review/export')}}" target="_blank" style="display: none;">
     @csrf
     <textarea name="to_export_datas"></textarea>
+    <input type="text" id="to_export_datas_type" name="type">
+    <input type="text" id="to_export_other_info" name="type">
 </form>
 <script>
     // export to pdf / excel
@@ -1851,6 +1854,7 @@
             e.preventDefault();
             console.log(to_export_datas);
             $("#export-form textarea").val(JSON.stringify(to_export_datas));
+            $("#to_export_datas_type").val($(this).data("type"));
             $("#export-form").submit();
             // var href = this.href;
             // if (to_export_datas.length != 0) {

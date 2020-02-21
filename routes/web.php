@@ -276,7 +276,7 @@ Route::get('scheme-review/get-all-performance-datas-individuallly', 'SchemeRevie
 Route::get('scheme-review/get-datas', 'SchemeReviewController@get_datas');
 Route::get('scheme-review/get-map-data', 'SchemeReviewController@get_map_data');
 Route::get('scheme-review/get-panchayat-data', 'SchemeReviewController@get_panchayat_data');
-Route::post('scheme-review/export-to-excel', 'SchemeReviewController@export_to_excel');
+Route::post('scheme-review/export', 'SchemeReviewController@export');
 
 Route::get('scheme-review/duplicate-review','SchemeReviewDuplicateDataCheckController@index');
 Route::get('scheme-review/duplicate-review/get-datas','SchemeReviewDuplicateDataCheckController@get_datas');

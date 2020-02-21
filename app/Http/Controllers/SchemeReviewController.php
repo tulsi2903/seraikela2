@@ -868,32 +868,40 @@ class SchemeReviewController extends Controller
 
 
     // export to excel
-    public function export_to_excel(Request $request){
+    public function export(Request $request){
         $review_datas = json_decode($request->to_export_datas)->datas; // recieved
         $year_count = json_decode($request->to_export_datas)->year_count; // received
 
         $export_datas = []; // use to export
+        $export_datas_pdf = ""; // use to export
         $sheet_titles =[]; // use to export/ sheet title
 
+        // dd($review_datas[0]->performance_datas[3]);
 
         foreach($review_datas as $review_data){
             $block_wise_data = [];
             $sheet_titles[] = $review_data->block_name;
+            $export_datas_pdf .= "<tr><td colspan=\"".count($review_data->performance_datas[3])."\"></td></tr>";
+            $export_datas_pdf .= "<tr><td style=\"text-align: center;font-size: 150%;\" colspan=\"".count($review_data->performance_datas[3])."\"><b>Block: ".$review_data->block_name."</b></td></tr>";
             
             for($i=0;$i<count($review_data->performance_datas);$i++){
                 $data_tmp=[];
+                $export_datas_pdf .= "<tr>";
                 for($j=0;$j<count($review_data->performance_datas[$i]);$j++)
                 {
                     if($i==0){
                         // scheme names
                         if($j!=0){
                             array_push($data_tmp, explode(":",$review_data->performance_datas[$i][$j])[0]);
+                            $export_datas_pdf .= "<td><b>".explode(":",$review_data->performance_datas[$i][$j])[0]."</b></td>";
                             for($tmp=0;$tmp<(($year_count*3)-1);$tmp++){
                                 array_push($data_tmp, "");
+                                $export_datas_pdf .= "<td></td>";
                             }
                         }
                         else{
                             array_push($data_tmp, $review_data->performance_datas[$i][$j]);
+                            $export_datas_pdf .= "<td>".$review_data->performance_datas[$i][$j]."</td>";
                         }
                     }
                     else if($i==1){
@@ -902,18 +910,24 @@ class SchemeReviewController extends Controller
                             array_push($data_tmp, $review_data->performance_datas[$i][$j]);
                             array_push($data_tmp, "");
                             array_push($data_tmp, "");
+                            $export_datas_pdf .= "<td><b>".$review_data->performance_datas[$i][$j]."</b></td>";
+                            $export_datas_pdf .= "<td></td>";
+                            $export_datas_pdf .= "<td></td>";
                         }
                         else{
                             array_push($data_tmp, $review_data->performance_datas[$i][$j]);
+                            $export_datas_pdf .= "<td><b>".$review_data->performance_datas[$i][$j]."</b></td>";
                         }
                     }
                     else if($i==2){
                         // status
                         if($j!=0){
                             array_push($data_tmp, $review_data->performance_datas[$i][$j]);
+                            $export_datas_pdf .= "<td><b>".$review_data->performance_datas[$i][$j]."</b></td>";
                         }
                         else{
                             array_push($data_tmp, $review_data->performance_datas[$i][$j]);
+                            $export_datas_pdf .= "<td><b>".$review_data->performance_datas[$i][$j]."</b></td>";
                         }
                     }
                     else{
@@ -922,40 +936,90 @@ class SchemeReviewController extends Controller
                             if(preg_match('~>\K[^<>]*(?=<)~', $review_data->performance_datas[$i][$j], $only_text))
                             {
                                 array_push($data_tmp, (int)$only_text[0]);
+                                $export_datas_pdf .= "<td>".(int)$only_text[0]."</td>";
                             }
                             else{
                                 array_push($data_tmp, $review_data->performance_datas[$i][$j]);
+                                $export_datas_pdf .= "<td>".$review_data->performance_datas[$i][$j]."</td>";
                             }
                         }
                         else{
                             array_push($data_tmp, $review_data->performance_datas[$i][$j]);
+                            $export_datas_pdf .= "<td>".$review_data->performance_datas[$i][$j]."</td>";
                         }
                     }
                 }
 
                 $block_wise_data[] = $data_tmp;
+                $export_datas_pdf .= "</tr>";
             }
 
             $export_datas[] = $block_wise_data;
         }
-        
-        // return $sheet_titles;
 
-        \Excel::create('Scheme-Review-Datas', function ($excel) use ($export_datas) {
-            // Set the title
-            // $excel->setTitle('ResourceSubCatagory-Sheet');
-            
-            // Chain the setters
-            // $excel->setCreator('Seraikela')->setCompany('Seraikela');
-            // for($i=0;$i<count($sheet_titles);$i++){
-                $excel->sheet("Sheet", function ($sheet) use ($export_datas) {
-                    // $sheet->freezePane('A3');
-                    // $sheet->mergeCells('A1:I1');
-                    $sheet->fromArray($export_datas[0], null, 'A1', true, false);
-                    $sheet->setColumnFormat(array('I1' => '@'));
-                });
+        // echo "<table>".$export_datas_pdf."</table>";
+        // echo count($export_datas[0][4]);
+        // exit;
+        
+        if($request->type=="excel"){
+            \Excel::create('Scheme-Review-Datas', function ($excel) use ($export_datas, $sheet_titles, $i) {
+                // Set the title
+                // $excel->setTitle('ResourceSubCatagory-Sheet');
+                
+                // Chain the setters
+                // $excel->setCreator('Seraikela')->setCompany('Seraikela');
+                for($i=0;$i<count($sheet_titles);$i++){
+                    $excel->sheet($sheet_titles[$i], function ($sheet) use ($export_datas, $i) {
+                        // $sheet->freezePane('A3');
+                        // $sheet->mergeCells('A1:I1');
+                        $sheet->fromArray($export_datas[$i], null, 'A1', true, false);
+                        $sheet->setColumnFormat(array('I1' => '@'));
+                    });
+                }
+            })->download('xls');
+        }
+        else if($request->type=="pdf"){
+            // $Designationdata = Designation::leftJoin('organisation', 'designation.org_id', '=', 'organisation.org_id')
+            //                     ->select('designation.*','organisation.org_name')
+            //                     ->orderBy('designation.desig_id','desc')
+            //                     ->get();
+            // foreach ($Designationdata as $key => $value) {
+            //     $value->createdDate = date('d/m/Y',strtotime($value->created_at));
             // }
-        })->download('xls');
+
+            $doc_details = array(
+                "title" => "Designation",
+                "author" => 'IT-Scient',
+                "topMarginValue" => 10,
+                "mode" => 'L'
+            );
+
+            $pdfbuilder = new \PdfBuilder($doc_details);
+
+            $content = "<table cellspacing=\"0\" cellpadding=\"4\" border=\"1\" ><tr>";
+            $content .= "<th style='border: solid 1px #000000;' colspan=\"".count($export_datas[0][3])."\" align=\"left\" ><b>Scheme Review Export</b></th></tr>";
+            
+
+            /* ========================================================================= */
+            /*             Total width of the pdf table is 1017px lanscape               */
+            /*             Total width of the pdf table is 709px portrait                */
+            /* ========================================================================= */
+            // $content .= "<thead>";
+            // $content .= "<tr>";
+            // $content .= "<th style=\"border: solid 1px #000000;width: 50px;\" align=\"center\"><b>Sl.No.</b></th>";
+            // $content .= "<th style=\"border: solid 1px #000000;width: 429px;\" align=\"center\"><b>Name</b></th>";
+            // $content .= "<th style=\"border: solid 1px #000000;width: 140px;\" align=\"center\"><b>Organisation Name</b></th>";
+            // $content .= "<th style=\"border: solid 1px #000000;width: 90px;\" align=\"center\"><b>Date</b></th>";
+            // $content .= "</tr>";
+            // $content .= "</thead>";
+            $content .= "<tbody>";
+            $content .= $export_datas_pdf;
+            $content .= "</tbody>";
+            $content .= "</table>";
+            $pdfbuilder->table($content, array('border' => '1', 'align' => ''));
+            $pdfbuilder->output('Scheme-Review-Datas.pdf');
+            exit;
+        }
     }
 
 

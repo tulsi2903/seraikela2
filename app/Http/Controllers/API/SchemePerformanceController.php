@@ -27,6 +27,7 @@ class SchemePerformanceController extends Controller
             $scheme_performance_data->attribute = unserialize($scheme_performance_data->attribute);
             $scheme_performance_data->coordinates = unserialize($scheme_performance_data->coordinates);
             $scheme_performance_data->gallery = unserialize($scheme_performance_data->gallery);
+            $scheme_performance_data->borders_connectivity = unserialize($scheme_performance_data->borders_connectivity);
         }
 
 
@@ -40,7 +41,7 @@ class SchemePerformanceController extends Controller
     }
 
 
-    public function store_datas(Request $request){
+    public function store_scheme_performance_datas(Request $request){
         // getting datas
         /*
             year_id, block_id, panchayat_id, scheme_id, scheme_asset_id, attributes, coordinates, images 
@@ -51,7 +52,64 @@ class SchemePerformanceController extends Controller
         $panchayat_id = $request->panchayat_id;
         $subdivision_id = GeoStructure::where('geo_id', $panchayat_id)->first()->sd_id;
 
-        
+        // for attributes
+        $scheme_data = SchemeStructure::where('scheme_id', $scheme_id)->first();
+        $scheme_attributes = unserialize($scheme_data->attributes);
+        $attribute = []; // to store
+        foreach($scheme_attributes as $scheme_attribute){
+            // $scheme_attribute["id"];
+            if($request->has($scheme_attribute["id"])){
+                $attribute[] = [$scheme_attribute["id"]=>$request->input($scheme_attribute["id"])];
+            }
+        }
+        $attribute = serialize($attribute);
 
+        // for coordinates
+        $coordinates = [];
+        for($i=0;$i<count($request->latitude);$i++){
+            $coordinates[] = ["latitude"=>$request->latitude[$i],"longitude"=>$request->longitude[$i]];
+        }
+        $coordinates = serialize($coordinates);
+
+        // for gallery
+        $gallery = [];
+        if($request->hasFile('gallery')) {
+            foreach ($request->file('gallery') as $file) {
+                $images_tmp_name = "scheme_performance-" . time() . rand(1000, 5000) . '.' . strtolower($file->getClientOriginalExtension());
+                $file->move("public/uploaded_documents/scheme_performance/", $images_tmp_name);   // move the file to desired folder
+                $gallery[] =  $upload_directory . $images_tmp_name;    // array push
+            }
+            $gallery = serialize($gallery);    // serializing datas
+        }
+
+        $scheme_asset_id = $request->scheme_asset_id;
+        $status = $request->status;
+        $comments = $request->comments;
+        $connectivity_status = $request->connectivity_status;
+        
+        
+        // storing datas
+        $scheme_performance = new SchemePerformance;
+        $scheme_performance->year_id = $year_id;
+        $scheme_performance->scheme_id = $scheme_id;
+        $scheme_performance->block_id = $block_id;
+        $scheme_performance->panchayat_id = $panchayat_id;
+        $scheme_performance->subdivision_id = $subdivision_id;
+
+        $scheme_performance->attribute = $attribute;
+        $scheme_performanve->coordinates = $coordinates;
+        $scheme_performance->gallery = $gallery;
+
+        $scheme_performance->scheme_asset_id = $scheme_asset_id;
+        $scheme_performance->status = $status;
+        $scheme_performance->comments = $comments;
+        $scheme_performance->connectivity_status = $connectivity_status ?? 0;
+
+        if($scheme_performance->save()){
+            return response()->json(['success'=>'data_saved'], 201);
+        }
+        else{
+            return response()->json(['error'=>'no_data_found'], 204);
+        }
     }
 }
