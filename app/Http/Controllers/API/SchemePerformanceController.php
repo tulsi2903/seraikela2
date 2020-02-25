@@ -9,11 +9,62 @@ use App\SchemePerformance;
 use App\Year;
 use App\GeoStructure;
 use App\Asset;
+use App\SchemeAsset;
 
 class SchemePerformanceController extends Controller
 {
     //
     public $successStatus = 200;
+
+    // get scheme details
+    public function get_schemes(Request $request){
+        if($request->scheme_id){
+            $datas = SchemeStructure::leftJoin('scheme_assets','scheme_assets.scheme_asset_id', '=', 'scheme_structure.scheme_asset_id')
+                                    ->where('scheme_id', $request->scheme_id)
+                                    ->select('scheme_structure.scheme_id','scheme_structure.scheme_short_name','scheme_structure.scheme_name','scheme_structure.scheme_is','scheme_structure.attributes','scheme_structure.scheme_asset_id','scheme_assets.scheme_asset_name')
+                                    ->first();
+            if($datas){
+                $datas->attributes = unserialize($datas->attributes);
+            }
+        }
+        else{
+            $datas = SchemeStructure::leftJoin('scheme_assets','scheme_assets.scheme_asset_id', '=', 'scheme_structure.scheme_asset_id')
+                                    ->where('status', 1)
+                                    ->select('scheme_structure.scheme_id','scheme_structure.scheme_short_name','scheme_structure.scheme_name','scheme_structure.scheme_is','scheme_structure.attributes','scheme_structure.scheme_asset_id','scheme_assets.scheme_asset_name')
+                                    ->get();
+            if($datas){
+                foreach($datas as $data){
+                    $data->attributes = unserialize($data->attributes);
+                }
+            }
+        }
+
+        // return after validate
+        if(count($datas)>0){
+            return response()->json(['success' => $datas], $this->successStatus);
+        }
+        else{
+            return response()->json(['error'=>'no_data_found'], 204);
+        }
+    }
+
+    // for scheme
+    public function get_scheme_asset(Request $request){
+        if($request->scheme_asset_id){
+            $datas = SchemeAsset::where('scheme_asset_id', $request->scheme_asset_id)->select('scheme_asset_id','scheme_asset_name')->first();
+        }
+        else{
+            $datas = SchemeAsset::select('scheme_asset_id','scheme_asset_name')->get();
+        }
+
+        // // return after validate
+        if(count($datas)>0){
+            return response()->json(['success' => $datas], $this->successStatus);
+        }
+        else{
+            return response()->json(['error'=>'no_data_found'], 204);
+        }
+    }
 
     //
     public function get_scheme_performabnce_datas(Request $request){

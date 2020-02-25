@@ -35,15 +35,19 @@ Route::group(['middleware' => 'auth:api'], function(){
     Route::post('logout', 'API\UserController@logout');
 
     // for getting details
-    Route::post('get-schemes', 'API\GetDetailsController@get_schemes');
     Route::post('get-years', 'API\GetDetailsController@get_years');
     Route::post('get-blocks', 'API\GetDetailsController@get_blocks');
     Route::post('get-panchayat', 'API\GetDetailsController@get_panchayat');
-    Route::post('get-resources', 'API\GetDetailsController@get_resources');
-    Route::post('get-scheme-asset', 'API\GetDetailsController@get_scheme_asset');
 
 
-    // for submitting datas
+    // for getting/ submitting scheme performance datas
+    Route::post('get-schemes', 'API\SchemePerformanceController@get_schemes');
+    Route::post('get-scheme-asset', 'API\SchemePerformanceController@get_scheme_asset');
     Route::post('get-scheme-performance-datas', 'API\SchemePerformanceController@get_scheme_performabnce_datas');
     Route::post('store-scheme-performance-datas', 'API\SchemePerformanceController@store_scheme_performance_datas');
+
+
+    // for getting/ storing resources datas
+    Route::post('get-resources', 'API\ResourcesController@get_resources');
+    Route::post('get-resources-count', 'API\ResourcesController@get_resources_count');
 });

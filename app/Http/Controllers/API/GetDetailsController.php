@@ -15,41 +15,6 @@ class GetDetailsController extends Controller
     //
     public $successStatus = 200;
 
-
-    // get scheme details
-    public function get_schemes(Request $request){
-        if($request->scheme_id){
-            $datas = SchemeStructure::leftJoin('scheme_assets','scheme_assets.scheme_asset_id', '=', 'scheme_structure.scheme_asset_id')
-                                    ->where('scheme_id', $request->scheme_id)
-                                    ->select('scheme_structure.scheme_id','scheme_structure.scheme_short_name','scheme_structure.scheme_name','scheme_structure.scheme_is','scheme_structure.attributes','scheme_structure.scheme_asset_id','scheme_assets.scheme_asset_name')
-                                    ->first();
-            if($datas){
-                $datas->attributes = unserialize($datas->attributes);
-            }
-        }
-        else{
-            $datas = SchemeStructure::leftJoin('scheme_assets','scheme_assets.scheme_asset_id', '=', 'scheme_structure.scheme_asset_id')
-                                    ->where('status', 1)
-                                    ->select('scheme_structure.scheme_id','scheme_structure.scheme_short_name','scheme_structure.scheme_name','scheme_structure.scheme_is','scheme_structure.attributes','scheme_structure.scheme_asset_id','scheme_assets.scheme_asset_name')
-                                    ->get();
-            if($datas){
-                foreach($datas as $data){
-                    $data->attributes = unserialize($data->attributes);
-                }
-            }
-        }
-
-        // return after validate
-        if(count($datas)>0){
-            return response()->json(['success' => $datas], $this->successStatus);
-        }
-        else{
-            return response()->json(['error'=>'no_data_found'], 204);
-        }
-    }
-
-
-
     // get year details
     public function get_years(Request $request){
         if($request->year_id){
@@ -107,60 +72,6 @@ class GetDetailsController extends Controller
         }
 
         // return after validate
-        if(count($datas)>0){
-            return response()->json(['success' => $datas], $this->successStatus);
-        }
-        else{
-            return response()->json(['error'=>'no_data_found'], 204);
-        }
-    }
-
-
-    // for resources
-    public function get_resources(Request $request){
-        if($request->resources_id){
-            $datas = Asset::where('asset_id', $request->resources_id)->select('asset_id as resources_id', 'asset_name as resources_name', 'movable', 'parent_id as parent')->first();
-            if($datas->parent!='-1'){
-                $child_datas = Asset::where('asset_id', $datas->parent)->select('asset_id as resources_id', 'asset_name as resources_name', 'movable')->get();
-                $datas->child_resources = $child_datas;
-            }
-            else{
-                $datas->child_resources = [];
-            }
-        }
-        else{
-            $datas = Asset::select('asset_id as resources_id', 'asset_name as resources_name', 'movable', 'parent_id as parent')->get();
-            foreach($datas as $data){
-                if($data->parent!='-1'){
-                    $child_datas = Asset::where('asset_id', $data->parent)->select('asset_id as resources_id', 'asset_name as resources_name', 'movable')->get();
-                    $data->child_resources = $child_datas;
-                }
-                else{
-                    $data->child_resources = [];
-                }
-            }
-        }
-
-        // // return after validate
-        if(count($datas)>0){
-            return response()->json(['success' => $datas], $this->successStatus);
-        }
-        else{
-            return response()->json(['error'=>'no_data_found'], 204);
-        }
-    }
-
-
-    // for resources
-    public function get_scheme_asset(Request $request){
-        if($request->scheme_asset_id){
-            $datas = SchemeAsset::where('scheme_asset_id', $request->scheme_asset_id)->select('scheme_asset_id','scheme_asset_name')->first();
-        }
-        else{
-            $datas = SchemeAsset::select('scheme_asset_id','scheme_asset_name')->get();
-        }
-
-        // // return after validate
         if(count($datas)>0){
             return response()->json(['success' => $datas], $this->successStatus);
         }
