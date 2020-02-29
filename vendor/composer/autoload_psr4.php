@@ -53,6 +53,7 @@ return array(
     'Opis\\Closure\\' => array($vendorDir . '/opis/closure/src'),
     'NunoMaduro\\Collision\\' => array($vendorDir . '/nunomaduro/collision/src'),
     'Monolog\\' => array($vendorDir . '/monolog/monolog/src/Monolog'),
+    'Location\\' => array($vendorDir . '/mjaschen/phpgeo/src'),
     'League\\OAuth2\\Server\\' => array($vendorDir . '/league/oauth2-server/src'),
     'League\\Flysystem\\' => array($vendorDir . '/league/flysystem/src'),
     'League\\Event\\' => array($vendorDir . '/league/event/src'),

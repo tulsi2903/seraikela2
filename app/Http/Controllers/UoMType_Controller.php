@@ -16,7 +16,7 @@ class UoMType_Controller extends Controller
         if(!$desig_permissions["mod22"]["add"]&&!$desig_permissions["mod22"]["edit"]&&!$desig_permissions["mod22"]["view"]&&!$desig_permissions["mod22"]["del"]){
             return back();
         }
-        $datas = uom_type::orderBy('uom_type_id','desc')->get();
+        $datas = uom_type::orderBy('uom_type_name','asc')->get();
         return view('uom_type.index',compact('datas'));
     }
 

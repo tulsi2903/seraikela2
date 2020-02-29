@@ -18,7 +18,7 @@ class UomController extends Controller
             return back();
         }
         $datas = Uom::leftjoin('uom_type','uom_type.uom_type_id','=','uom.uom_type_id')
-                        ->select('uom_type.uom_type_name','uom.*')->orderBy('uom_id','desc')->get();
+                        ->select('uom_type.uom_type_name','uom.*')->orderBy('uom.uom_type_id','desc')->get();
                         
         $uom_type =UoM_Type::orderBy('uom_type_id','asc')->get();
         return view('uom.index',compact('uom_type'))->with('datas', $datas);
@@ -52,6 +52,7 @@ class UomController extends Controller
 
         $uom->uom_name= $request->uom_name;
         $uom->uom_type_id= $request->uom_type_id;
+        $uom->conversion_unit= $request->conversion_unit;
         $uom->created_by = session()->get('user_id');
         $uom->updated_by = session()->get('user_id');
 

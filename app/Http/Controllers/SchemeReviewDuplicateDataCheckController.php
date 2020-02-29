@@ -14,14 +14,27 @@ use App\SchemePerformance;
 use App\SchemeAsset;
 use App\CheckMatchingPerformance;
 use App\Group;
+use App\Uom;
 use DB;
 use Auth;
 
+// for phpgeo
+use Location\Coordinate;
+use Location\Distance\Vincenty;
+use Location\Bearing\BearingSpherical;
+use Location\Bearing\BearingEllipsoidal;
+use Location\Formatter\Coordinate\DecimalDegrees;
+
 class SchemeReviewDuplicateDataCheckController extends Controller
 {
+    // https://phpgeo.marcusjaschen.de/Installation.html
+    // https://github.com/anthonymartin/GeoLocation-PHP
+    // https://github.com/thephpleague/geotools/blob/master/README.md
     //
     public function index()
     {
+        // $this->divide_into_parts_and_check();
+
         $desig_permissions = session()->get('desig_permission');
         if(!$desig_permissions["mod23"]["add"]&&!$desig_permissions["mod23"]["edit"]&&!$desig_permissions["mod23"]["view"]&&!$desig_permissions["mod23"]["del"]){
             return back();
@@ -29,33 +42,22 @@ class SchemeReviewDuplicateDataCheckController extends Controller
         $year_datas = Year::select('year_id', 'year_value')->where('status', 1)->get();
         $scheme_datas = SchemeStructure::select('scheme_id', 'scheme_asset_id', 'scheme_name', 'scheme_is', 'scheme_short_name')->where('status', 1)->get();
         $scheme_asset_datas = SchemeAsset::select('scheme_asset_id', 'scheme_asset_name')->get();
+        $uom = Uom::where('uom_type_id', 1)->select('uom_id','uom_name')->get();
 
-        return view('scheme-review.duplicate-data-check')->with(compact('year_datas', 'scheme_datas', 'scheme_asset_datas'));
+        return view('scheme-review.index')->with(compact('year_datas', 'scheme_datas', 'scheme_asset_datas', 'uom'));
     }
 
 
     public function get_datas(Request $request)
     {
         // return $request;
-        // $lat1=22.800099;
-        // $long1=86.133800;
-        // $lat2=22.800625;
-        // $long2=86.133784;
-        // // $angle = rad2deg(atan2($long2-$long1,$lat2-$lat1));
-        // // return ["angle"=>$angle];
-        // return ["angle"=>$this->get_angle_between_points($lat2, $long2, $lat1, $long1)];
-        // return $request;
-        // echo "<pre>";
-        // print_r(SchemePerformance::select('scheme_performance_id','attribute')->get()->toArray());
-        // exit();
-
+        
         // unit related
         // 1 ft = 0.3048 m
         // 1 inch = 0.0254 m;
         $uom = $request->uom;
-        $conversion_unit = 1; // pending: from uom table
-        $distance_to_measure = $request->distance_to_measure * $conversion_unit;
-
+        $conversion_unit = Uom::find($uom)->conversion_unit; // pending: from uom table
+        $distance_to_measure = (float)($request->distance_to_measure * $conversion_unit);
 
         // to send back
         $duplicate_datas = [];
@@ -126,7 +128,7 @@ class SchemeReviewDuplicateDataCheckController extends Controller
             ->where('scheme_performance.scheme_asset_id', $scheme_asset_id_selected)
             ->whereIn('scheme_performance.scheme_id', $scheme_ids_selected)
             ->whereIn('scheme_performance.year_id', $year_ids_selected)
-            // ->where('scheme_performance.scheme_performance_id', 31)
+            // ->where('scheme_performance.scheme_performance_id', 35)
             ->get();
         $performance_datas_to_test = SchemePerformance::LeftJoin('scheme_assets', 'scheme_performance.scheme_asset_id', '=', 'scheme_assets.scheme_asset_id')
             ->LeftJoin('geo_structure', 'scheme_performance.panchayat_id', '=', 'geo_structure.geo_id')
@@ -135,11 +137,11 @@ class SchemeReviewDuplicateDataCheckController extends Controller
             ->select('scheme_performance.*', 'scheme_assets.scheme_asset_name', 'geo_structure.geo_name as panchayat_name', 'year.year_value', 'scheme_structure.scheme_short_name', 'scheme_structure.scheme_name', 'scheme_structure.scheme_is', 'scheme_structure.scheme_map_marker', 'scheme_structure.attributes as scheme_attributes')
             ->whereIn('scheme_performance.panchayat_id', $panchayat_ids_selected)
             ->where('scheme_performance.scheme_asset_id', $scheme_asset_id_selected)
-            // ->where('scheme_performance.scheme_performance_id', 32)
+            // ->where('scheme_performance.scheme_performance_id', 36)
             ->get();
 
         // echo "<pre>";    
-        // echo count($performance_datas_to_test);
+        // echo count($performance_datas_selected);
         // exit();
         /* 
         actual testing started
@@ -300,10 +302,8 @@ class SchemeReviewDuplicateDataCheckController extends Controller
                                 // no duplicate
                             }
                         } else {
-                            if (!$this->test_first_and_last_point($coordinates_selected, $coordinates_to_test, $distance_to_measure)) { // not matched
-                                // echo "first-last-not-matched\n";
+                            if ($this->test_first_and_last_point($coordinates_selected, $coordinates_to_test, $distance_to_measure)) { // not matched
                                 if ($this->test_whole_direction($coordinates_selected, $coordinates_to_test)) {
-                                    // echo "whole direction matched\n";
                                     if ($this->test_all_coordinates($coordinates_selected, $coordinates_to_test, $distance_to_measure)) {
                                         array_push($datas_tmp, $performance_data_to_test);
                                         $found = true;
@@ -314,11 +314,12 @@ class SchemeReviewDuplicateDataCheckController extends Controller
                                     // no duplicate
                                 }
                             }
-                            else { // matched
-                                // echo "yes\n";
-                                // testing if any point is withing a  distance (1KM)
+                            else { // first-and-last not matched
+                                // testing if any point is withing a distance (1KM)
                                 if ($this->test_distance_if_any($coordinates_selected, $coordinates_to_test, $distance_to_measure)) { // yes, inside
+                                    echo "point within 1 km\n";
                                     if ($this->direction_wise_check_duplicate($coordinates_selected, $coordinates_to_test)) { // this will test and prepare percentage for changes of same direction
+                                        echo "direction matched\n";
                                         array_push($datas_tmp, $performance_data_to_test);
                                         $found = true;
                                     } else {
@@ -328,6 +329,37 @@ class SchemeReviewDuplicateDataCheckController extends Controller
                                     // no duplicate
                                 }
                             }
+
+                            /** previous working conditions */
+                            // if (!$this->test_first_and_last_point($coordinates_selected, $coordinates_to_test, $distance_to_measure)) { // not matched
+                            //     // echo "first-last-not-matched\n";
+                            //     if ($this->test_whole_direction($coordinates_selected, $coordinates_to_test)) {
+                            //         // echo "whole direction matched\n";
+                            //         if ($this->test_all_coordinates($coordinates_selected, $coordinates_to_test, $distance_to_measure)) {
+                            //             array_push($datas_tmp, $performance_data_to_test);
+                            //             $found = true;
+                            //         } else {
+                            //             // no duplicate
+                            //             // echo "else\n";
+                            //         }
+                            //     } else {
+                            //         // no duplicate
+                            //     }
+                            // }
+                            // else { // matched
+                            //     // echo "yes\n";
+                            //     // testing if any point is withing a  distance (1KM)
+                            //     if ($this->test_distance_if_any($coordinates_selected, $coordinates_to_test, $distance_to_measure)) { // yes, inside
+                            //         if ($this->direction_wise_check_duplicate($coordinates_selected, $coordinates_to_test)) { // this will test and prepare percentage for changes of same direction
+                            //             array_push($datas_tmp, $performance_data_to_test);
+                            //             $found = true;
+                            //         } else {
+                            //             // no duplicate
+                            //         }
+                            //     } else {
+                            //         // no duplicate
+                            //     }
+                            // }
                         }
                     }
                 }
@@ -440,6 +472,7 @@ class SchemeReviewDuplicateDataCheckController extends Controller
     public function test_distance_if_any($coordinates_selected_datas, $coordinates_to_test_datas, $distance_to_measure)
     {
         $earth_radius = 6371;
+        $distance_to_measure = 1000; // for 1 KM
 
         foreach ($coordinates_selected_datas as $coordinates_selected_data) {
             foreach ($coordinates_to_test_datas as $coordinates_to_test_data) {
@@ -558,87 +591,34 @@ class SchemeReviewDuplicateDataCheckController extends Controller
         return $angle;
     }
 
-    /*$latitude1 = $coordinates_selected[0]["latitude"];
-    $longitude1 = $coordinates_selected[0]["longitude"];
-    $latitude2 = $coordinates_to_test[0]["latitude"];
-    $longitude2 = $coordinates_to_test[0]["longitude"];
-    $earth_radius = 6371;
 
-    $dLat = deg2rad($latitude2 - $latitude1);  
-    $dLon = deg2rad($longitude2 - $longitude1);  
+    // divide both path into $distance_to_measure chunks, and compare point wise
+    public function divide_into_parts_and_check(){
+        $lat1=22.796316;
+        $long1=86.138998;
+        $lat2=22.796267;
+        $long2=86.139926;
 
-    $a = sin($dLat/2) * sin($dLat/2) + cos(deg2rad($latitude1)) * cos(deg2rad($latitude2)) * sin($dLon/2) * sin($dLon/2);  
-    $c = 2 * asin(sqrt($a));  
-    $d = ($earth_radius * $c)*1000;  // in meters
+        $divs = (int)($this->get_distance($lat1, $long1, $lat2, $long2)/10);
 
-    array_push($d_tmp, $d);
+        $dist_btw_points = sqrt(($lat2 - $lat1) * 2 + ($long2 - $long1) * 2);
+        $dist_min = $dist_btw_points / $divs;
 
-    if($d<=$distance_duplicate){
-        return true;
-    }
-    else{
-        return false;
-    }*/
-
-
-    /*
-    // $latitude1 = $coordinates_selected[0]["latitude"];
-        // $longitude1 = $coordinates_selected[0]["longitude"];
-        // $latitude2 = $coordinates_selected[1]["latitude"];
-        // $longitude2 = $coordinates_selected[1]["longitude"];
-        array_push($coordinates, [
-            "latitude"=>$latitude1,
-            "longitude"=>$longitude1
-        ]);
-
-        // $dLat = deg2rad($latitude2 - $latitude1);  
-        // $dLon = deg2rad($longitude2 - $longitude1);  
-
-        // $a = sin($dLat/2) * sin($dLat/2) + cos(deg2rad($latitude1)) * cos(deg2rad($latitude2)) * sin($dLon/2) * sin($dLon/2);  
-        // $c = 2 * asin(sqrt($a));
-        // $distance = ($earth_radius * $c)*1000;  // in meters
-
-        $distance = sqrt( pow(($coordinates_selected[1]["latitude"] - $coordinates_selected[0]["latitude"]), 2) + pow(($coordinates_selected[1]["longitude"] - $coordinates_selected[1]["longitude"]), 2) );
-
-        echo $distance."<br/>";
-        $part = $distance/2;
-        for($i=1;$i<2;$i++){
-            echo ($part * $i)."<br/>";
-            $t = ($part * $i)/$distance;
-            echo $t."<br/>";
-            $latitude_tmp = (1-$t)*($latitude1 + ($t*$latitude2));
-            $longitude_tmp = (1-$t)*($longitude1 + ($t*$longitude2));
-            array_push($coordinates, [
-                "latitude"=>$latitude_tmp,
-                "longitude"=>$longitude_tmp
-            ]);
+        for($i=0;$i<=$divs;$i++){
+            $distance = $dist_min * $i;
+            $distance_ratio = $distance / $dist_btw_points;
+            $x = $lat1 + $distance_ratio * ($lat2 - $lat1);
+            $y = $long1 + $distance_ratio * ($long2 - $long1);
+            echo $i.": ".$x." , ".$y."<br/>";
         }
-        array_push($coordinates, [
-            "latitude"=>$latitude2,
-            "longitude"=>$longitude2
-        ]);
 
-        echo "<pre>";
-        print_r($coordinates);
-        exit();
-    */
+        // echo $x." , ".$y;
+        // echo $divs;
+        exit;
+    }
+
     public function get_duplicate_scheme_perfomamce($id,$uom,$distance_to_measure)
     {
-        // $lat1=22.800099;
-        // $long1=86.133800;
-        // $lat2=22.800625;
-        // $long2=86.133784;
-        // // $angle = rad2deg(atan2($long2-$long1,$lat2-$lat1));
-        // // return ["angle"=>$angle];
-        // return ["angle"=>$this->get_angle_between_points($lat2, $long2, $lat1, $long1)];
-        // return $request;
-        // echo "<pre>";
-        // print_r(SchemePerformance::select('scheme_performance_id','attribute')->get()->toArray());
-        // exit();
-
-        // unit related
-        // 1 ft = 0.3048 m
-        // 1 inch = 0.0254 m;
         
         // $uom = $request->uom;
         $conversion_unit = 1; // pending: from uom table

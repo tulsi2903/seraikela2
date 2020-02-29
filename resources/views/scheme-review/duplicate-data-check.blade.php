@@ -356,18 +356,13 @@
                             <div class="input-group">
                                 <input type="text" class="form-control" name="distance_to_measure" id="distance_to_measure" aria-label="Text input with dropdown button" value="10">
                                 <div class="input-group-append">
-                                    <!-- <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</button>
-                                    <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="#">Action</a>
-                                    <a class="dropdown-item" href="#">Another action</a>
-                                    <a class="dropdown-item" href="#">Something else here</a>
-                                    <div role="separator" class="dropdown-divider"></div>
-                                    <a class="dropdown-item" href="#">Separated link</a>
-                                    </div> -->
                                     <select name="uom" id="uom" class="form-control">
-                                        <option value="1" selected>Mtr</option>
-                                        <!-- <option value="2">Ft</option>
-                                        <option value="3">Yard</option> -->
+                                        <!-- <option value="1" selected>Mtr</option>
+                                        <option value="2" selected>Feet</option>
+                                        <option value="3" selected>Inch</option> -->
+                                        @foreach($uom as $val)
+                                            <option value="{{$val->uom_id}}">{{$val->uom_name}}</option>
+                                        @endforeach
                                     </select>
                                 </div>
                             </div>
@@ -1140,6 +1135,7 @@
                     $("#geo_id").val(selected_geo);
                 }
                 else {
+                    resetMapContent();
                     $(this).children('path').addClass("active");
                     selected_geo.push(geo_id_tmp);
                     $("#geo_id").val(selected_geo);

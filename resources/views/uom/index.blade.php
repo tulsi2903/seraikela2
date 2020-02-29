@@ -4,7 +4,10 @@
 
 @section('page-style')
     <style>
-        
+        .table tbody tr td{
+            padding-top: 5px !important;
+            padding-bottom: 5px !important;
+        }
     </style>
 @endsection
 
@@ -39,14 +42,14 @@
                         <form action="{{url('uom/store')}}" method="POST" id="uom-form">
                         @csrf
                             <div class="row">
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <div class="form-group">
                                         <label for="uom_name">{{$phrase->uom}}<span style="color:red;margin-left:5px;">*</span></label>
                                         <input type="text" name="uom_name" id="uom_name" class="form-control" autocomplete="off">
                                         <div class="invalid-feedback" id="uom_name_error_msg"></div>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <div class="form-group">
                                         <label for="uom_type">{{$phrase->uom_type}}<font style="color:red;">*</font></label>                                     
                                             <select name="uom_type_id" id="uom_type" class="form-control form-control">
@@ -57,6 +60,21 @@
                                                                              
                                             </select>
                                         <div class="invalid-feedback" id="uom_type_error_msg"></div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label for="conversion_unit">Conversion Unit<font style="color:red;">*</font></label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" id="add-conversion-unit-prepend"></span>
+                                            </div>
+                                            <input type="text" name="conversion_unit" id="conversion_unit" class="form-control" maxlength="10" autocomplete="off">
+                                            <div class="input-group-append">
+                                                <span class="input-group-text" id="add-conversion-unit-append"></span>
+                                            </div>
+                                            <div class="invalid-feedback" id="conversion_unit_error_msg"></div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
@@ -78,6 +96,7 @@
                                         <th>#</th>
                                         <th>{{$phrase->uom}}</th>
                                         <th>{{$phrase->uom_type}}</th>
+                                        <th>Conversion Unit</th>
                                         @if($desig_permissions["mod4"]["del"] || $desig_permissions["mod4"]["edit"])
                                         <th class="action-buttons">{{$phrase->action}}</th>
                                         @endif
@@ -86,24 +105,33 @@
                                 <?php $count=1; ?>
                                 @if(isset($datas))
                                     @foreach($datas as $data)
-                                        <tr data-row-id="{{$data->uom_id}}" data-row-values="{{$data->uom_name}},{{$data->uom_type_id}}">
+                                        <tr data-row-id="{{$data->uom_id}}" data-row-values="{{$data->uom_name}},{{$data->uom_type_id}},{{$data->conversion_unit}}">
                                             <td width="40px;">{{$count++}}</td>
                                             <td>{{$data->uom_name}}</td>                                          
-                                            <td>{{$data->uom_type_name}}</td>                                          
-
+                                            <td>{{$data->uom_type_name}}</td>                                       
+                                            <td>
+                                                <?php
+                                                    echo "1 ".$data->uom_name." = <b>".$data->conversion_unit."</b>";
+                                                    if($data->uom_type_id==1){
+                                                        echo " meter";
+                                                    }
+                                                    else if($data->uom_type_id==2){
+                                                        echo " litre";
+                                                    }
+                                                ?>
+                                            </td>                                       
                                             @if($desig_permissions["mod4"]["del"] || $desig_permissions["mod4"]["edit"])
-                                            <td class="action-buttons">
-                                            @if($desig_permissions["mod4"]["edit"])&nbsp;&nbsp;<button type="button" class="btn btn-sm btn-secondary" onclick="openInlineForm('{{$data->uom_id}}')" data-toggle="tooltip" title="{{$phrase->edit}}"><i class="fas fa-edit"></i></button>@endif
-
-                                                @if($desig_permissions["mod4"]["del"])<a href="{{url('uom/delete')}}/{{$data->uom_id}}" class="btn btn-danger btn-sm delete-button" data-toggle="tooltip" title="{{$phrase->delete}}"><i class="fas fa-trash-alt"></i></a>@endif
-                                            </td>
+                                                <td class="action-buttons">
+                                                    @if($desig_permissions["mod4"]["edit"])&nbsp;&nbsp;<button type="button" class="btn btn-sm btn-secondary" onclick="openInlineForm('{{$data->uom_id}}')" data-toggle="tooltip" title="{{$phrase->edit}}"><i class="fas fa-edit"></i></button>@endif
+                                                    @if($desig_permissions["mod4"]["del"])<a href="{{url('uom/delete')}}/{{$data->uom_id}}" class="btn btn-danger btn-sm delete-button" data-toggle="tooltip" title="{{$phrase->delete}}"><i class="fas fa-trash-alt"></i></a>@endif
+                                                </td>
                                             @endif
                                         </tr>
                                     @endforeach
                                 @endif
                                 @if($count==1)
                                     <tr>
-                                        <td colspan="4"><center>No data to shown</center></td>
+                                        <td colspan="5"><center>No data to shown</center></td>
                                     </tr>
                                 @endif
                             </table>
@@ -196,6 +224,21 @@
                     form_append +=`</select>
                                 <div class="invalid-feedback" id="edit_uom_type_error_msg"></div>
             </td>
+
+            
+            <td>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="edit-conversion-unit-prepend"></span>
+                    </div>
+                    <input type="text" name="conversion_unit" id="edit_conversion_unit" class="form-control" value="`+edit_values[2]+`" maxlength="10" autocomplete="off">
+                    <div class="input-group-append">
+                        <span class="input-group-text" id="edit-conversion-unit-append"></span>
+                    </div>
+                    <div class="invalid-feedback" id="edit_conversion_unit_error_msg"></div>
+                </div>
+            </td>
+
             <td>
                 <input type="text" name="edit_id" value="`+id+`" hidden>
                 <button type="submit" onclick="return submitFormInline()" class="btn btn-success btn-sm">{{$phrase->submit}}&nbsp;<i class="fas fa-check"></i></button>
@@ -207,8 +250,18 @@
         $("tr[data-row-id='"+id+"']").hide();
         to_edit_id = id;
         edit_form_opened = true;
-        setTimeout(function(){ $("#edit_uom_type").val(edit_values[1]); }, 1000);
+
+        $(".custom-loader").show();
+        setTimeout(function(){ 
+            $("#edit_uom_type").val(edit_values[1]);
+            edit_change_per_unit_text();
+            $(".custom-loader").hide();
+        }, 1000);
     }
+                // <td>
+                //             <input type="text" name="conversion_unit" id="edit_conversion_unit" class="form-control" value="`+edit_values[2]+`" maxlength="10" autocomplete="off">
+                //             <div class="invalid-feedback" id="edit_conversion_unit_error_msg"></div>
+                //         </td>
     /* to close forms */
     function closeInlineForm(){
         if(edit_form_opened){
@@ -228,15 +281,37 @@
     */
     var edit_uom_name_error = true;
     var edit_uom_type_error = true;
+    var edit_conversion_unit_error = true;
     
     $(document).ready(function(){
         $(document).on("change", "#edit_uom_name", function(){
+            edit_change_per_unit_text();
             edit_uom_name_validate();
         });
         $(document).on("change", "#edit_uom_type", function(){
+            edit_change_per_unit_text();
             edit_uom_type_validate();
         });
+        // for conversion_unit
+        $(document).on("keyup", "#edit_conversion_unit", function(){
+            $(this).val($(this).val().replace(/[^0-9.]+/g, ""));
+        });
+        $(document).on("change", "#edit_conversion_unit", function(){
+            edit_conversion_unit_validate();
+        });
     });
+    // to chnage unit conversion text (append and prepend for add)
+    function edit_change_per_unit_text(){
+        var tmp_uom_name = $("#edit_uom_name").val();
+        var tmp_uom_type = $("#edit_uom_type").val();
+        $("#edit-conversion-unit-prepend").html("1 "+tmp_uom_name+" =");
+        if(tmp_uom_type==1){
+            $("#edit-conversion-unit-append").html("meter");
+        }
+        else if(tmp_uom_type==2){
+            $("#edit-conversion-unit-append").html("litre");
+        }
+    }
     
     function edit_uom_name_validate(){
         var edit_uom_name_val = $("#edit_uom_name").val();
@@ -268,12 +343,30 @@
                 $("#edit_uom_type").removeClass('is-invalid');
             }
     }
+    function edit_conversion_unit_validate(){
+        var edit_conversion_unit_val = $("#edit_conversion_unit").val();
+        if(edit_conversion_unit_val==""){
+            edit_conversion_unit_error=true;
+            $("#edit_conversion_unit").addClass('is-invalid');
+            $("#edit_conversion_unit_error_msg").html("Please enter convertion unit");
+        }
+        else if(edit_conversion_unit_val.split('.').length>=3){
+            edit_conversion_unit_error=true;
+            $("#edit_conversion_unit").addClass('is-invalid');
+            $("#edit_conversion_unit_error_msg").html("Please enter valid conversion unit");
+        }
+        else{
+            edit_conversion_unit_error=false;
+            $("#edit_conversion_unit").removeClass('is-invalid');
+        }
+    }
     
     function submitFormInline(){
         edit_uom_name_validate();
         edit_uom_type_validate();
+        edit_conversion_unit_validate();
       
-        if(edit_uom_name_error || edit_uom_type_error){ return false; } // error occured
+        if(edit_uom_name_error || edit_uom_type_error || edit_conversion_unit_error){ return false; } // error occured
         else{ $(".custom-loader").show(); return true; } // proceed to submit form data
     }
 </script>
@@ -284,13 +377,23 @@
     // error variables as true = error occured
     var uom_name_error = true;
     var uom_type_error = true;
+    var conversion_unit_error = true;
     
     $(document).ready(function(){
         $("#uom_name").change(function(){
+            change_per_unit_text();
             uom_name_validate();
         });
         $("#uom_type").change(function(){
+            change_per_unit_text();
             uom_type_validate();
+        });
+        // for conversion_unit
+        $(document).on("keyup", "#conversion_unit", function(){
+            $(this).val($(this).val().replace(/[^0-9.]+/g, ""));
+        });
+        $(document).on("change", "#conversion_unit", function(){
+            conversion_unit_validate();
         });
        
         // reset/initiate form
@@ -298,16 +401,30 @@
             initiateForm();
         });
     });
+    // to chnage unit conversion text (append and prepend for add)
+    function change_per_unit_text(){
+        var tmp_uom_name = $("#uom_name").val();
+        var tmp_uom_type = $("#uom_type").val();
+        $("#add-conversion-unit-prepend").html("1 "+tmp_uom_name+" =");
+        if(tmp_uom_type==1){
+            $("#add-conversion-unit-append").html("meter");
+        }
+        else if(tmp_uom_type==2){
+            $("#add-conversion-unit-append").html("litre");
+        }
+    }
 
     // intitiate everything reletaed to "add form"
     function initiateForm(){
         document.getElementById('uom-form').reset();
         $("#uom_name").removeClass('is-invalid');
         $("#uom_type").removeClass('is-invalid');
+        $("#add-conversion-unit-append").html("");
+        $("#add-conversion-unit-prepend").html("");
 
     }
     
-     function uom_name_validate(){
+    function uom_name_validate(){
         var uom_name_val = $("#uom_name").val();
         var regAlphaNumericSpace = new RegExp('^[a-zA-Z0-9 ]+$');
         if(uom_name_val==""){
@@ -337,13 +454,31 @@
                 $("#uom_type").removeClass('is-invalid');
             }
     }
+    function conversion_unit_validate(){
+        var conversion_unit_val = $("#conversion_unit").val();
+        if(conversion_unit_val==""){
+            conversion_unit_error=true;
+            $("#conversion_unit").addClass('is-invalid');
+            $("#conversion_unit_error_msg").html("Please enter convertion unit");
+        }
+        else if(conversion_unit_val.split('.').length>=3){
+            conversion_unit_error=true;
+            $("#conversion_unit").addClass('is-invalid');
+            $("#conversion_unit_error_msg").html("Please enter valid conversion unit");
+        }
+        else{
+            conversion_unit_error=false;
+            $("#conversion_unit").removeClass('is-invalid');
+        }
+    }
     
     function submitForm(){
         uom_name_validate();
         uom_type_validate();
+        conversion_unit_validate();
 
       
-        if(uom_name_error || uom_type_error){ return false; } // error occured
+        if(uom_name_error || uom_type_error || conversion_unit_error){ return false; } // error occured
         else{ $(".custom-loader").show(); return true; } // proceed to submit form data
     }
 </script>

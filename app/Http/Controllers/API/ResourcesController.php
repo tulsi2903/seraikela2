@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth; 
 
 use App\Asset;
 use App\Year;
@@ -111,7 +112,7 @@ class ResourcesController extends Controller
         }
     }
 
-    function store_asset_numbers(Request $request){
+    function store_resources_numbers(Request $request){
         $year_id = $request->year_id;
         $asset_id = $request->resources_id;
         $block_id = $request->block_id;
@@ -120,23 +121,40 @@ class ResourcesController extends Controller
         $pre_value = $request->pre_value;
         $current_value = $request->current_value;
 
-        $landmark = $request->landmark;
-        $latitude = $request->latitude;
-        $gallery = $request->gallery;
+        $landmark = $request->landmark; // array if more than 1 entries (details, geo loc)
+        $latitude = $request->latitude; // array if more than 1 entries (details, geo loc)
+        $longitude = $request->longitude; // array if more than 1 entries (details, geo loc)
+        $gallery = $request->gallery; // multidimentional array if more than 1 entries (details, geo loc)
 
 
         // storing data to asset numbers
         $asset_numbers_save = new AssetNumbers;
         $asset_numbers_save->asset_id = $asset_id;
-        $asset_numbers_save->panchayat_id = $panchayat_id;
+        $asset_numbers_save->geo_id = $panchayat_id;
         $asset_numbers_save->pre_value = $pre_value;
         $asset_numbers_save->current_value = $current_value;
         $asset_numbers_save->year = $year_id;
-        $asset_numbers_save->org_id = session()->get('user_org_id');
+        $asset_numbers_save->org_id = Auth::user()->org_id;
+        $asset_numbers_save->created_by = Auth::user()->id;
+        $asset_numbers_save->updated_by = Auth::user()->id;
         $asset_numbers_save->save();
 
+        // storing datas to asset geo location
         for($i=0;$i<count($latitude);$i++){
-            
+            $asset_geo_location_save = new AssetGeoLocation;
+            $asset_geo_location_save->asset_id = $asset_id;
+            $asset_geo_location_save->geo_id = $panchayat_id;
+            $asset_geo_location_save->location_name = $landmark[$i];
+            $asset_geo_location_save->latitude = $latitude[$i];
+            $asset_geo_location_save->longitude = $longitude[$i];
+            $asset_geo_location_save->year = $year_id;
+            $asset_geo_location_save->org_id = Auth::user()->org_id;
+            $asset_geo_location_save->created_by = Auth::user()->id;
+            $asset_geo_location_save->updated_by = Auth::user()->id;
+            $asset_geo_location_save->save();
         }
+
+        // return after validate
+        return response()->json(['success' => "data_saved"], $this->successStatus);
     }
 }

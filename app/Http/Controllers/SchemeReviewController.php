@@ -960,7 +960,7 @@ class SchemeReviewController extends Controller
         // echo "<table>".$export_datas_pdf."</table>";
         // echo count($export_datas[0][4]);
         // exit;
-        
+            
         if($request->type=="excel"){
             \Excel::create('Scheme-Review-Datas', function ($excel) use ($export_datas, $sheet_titles, $i) {
                 // Set the title

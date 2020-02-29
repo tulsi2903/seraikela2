@@ -1845,7 +1845,6 @@
     @csrf
     <textarea name="to_export_datas"></textarea>
     <input type="text" id="to_export_datas_type" name="type">
-    <input type="text" id="to_export_other_info" name="type">
 </form>
 <script>
     // export to pdf / excel
