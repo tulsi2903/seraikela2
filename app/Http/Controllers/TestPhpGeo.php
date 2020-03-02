@@ -5,10 +5,12 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Asset;
 use DB;
+use App\SchemePerformance;
 
 // for phpgeo
 use Location\Coordinate;
 use Location\Distance\Vincenty;
+use Location\Distance\Haversine;
 use Location\Bearing\BearingSpherical;
 use Location\Bearing\BearingEllipsoidal;
 use Location\Formatter\Coordinate\DecimalDegrees;
@@ -18,20 +20,22 @@ class TestPhpGeo extends Controller
 {
     //
     public function index(){
+        $distance_to_measure = 2;
+        $performance_datas_selected = SchemePerformance::where('scheme_performance.scheme_performance_id', 40)
+            ->first();
+        $performance_datas_to_test = SchemePerformance::where('scheme_performance.scheme_performance_id', 41)
+            ->first();
+        $coordinates_selected = unserialize($performance_datas_selected->coordinates);
+        $coordinates_to_test = unserialize($performance_datas_to_test->coordinates);
         // $coordinates_selected = [
-        //     ["latitude"=>22.827731, "longitude"=>86.199765],
-        //     ["latitude"=>22.827484, "longitude"=>86.199242],
-        //     ["latitude"=>22.827479, "longitude"=>86.199813]
+        //     ["latitude"=>22.799273, "longitude"=>86.192071],
+        //     ["latitude"=>22.813701, "longitude"=>86.202937],
+        //     ["latitude"=>22.820627, "longitude"=>86.196765]
         // ];
-        $coordinates_selected = [
-            ["latitude"=>22.799273, "longitude"=>86.192071],
-            ["latitude"=>22.813701, "longitude"=>86.202937],
-            ["latitude"=>22.820627, "longitude"=>86.196765]
-        ];
-        $coordinates_to_test = [
-            ["latitude"=>22.806856, "longitude"=>86.197803],
-            ["latitude"=>22.808607, "longitude"=>86.199841]
-        ];
+        // $coordinates_to_test = [
+        //     ["latitude"=>22.806856, "longitude"=>86.197803],
+        //     ["latitude"=>22.808607, "longitude"=>86.199841]
+        // ];
 
         $left_right_coordinates = [];
         for($i=0;$i<count($coordinates_selected);$i++){
@@ -63,8 +67,8 @@ class TestPhpGeo extends Controller
                 }
 
                 $BearingSpherical = new BearingSpherical();
-                $coordinates_left = $BearingSpherical->calculateDestination($coordinate_start, $angle_left, 50);
-                $coordinates_right = $BearingSpherical->calculateDestination($coordinate_start, $angle_right, 50);
+                $coordinates_left = $BearingSpherical->calculateDestination($coordinate_start, $angle_left, $distance_to_measure);
+                $coordinates_right = $BearingSpherical->calculateDestination($coordinate_start, $angle_right, $distance_to_measure);
                 $tmp_left = explode(',', $coordinates_left->format(new DecimalDegrees(',',6)));
                 $tmp_right = explode(',', $coordinates_right->format(new DecimalDegrees(',',6)));
                 $left_right_coordinates[] = [
@@ -81,23 +85,29 @@ class TestPhpGeo extends Controller
                 $bearing_angle_2 = $bearingCalculator->calculateBearing($coordinate_center, $coordinate_end);
 
                 if($bearing_angle_1>$bearing_angle_2){
-                    $angle_left = (($bearing_angle_1-$bearing_angle_2)/2)+$bearing_angle_2;
+                    $angle_right = (($bearing_angle_1-$bearing_angle_2)/2)+$bearing_angle_2;
+                    if($angle_right>180){
+                        $angle_left = $angle_right - 180;
+                    }
+                    else{
+                        $angle_left = $angle_right + 180;
+                    }
                 }
                 else{
                     $angle_left = (($bearing_angle_2-$bearing_angle_1)/2)+$bearing_angle_1;
-                }
-                if($angle_left>180){
-                    $angle_right = $angle_left - 180;
-                }
-                else{
-                    $angle_right = $angle_left + 180;
+                    if($angle_left>180){
+                        $angle_right = $angle_left - 180;
+                    }
+                    else{
+                        $angle_right = $angle_left + 180;
+                    }
                 }
 
                 echo $bearing_angle_1.",".$bearing_angle_2."<br/><br/>";
                 
                 $BearingSpherical = new BearingSpherical();
-                $coordinates_left = $BearingSpherical->calculateDestination($coordinate_center, $angle_left, 50);
-                $coordinates_right = $BearingSpherical->calculateDestination($coordinate_center, $angle_right, 50);
+                $coordinates_left = $BearingSpherical->calculateDestination($coordinate_center, $angle_left, $distance_to_measure);
+                $coordinates_right = $BearingSpherical->calculateDestination($coordinate_center, $angle_right, $distance_to_measure);
                 $tmp_left = explode(',', $coordinates_left->format(new DecimalDegrees(',',6)));
                 $tmp_right = explode(',', $coordinates_right->format(new DecimalDegrees(',',6)));
                 $left_right_coordinates[] = [
