@@ -125,28 +125,22 @@
                                     <th>#</th>
                                     <th>{{$phrase->icon}}</th>
                                     <th>{{$phrase->name}}</th>
-                                    
                                     <th>{{$phrase->geo_related}}</th>
-                                    <th>{{$phrase->multiple_geo_tags}}</th>
-                                    <th>{{$phrase->uom}}</th>
-                                    @if($desig_permissions["mod16"]["edit"] || $desig_permissions["mod16"]["del"])
-                                    <th class="action-buttons">{{$phrase->action}}</th>
+                                    <th>Radius</th>
+                                    @if($desig_permissions["mod16"]["view"] ||$desig_permissions["mod16"]["del"] || $desig_permissions["mod16"]["edit"])
+                                        <th class="action-buttons">{{$phrase->action}}</th>
                                     @endif
                                 </tr>
                             </thead>
                             <?php $count=1; ?>
                            
                                @foreach($datas as $data)
-                                   
                                         <tr>
                                             <td width="40px;">{{$count++}}
-
                                                 <input type="text" value="{{$data->scheme_asset_id}}" name="scheme_asset_id_to_export[]" hidden >
-
                                             </td>
                                             <td>@if($data->mapmarkericon) <img src="{{$data->mapmarkericon}}" style="height: 50px;"> @endif</td>  
                                             <td>{{$data->scheme_asset_name}}</td>
-                                                                        
                                             <td>
                                                 @if($data->geo_related == 1)
                                                 Yes
@@ -155,29 +149,34 @@
                                                 @endif
                                             </td>
                                             <td>
-                                                @if($data->multiple_geo_tags == 1)
-                                                Yes
-                                                @else
-                                                No
-                                                @endif
-                                            </td> 
-                                            <td>{{$data->uom_name}}</td>  
+                                                <?php
+                                                    echo $data->radius;
+                                                    if($data->uom_type_id==1){
+                                                        echo " meter";
+                                                    }
+                                                    else if($data->uom_type_id){
+                                                        echo " litre";
+                                                    }
+                                                    else{
+                                                        echo " unit";
+                                                    }
+                                                ?>
+                                            </td>  
                                             @if($desig_permissions["mod16"]["view"] ||$desig_permissions["mod16"]["del"] || $desig_permissions["mod16"]["edit"]) 
-                                            <td class="action-buttons">
-                                                
-                                                @if($desig_permissions["mod16"]["edit"])
-                                                &nbsp;&nbsp;<a href="{{url('scheme-asset/add')}}?purpose=edit&id={{$data->scheme_asset_id}}" class="btn btn-secondary btn-sm" data-toggle="tooltip" title="{{$phrase->edit}}"><i class="fas fa-edit"></i></a>
-                                                @endif
-                                                @if($desig_permissions["mod16"]["view"])
-                                                <a href="{{url('scheme-asset/view')}}/{{$data->scheme_asset_id}}" class="btn btn-secondary btn-sm"><i class="fas fa-eye" data-toggle="tooltip" title="{{$phrase->view}}"></i></a>
-                                                @endif
-                                                @if($desig_permissions["mod16"]["del"])
-                                                &nbsp;&nbsp;<a href="{{url('scheme-asset/delete')}}/{{$data->scheme_asset_id}}" class="btn btn-danger btn-sm delete-button" data-toggle="tooltip" title="{{$phrase->delete}}"><i class="fas fa-trash-alt"></i></a>
-                                                @endif
-                                            </td>
+                                                <td class="action-buttons">
+                                                    @if($desig_permissions["mod16"]["edit"])
+                                                    &nbsp;&nbsp;<a href="{{url('scheme-asset/add')}}?purpose=edit&id={{$data->scheme_asset_id}}" class="btn btn-secondary btn-sm" data-toggle="tooltip" title="{{$phrase->edit}}"><i class="fas fa-edit"></i></a>
+                                                    @endif
+                                                    @if($desig_permissions["mod16"]["view"])
+                                                    <!-- <a href="{{url('scheme-asset/view')}}/{{$data->scheme_asset_id}}" class="btn btn-secondary btn-sm"><i class="fas fa-eye" data-toggle="tooltip" title="{{$phrase->view}}"></i></a> -->
+                                                    @endif
+                                                    @if($desig_permissions["mod16"]["del"])
+                                                    &nbsp;&nbsp;<a href="{{url('scheme-asset/delete')}}/{{$data->scheme_asset_id}}" class="btn btn-danger btn-sm delete-button" data-toggle="tooltip" title="{{$phrase->delete}}"><i class="fas fa-trash-alt"></i></a>
+                                                    @endif
+                                                </td>
                                             @endif
                                         </tr>
-                                        @endforeach
+                                @endforeach
                                    
                                
                            

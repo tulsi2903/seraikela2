@@ -5,13 +5,13 @@
 			<ul class="nav nav-primary">
 				<li class="nav-item"><a href="{{url(session()->get('dashboard_url'))}}"><i class="fas fa-home"></i>
 					@if(session()->get('dashboard_title')=='My District')
-					<p>  {{$phrase->district}}</p>
+					<p>  {{$phrase->my_district}}</p>
 					@elseif(session()->get('dashboard_title')=='My SubDivision')
-					<p>   {{$phrase->sub_divisin}}</p>
+					<p>   {{$phrase->my_sub_divisin}}</p>
 					@elseif(session()->get('dashboard_title')=='My Block')
-					<p>   {{$phrase->block}}</p>
+					<p>   {{$phrase->my_block}}</p>
 					@else
-					<p>   {{$phrase->panchayat}}</p>
+					<p>   {{$phrase->my_panchayat}}</p>
 					@endif
 				</a></li>
 				

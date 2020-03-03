@@ -21,9 +21,9 @@ class TestPhpGeo extends Controller
     //
     public function index(){
         $distance_to_measure = 2;
-        $performance_datas_selected = SchemePerformance::where('scheme_performance.scheme_performance_id', 40)
+        $performance_datas_selected = SchemePerformance::where('scheme_performance.scheme_performance_id', 46)
             ->first();
-        $performance_datas_to_test = SchemePerformance::where('scheme_performance.scheme_performance_id', 41)
+        $performance_datas_to_test = SchemePerformance::where('scheme_performance.scheme_performance_id', 72)
             ->first();
         $coordinates_selected = unserialize($performance_datas_selected->coordinates);
         $coordinates_to_test = unserialize($performance_datas_to_test->coordinates);

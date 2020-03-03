@@ -20,8 +20,8 @@ class Scheme_Asset_Controller extends Controller
         if(!$desig_permissions["mod16"]["add"]&&!$desig_permissions["mod16"]["edit"]&&!$desig_permissions["mod16"]["view"]&&!$desig_permissions["mod16"]["del"]){
             return back();
         }  
-        $datas = SchemeAsset::leftjoin('uom','uom.uom_id','=','scheme_assets.uom_type_id')
-        ->select('scheme_assets.*','uom.uom_name')->orderBy('scheme_asset_id','desc')->get();
+        $datas = SchemeAsset::leftjoin('uom_type','uom_type.uom_type_id','=','scheme_assets.uom_type_id')
+        ->select('scheme_assets.*','uom_type.uom_type_name')->orderBy('scheme_asset_id','desc')->get();
         // echo "<pre>";
         // print_r($datas);
         // exit;
@@ -35,7 +35,7 @@ class Scheme_Asset_Controller extends Controller
         $hidden_input_id= "NA";
         $data = new SchemeAsset;
         
-        $uom_datas = Uom::orderBy('uom_id','asc')->get();
+        $uom_type_datas = Uom_Type::get();
         // return $uom_data;
 
         if(isset($request->purpose)&&isset($request->id)){
@@ -46,7 +46,7 @@ class Scheme_Asset_Controller extends Controller
             }
         }
        
-        return view('scheme-asset.add')->with(compact('hidden_input_purpose','hidden_input_id','data','uom_datas'));
+        return view('scheme-asset.add')->with(compact('hidden_input_purpose','hidden_input_id','data','uom_type_datas'));
     }
 
    
@@ -59,7 +59,16 @@ class Scheme_Asset_Controller extends Controller
         }
 
         $scheme_asset->scheme_asset_name = $request->scheme_asset_name;
-        $scheme_asset->geo_related = $request->geo_related;
+        if($request->geo_related)
+        {  
+            $scheme_asset->geo_related = 1;
+        }
+        else{
+            $scheme_asset->geo_related = 0;
+        }
+        $scheme_asset->multiple_geo_tags = null;
+        $scheme_asset->no_of_tags = null;
+        $scheme_asset->attribute = null;
         $scheme_asset->radius = $request->radius;
         $scheme_asset->uom_type_id = $request->uom_type_id;
 
@@ -91,38 +100,9 @@ class Scheme_Asset_Controller extends Controller
                 unlink($request->scheme_assets_delete);
             }
         }
-        
-        if($request->geo_related!="")
-        {
-            $scheme_asset->multiple_geo_tags = $request->multiple_geo_tags;
-        }
-        else
-        {
-            $scheme_asset->multiple_geo_tags = null;
-        }
        
         $scheme_asset->created_by = Auth::user()->id;
         $scheme_asset->updated_by = Auth::user()->id;
-
-        $attribute = [];
-        for($i=0;$i<count($request->attribute_name);$i++)
-        {
-            $tmp = ["id"=>uniqid(), "name"=>$request->attribute_name[$i], "uom"=>$request->attribute_uom[$i]];
-            if($request->attribute_mandatory[$i]){
-                $tmp["mandatory"] = $request->attribute_mandatory[$i];
-            }
-            else{
-                $tmp["mandatory"] = '0';
-            }
-            // $tmp = [uniqid()=>["name"=>$request->attribute_name[$i], "uom"=>$request->attribute_uom[$i]]];
-            array_push($attribute, $tmp);
-        }
-        $scheme_asset->attribute=serialize($attribute);
-      
-        // echo "<pre>";
-        // print_r($request->toArray());
-        // print_r($attribute);
-        // exit;
 
         if(SchemeAsset::where('scheme_asset_name',$request->scheme_asset_name)->first() && $request->hidden_input_purpose!="edit"){
             session()->put('alert-class','alert-danger');

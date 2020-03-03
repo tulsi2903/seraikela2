@@ -721,15 +721,12 @@ class SchemePerformanceController extends Controller
                                         $scheme_performance->save();
                                         $uom = 1;
                                         $distance_to_measure = 10;
-                                        // $scheme_performance->id=9;
                                         $result = "true";
-                                        // echo "<pre>";
-                                        // print_r($scheme_performance->scheme_performance_id);
-                                        // exit;
+
                                         $duplicate_scheme_perfomamce_details = array();
                                         if ($scheme_performance->status == 2) {
-                                            $duplicate_scheme_perfomamce_details = $duplicate_scheme_perfomamce->insert_mathcingperformance($scheme_performance->scheme_performance_id, $result);
-                                            //    return  $duplicate_scheme_perfomamce->insert_mathcingperformance(9,$result);
+                                            $duplicate_scheme_perfomamce_details = $duplicate_scheme_perfomamce->insert_mathcingperformance($scheme_performance->scheme_performance_id);
+                                            // return  $duplicate_scheme_perfomamce->insert_mathcingperformance(9,$result);
                                         }
                                         // echo "dfdfdfdf";
                                         // print_r($duplicate_scheme_perfomamce_details);
@@ -830,6 +827,7 @@ class SchemePerformanceController extends Controller
                             session()->put('totalsuccess', $noOfSuccess);
                             session()->put('totalfail', $noOfFails);
                             session()->put('scheme_name', $scheme_datas['scheme_name']);
+                            session()->put('scheme_id', $scheme_datas['scheme_id']);
 
                             // readfile($filename);
                             session()->put('alert-class', 'alert-success');
