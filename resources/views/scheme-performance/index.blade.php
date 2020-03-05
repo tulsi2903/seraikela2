@@ -70,19 +70,7 @@
                 <form action="{{url('scheme-performance/add-datas')}}" method="GET" onsubmit="return false;">
                     @csrf
                     <div class="row">
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label for="year_id">{{$phrase->year}}<span style="color:red;margin-left:5px;">*</span></label>
-                                <select name="year_id" id="year_id" class="form-control">
-                                    <option value="">---Select---</option>
-                                    @foreach($year_datas as $year_data )
-                                    <option value="{{ $year_data->year_id }}">{{ $year_data->year_value }}</option>
-                                    @endforeach
-                                </select>
-                                <div class="invalid-feedback" id="year_id_error_msg"></div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label for="scheme_id">{{$phrase->scheme}}<span style="color:red;margin-left:5px;">*</span></label>
                                 <select name="scheme_id" id="scheme_id" onchange="get_scheme_value(this);" class="form-control">
@@ -94,9 +82,19 @@
                                 <div class="invalid-feedback" id="scheme_id_error_msg"></div>
                             </div>
                         </div>
-
-
-                        <div class="col-md-3">
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label for="year_id">{{$phrase->year}}<span style="color:red;margin-left:5px;">*</span></label>
+                                <select name="year_id" id="year_id" class="form-control">
+                                    <option value="">---Select---</option>
+                                    @foreach($year_datas as $year_data )
+                                    <option value="{{ $year_data->year_id }}">{{ $year_data->year_value }}</option>
+                                    @endforeach
+                                </select>
+                                <div class="invalid-feedback" id="year_id_error_msg"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
                             <div class="form-group">
                                 <label for="block_id">{{$phrase->block}}<span style="color:red;margin-left:5px;">*</span></label>
                                 <select name="block_id" id="block_id" class="form-control">
@@ -108,7 +106,7 @@
                                 <div class="invalid-feedback" id="block_id_error_msg"></div>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <div class="form-group">
                                 <label for="panchayat_id">{{$phrase->panchayat}} <span style="color:red;margin-left:5px;">*</span></label>
                                 <select name="panchayat_id" id="panchayat_id" class="form-control">
@@ -117,23 +115,12 @@
                                 <div class="invalid-feedback" id="panchayat_id_error_msg"></div>
                             </div>
                         </div>
-                        <div class="row" style="display: contents;">
-                            <div class="col-md-12">
-                                <button type="button" class="btn btn-secondary pull-right go-button" onclick="go()" style="margin-left:0.5em;"><i class="fas fa-search"></i>&nbsp;&nbsp;Go</button>
-                                <div id="import_section_old" style="display: none; margin-top: -4em;">
-                                    <div class="form-group">
-                                        <button type="submit" class="btn btn-primary  pull-right" onclick="location.href='\ scheme-performance/downloadFormat?scheme_id='+ document.getElementById('scheme_id').value+'&year_id={{$year_data->year_id}}&block_id={{$block_data->geo_id}}'" style="float:right; background: #349601; color: white;" title="Download Excel Format"><i class="fas fa-file-import"></i>&nbsp;&nbsp;Download Format</button>
-                                    </div>
-
-                                    <div class="form-group ">
-                                        <button type="submit" class="btn btn-primary  pull-right" onclick="location.href='\ scheme-performance/viewimport?scheme_id='+ document.getElementById('scheme_id').value" style="float:right; background: #349601; color: white;margin-right: 10px;" title="Import Excel"><i class="fas fa-file-import"></i>&nbsp;&nbsp;Import</button>
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="col-md-2">
+                            <div style="height: 30px;"></div>
+                            <button type="button" class="btn btn-secondary go-button" onclick="go()"><i class="fas fa-search"></i>&nbsp;&nbsp;Go</button>
                         </div>
-                        <!--end of row-->
-
                     </div>
+                    <!--end of row-->
                 </form>
             </div>
             <hr />
@@ -800,10 +787,10 @@
                 method: "get",
                 success: function (data) {
                     console.log(data);
-                    if (data.message == "data Found") {
+                    if (data.message == "data_found") {
                         $(e).val("4");
                         swal({
-                            title: 'You Cannot Do Sanction Beacause We Found Proable Duplicate',
+                            title: 'You Cannot Do Sanction Beacause We Found Probable Duplicate',
                             icon: 'error',
                             buttons: {
                                 confirm: {

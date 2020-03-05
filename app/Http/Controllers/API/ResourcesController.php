@@ -23,24 +23,16 @@ class ResourcesController extends Controller
     public function get_resources(Request $request){
         if($request->resources_id){
             $datas = Asset::where('asset_id', $request->resources_id)->select('asset_id as resources_id', 'asset_name as resources_name', 'movable', 'parent_id as parent')->first();
-            if($datas->parent!='-1'){
-                $child_datas = Asset::where('asset_id', $datas->parent)->select('asset_id as resources_id', 'asset_name as resources_name', 'movable')->get();
-                $datas->child_resources = $child_datas;
-            }
-            else{
-                $datas->child_resources = [];
-            }
+            $datas->sub_resources = [];
+            $sub_resources_datas = Asset::where('parent_id', $datas->resources_id)->select('asset_id as resources_id', 'asset_name as resources_name', 'movable')->get();
+            $datas->sub_resources = $sub_resources_datas;
         }
         else{
-            $datas = Asset::select('asset_id as resources_id', 'asset_name as resources_name', 'movable', 'parent_id as parent')->get();
+            $datas = Asset::select('asset_id as resources_id', 'asset_name as resources_name', 'movable')->get();
             foreach($datas as $data){
-                if($data->parent!='-1'){
-                    $child_datas = Asset::where('asset_id', $data->parent)->select('asset_id as resources_id', 'asset_name as resources_name', 'movable')->get();
-                    $data->child_resources = $child_datas;
-                }
-                else{
-                    $data->child_resources = [];
-                }
+                $data->sub_resources = [];
+                $sub_resources_datas = Asset::where('parent_id', $data->resources_id)->select('asset_id as resources_id', 'asset_name as resources_name', 'movable')->get();
+                $data->sub_resources = $sub_resources_datas;
             }
         }
 

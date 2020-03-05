@@ -488,8 +488,10 @@ class SchemePerformanceController extends Controller
     }
     public function Import_from_Excel(Request $request, SchemeReviewDuplicateDataCheckController $duplicate_scheme_perfomamce)
     {
-        // $result="true";
-        // return  $duplicate_scheme_perfomamce->insert_mathcingperformance(9,$result);
+        /* settings */
+        // change this as your need
+        $check_duplicacy_while_import = false;
+        /* settings */
 
         $geo_names = array();
         if (session()->get('user_designation') == 1) // dc
@@ -649,7 +651,7 @@ class SchemePerformanceController extends Controller
                                         }
                                     }
 
-                                    if ($flag == 1) {
+                                    if ($flag == 1) { // for already exiting entry/ update
                                         if (strtolower($status) == strtolower("Completed")) {
                                             $edit_status = 1;
                                         } elseif (strtolower($status) == strtolower("inprogress")) {
@@ -663,36 +665,28 @@ class SchemePerformanceController extends Controller
                                         } elseif (strtolower($status) != strtolower("inprogress") && strtolower($status) != strtolower("Completed") && strtolower($status) != strtolower("Sanctioned") && strtolower($status) != strtolower("Cancel")) {
                                             $edit_status = 4;
                                         }
-                                        $temp_edit_scheme_performance_details=SchemePerformance::where('scheme_performance_id', $scheme_performance_id)->first();
-                                        // echo "<pre>";
-                                        // print_r($temp_edit_scheme_performance_details);
 
-                                        if($temp_edit_scheme_performance_details->status!=4)
+                                        // update
+                                        $edit_scheme_performance = SchemePerformance::where('scheme_performance_id', $scheme_performance_id)->update(array('status' =>$edit_status ,'coordinates'=>serialize($coordinate)));
+                                        
+                                        /* for duplicacy */
+                                        if($check_duplicacy_while_import)
                                         {
-                                            $result = "true";
-                                            $edit_scheme_performance = SchemePerformance::where('scheme_performance_id', $scheme_performance_id)->update(array('coordinates'=>serialize($coordinate)));
-                                            // $duplicate_scheme_perfomamce_details = array();
-                                            // if ($edit_scheme_performance->status == 2) {
-                                                $duplicate_scheme_perfomamce_details = $duplicate_scheme_perfomamce->insert_mathcingperformance($temp_edit_scheme_performance_details->scheme_performance_id, $result);
-                                                // print_r($duplicate_scheme_perfomamce_details);
-                                                if(@$duplicate_scheme_perfomamce_details->message=="data Found")
+                                            $temp_edit_scheme_performance_details = SchemePerformance::where('scheme_performance_id', $scheme_performance_id)->first();// gettign all datas in an instance
+                                            if($temp_edit_scheme_performance_details->status!=4)
+                                            {
+                                                // testing duplicate
+                                                $duplicate_scheme_perfomamce_details = $duplicate_scheme_perfomamce->insert_mathcingperformance($temp_edit_scheme_performance_details->scheme_performance_id);
+                                                /* conditions if duplicate entry founds */
+                                                if($duplicate_scheme_perfomamce_details["message"]=="data_found") // duplicate found, not fopund = "data_not_found"
                                                 {
-                                                $edit_scheme_performance = SchemePerformance::where('scheme_performance_id', $scheme_performance_id)->update(array('status' =>4 ,'coordinates'=>serialize($coordinate)));
+                                                    $edit_scheme_performance = SchemePerformance::where('scheme_performance_id', $scheme_performance_id)->update(array('status' =>4 ,'coordinates'=>serialize($coordinate)));
                                                 }
-                                                else
-                                                {
-                                                    $edit_scheme_performance = SchemePerformance::where('scheme_performance_id', $scheme_performance_id)->update(array('status' =>$edit_status ,'coordinates'=>serialize($coordinate)));
-                                                }
-                                            //    return  $duplicate_scheme_perfomamce->insert_mathcingperformance(9,$result);
-                                        //    return  $duplicate_scheme_perfomamce_details;
-                                        // }
+                                            }
                                         }
-                                        else
-                                        {
-                                            $edit_scheme_performance = SchemePerformance::where('scheme_performance_id', $scheme_performance_id)->update(array('status' =>4 ,'coordinates'=>serialize($coordinate)));
-                                        }
-                                        // exit;
-                                    } else {
+                                        /* for duplicacy ends */
+                                    } 
+                                    else { // for new entry
                                         $scheme_performance = new SchemePerformance;
                                         $scheme_performance->year_id = $fetch_year_id;
                                         $scheme_performance->scheme_id = $request->scheme_id;
@@ -719,18 +713,15 @@ class SchemePerformanceController extends Controller
                                         }
                                         $scheme_performance->created_by = Session::get('user_id');
                                         $scheme_performance->save();
-                                        $uom = 1;
-                                        $distance_to_measure = 10;
-                                        $result = "true";
 
-                                        $duplicate_scheme_perfomamce_details = array();
-                                        if ($scheme_performance->status == 2) {
-                                            $duplicate_scheme_perfomamce_details = $duplicate_scheme_perfomamce->insert_mathcingperformance($scheme_performance->scheme_performance_id);
-                                            // return  $duplicate_scheme_perfomamce->insert_mathcingperformance(9,$result);
+                                        /* for duplicacy */
+                                        if($check_duplicacy_while_import)
+                                        {
+                                            if ($scheme_performance->status == 2) {
+                                                $duplicate_scheme_perfomamce_details = $duplicate_scheme_perfomamce->insert_mathcingperformance($scheme_performance->scheme_performance_id);
+                                            }
                                         }
-                                        // echo "dfdfdfdf";
-                                        // print_r($duplicate_scheme_perfomamce_details);
-                                        // exit;
+                                        /* for duplicay ends */
                                     }
                                 } else {  /* Else find id and error write on the notepad */
                                     $noOfFails++;

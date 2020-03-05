@@ -107,7 +107,7 @@ class SchemeReviewDuplicateDataCheckController extends Controller
             ->where('scheme_performance.scheme_asset_id', $scheme_asset_id_selected)
             ->whereIn('scheme_performance.scheme_id', $scheme_ids_selected)
             ->whereIn('scheme_performance.year_id', $year_ids_selected)
-            // ->where('scheme_performance.scheme_performance_id', 40)
+            // ->whereIn('scheme_performance.scheme_performance_id', [119, 120])
             ->get();
         $performance_datas_to_test = SchemePerformance::LeftJoin('scheme_assets', 'scheme_performance.scheme_asset_id', '=', 'scheme_assets.scheme_asset_id')
             ->LeftJoin('geo_structure', 'scheme_performance.panchayat_id', '=', 'geo_structure.geo_id')
@@ -116,7 +116,7 @@ class SchemeReviewDuplicateDataCheckController extends Controller
             ->select('scheme_performance.*', 'scheme_assets.scheme_asset_name', 'geo_structure.geo_name as panchayat_name', 'year.year_value', 'scheme_structure.scheme_short_name', 'scheme_structure.scheme_name', 'scheme_structure.scheme_is', 'scheme_structure.scheme_map_marker', 'scheme_structure.attributes as scheme_attributes')
             ->whereIn('scheme_performance.panchayat_id', $panchayat_ids_selected)
             ->where('scheme_performance.scheme_asset_id', $scheme_asset_id_selected)
-            // ->where('scheme_performance.scheme_performance_id', 41)
+            // ->whereIn('scheme_performance.scheme_performance_id', [119, 120])
             ->get();
 
         /* 
@@ -275,6 +275,7 @@ class SchemeReviewDuplicateDataCheckController extends Controller
                         else {
                             if ($this->test_distance_if_any($coordinates_selected, $coordinates_to_test, 1000)) { // to find data that are close (1KM)
                                 $percentage = $this->check_duplicacy_by_polygon($coordinates_selected, $coordinates_to_test, $distance_to_measure); // will return chances in percentage
+                                // echo $percentage."\n";
                                 if($percentage>80){ // greater than 80% is assigned as duplicate
                                     array_push($datas_tmp, $performance_data_to_test);
                                     $found = true;
@@ -306,123 +307,153 @@ class SchemeReviewDuplicateDataCheckController extends Controller
         // data received
         // $coordinates_selected_datas;
         // $coordinates_to_test_datas;
-
-        $left_right_coordinates = [];
-        for($i=0;$i<count($coordinates_selected_datas);$i++){
-            if($i==0 || $i==(count($coordinates_selected_datas)-1)){
-                if($i==0){
-                    $coordinate_start = new Coordinate($coordinates_selected_datas[$i]["latitude"], $coordinates_selected_datas[$i]["longitude"]);
-                    $coordinate_end = new Coordinate($coordinates_selected_datas[$i+1]["latitude"], $coordinates_selected_datas[$i+1]["longitude"]);
-                }
-                else
-                {
-                    $coordinate_start = new Coordinate($coordinates_selected_datas[$i]["latitude"], $coordinates_selected_datas[$i]["longitude"]);
-                    $coordinate_end = new Coordinate($coordinates_selected_datas[$i-1]["latitude"], $coordinates_selected_datas[$i-1]["longitude"]);
-                }
-
-                $bearingCalculator = new BearingSpherical();
-                $bearing_angle = $bearingCalculator->calculateBearing($coordinate_start, $coordinate_end);
-
-                // find left, right coordinates
-                $angle_left = $angle_right = 0;
-                // left
-                $angle_left = $bearing_angle - 90;
-                if($angle_left<0){
-                    $angle_left = 360+($angle_left);
-                }
-                // right
-                $angle_right = $bearing_angle + 90;
-                if($angle_right>360){
-                    $angle_right = $tmp-360;
-                }
-
-                $BearingSpherical = new BearingSpherical();
-                $coordinates_left = $BearingSpherical->calculateDestination($coordinate_start, $angle_left, $distance_to_measure);
-                $coordinates_right = $BearingSpherical->calculateDestination($coordinate_start, $angle_right, $distance_to_measure);
-                $tmp_left = explode(',', $coordinates_left->format(new DecimalDegrees(',',6)));
-                $tmp_right = explode(',', $coordinates_right->format(new DecimalDegrees(',',6)));
-                $left_right_coordinates[] = [
-                    ["latitude"=>$tmp_left[0],"longitude"=>$tmp_left[1]],
-                    ["latitude"=>$tmp_right[0],"longitude"=>$tmp_right[1]]
-                ];
+        $percentage = [];
+        for($test_case=1;$test_case<=2;$test_case++)
+        {
+            if($test_case==2){ // reverse testing
+                $tmp_coordinates_tmp = $coordinates_selected_datas;
+                $coordinates_selected_datas = $coordinates_to_test_datas;
+                $coordinates_to_test_datas = $tmp_coordinates_tmp;
             }
-            else{
-                $coordinate_start = new Coordinate($coordinates_selected_datas[$i-1]["latitude"], $coordinates_selected_datas[$i-1]["longitude"]);
-                $coordinate_center = new Coordinate($coordinates_selected_datas[$i]["latitude"], $coordinates_selected_datas[$i]["longitude"]);
-                $coordinate_end = new Coordinate($coordinates_selected_datas[$i+1]["latitude"], $coordinates_selected_datas[$i+1]["longitude"]);
-                $bearingCalculator = new BearingSpherical();
-                $bearing_angle_1 = $bearingCalculator->calculateBearing($coordinate_center, $coordinate_start);
-                $bearing_angle_2 = $bearingCalculator->calculateBearing($coordinate_center, $coordinate_end);
 
-                // find left, right coordinates
-                if($bearing_angle_1>$bearing_angle_2){
-                    $angle_right = (($bearing_angle_1-$bearing_angle_2)/2)+$bearing_angle_2;
-                    if($angle_right>180){
-                        $angle_left = $angle_right - 180;
+            $left_right_coordinates = [];
+            for($i=0;$i<count($coordinates_selected_datas);$i++){
+                if($i==0 || $i==(count($coordinates_selected_datas)-1)){
+                    if($i==0){ // first point
+                        $coordinate_start = new Coordinate($coordinates_selected_datas[$i]["latitude"], $coordinates_selected_datas[$i]["longitude"]);
+                        $coordinate_end = new Coordinate($coordinates_selected_datas[$i+1]["latitude"], $coordinates_selected_datas[$i+1]["longitude"]);
+                        // to change start point, from distance_to_measure backward
+                        $distance_tmp = $this->get_distance($coordinates_selected_datas[$i]["latitude"], $coordinates_selected_datas[$i]["longitude"], $coordinates_selected_datas[$i+1]["latitude"], $coordinates_selected_datas[$i+1]["longitude"]);
+                        $bearing_angle_tmp = $this->get_angle($coordinates_selected_datas[$i]["latitude"], $coordinates_selected_datas[$i]["longitude"], $coordinates_selected_datas[$i+1]["latitude"], $coordinates_selected_datas[$i+1]["longitude"]);
+                        $bearingSpherical = new BearingSpherical();
+                        $destination_1 = $bearingSpherical->calculateDestination($coordinate_end, $bearing_angle_tmp, ($distance_tmp + $distance_to_measure));
+                        $tmp_coordinates = explode(',', $destination_1->format(new DecimalDegrees(',',6)));
+                        $coordinate_start = new Coordinate($tmp_coordinates[0], $tmp_coordinates[1]);
                     }
-                    else{
-                        $angle_left = $angle_right + 180;
+                    else // last point
+                    {
+                        $coordinate_start = new Coordinate($coordinates_selected_datas[$i]["latitude"], $coordinates_selected_datas[$i]["longitude"]);
+                        $coordinate_end = new Coordinate($coordinates_selected_datas[$i-1]["latitude"], $coordinates_selected_datas[$i-1]["longitude"]);
+                        // to change start point, from distance_to_measure backward
+                        $distance_tmp = $this->get_distance($coordinates_selected_datas[$i]["latitude"], $coordinates_selected_datas[$i]["longitude"], $coordinates_selected_datas[$i-1]["latitude"], $coordinates_selected_datas[$i-1]["longitude"]);
+                        $bearing_angle_tmp = $this->get_angle($coordinates_selected_datas[$i]["latitude"], $coordinates_selected_datas[$i]["longitude"], $coordinates_selected_datas[$i-1]["latitude"], $coordinates_selected_datas[$i-1]["longitude"]);
+                        $bearingSpherical = new BearingSpherical();
+                        $destination_1 = $bearingSpherical->calculateDestination($coordinate_end, $bearing_angle_tmp, ($distance_tmp + $distance_to_measure));
+                        $tmp_coordinates = explode(',', $destination_1->format(new DecimalDegrees(',',6)));
+                        $coordinate_start = new Coordinate($tmp_coordinates[0], $tmp_coordinates[1]);
                     }
+
+                    $bearingCalculator = new BearingSpherical();
+                    $bearing_angle = $bearingCalculator->calculateBearing($coordinate_start, $coordinate_end);
+
+                    // find left, right coordinates
+                    $angle_left = $angle_right = 0;
+                    // left
+                    $angle_left = $bearing_angle - 90;
+                    if($angle_left<0){
+                        $angle_left = 360+($angle_left);
+                    }
+                    // right
+                    $angle_right = $bearing_angle + 90;
+                    if($angle_right>360){
+                        $angle_right = $tmp-360;
+                    }
+
+                    $BearingSpherical = new BearingSpherical();
+                    $coordinates_left = $BearingSpherical->calculateDestination($coordinate_start, $angle_left, $distance_to_measure);
+                    $coordinates_right = $BearingSpherical->calculateDestination($coordinate_start, $angle_right, $distance_to_measure);
+                    $tmp_left = explode(',', $coordinates_left->format(new DecimalDegrees(',',6)));
+                    $tmp_right = explode(',', $coordinates_right->format(new DecimalDegrees(',',6)));
+                    $left_right_coordinates[] = [
+                        ["latitude"=>$tmp_left[0],"longitude"=>$tmp_left[1]],
+                        ["latitude"=>$tmp_right[0],"longitude"=>$tmp_right[1]]
+                    ];
                 }
                 else{
-                    $angle_left = (($bearing_angle_2-$bearing_angle_1)/2)+$bearing_angle_1;
-                    if($angle_left>180){
-                        $angle_right = $angle_left - 180;
+                    $coordinate_start = new Coordinate($coordinates_selected_datas[$i-1]["latitude"], $coordinates_selected_datas[$i-1]["longitude"]);
+                    $coordinate_center = new Coordinate($coordinates_selected_datas[$i]["latitude"], $coordinates_selected_datas[$i]["longitude"]);
+                    $coordinate_end = new Coordinate($coordinates_selected_datas[$i+1]["latitude"], $coordinates_selected_datas[$i+1]["longitude"]);
+                    $bearingCalculator = new BearingSpherical();
+                    $bearing_angle_1 = $bearingCalculator->calculateBearing($coordinate_center, $coordinate_start);
+                    $bearing_angle_2 = $bearingCalculator->calculateBearing($coordinate_center, $coordinate_end);
+
+                    // find left, right coordinates
+                    if($bearing_angle_1>$bearing_angle_2){
+                        $angle_right = (($bearing_angle_1-$bearing_angle_2)/2)+$bearing_angle_2;
+                        if($angle_right>180){
+                            $angle_left = $angle_right - 180;
+                        }
+                        else{
+                            $angle_left = $angle_right + 180;
+                        }
                     }
                     else{
-                        $angle_right = $angle_left + 180;
+                        $angle_left = (($bearing_angle_2-$bearing_angle_1)/2)+$bearing_angle_1;
+                        if($angle_left>180){
+                            $angle_right = $angle_left - 180;
+                        }
+                        else{
+                            $angle_right = $angle_left + 180;
+                        }
                     }
+                    
+                    $BearingSpherical = new BearingSpherical();
+                    $coordinates_left = $BearingSpherical->calculateDestination($coordinate_center, $angle_left, $distance_to_measure);
+                    $coordinates_right = $BearingSpherical->calculateDestination($coordinate_center, $angle_right, $distance_to_measure);
+                    $tmp_left = explode(',', $coordinates_left->format(new DecimalDegrees(',',6)));
+                    $tmp_right = explode(',', $coordinates_right->format(new DecimalDegrees(',',6)));
+                    $left_right_coordinates[] = [
+                        ["latitude"=>$tmp_left[0],"longitude"=>$tmp_left[1]],
+                        ["latitude"=>$tmp_right[0],"longitude"=>$tmp_right[1]]
+                    ];
                 }
-                
-                $BearingSpherical = new BearingSpherical();
-                $coordinates_left = $BearingSpherical->calculateDestination($coordinate_center, $angle_left, $distance_to_measure);
-                $coordinates_right = $BearingSpherical->calculateDestination($coordinate_center, $angle_right, $distance_to_measure);
-                $tmp_left = explode(',', $coordinates_left->format(new DecimalDegrees(',',6)));
-                $tmp_right = explode(',', $coordinates_right->format(new DecimalDegrees(',',6)));
-                $left_right_coordinates[] = [
-                    ["latitude"=>$tmp_left[0],"longitude"=>$tmp_left[1]],
-                    ["latitude"=>$tmp_right[0],"longitude"=>$tmp_right[1]]
-                ];
             }
-        }
-        // print_r($coordinates_polygon);
-        $coordinates_polygon = [];
-        for($i=0;$i<count($left_right_coordinates);$i++){
-            if($i==0||$i==count($left_right_coordinates)-1)
-            {
-                // echo "{lat: ".implode(', lng: ',$left_right_coordinates[$i][0])."},\n";
-                // echo "{lat: ".implode(', lng: ',$left_right_coordinates[$i][1])."},\n";
-                $coordinates_polygon[] = $left_right_coordinates[$i][0];
-                $coordinates_polygon[] = $left_right_coordinates[$i][1];
+            // print_r($coordinates_polygon);
+            $coordinates_polygon = [];
+            for($i=0;$i<count($left_right_coordinates);$i++){
+                if($i==0||$i==count($left_right_coordinates)-1)
+                {
+                    // echo "{lat: ".implode(', lng: ',$left_right_coordinates[$i][0])."},\n";
+                    // echo "{lat: ".implode(', lng: ',$left_right_coordinates[$i][1])."},\n";
+                    $coordinates_polygon[] = $left_right_coordinates[$i][0];
+                    $coordinates_polygon[] = $left_right_coordinates[$i][1];
+                }
+                else{
+                    // echo "{lat: ".implode(', lng: ',$left_right_coordinates[$i][1])."},\n";
+                    $coordinates_polygon[] = $left_right_coordinates[$i][1];
+                }
             }
-            else{
-                // echo "{lat: ".implode(', lng: ',$left_right_coordinates[$i][1])."},\n";
-                $coordinates_polygon[] = $left_right_coordinates[$i][1];
+            for($j=(count($left_right_coordinates)-2);$j>0;$j--){
+                // echo "{lat: ".implode(', lng: ',$left_right_coordinates[$j][0])."},\n";
+                $coordinates_polygon[] = $left_right_coordinates[$j][0];
             }
-        }
-        for($j=(count($left_right_coordinates)-2);$j>0;$j--){
-            // echo "{lat: ".implode(', lng: ',$left_right_coordinates[$j][0])."},\n";
-            $coordinates_polygon[] = $left_right_coordinates[$j][0];
-        }
 
 
 
-        // draw polygon
-        $geofence = new Polygon();
-        for($i=0;$i<count($coordinates_polygon);$i++){
-            $geofence->addPoint(new Coordinate($coordinates_polygon[$i]["latitude"],$coordinates_polygon[$i]["longitude"]));
-        }
-        // testing inside or not
-        $inside_index = 0;
-        for($i=0;$i<count($coordinates_to_test_datas);$i++){
-            $insidePoint = new Coordinate($coordinates_to_test_datas[$i]["latitude"], $coordinates_to_test_datas[$i]["longitude"]);
-            if($geofence->contains($insidePoint)){
-                $inside_index += 1;
+            // draw polygon
+            $geofence = new Polygon();
+            for($i=0;$i<count($coordinates_polygon);$i++){
+                $geofence->addPoint(new Coordinate($coordinates_polygon[$i]["latitude"],$coordinates_polygon[$i]["longitude"]));
             }
+            // testing inside or not
+            $inside_index = 0;
+            for($i=0;$i<count($coordinates_to_test_datas);$i++){
+                $insidePoint = new Coordinate($coordinates_to_test_datas[$i]["latitude"], $coordinates_to_test_datas[$i]["longitude"]);
+                if($geofence->contains($insidePoint)){
+                    $inside_index += 1;
+                }
+            }
+            // calculating percentage
+            $percentage_tmp = ($inside_index / count($coordinates_to_test_datas))*100;
+            $percentage[] = $percentage_tmp;
         }
-        // calculating percentage
-        $percentage = ($inside_index / count($coordinates_to_test_datas))*100;
-        return $percentage;
+
+        if($percentage[0]>$percentage[1]){
+            return $percentage[0];
+        }
+        else{
+            return $percentage[1];
+        }
     }
 
     // test if any point is within 1KM (1000m) from selected
@@ -450,10 +481,21 @@ class SchemeReviewDuplicateDataCheckController extends Controller
         return $coordinate1->getDistance($coordinate2, new Haversine());
     }
 
+    public function get_angle($lat1, $long1, $lat2, $long2){
+        $coordinate_start = new Coordinate($lat1, $long1);
+        $coordinate_end = new Coordinate($lat2, $long2);
+        $bearingCalculator = new BearingSpherical();
+        return $bearingCalculator->calculateBearing($coordinate_end, $coordinate_start);
+    }
+
 
     // during import, and performance data manual entry
     public function get_duplicate_scheme_perfomamce($id)
     {
+        // datas to send
+        $duplicate_datas = [];
+
+
         $performance_datas_selected = SchemePerformance::where('scheme_performance.scheme_performance_id', $id)
             ->select('scheme_performance_id','coordinates','panchayat_id','scheme_asset_id')
             ->get();
@@ -467,9 +509,8 @@ class SchemeReviewDuplicateDataCheckController extends Controller
         $performance_datas_to_test = SchemePerformance::where('panchayat_id', $panchayat_id)
             ->where('scheme_asset_id', $scheme_asset_id)
             ->select('scheme_performance_id','coordinates','panchayat_id','scheme_asset_id')
+            // ->where('scheme_performance_id', 119)
             ->get();
-
-        $delete = SchemePerformance::where('scheme_performance_id', $id)->delete();
 
         /* 
         actual testing started
@@ -483,7 +524,6 @@ class SchemeReviewDuplicateDataCheckController extends Controller
                 foreach ($performance_datas_to_test as $performance_data_to_test) {
                     $coordinates_to_test = unserialize($performance_data_to_test->coordinates);
                     if (count($coordinates_to_test) > 0 && $performance_data_selected->scheme_performance_id != $performance_data_to_test->scheme_performance_id) {
-                        echo "ID: ".$performance_data_to_test->scheme_performance_id."<br/>";
                         /* Testing duplicacy */
                         if (count($coordinates_selected) == 1 || count($coordinates_to_test) == 1) {
                             $distance = $this->get_distance($coordinates_selected[0]["latitude"], $coordinates_selected[0]["longitude"], $coordinates_to_test[0]["latitude"], $coordinates_to_test[0]["longitude"]);
@@ -496,10 +536,8 @@ class SchemeReviewDuplicateDataCheckController extends Controller
                         } 
                         else {
                             if ($this->test_distance_if_any($coordinates_selected, $coordinates_to_test, 1000)) { // to find data that are close (1KM)
-                                echo "inside 1 km<br/>";
                                 $percentage = $this->check_duplicacy_by_polygon($coordinates_selected, $coordinates_to_test, $distance_to_measure); // will return chances in percentage
                                 if($percentage>80){ // greater than 80% is assigned as duplicate
-                                    echo $percentage."dfh<br/>";
                                     array_push($datas_tmp, $performance_data_to_test);
                                     $found = true;
                                 }
@@ -523,8 +561,6 @@ class SchemeReviewDuplicateDataCheckController extends Controller
             $response = "no_data";
         }
 
-        print_r($duplicate_datas);
-
         return ["duplicate_datas" => $duplicate_datas, "response" => $response, 'count' => count($duplicate_datas)];
     }
 
@@ -532,34 +568,39 @@ class SchemeReviewDuplicateDataCheckController extends Controller
     {
         $duplicate_datas_record = $this->get_duplicate_scheme_perfomamce($id);
 
-        echo "<pre>";
-        print_r($duplicate_datas_record);
-        exit;
-
-        $temp_matching_performance_id=array();
+        $matching_performance_ids=array();
         if($duplicate_datas_record['response']=="success")
         {
             foreach($duplicate_datas_record['duplicate_datas'][0] as $key_duplicate=>$value_duplicate)
             {
-                $temp_matching_performance_id[]=$value_duplicate['scheme_performance_id'];
+                $matching_performance_ids[]=$value_duplicate['scheme_performance_id'];
             }
-            if(count($temp_matching_performance_id)>1)
+            if(count($matching_performance_ids)>0)
             {
-                $matching_performance_id=array_slice($temp_matching_performance_id,1);
-                if ($result == "true") {
-                    $SchemePerformance_deatails = SchemePerformance::where('scheme_performance_id', $id)->first();
-                    $CheckMatchingPerformance = new CheckMatchingPerformance();
-                    $CheckMatchingPerformance->scheme_performance_id = $id;
-                    $CheckMatchingPerformance->matching_performance_id =implode(",",$matching_performance_id) ?? "";
-                    $CheckMatchingPerformance->probable_duplicate=implode(",",$matching_performance_id)??"";
-                    $CheckMatchingPerformance->status = $SchemePerformance_deatails->status;
-                    $CheckMatchingPerformance->created_by = Auth::user()->id;
-                    $CheckMatchingPerformance->updated_by = Auth::user()->id;
-                    $CheckMatchingPerformance->save();
+                $matching_performance_id= array_slice($matching_performance_ids, 1); // getting all matching ids, except first (itself)
+                $probable_duplicate= array_slice($matching_performance_ids, 1); // getting all matching ids, except first (itself)
+                $not_duplicate = [];
+                $duplicate = [];
+
+                $CheckMatchingPerformance = new CheckMatchingPerformance();
+
+                // checking if already havce entry
+                if($CheckMatchingPerformance->where('scheme_performance_id', $id)->first()){
+                    $CheckMatchingPerformance = $CheckMatchingPerformance->find($CheckMatchingPerformance->where('scheme_performance_id', $id)->first()->id);
                 }
-                return ["CheckMatchingPerformance" => $CheckMatchingPerformance,"message"=>"data Found"];
+
+                $CheckMatchingPerformance->scheme_performance_id = $id;
+                $CheckMatchingPerformance->matching_performance_id = implode(",",$matching_performance_id) ?? NULL;
+                $CheckMatchingPerformance->probable_duplicate= implode(",",$probable_duplicate) ?? NULL;
+                $CheckMatchingPerformance->not_duplicate= implode(",",$not_duplicate) ?? NULL;
+                $CheckMatchingPerformance->duplicate= implode(",",$duplicate) ?? NULL;
+                $CheckMatchingPerformance->status = 0;
+                $CheckMatchingPerformance->created_by = Auth::user()->id;
+                $CheckMatchingPerformance->updated_by = Auth::user()->id;
+                $CheckMatchingPerformance->save();
+                return ["message"=>"data_found"];
             }
         }
-        return ["CheckMatchingPerformance" => "No Found","message"=>"data Not Found"];
+        return ["message"=>"data_not_found"];
     }
 }

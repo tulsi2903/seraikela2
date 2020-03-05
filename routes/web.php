@@ -257,16 +257,23 @@ Route::post('scheme_performance/savebl_pl_connectivity','SchemePerformanceContro
 Route::get('scheme-performance/check_matching_erformance/{id}/{result}','SchemeReviewDuplicateDataCheckController@insert_mathcingperformance');
 
 Route::get('matching-schemes','CheckMatchingPerformanceController@index');
-Route::get('get/matching-schemes/details/{id}','CheckMatchingPerformanceController@get_matching_entries');
-Route::post('scheme_performance/status_update','CheckMatchingPerformanceController@get_data');
-Route::get('matching-schemes/get-undo-datas','CheckMatchingPerformanceController@undo_results');
-Route::get('matching-schemes/view','CheckMatchingPerformanceController@view');
-// Route::post('matching-schemes/view-searched-results','CheckMatchingPerformanceController@search_datas');
-Route::get('fetch/matching-schemes/details','CheckMatchingPerformanceController@search_datas');
-Route::get('undo/matching-scheme/data','CheckMatchingPerformanceController@get_undo_datas');
-Route::get('status-duplicate/change/matching-scheme/data','CheckMatchingPerformanceController@status_duplicate');
-Route::get('status-not-duplicate/change/matching-scheme/data','CheckMatchingPerformanceController@status_not_duplicate');
-Route::get('fetch/matching-schemes/{id}','CheckMatchingPerformanceController@get_matching_entries_view');
+// Route::get('get/matching-schemes/details','CheckMatchingPerformanceController@get_matching_entries');
+// Route::post('scheme_performance/status_update','CheckMatchingPerformanceController@get_data');
+// Route::get('matching-schemes/get-undo-datas','CheckMatchingPerformanceController@undo_results');
+// Route::get('matching-schemes/view','CheckMatchingPerformanceController@view');
+// // Route::post('matching-schemes/view-searched-results','CheckMatchingPerformanceController@search_datas');
+// Route::get('fetch/matching-schemes/details','CheckMatchingPerformanceController@search_datas');
+// Route::get('undo/matching-scheme/data','CheckMatchingPerformanceController@get_undo_datas');
+// Route::get('status-duplicate/change/matching-scheme/data','CheckMatchingPerformanceController@status_duplicate');
+// Route::get('status-not-duplicate/change/matching-scheme/data','CheckMatchingPerformanceController@status_not_duplicate');
+// Route::get('fetch/matching-schemes/{id}','CheckMatchingPerformanceController@get_matching_entries_view');
+
+// redo
+Route::get('matching-scheme/get-all-matching-datas', 'CheckMatchingPerformanceController@get_all_matching_datas');
+Route::get('matching-scheme/assign-to', 'CheckMatchingPerformanceController@assign_to');
+// Route::get('matching-scheme/assign-to/duplicate', 'CheckMatchingPerformanceController@assign_to_duplicate');
+// Route::get('matching-scheme/assign-to/not_duplicate', 'CheckMatchingPerformanceController@assign_to_not_duplicate');
+// Route::get('matching-scheme/assign-to/undo', 'CheckMatchingPerformanceController@assign_to_undo');
 
 
 /* scheme review */

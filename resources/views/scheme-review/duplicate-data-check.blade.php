@@ -397,7 +397,7 @@
                     <div id="marquee" style="color: black">
                     </div>
                     <hr/>
-                    <label for="">Block<span style="color:red;margin-left:5px;">*</span></label>
+                    <label for="">Select Panchayat<span style="color:red;margin-left:5px;">*</span></label>
                     <div class="map-content-all">
                         <div class="block-map-content active">
                             <svg viewBox="0 0 739 752" stroke-linecap="round" stroke-linejoin="round">
