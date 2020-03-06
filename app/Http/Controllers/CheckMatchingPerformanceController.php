@@ -36,13 +36,27 @@ class CheckMatchingPerformanceController extends Controller
                ->leftJoin('scheme_assets', 'scheme_performance.scheme_asset_id', '=', 'scheme_assets.scheme_asset_id')
                ->leftJoin('scheme_structure', 'scheme_performance.scheme_id', '=', 'scheme_structure.scheme_id')
                ->leftJoin('geo_structure', 'scheme_performance.block_id', '=', 'geo_structure.geo_id')
-               ->select('chck_matching_performance.*', 'scheme_performance.scheme_performance_id', 'scheme_performance.attribute', 'scheme_performance.panchayat_id as panchayat_id', 'year.year_value', 'scheme_assets.scheme_asset_name', 'scheme_structure.scheme_name', 'scheme_structure.scheme_short_name', 'geo_structure.geo_name')
+               ->select('chck_matching_performance.*', 'scheme_performance.scheme_performance_id', 'scheme_performance.attribute', 'scheme_performance.panchayat_id as panchayat_id', 'year.year_value', 'scheme_assets.scheme_asset_name', 'scheme_structure.scheme_name', 'scheme_structure.scheme_short_name', 'scheme_structure.attributes as scheme_attributes', 'geo_structure.geo_name')
                ->orderBy('scheme_performance.scheme_id', 'desc')
                ->get();
           foreach ($datas as $data) {
                //panchayat data
                $tmp = GeoStructure::select('geo_name')->where('geo_id', $data['panchayat_id'])->first();
                $data->panchayat_name = $tmp->geo_name;
+
+               $attributes = unserialize($data->attribute);
+               $scheme_attributes = unserialize($data->scheme_attributes); // getting attrubutes
+               $scheme_attr_simplified = [];
+               foreach ($scheme_attributes as $scheme_attributes) {
+                    $scheme_attr_simplified[$scheme_attributes["id"]] = $scheme_attributes["name"];
+               }
+               $attr_string = "";
+               foreach ($attributes as $attribute) {
+                    foreach($attribute as $key=>$value){
+                         $attr_string .= $scheme_attr_simplified[$key].": ".$value.",<br/>";
+                    }
+               }
+               $data->attribute = rtrim($attr_string, ',<br/>');
           }
           return view('matching-schemes.index')->with('datas', $datas);
      }
@@ -70,7 +84,7 @@ class CheckMatchingPerformanceController extends Controller
                ->leftJoin('scheme_assets', 'scheme_performance.scheme_asset_id', '=', 'scheme_assets.scheme_asset_id')
                ->leftJoin('scheme_structure', 'scheme_performance.scheme_id', '=', 'scheme_structure.scheme_id')
                ->leftJoin('geo_structure', 'scheme_performance.block_id', '=', 'geo_structure.geo_id')
-               ->select('scheme_performance.scheme_performance_id', 'scheme_performance.attribute', 'geo_structure.geo_name as block_name ', 'scheme_performance.panchayat_id as panchayat_id', 'year.year_value', 'scheme_assets.scheme_asset_name', 'scheme_structure.scheme_name', 'scheme_structure.scheme_short_name', 'geo_structure.geo_name')
+               ->select('scheme_performance.scheme_performance_id', 'scheme_performance.attribute', 'geo_structure.geo_name as block_name ', 'scheme_performance.panchayat_id as panchayat_id', 'year.year_value', 'scheme_assets.scheme_asset_name', 'scheme_structure.scheme_name', 'scheme_structure.scheme_short_name', 'scheme_structure.attributes as scheme_attributes', 'geo_structure.geo_name')
                ->whereIn('scheme_performance_id', $tmp_matching_array)
                ->get();
 
@@ -106,6 +120,9 @@ class CheckMatchingPerformanceController extends Controller
           return ['Data' => $get_data, 'Matching' => $datas, 'tmp_matching' => $tmp_matching, 'id' => $id, 'scheme_performance_id_to_append' => $scheme_performance_id_to_append, 'append_comment' => $append_comment];
      }
 
+
+
+
      public function get_all_matching_datas(Request $request)
      {
           // $request->id is primary_key
@@ -113,28 +130,34 @@ class CheckMatchingPerformanceController extends Controller
 
           $scheme_performance_id = $check_matching_performance_datas->scheme_performance_id;
           $matching_performance_ids = explode(",", $check_matching_performance_datas->matching_performance_id);
-          $probable_duplicate = explode(",", $datas->probable_duplicate);
-          $not_duplicate = explode(",", $datas->not_duplicate);
-          $duplicate = explode(",", $datas->duplicate);
+          $probable_duplicate = explode(",", $check_matching_performance_datas->probable_duplicate);
+          $not_duplicate = explode(",", $check_matching_performance_datas->not_duplicate);
+          $duplicate = explode(",", $check_matching_performance_datas->duplicate);
+          $comment = unserialize($check_matching_performance_datas->comment);
 
           $matching_performance_datas = SchemePerformance::leftJoin('year', 'scheme_performance.year_id', '=', 'year.year_id')
                ->leftJoin('scheme_assets', 'scheme_performance.scheme_asset_id', '=', 'scheme_assets.scheme_asset_id')
                ->leftJoin('scheme_structure', 'scheme_performance.scheme_id', '=', 'scheme_structure.scheme_id')
                ->leftJoin('geo_structure', 'scheme_performance.block_id', '=', 'geo_structure.geo_id')
-               ->select('scheme_performance.scheme_performance_id', 'scheme_performance.attribute', 'geo_structure.geo_name as block_name ', 'scheme_performance.panchayat_id as panchayat_id', 'year.year_value', 'scheme_assets.scheme_asset_name', 'scheme_structure.scheme_name', 'scheme_structure.scheme_short_name', 'geo_structure.geo_name')
+               ->select('scheme_performance.scheme_performance_id', 'scheme_performance.attribute', 'geo_structure.geo_name as block_name ', 'scheme_performance.panchayat_id as panchayat_id', 'year.year_value', 'scheme_assets.scheme_asset_name', 'scheme_structure.scheme_name', 'scheme_structure.scheme_short_name', 'scheme_structure.attributes as scheme_attributes', 'geo_structure.geo_name')
                ->whereIn('scheme_performance_id', $matching_performance_ids)
                ->get();
 
 
-          foreach ($matching_performance_datas as $matching_performance_data) {
+          foreach ($matching_performance_datas as $i=>$matching_performance_data) {
 
-               $tmp = GeoStructure::select('geo_name')->where('geo_id', $data['panchayat_id'])->first();
+               $tmp = GeoStructure::select('geo_name')->where('geo_id', $matching_performance_data['panchayat_id'])->first();
                $matching_performance_data->panchayat_name = $tmp->geo_name;
                $attributes = unserialize($matching_performance_data->attribute);
+               $scheme_attributes = unserialize($matching_performance_data->scheme_attributes); // getting attrubutes
+               $scheme_attr_simplified = [];
+               foreach ($scheme_attributes as $scheme_attributes) {
+                    $scheme_attr_simplified[$scheme_attributes["id"]] = $scheme_attributes["name"];
+               }
                $attr_string = "";
                foreach ($attributes as $attribute) {
                     foreach($attribute as $key=>$value){
-                         $attr_string .= $value.",<br/>";
+                         $attr_string .= $scheme_attr_simplified[$key].": ".$value.",<br/>";
                     }
                }
                $matching_performance_data->attribute = rtrim($attr_string, ',<br/>');
@@ -151,6 +174,9 @@ class CheckMatchingPerformanceController extends Controller
                else{
                     $matching_performance_data->type = 'na'; 
                }
+
+               // for comment
+               $matching_performance_data->comment = $comment[$i];
           }
 
           if(count($matching_performance_datas)>0){
@@ -162,6 +188,69 @@ class CheckMatchingPerformanceController extends Controller
 
           return ["matching_performance_datas"=>$matching_performance_datas, "response"=>$response];
           // return ['Data' => $get_data, 'Matching' => $datas, 'tmp_matching' => $tmp_matching, 'id' => $request->id, 'scheme_performance_id_to_append' => $scheme_performance_id_to_append, 'append_comment' => $append_comment];
+     }
+
+     public function assign_to(Request $request){
+          // return $request;
+
+          $response = ""; // to send back
+          $id = $request->id; // primary_key
+
+          $matching_performance_ids = $request->matching_performance_ids; // array
+          $status = $request->status; // array
+
+
+          $probable_duplicate = [];
+          $not_duplicate = [];
+          $duplicate = [];
+
+          for($i=0;$i<count($matching_performance_ids);$i++){
+               if($status[$i]=="not_duplicate"){
+                    $not_duplicate[] = $matching_performance_ids[$i];
+               }
+               else if($status[$i]=="duplicate"){
+                    $duplicate[] = $matching_performance_ids[$i];
+               }
+               else{ // == probable_duplicate or anything else
+                    $probable_duplicate[] = $matching_performance_ids[$i];
+               }
+          }
+
+
+          $update_data = new CheckMatchingPerformance;
+          $update_data = $update_data->find($id);
+          if($update_data){
+               $update_data->probable_duplicate = implode(",", $probable_duplicate);
+               $update_data->duplicate = implode(",", $duplicate);
+               $update_data->not_duplicate = implode(",", $not_duplicate);
+               $update_data->comment = serialize($request->comment);
+               if($update_data->save()){
+                    $response = "success";
+               }
+               else{
+                    $response = "error_occured";
+               }
+          }
+          else{
+               $response = "error_occured";
+          }
+
+          // deciding if all matching data are not dupliacte then actual performance data should be sanctioned
+          $to_change_status = 4; // open
+          if($matching_performance_ids == $not_duplicate){
+               $to_change_status = 2; // santioned
+          }
+          else if($matching_performance_ids == $duplicate){
+               $to_change_status = 3; // cancel
+          }
+          $scheme_performance_update = SchemePerformance::find(CheckMatchingPerformance::find($id)->scheme_performance_id);
+          if($scheme_performance_update)
+          {
+               $scheme_performance_update->status = $to_change_status; // sanctioned
+               $scheme_performance_update->save(); 
+          }
+
+          return ["response"=>$response];
      }
 
 

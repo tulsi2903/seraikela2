@@ -45,6 +45,6 @@ class UserController extends Controller
         $id = Auth::user()->id;
         $user = User::select('id','userRole','title','first_name','middle_name','last_name','email')->where('id', $id)->first();
         // $user = Auth::user();
-        return response()->json(['success' => $user]); 
+        return response()->json(['success' => $user], $this->successStatus); 
     } 
 }

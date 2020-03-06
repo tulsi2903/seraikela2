@@ -42,7 +42,9 @@ hr.new2 {
         <div class="row">
             <div class="col-12">
                 <div style="display: inline-block; width: 150px; float: left; ">
+                    @if($data->scheme_logo)
                     <img src="{{url($data->scheme_logo)}}" style="max-width: 100%;">
+                    @endif
                 </div>
                 <div style="display: inline-block; padding-left: 20px;">
                     <h2 style="color: black;">{{$data->scheme_name}} ({{$data->scheme_short_name}})</h2>
@@ -55,13 +57,28 @@ hr.new2 {
                         } else{
                             ?><i class="fas fa-dot-circle text-dark"></i>&nbsp;&nbsp;Inactive<?php
                         } ?>
-                        <br/><b>{{$phrase->spans_across_borders}}</b> <?php if($data->spans_across_borders=="1"){
-                            ?>&nbsp;&nbsp;<i class="fas fa-check-circle text-success"></i><?php
-                        } else{
-                            ?>&nbsp;&nbsp;<i class="fas fa-dot-circle text-dark"></i><?php
-                        } ?>
+                        <br/><b>{{$phrase->spans_across_borders}}:</b> 
+                        <?php 
+                            if($data->spans_across_borders=="1"){
+                                ?>&nbsp;&nbsp;<i class="fas fa-check-circle text-success"></i> Yes<?php
+                            } else{
+                                ?>&nbsp;&nbsp;<i class="fas fa-dot-circle text-dark"></i> No<?php
+                            } 
+                        ?>
                     </p>
                 </div>
+            </div>
+        </div>
+        <hr/>
+        <div class="row">
+            <div class="col-12">
+                <h4 style="color: black;">Attributes</h4 style="color: black;">
+                <?php
+                    $attributes = unserialize($data->attributes);
+                    foreach($attributes as $key=>$attribute){
+                        echo ($key+1).": ".$attribute["name"]."<br/>";
+                    }
+                ?>
             </div>
         </div>
         <hr/>

@@ -270,7 +270,7 @@ Route::get('matching-schemes','CheckMatchingPerformanceController@index');
 
 // redo
 Route::get('matching-scheme/get-all-matching-datas', 'CheckMatchingPerformanceController@get_all_matching_datas');
-Route::get('matching-scheme/assign-to', 'CheckMatchingPerformanceController@assign_to');
+Route::post('matching-scheme/assign-to', 'CheckMatchingPerformanceController@assign_to');
 // Route::get('matching-scheme/assign-to/duplicate', 'CheckMatchingPerformanceController@assign_to_duplicate');
 // Route::get('matching-scheme/assign-to/not_duplicate', 'CheckMatchingPerformanceController@assign_to_not_duplicate');
 // Route::get('matching-scheme/assign-to/undo', 'CheckMatchingPerformanceController@assign_to_undo');

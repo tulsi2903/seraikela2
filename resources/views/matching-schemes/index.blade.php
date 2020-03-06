@@ -65,6 +65,9 @@
         border-top: 1px solid rgb(165, 165, 165) !important;
         border-bottom: 1px solid rgb(165, 165, 165) !important;
     }
+    .table.dataTable{
+        border-collapse: collapse !important;
+    }
 </style>
 @endsection 
 
@@ -82,14 +85,13 @@
         <!-- <a href="{{url('matching-schemes/view')}}" class="btn btn-secondary">View Matching Schemes</a>
         <br/>
         <br/> -->
-        <table class="display table table-striped table-hover">
+        <table class="display table table-datatable table-striped table-hover">
             <thead>
                 <tr style="background: #d6dcff;color: #000;">
                     <th>#</th>
                     <th>Schemes</th>
                     <th>Year</th>
-                    <th>Block</th>
-                    <th>Panchayat</th>
+                    <th>Location</th>
                     <th>Asset</th>
                     <th>No of Matching Work Datas</th>
                     <th>Attributes</th>
@@ -103,8 +105,7 @@
                     <td>{{$count++}}</td>
                     <td>{{$data->scheme_name}}({{$data->scheme_short_name}})</td>
                     <td>{{$data->year_value}}</td>
-                    <td>{{$data->geo_name}}</td>
-                    <td>{{$data->panchayat_name}}</td>
+                    <td>Block: {{$data->geo_name}}<br/>Panchayat: {{$data->panchayat_name}}</td>
                     <td>{{$data->scheme_asset_name}}</td>
                     <td>
                         <?php $matching_array=explode(',',$data['matching_performance_id']);
@@ -112,17 +113,7 @@
                             echo $matching_count;
                         ?>
                     </td>
-                    <td>
-                        <?php   
-                            $attribute[0]=unserialize($data->attribute);
-                            $print_att;
-                            foreach($attribute[0][0] as $key_at=>$value_att)
-                            {
-                                $print_att=$value_att;
-                            }
-                        print_r( $print_att);
-                    ?>
-                    </td>
+                    <td>{!! $data->attribute !!}</td>
                     <td>
                         <a href="javascript:void(0);" class="btn btn-sm btn-secondary" onclick="get_view_data({{$data->id}})" title="Click to view duplicate work data"><i class="fas fa-eye"></i></a>
                     </td>
@@ -134,9 +125,9 @@
 
 
         <!-- View Div -->
-        <div id="duplicate-form-block" style="display: none;border: 1px solid rgb(206, 206, 206); border-radius: 5px;padding: 15px; background: linear-gradient(to top, #a5baef, #ffffff 70%, #ffffff, #ffffff 100%); margin: 15px 0 15px 0;">
+        <!-- <div id="duplicate-form-block" style="display: none;border: 1px solid rgb(206, 206, 206); border-radius: 5px;padding: 15px; background: linear-gradient(to top, #a5baef, #ffffff 70%, #ffffff, #ffffff 100%); margin: 15px 0 15px 0;">
             <h4 style="color: black;">Duplicate Work Datas</h4>
-            <form action="{{url('matching-scheme/assign-to')}}" method="POST">
+            <form action="{{url('matching-scheme/assign-to')}}" id="duplicate-form" method="POST">
                 @csrf
                 <table class="display table table-striped table-hover">
                     <thead style="background: #9ec5ff;color: #000;">
@@ -152,19 +143,58 @@
                         </tr>
                     </thead>
                     <tbody id="duplicate-form-tbody">
-                        <!-- append details -->
+                        append details
                     </tbody>
                 </table>
                 <div style="text-align: right; margin: 0 -15px -15px -15px; padding: 15px; border-top: 1px solid rgb(146, 146, 146);">
-                    <input type="text" name="id" id="to-update-data-id" value="">
-                    <button type="button" class="btn btn-secondary waves-effect" onclick="return hide_div();">Cancel</button>
+                    <input type="text" name="id" id="to-update-data-id" value="" hidden>
+                    <button type="button" class="btn btn-secondary waves-effect" onclick="reset_duplicate_form();">Cancel</button>
                     <button type="button" class="btn btn-info waves-effect waves-light" onclick="return saveData()">Save</button>
                 </div>  
             </form>
-        </div>
+        </div>-->
         <!-- End of view -->
 
 
+    </div>
+</div>
+
+<form action="{{url('matching-scheme/assign-to')}}" id="duplicate-form" method="POST">
+    <div class="modal fade" id="test-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header" style="margin-bottom: 20px;">
+                    <h4 class="modal-title">Duplicate Work Datas</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <table class="display table table-striped table-hover">
+                        <thead style="background: #9ec5ff;color: #000;">
+                            <tr>
+                                <th>#</th>
+                                <th>Schemes</th>
+                                <th>Year</th>
+                                <th>Location</th>
+                                <th>Asset</th>
+                                <th>Attributes</th>
+                                <th>Change Status</th>
+                                <th>Comment</th>
+                            </tr>
+                        </thead>
+                        <tbody id="duplicate-form-tbody">
+                            <!-- append details -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <input type="text" name="id" id="to-update-data-id" value="" hidden>
+                    <button type="button" class="btn btn-secondary waves-effect" onclick="reset_duplicate_form();">Cancel</button>
+                    <button type="button" class="btn btn-info waves-effect waves-light" onclick="return saveData()">Save</button>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -250,7 +280,7 @@
     // }
 
     function get_view_data(id) {
-        $("#duplicate-form-block").fadeOut(50); // reset
+        $("#test-modal").modal("hide"); // reset
         $("#duplicate-form-tbody").html(""); // reset
 
         $.ajax({
@@ -262,16 +292,16 @@
                 $(".custom-loader").fadeIn(150);
             },
             success: function(data) {
-                console.log(data);
+                // console.log(data);
                 var append;
                 for (var i = 0; i < data.matching_performance_datas.length; i++) {
                     append += `<tr data-type="`+data.matching_performance_datas[i].type+`">
                                 <td>
-                                    <input type="text" name="matching_performance_ids" value="`+data.matching_performance_datas[i].scheme_performance_id+`">
+                                    <input type="text" name="matching_performance_ids[]" value="`+data.matching_performance_datas[i].scheme_performance_id+`" hidden>
                                     `+(i+1)+`
                                 </td>
-                                <td>` + data.matching_performance_datas[i].year_value + `</td>
                                 <td>` + data.matching_performance_datas[i].scheme_short_name + `</td>
+                                <td>` + data.matching_performance_datas[i].year_value + `</td>
                                 <td>Block: ` + data.matching_performance_datas[i].geo_name + `<br/>Panchayat: ` + data.matching_performance_datas[i].panchayat_name + `</td>
                                 <td>` + (data.matching_performance_datas[i].scheme_asset_name || "N/A")+ `</td>
                                 <td>` + data.matching_performance_datas[i].attribute + `</td>
@@ -279,7 +309,6 @@
 
                                 append+=`
                                     <select name="status[]" class="form-control">
-                                        <option value="">--Select--</option>
                                         <option value="probable_duplicate"
                                         `;
                                         if(data.matching_performance_datas[i].type=="probable_duplicate"){
@@ -291,13 +320,13 @@
                                         if(data.matching_performance_datas[i].type=="duplicate"){
                                             append+=` selected`;
                                         }
-                                        append+=`>Duplicate Data</option>
+                                        append+=`>Duplicate</option>
                                         <option value="not_duplicate"
                                         `;
                                         if(data.matching_performance_datas[i].type=="not_duplicate"){
                                             append+=` selected`;
                                         }
-                                        append+=`>Not Duplicate Data</option>
+                                        append+=`>Not Duplicate</option>
                                     </select>
                                 `;
 
@@ -324,22 +353,22 @@
                                 // }
                     
                     append += `</td>`;
-                    append += `<td><input class="form-control" name="comment[]" value="`+(data.matching_performance_datas[i].comments || '')+`" placeholder="comment"></td>`;
+                    append += `<td><input class="form-control" name="comment[]" value="`+(data.matching_performance_datas[i].comment || '')+`" placeholder="comment"></td>`;
                 }
                 $("#duplicate-form-tbody").append(append);
                 $("#to-update-data-id").val(id);
-                $("#duplicate-form-block").slideDown(150);
+                $("#test-modal").modal("show");
                 $(".custom-loader").fadeOut(300);
             }
         });
     }
 
-    function hide_div() {
-        $("#duplicate-form-block").slideUp(300);
+    function reset_duplicate_form() {
+        $("#test-modal").modal("hide");
+        $("#duplicate-form-tbody").html("");
+        $("#to-update-data-id").val("");
     }
-
   
-   
 </script>
 <script>
     function undo_data(primary_id_value,scheme_performance_id_value,matching_id_value,e){
@@ -467,9 +496,64 @@
 
 
     function saveData(){
-        // var tr = $("#duplicate-form-tbody").find("tr");
-        
-        return true;
+        var formElement = $('#duplicate-form')[0];
+        var form_data = new FormData(formElement);
+
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        $.ajax({
+            url: "{{url('matching-scheme/assign-to')}}",
+            data: form_data,
+            method: "POST",
+            dataType: 'json',
+            processData: false,
+            contentType: false,
+            beforeSend: function (data) {
+                $(".custom-loader").fadeIn(300);
+            },
+            error: function (xhr) {
+                // console.log(xhr);
+                alert("error" + xhr.status + ", " + xhr.statusText);
+                $(".custom-loader").fadeOut(300);
+            },
+            success: function (data) {
+                console.log(data);
+                if (data.response == "success") {
+                    swal("Success!", "Successfully saved", {
+                        icon: "success",
+                        buttons: {
+                            confirm: {
+                                className: 'btn btn-success'
+                            }
+                        },
+                    }).then((ok) => {
+                        reset_duplicate_form(); // resetting form
+                        if (ok) {
+                            // document.location.reload();
+                        }
+                    });
+                }
+                else {
+                    // error occured
+                    swal("Something went wrong, please try again!", {
+                        icon: "error",
+                        buttons: {
+                            confirm: {
+                                className: 'btn btn-danger'
+                            }
+                        },
+                    });
+
+                  
+                }
+                $(".custom-loader").fadeOut(300);
+            }
+        });
+
+        return false;
     }
 </script>
 @endsection
