@@ -782,29 +782,32 @@
         var status_id = $(e).val();
         if (status_id == 2) {
             var result = "true";
-            $.ajax({
-                url: "{{url('scheme-performance/check_matching_erformance/')}}" + "/" + id + "/" + result,
-                method: "get",
-                success: function (data) {
-                    console.log(data);
-                    if (data.message == "data_found") {
-                        $(e).val("4");
-                        swal({
-                            title: 'You Cannot Do Sanction Beacause We Found Probable Duplicate',
-                            icon: 'error',
-                            buttons: {
-                                confirm: {
-                                    text: 'Ok',
-                                    className: 'btn btn-success'
-                                }
-                            }
-                        }).then((willDelete) => {
-                            // $(e).val("0");
+            /**** 
+                uncomment ajax to check duplicacy
+            ***/
+            // $.ajax({
+            //     url: "{{url('scheme-performance/check_matching_erformance/')}}" + "/" + id + "/" + result,
+            //     method: "get",
+            //     success: function (data) {
+            //         console.log(data);
+            //         if (data.message == "data_found") {
+            //             $(e).val("4");
+            //             swal({
+            //                 title: 'You Cannot Do Sanction Beacause We Found Probable Duplicate',
+            //                 icon: 'error',
+            //                 buttons: {
+            //                     confirm: {
+            //                         text: 'Ok',
+            //                         className: 'btn btn-success'
+            //                     }
+            //                 }
+            //             }).then((willDelete) => {
+            //                 // $(e).val("0");
 
-                        });
-                    }
-                }
-            });
+            //             });
+            //         }
+            //     }
+            // });
         }
         if (status_id == 1) {
             var status_readonly = $(e).closest('tr').find(".status_readonly");
