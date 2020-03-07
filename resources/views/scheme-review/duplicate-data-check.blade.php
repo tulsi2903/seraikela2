@@ -1030,10 +1030,11 @@
                         <div style="padding: 10px 10px 10px 10px;background: #e8eeff;border-radius: 5px 5px 0 0;">
                             <button class="btn btn-secondary btn-sm" onclick="closeMap()"><i class="fas fa-arrow-left"></i>&nbsp;Back to details</button>
                             <div style="float: right; padding-top: 5px; color: black;">
-                                <span class="fas fa-square" style="color: #b32b2b;"></span> In progess&nbsp;|&nbsp;
-                                <span class="fas fa-square" style="color: #36cc5e;"></span> Completed&nbsp;|&nbsp;
-                                <span class="fas fa-square" style="color: #121896;"></span> Sanctioned&nbsp;|&nbsp;
-                                <span class="fas fa-square" style="color: #404040;"></span> Cancelled
+                                <span class="fas fa-square" style="color: #59c2de;"></span> Sanctioned&nbsp;|&nbsp;
+                                <span class="fas fa-square" style="color: #428ccb;"></span> Inprogess&nbsp;|&nbsp;
+                                <span class="fas fa-square" style="color: #4aaa49;"></span> Completed&nbsp;|&nbsp;
+                                <span class="fas fa-square" style="color: #d7544c;"></span> Cancel&nbsp;|&nbsp;
+                                <span class="fas fa-square" style="color: #f0ad4d;"></span> Open
                             </div>
                         </div>
                         <div id="map-view">
@@ -1505,16 +1506,16 @@
             if (this.coordinates_details.length > 1) {   
                 var border = new google.maps.Polyline({
                     path: this.coordinates_details,
-                    strokeColor: '#191919', // border color
+                    strokeColor: this.border_color, // border color
                     strokeOpacity: 1.0,
-                    strokeWeight:  13// You can change the border weight here
+                    strokeWeight:  15// You can change the border weight here
                 });    
                 var flightPath = new google.maps.Polyline({
                     path: this.coordinates_details,
                     geodesic: true,
-                    strokeColor: this.road_color,
+                    strokeColor: this.bg_color,
                     strokeOpacity: 1.0,
-                    strokeWeight: 10,
+                    strokeWeight: 13,
                 });
 
                 for(var c=0;c<this.coordinates_details.length;c++)

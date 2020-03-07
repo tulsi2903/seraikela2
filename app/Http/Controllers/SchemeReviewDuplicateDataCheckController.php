@@ -140,17 +140,25 @@ class SchemeReviewDuplicateDataCheckController extends Controller
 
             // for status
             if ($performance_data_selected->status == 0) {
-                $performance_data_selected->status = "In progess";
-                $performance_data_selected->road_color = "#b32b2b";
+                $performance_data_selected->status = "Inprogess";
+                $performance_data_selected->bg_color = "#428ccb";
+                $performance_data_selected->border_color = "#206bab";
             } else if ($performance_data_selected->status == 1) {
                 $performance_data_selected->status = "Completed";
-                $performance_data_selected->road_color = "#36cc5e";
+                $performance_data_selected->bg_color = "#4aaa49";
+                $performance_data_selected->border_color = "#1f8b1d";
             } else if ($performance_data_selected->status == 2) {
                 $performance_data_selected->status = "Sanctioned";
-                $performance_data_selected->road_color = "#121896";
+                $performance_data_selected->bg_color = "#59c2de";
+                $performance_data_selected->border_color = "#2aa1c0";
             } else if ($performance_data_selected->status == 3) {
                 $performance_data_selected->status = "Cancelled";
-                $performance_data_selected->road_color = "#404040";
+                $performance_data_selected->bg_color = "#d7544c";
+                $performance_data_selected->border_color = "#c94037";
+            } else{ // ==4, other
+                $performance_data_selected->status = "Open";
+                $performance_data_selected->bg_color = "#f0ad4d";
+                $performance_data_selected->border_color = "#d38f2e";
             }
 
             // for attributes
@@ -209,17 +217,25 @@ class SchemeReviewDuplicateDataCheckController extends Controller
 
                         // for status
                         if ($performance_data_to_test->status == 0) {
-                            $performance_data_to_test->status = "In progess";
-                            $performance_data_to_test->road_color = "#b32b2b";
+                            $performance_data_to_test->status = "Inprogess";
+                            $performance_data_to_test->bg_color = "#428ccb";
+                            $performance_data_to_test->border_color = "#206bab";
                         } else if ($performance_data_to_test->status == 1) {
                             $performance_data_to_test->status = "Completed";
-                            $performance_data_to_test->road_color = "#36cc5e";
+                            $performance_data_to_test->bg_color = "#4aaa49";
+                            $performance_data_to_test->border_color = "#1f8b1d";
                         } else if ($performance_data_to_test->status == 2) {
                             $performance_data_to_test->status = "Sanctioned";
-                            $performance_data_to_test->road_color = "#121896";
+                            $performance_data_to_test->bg_color = "#59c2de";
+                            $performance_data_to_test->border_color = "#2aa1c0";
                         } else if ($performance_data_to_test->status == 3) {
                             $performance_data_to_test->status = "Cancelled";
-                            $performance_data_to_test->road_color = "#404040";
+                            $performance_data_to_test->bg_color = "#d7544c";
+                            $performance_data_to_test->border_color = "#c94037";
+                        } else{ // ==4, other
+                            $performance_data_to_test->status = "Open";
+                            $performance_data_to_test->bg_color = "#f0ad4d";
+                            $performance_data_to_test->border_color = "#d38f2e";
                         }
 
                         // for attributes

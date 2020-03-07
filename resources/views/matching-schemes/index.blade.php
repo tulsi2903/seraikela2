@@ -68,6 +68,22 @@
     .table.dataTable{
         border-collapse: collapse !important;
     }
+    .dataTables_wrapper.container-fluid{
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+
+    .search-form{
+        margin: -20px -20px 20px -20px;
+        padding: 15px 20px 15px 20px;
+        border-bottom: 1px solid rgb(209, 209, 209);
+        background:rgb(242, 241, 253);
+    }
+    h4.title-1{
+        color: black;
+        font-weight: bold;
+        margin-bottom: 15px;
+    }
 </style>
 @endsection 
 
@@ -82,79 +98,146 @@
         </div>
     </div>
     <div class="card-body">
-        <!-- <a href="{{url('matching-schemes/view')}}" class="btn btn-secondary">View Matching Schemes</a>
-        <br/>
-        <br/> -->
-        <table class="display table table-datatable table-striped table-hover">
-            <thead>
-                <tr style="background: #d6dcff;color: #000;">
-                    <th>#</th>
-                    <th>Schemes</th>
-                    <th>Year</th>
-                    <th>Location</th>
-                    <th>Asset</th>
-                    <th>No of Matching Work Datas</th>
-                    <th>Attributes</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <?php $count=1; ?>
-            <tbody>
-                @foreach($datas as $data)
-                <tr>
-                    <td>{{$count++}}</td>
-                    <td>{{$data->scheme_name}}({{$data->scheme_short_name}})</td>
-                    <td>{{$data->year_value}}</td>
-                    <td>Block: {{$data->geo_name}}<br/>Panchayat: {{$data->panchayat_name}}</td>
-                    <td>{{$data->scheme_asset_name}}</td>
-                    <td>
-                        <?php $matching_array=explode(',',$data['matching_performance_id']);
-                            $matching_count=count($matching_array);
-                            echo $matching_count;
-                        ?>
-                    </td>
-                    <td>{!! $data->attribute !!}</td>
-                    <td>
-                        <a href="javascript:void(0);" class="btn btn-sm btn-secondary" onclick="get_view_data({{$data->id}})" title="Click to view duplicate work data"><i class="fas fa-eye"></i></a>
-                    </td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
-
-
-
-        <!-- View Div -->
-        <!-- <div id="duplicate-form-block" style="display: none;border: 1px solid rgb(206, 206, 206); border-radius: 5px;padding: 15px; background: linear-gradient(to top, #a5baef, #ffffff 70%, #ffffff, #ffffff 100%); margin: 15px 0 15px 0;">
-            <h4 style="color: black;">Duplicate Work Datas</h4>
-            <form action="{{url('matching-scheme/assign-to')}}" id="duplicate-form" method="POST">
+        <div class="search-form">
+            <h4 class="title-1">Search Duplicate Work Datas</h4>
+            <form action="{{url('matching-schemes')}}" method="POST">
                 @csrf
-                <table class="display table table-striped table-hover">
-                    <thead style="background: #9ec5ff;color: #000;">
-                        <tr>
-                            <th>#</th>
-                            <th>Schemes</th>
-                            <th>Year</th>
-                            <th>Location</th>
-                            <th>Asset</th>
-                            <th>Attributes</th>
-                            <th>Change Status</th>
-                            <th>Comment</th>
-                        </tr>
-                    </thead>
-                    <tbody id="duplicate-form-tbody">
-                        append details
-                    </tbody>
-                </table>
-                <div style="text-align: right; margin: 0 -15px -15px -15px; padding: 15px; border-top: 1px solid rgb(146, 146, 146);">
-                    <input type="text" name="id" id="to-update-data-id" value="" hidden>
-                    <button type="button" class="btn btn-secondary waves-effect" onclick="reset_duplicate_form();">Cancel</button>
-                    <button type="button" class="btn btn-info waves-effect waves-light" onclick="return saveData()">Save</button>
-                </div>  
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <?php
+                                if(count($to_search_scheme_id)==1){
+                                    $to_search_scheme_id = $to_search_scheme_id[0];
+                                }
+                                else{
+                                    $to_search_scheme_id = 0;
+                                }
+                            ?>
+                            <label for="scheme_id">{{$phrase->scheme}}<span style="color:red;margin-left:5px;">*</span></label>
+                            <select name="scheme_id" id="scheme_id" onchange="get_scheme_value(this);" class="form-control">
+                                <option value="all">--All Schemes--</option>
+                                @foreach($scheme_datas as $scheme )
+                                    <option value="{{ $scheme->scheme_id }}" <?php if($to_search_scheme_id==$scheme->scheme_id){ echo "selected"; } ?>>({{$scheme->scheme_short_name}}) {{ $scheme->scheme_name }}</option>
+                                @endforeach
+                            </select>
+                            <div class="invalid-feedback" id="scheme_id_error_msg"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <?php
+                                if(count($to_search_year_id)==1){
+                                    $to_search_year_id = $to_search_year_id[0];
+                                }
+                                else{
+                                    $to_search_year_id = 0;
+                                }
+                            ?>
+                            <label for="year_id">{{$phrase->year}}<span style="color:red;margin-left:5px;">*</span></label>
+                            <select name="year_id" id="year_id" class="form-control">
+                                <option value="all">--All Years--</option>
+                                @foreach($year_datas as $year_data )
+                                    <option value="{{ $year_data->year_id }}" <?php if($to_search_year_id==$year_data->year_id){ echo "selected"; } ?>>{{ $year_data->year_value }}</option>
+                                @endforeach
+                            </select>
+                            <div class="invalid-feedback" id="year_id_error_msg"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <?php
+                                if(count($to_search_block_id)==1){
+                                    $to_search_block_id = $to_search_block_id[0];
+                                }
+                                else{
+                                    $to_search_block_id = 0;
+                                }
+                            ?>
+                            <label for="block_id">{{$phrase->block}}<span style="color:red;margin-left:5px;">*</span></label>
+                            <select name="block_id" id="block_id" class="form-control">
+                                <option value="all">--All Blocks--</option>
+                                @foreach( $block_datas as $block_data )
+                                    <option value="{{ $block_data->geo_id }}" <?php if($to_search_block_id==$block_data->geo_id){ echo "selected"; } ?>>{{ $block_data->geo_name }}</option>
+                                @endforeach
+                            </select>
+                            <div class="invalid-feedback" id="block_id_error_msg"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <?php
+                                if(count($to_search_panchayat_id)==1){
+                                    $to_search_panchayat_id = $to_search_panchayat_id[0];
+                                }
+                                else{
+                                    $to_search_panchayat_id = 0;
+                                }
+                            ?>
+                            <label for="panchayat_id">{{$phrase->panchayat}} <span style="color:red;margin-left:5px;">*</span></label>
+                            <select name="panchayat_id" id="panchayat_id" class="form-control">
+                                <option value="all">--All Panchayats--</option>
+                                @foreach($panchayat_datas as $panchayat_data)
+                                    <option value="{{ $panchayat_data->geo_id }}" <?php if($to_search_panchayat_id==$panchayat_data->geo_id){ echo "selected"; } ?>>{{ $panchayat_data->geo_name }}</option>
+                                @endforeach
+                            </select>
+                            <div class="invalid-feedback" id="panchayat_id_error_msg"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div style="height: 30px;"></div>
+                        <input type="text" name="search" value="yes" hidden>
+                        <button type="submit" class="btn btn-secondary go-button" onclick="search()"><i class="fas fa-search"></i>&nbsp;&nbsp;Search</button>
+                    </div>
+                </div>
+                <!--end of row-->
             </form>
-        </div>-->
-        <!-- End of view -->
+        </div>
 
+        <div class="row">
+            <div class="col-12">
+                @if(count($datas)==0)
+                    <div style="text-align: center;"><i class="fas fa-info-circle"></i> No work data to show, please refine your search queries</div>
+                @else
+                    <h4 class="title-1">Work Datas</h4>
+                    <table class="display table table-datatable table-striped table-hover">
+                        <thead>
+                            <tr style="background: #d6dcff;color: #000;">
+                                <th>#</th>
+                                <th>Schemes</th>
+                                <th>Year</th>
+                                <th>Location</th>
+                                <th>Asset</th>
+                                <th>No of Matching Work Datas</th>
+                                <th>Attributes</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <?php $count=1; ?>
+                        <tbody>
+                            @foreach($datas as $data)
+                            <tr>
+                                <td>{{$count++}}</td>
+                                <td>{{$data->scheme_name}}({{$data->scheme_short_name}})</td>
+                                <td>{{$data->year_value}}</td>
+                                <td>Block: {{$data->geo_name}}<br/>Panchayat: {{$data->panchayat_name}}</td>
+                                <td>{{$data->scheme_asset_name}}</td>
+                                <td>
+                                    <?php $matching_array=explode(',',$data['matching_performance_id']);
+                                        $matching_count=count($matching_array);
+                                        echo $matching_count;
+                                    ?>
+                                </td>
+                                <td>{!! $data->attribute !!}</td>
+                                <td>
+                                    <a href="javascript:void(0);" class="btn btn-sm btn-secondary" onclick="get_view_data({{$data->id}})" title="Click to view duplicate work data"><i class="fas fa-eye"></i>&nbsp;View</a>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                @endif
+            </div>
+        </div>
 
     </div>
 </div>
@@ -201,83 +284,44 @@
 
 
 <script>
-    // variable to use globally
-    var matching_performance_ids_count = 0;
-    var selected_performance_ids_count = 0;
 
-    // function get_view_data(id) {
-    //     $("#toggle_div").fadeOut(50); // reset
+    $(document).ready(function(){
+        $("#block_id").change(function(){
+            get_panchayat_datas();
+        });
+    });
 
-    //     $.ajax({
-    //         url: "matching-scheme/get-all-matching-datas" + "?id=" + id,
-    //         method: "GET",
-    //         contentType: 'application/json',
-    //         dataType: "json",
-    //         beforeSend: function() {
-    //             $("#dublicate_data").html("");
-    //             $("#hidden_input_for_inprogress").val("");
-    //             $("#hidden_input_for_revert").val("");
-    //             selected_inprogress = [];
-    //             selected_revert = [];
-    //             total_duplicate_record = 0;
-    //         },
-    //         success: function(data) {
-    //             // console.log(data);
-    //             if(data.Data.not_duplicate){
-    //                 selected_performance_ids_count+=data.Data.not_duplicate.split(",").length;
-    //             }  
-    //             if(data.Data.duplicate){
-    //                 selected_performance_ids_count+=data.Data.duplicate.split(",").length;
-    //             }
-    //             matching_performance_ids_count =parseInt(data.tmp_matching);
-    //             // console.log(selected_performance_ids_count+ ", " +matching_performance_ids_count);
-    //             var append;
-    //             var s_no = 0;
-    //             for (var i = 0; i < data.tmp_matching; i++) {
-    //                 s_no++;
-    //                 append += `<tr>
-    //                             <td><input type="text" name="get_scheme_performance_id" value="`+data.scheme_performance_id_to_append+`" hidden>` + s_no + `</td><td>` + data.Matching[i].year_value + `</td><td>` + data.Matching[i].geo_name + `</td>
-    //                             <td>` + data.Matching[i].panchayat_name + `</td><td>` + data.Matching[i].scheme_short_name + `</td><td>` + (data.Matching[i].scheme_asset_name || "N/A")+ `</td>
-    //                             <td>` + data.Matching[i].attribute + `</td>
-    //                             <td>
-    //                             <input type="text" name="matching_id" value="` + id + `" hidden>
-    //                             <input type="text" name="scheme_performance_id[]" value="` + data.Matching[i].scheme_performance_id + `" hidden>`;
-
-    //                         if(data.Matching[i].type=="not_duplicate"){
-    //                             append += `<span class="duplicate_msg" style="color:red;display:none;">This particular record is duplicate</span>`;
-    //                             append += `<span class="not_duplicate_msg">This particular record is not duplicate</span></a>`;
-    //                             append += `<button type="button" style="display:none;" class="btn btn-primary btn-inprogress" onclick="status_not_duplicate_matching_schemes(`+id+`,`+data.scheme_performance_id_to_append+`,`+data.Matching[i].scheme_performance_id+`,this)");">Not Duplicate</button>
-    //                             <button type="button" style="display:none;" class="btn btn-primary btn-revert" onclick="status_duplicate_matching_schemes(`+id+`,`+data.scheme_performance_id_to_append+`,`+data.Matching[i].scheme_performance_id+`,this)">Duplicate</button>`;
-    //                             append += ` &nbsp;<a href="javascript:void();" class="undo_icon_not_duplicate" onclick="undo_data(`+id+`,`+data.scheme_performance_id_to_append+`,`+data.Matching[i].scheme_performance_id+`,this);"><i class="fa fa-undo" aria-hidden="true" style="color:blue;"></i></a>`;
-    //                         }
-    //                         else if(data.Matching[i].type=="duplicate"){
-    //                             append += `<span class="duplicate_msg" style="color:red;">This particular record is duplicate</span>`;
-    //                             append += `<span class="not_duplicate_msg" style="display:none;">This particular record is not duplicate</span></a>`;
-    //                             append += `<button type="button" style="display:none;" class="btn btn-primary btn-inprogress" onclick="status_not_duplicate_matching_schemes(`+id+`,`+data.scheme_performance_id_to_append+`,`+data.Matching[i].scheme_performance_id+`,this)");">Not Duplicate</button>
-    //                             <button type="button" style="display:none;" class="btn btn-primary btn-revert" onclick="status_duplicate_matching_schemes(`+id+`,`+data.scheme_performance_id_to_append+`,`+data.Matching[i].scheme_performance_id+`,this)">Duplicate</button>`;
-    //                             append += ` &nbsp;<a href="javascript:void();" class="undo_icon_not_duplicate" onclick="undo_data(`+id+`,`+data.scheme_performance_id_to_append+`,`+data.Matching[i].scheme_performance_id+`,this);"><i class="fa fa-undo" aria-hidden="true" style="color:blue;"></i></a>`;
-    //                         }
-    //                         else{
-    //                             append += `<span class="duplicate_msg" style="color:red;display:none;">This particular record is duplicate</span>`;
-    //                             append += `<span class="not_duplicate_msg" style="display:none;">This particular record is not duplicate</span></a>`;
-    //                             append += `<button type="button"  class="btn btn-primary btn-inprogress" onclick="status_not_duplicate_matching_schemes(`+id+`,`+data.scheme_performance_id_to_append+`,`+data.Matching[i].scheme_performance_id+`,this)");">Not Duplicate</button>
-    //                             <button type="button"  class="btn btn-primary btn-revert" onclick="status_duplicate_matching_schemes(`+id+`,`+data.scheme_performance_id_to_append+`,`+data.Matching[i].scheme_performance_id+`,this)">Duplicate</button>`;
-    //                             append += ` &nbsp;<a href="javascript:void();" style="display:none;" class="undo_icon_not_duplicate" onclick="undo_data(`+id+`,`+data.scheme_performance_id_to_append+`,`+data.Matching[i].scheme_performance_id+`,this);"><i class="fa fa-undo" aria-hidden="true" style="color:blue;"></i></a>`;
-    //                         }
-                  
-    //                 append += `</td>`;
-    //                 if(data.append_comment[i]!= null){
-    //                     append += `<td><input class="form-control" name="comment[]" value="`+data.append_comment[i]+`" placeholder="comment"></td>`;
-    //                 }
-    //                 else{
-    //                     append += `<td><input class="form-control" name="comment[]" placeholder="comment"></td>`;
-    //                 }
-    //             }
-    //             $("#dublicate_data").append(append);
-    //             $("#toggle_div").slideDown(150);
-    //         }
-    //     });
-    // }
+    function get_panchayat_datas() {
+        var block_id_tmp = $("#block_id").val();
+        $("#panchayat_id").html('<option value="all">--All Panchayats--</option>');
+        if (block_id_tmp) {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                url: "{{url('scheme-performance/get-panchayat-datas')}}",
+                data: { 'block_id': block_id_tmp },
+                method: "GET",
+                contentType: 'application/json',
+                dataType: "json",
+                beforeSend: function (data) {
+                    $(".custom-loader").fadeIn(300);
+                },
+                error: function (xhr) {
+                    alert("error" + xhr.status + "," + xhr.statusText);
+                    $(".custom-loader").fadeOut(300);
+                },
+                success: function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $("#panchayat_id").append('<option value="' + data[i].geo_id + '">' + data[i].geo_name + '</option>');
+                    }
+                    $(".custom-loader").fadeOut(300);
+                }
+            });
+        }
+    }
 
     function get_view_data(id) {
         $("#test-modal").modal("hide"); // reset
@@ -329,28 +373,6 @@
                                         append+=`>Not Duplicate</option>
                                     </select>
                                 `;
-
-                                // if(data.Matching[i].type=="not_duplicate"){
-                                //     append += `<span class="duplicate_msg" style="color:red;display:none;">This particular record is duplicate</span>`;
-                                //     append += `<span class="not_duplicate_msg">This particular record is not duplicate</span></a>`;
-                                //     append += `<button type="button" style="display:none;" class="btn btn-primary btn-inprogress" onclick="status_not_duplicate_matching_schemes(`+id+`,`+data.scheme_performance_id_to_append+`,`+data.Matching[i].scheme_performance_id+`,this)");">Not Duplicate</button>
-                                //     <button type="button" style="display:none;" class="btn btn-primary btn-revert" onclick="status_duplicate_matching_schemes(`+id+`,`+data.scheme_performance_id_to_append+`,`+data.Matching[i].scheme_performance_id+`,this)">Duplicate</button>`;
-                                //     append += ` &nbsp;<a href="javascript:void();" class="undo_icon_not_duplicate" onclick="undo_data(`+id+`,`+data.scheme_performance_id_to_append+`,`+data.Matching[i].scheme_performance_id+`,this);"><i class="fa fa-undo" aria-hidden="true" style="color:blue;"></i></a>`;
-                                // }
-                                // else if(data.Matching[i].type=="duplicate"){
-                                //     append += `<span class="duplicate_msg" style="color:red;">This particular record is duplicate</span>`;
-                                //     append += `<span class="not_duplicate_msg" style="display:none;">This particular record is not duplicate</span></a>`;
-                                //     append += `<button type="button" style="display:none;" class="btn btn-primary btn-inprogress" onclick="status_not_duplicate_matching_schemes(`+id+`,`+data.scheme_performance_id_to_append+`,`+data.Matching[i].scheme_performance_id+`,this)");">Not Duplicate</button>
-                                //     <button type="button" style="display:none;" class="btn btn-primary btn-revert" onclick="status_duplicate_matching_schemes(`+id+`,`+data.scheme_performance_id_to_append+`,`+data.Matching[i].scheme_performance_id+`,this)">Duplicate</button>`;
-                                //     append += ` &nbsp;<a href="javascript:void();" class="undo_icon_not_duplicate" onclick="undo_data(`+id+`,`+data.scheme_performance_id_to_append+`,`+data.Matching[i].scheme_performance_id+`,this);"><i class="fa fa-undo" aria-hidden="true" style="color:blue;"></i></a>`;
-                                // }
-                                // else{
-                                //     append += `<span class="duplicate_msg" style="color:red;display:none;">This particular record is duplicate</span>`;
-                                //     append += `<span class="not_duplicate_msg" style="display:none;">This particular record is not duplicate</span></a>`;
-                                //     append += `<button type="button"  class="btn btn-primary btn-inprogress" onclick="status_not_duplicate_matching_schemes(`+id+`,`+data.scheme_performance_id_to_append+`,`+data.Matching[i].scheme_performance_id+`,this)");">Not Duplicate</button>
-                                //     <button type="button"  class="btn btn-primary btn-revert" onclick="status_duplicate_matching_schemes(`+id+`,`+data.scheme_performance_id_to_append+`,`+data.Matching[i].scheme_performance_id+`,this)">Duplicate</button>`;
-                                //     append += ` &nbsp;<a href="javascript:void();" style="display:none;" class="undo_icon_not_duplicate" onclick="undo_data(`+id+`,`+data.scheme_performance_id_to_append+`,`+data.Matching[i].scheme_performance_id+`,this);"><i class="fa fa-undo" aria-hidden="true" style="color:blue;"></i></a>`;
-                                // }
                     
                     append += `</td>`;
                     append += `<td><input class="form-control" name="comment[]" value="`+(data.matching_performance_datas[i].comment || '')+`" placeholder="comment"></td>`;
@@ -368,133 +390,8 @@
         $("#duplicate-form-tbody").html("");
         $("#to-update-data-id").val("");
     }
-  
-</script>
-<script>
-    function undo_data(primary_id_value,scheme_performance_id_value,matching_id_value,e){
-     
-        $.ajax({
-            url: "undo/matching-scheme/data" + "?id=" + primary_id_value + "&scheme_performance_id=" +scheme_performance_id_value + "&matching_id="+ matching_id_value,
-            method: "GET",
-            contentType: 'application/json',
-            dataType: "json",
-            beforeSend: function() {
-                // alert("hi");
-            },
-            success: function(data) {
-        
-                // console.log(data);
-                // count
-                matching_performance_ids_count = data.matching_performance_ids_count;
-                selected_performance_ids_count = data.selected_performance_ids_count;
 
-                if(data.response == true)
-                {
-                    var tr = $(e).closest("tr");
-                    $(tr).find(".undo_icon_not_duplicate").hide();
-                    $(tr).find(".duplicate_msg").hide();
-                    $(tr).find(".not_duplicate_msg").hide();
-                    $(tr).find(".btn-inprogress").show();
-                    $(tr).find(".btn-revert").show();
-                }
-            }
-        });
-    }
-</script>
-<script>
-    function status_duplicate_matching_schemes(primary_id_value,scheme_performance_id_value,matching_id_value,e)
-    {
-        $.ajax({
-            url: "status-duplicate/change/matching-scheme/data"+ "?id=" +primary_id_value+ "&scheme_performance_id=" +scheme_performance_id_value+ "&matching_id="+matching_id_value,
-            method: "GET",
-            contentType: 'application/json',
-            dataType: "json",
-            beforeSend: function(){
-
-            },
-            success:function(data){
-                // console.log(data);
-                // count
-                matching_performance_ids_count = data.matching_performance_ids_count;
-                selected_performance_ids_count = data.selected_performance_ids_count;
-
-                if(data.response == true)
-                {
-                    var tr = $(e).closest("tr");
-                    $(tr).find(".undo_icon_not_duplicate").show();
-                    $(tr).find(".duplicate_msg").show();
-                    $(tr).find(".not_duplicate_msg").hide();
-                    $(tr).find(".btn-inprogress").hide();
-                    $(tr).find(".btn-revert").hide();
-                }
-            }
-        });
-    }
-</script>
-<script>
-    function status_not_duplicate_matching_schemes(primary_id_value,scheme_performance_id_value,matching_id_value,e)
-    {
-        $.ajax({
-            url: "status-not-duplicate/change/matching-scheme/data"+ "?id=" +primary_id_value+ "&scheme_performance_id=" +scheme_performance_id_value+ "&matching_id="+matching_id_value,
-            method: "GET",
-            contentType: 'application/json',
-            dataType: "json",
-            beforeSend: function(){
-
-            },
-            success:function(data){
-                // console.log(data);
-                // count
-                matching_performance_ids_count = data.matching_performance_ids_count;
-                selected_performance_ids_count = data.selected_performance_ids_count;
-
-                if(data.response == true)
-                {
-                    var tr = $(e).closest("tr");
-                    $(tr).find(".undo_icon_not_duplicate").show();
-                    $(tr).find(".duplicate_msg").hide();
-                    $(tr).find(".not_duplicate_msg").show();
-                    $(tr).find(".btn-inprogress").hide();
-                    $(tr).find(".btn-revert").hide();
-                }
-            }
-        });
-    }
-</script>
-<script>
-    function validateForm() {
-
-        if(matching_performance_ids_count == selected_performance_ids_count){
-            $("#duplicate-form").submit();
-        } 
-        else{
-            swal({
-                title: 'Either of your status is unchecked, do you want to check it?',
-                // text: "You won't be able to revert this!",
-                icon: 'warning',
-                buttons:{
-                    cancel: {
-                        visible: true,
-                        text : 'No, cancel!',
-                        className: 'btn btn-danger'
-                    },
-                    confirm: {
-                        text : 'Yes, delete it!',
-                        className : 'btn btn-success'
-                    }
-                }
-            }).then((willDelete) => {
-                if (willDelete) {
-                    // window.location = href;
-                    
-                } else {
-                    $("#duplicate-form").submit();
-                }
-            });
-        }
-    }
-
-
+    // to finally save datas, [duplicate, not duplicate etc]
     function saveData(){
         var formElement = $('#duplicate-form')[0];
         var form_data = new FormData(formElement);

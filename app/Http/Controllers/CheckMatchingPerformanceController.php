@@ -29,13 +29,57 @@ class CheckMatchingPerformanceController extends Controller
           return ["CheckMatchingPerformance" => $CheckMatchingPerformance];
      }
 
-     public function index()
+     public function index(Request $request)
      {
+          $search = false;
+          $scheme_datas = SchemeStructure::select('scheme_id', 'scheme_name', 'scheme_short_name')->where('status', 1)->orderBy('scheme_id', 'DESC')->get(); // only independent scheme (scheme_is == 1)
+          $year_datas = Year::select('year_id', 'year_value')->where('status', 1)->orderBy('year_value', 'asc')->get();
+          $block_datas = GeoStructure::select('geo_id', 'geo_name')->orderBy('geo_name', 'asc')->where('level_id', '=', '3')->get();
+          $panchayat_datas = GeoStructure::where('bl_id', -1)->where('level_id', '=', '4')->get(); // no data, initially
+
+          $to_search_scheme_id = [0];
+          $to_search_year_id = [0];
+          $to_search_block_id = [0];
+          $to_search_panchayat_id = [0];
+          if($request->search=="yes"){
+               if($request->scheme_id=="all"){
+                    $to_search_scheme_id = $scheme_datas->pluck('scheme_id');
+               }
+               else{
+                    $to_search_scheme_id = [$request->scheme_id];
+               }
+
+               if($request->year_id=='all'){
+                    $to_search_year_id = $year_datas->pluck('year_id');
+               }
+               else{
+                    $to_search_year_id = [$request->year_id];
+               }
+
+               if($request->block_id=='all'){
+                    $to_search_panchayat_id = GeoStructure::where('level_id', '=', '4')->pluck('geo_id');
+               }
+               else{
+                    $panchayat_datas = GeoStructure::where('bl_id', $request->block_id)->where('level_id', '=', '4')->get();
+                    $to_search_block_id = [$request->block_id];
+                    if($request->panchayat_id=='all'){
+                         $to_search_panchayat_id = $panchayat_datas->pluck('geo_id');
+                    }
+                    else{
+                         $to_search_panchayat_id = [$request->panchayat_id];
+                    }
+               }
+
+          }
+
           $datas = CheckMatchingPerformance::leftJoin('scheme_performance', 'chck_matching_performance.scheme_performance_id', '=', 'scheme_performance.scheme_performance_id')
                ->leftJoin('year', 'scheme_performance.year_id', '=', 'year.year_id')
                ->leftJoin('scheme_assets', 'scheme_performance.scheme_asset_id', '=', 'scheme_assets.scheme_asset_id')
                ->leftJoin('scheme_structure', 'scheme_performance.scheme_id', '=', 'scheme_structure.scheme_id')
                ->leftJoin('geo_structure', 'scheme_performance.block_id', '=', 'geo_structure.geo_id')
+               ->whereIn('scheme_performance.scheme_id', $to_search_scheme_id)
+               ->whereIn('scheme_performance.year_id', $to_search_year_id)
+               ->whereIn('scheme_performance.panchayat_id', $to_search_panchayat_id)
                ->select('chck_matching_performance.*', 'scheme_performance.scheme_performance_id', 'scheme_performance.attribute', 'scheme_performance.panchayat_id as panchayat_id', 'year.year_value', 'scheme_assets.scheme_asset_name', 'scheme_structure.scheme_name', 'scheme_structure.scheme_short_name', 'scheme_structure.attributes as scheme_attributes', 'geo_structure.geo_name')
                ->orderBy('scheme_performance.scheme_id', 'desc')
                ->get();
@@ -58,7 +102,8 @@ class CheckMatchingPerformanceController extends Controller
                }
                $data->attribute = rtrim($attr_string, ',<br/>');
           }
-          return view('matching-schemes.index')->with('datas', $datas);
+          
+          return view('matching-schemes.index')->with(compact('datas', 'scheme_datas', 'year_datas', 'block_datas', 'panchayat_datas', 'to_search_scheme_id', 'to_search_year_id', 'to_search_block_id', 'to_search_panchayat_id'));
      }
 
      public function get_matching_entries($id = "")
@@ -121,7 +166,11 @@ class CheckMatchingPerformanceController extends Controller
      }
 
 
-
+     public function get_panchayat_datas(Request $request)
+     {
+          $datas = GeoStructure::where('bl_id', $request->block_id)->get();
+          return $datas;
+     }
 
      public function get_all_matching_datas(Request $request)
      {
@@ -308,15 +357,6 @@ class CheckMatchingPerformanceController extends Controller
 
 
           return view('matching-schemes.view')->with(compact('year_datas', 'scheme_datas', 'block_datas'));
-     }
-
-     public function get_panchayat_datas(Request $request)
-     {
-
-
-          $datas = GeoStructure::where('bl_id', $request->block_id)->get();
-
-          return $datas;
      }
 
      public function search_datas(Request $request)

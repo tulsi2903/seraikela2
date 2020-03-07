@@ -47,114 +47,120 @@
         border-bottom-left-radius: .3rem;
         margin-top: -24px;
     }
+
+    .search-block{
+        margin: -20px -20px 20px -20px;
+        padding: 15px 20px 15px 20px;
+        border-bottom: 1px solid rgb(209, 209, 209);
+        background:rgb(242, 241, 253);
+    }
+    h4.title-1{
+        color: black;
+        font-weight: bold;
+        margin-bottom: 15px;
+    }
 </style>
 @endsection
 
 @section('page-content')
 <div class="card">
-    <div class="col-md-12">
+    <div class="card-header">
+        <div class="card-head-row card-tools-still-right" style="background:#fff;">
+            <h4 class="card-title">{{$phrase->scheme_performance}}</h4>
+            <div class="card-tools">
 
-        <div class="card-header">
-            <div class="card-head-row card-tools-still-right" style="background:#fff;">
-                <h4 class="card-title">{{$phrase->scheme_performance}}</h4>
-                <div class="card-tools">
-
-                    <!-- <a href="{{url('scheme-geo-target')}}" class="btn btn-sm btn-secondary" style="float:right;"><i class="fas fa-arrow-left"></i>&nbsp;&nbsp;Back</a> -->
-                </div>
+                <!-- <a href="{{url('scheme-geo-target')}}" class="btn btn-sm btn-secondary" style="float:right;"><i class="fas fa-arrow-left"></i>&nbsp;&nbsp;Back</a> -->
             </div>
         </div>
     </div>
-    <div class="col-md-12">
-        <div class="card-body">
-            <div class="search-block">
-                <form action="{{url('scheme-performance/add-datas')}}" method="GET" onsubmit="return false;">
-                    @csrf
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="scheme_id">{{$phrase->scheme}}<span style="color:red;margin-left:5px;">*</span></label>
-                                <select name="scheme_id" id="scheme_id" onchange="get_scheme_value(this);" class="form-control">
-                                    <option value="">---Select---</option>
-                                    @foreach($scheme_datas as $scheme )
-                                    <option value="{{ $scheme->scheme_id }}">({{$scheme->scheme_short_name}}) {{ $scheme->scheme_name }}</option>
-                                    @endforeach
-                                </select>
-                                <div class="invalid-feedback" id="scheme_id_error_msg"></div>
-                            </div>
-                        </div>
-                        <div class="col-md-2">
-                            <div class="form-group">
-                                <label for="year_id">{{$phrase->year}}<span style="color:red;margin-left:5px;">*</span></label>
-                                <select name="year_id" id="year_id" class="form-control">
-                                    <option value="">---Select---</option>
-                                    @foreach($year_datas as $year_data )
-                                    <option value="{{ $year_data->year_id }}">{{ $year_data->year_value }}</option>
-                                    @endforeach
-                                </select>
-                                <div class="invalid-feedback" id="year_id_error_msg"></div>
-                            </div>
-                        </div>
-                        <div class="col-md-2">
-                            <div class="form-group">
-                                <label for="block_id">{{$phrase->block}}<span style="color:red;margin-left:5px;">*</span></label>
-                                <select name="block_id" id="block_id" class="form-control">
-                                    <option value="">---Select---</option>
-                                    @foreach( $block_datas as $block_data )
-                                    <option value="{{ $block_data->geo_id }}">{{ $block_data->geo_name }}</option>
-                                    @endforeach
-                                </select>
-                                <div class="invalid-feedback" id="block_id_error_msg"></div>
-                            </div>
-                        </div>
-                        <div class="col-md-2">
-                            <div class="form-group">
-                                <label for="panchayat_id">{{$phrase->panchayat}} <span style="color:red;margin-left:5px;">*</span></label>
-                                <select name="panchayat_id" id="panchayat_id" class="form-control">
-                                    <option value="">--Select--</option>
-                                </select>
-                                <div class="invalid-feedback" id="panchayat_id_error_msg"></div>
-                            </div>
-                        </div>
-                        <div class="col-md-2">
-                            <div style="height: 30px;"></div>
-                            <button type="button" class="btn btn-secondary go-button" onclick="go()"><i class="fas fa-search"></i>&nbsp;&nbsp;Go</button>
+
+
+    <div class="card-body">
+        <div class="search-block">
+            <form action="{{url('scheme-performance/add-datas')}}" method="GET" onsubmit="return false;">
+                @csrf
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="scheme_id">{{$phrase->scheme}}<span style="color:red;margin-left:5px;">*</span></label>
+                            <select name="scheme_id" id="scheme_id" onchange="get_scheme_value(this);" class="form-control">
+                                <option value="">---Select---</option>
+                                @foreach($scheme_datas as $scheme )
+                                <option value="{{ $scheme->scheme_id }}">({{$scheme->scheme_short_name}}) {{ $scheme->scheme_name }}</option>
+                                @endforeach
+                            </select>
+                            <div class="invalid-feedback" id="scheme_id_error_msg"></div>
                         </div>
                     </div>
-                    <!--end of row-->
-                </form>
-            </div>
-            <hr />
-            <div class="enter-datas-block" id="to_append_table" style="display: none;">
-                <!-- <button type="button" class="btn" style="margin-left:1.5%;background: #0f85e2!important;color:#fff;"><i class="fas fa-location-arrow"></i>&nbsp;&nbsp;Entered Datas</button> -->
-                <div class="card-body" style="background: #f2f6ff; border: 1px solid #a5bbf6;margin-top: -18px;">
-                    <div style="padding: 15px 0; overflow: hidden; color: black;">
-                        <!-- <div style="display: inline-block; float: left; font-size: 16px;">
-                            <b>Data Saved:</b> <span id="total_date_count"></span>
-                        </div> -->
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label for="year_id">{{$phrase->year}}<span style="color:red;margin-left:5px;">*</span></label>
+                            <select name="year_id" id="year_id" class="form-control">
+                                <option value="">---Select---</option>
+                                @foreach($year_datas as $year_data )
+                                <option value="{{ $year_data->year_id }}">{{ $year_data->year_value }}</option>
+                                @endforeach
+                            </select>
+                            <div class="invalid-feedback" id="year_id_error_msg"></div>
+                        </div>
                     </div>
-                    <div>
-                        <form action="{{url('scheme-performance/store')}}" id="savedataonschemepertable" method="POST" enctype="multipart/form-data" autocomplete="off" onsubmit="return check_performamance_status();">
-                            @csrf
-                            <table class="table">
-                                <thead id="to_append_thead" style="background: #cedcff">
-                                </thead>
-                                <tbody id="to_append_tbody">
-                                    <!-- append details -->
-                                </tbody>
-                            </table>
-                            <div style="text-align: right;">
-                                <button type="button" class="btn btn-secondary btn-sm btn-circle" onclick="appendRow()">{{$phrase->add}}&nbsp;&nbsp;<i class="fa fa-plus-circle" aria-hidden="true"></i></button>
-                            </div>
-                            <hr />
-                            <!-- hidden inputs -->
-                            <input type="hidden" name="scheme_id" id="scheme_id_hidden">
-                            <input type="hidden" name="year_id" id="year_id_hidden">
-                            <input type="hidden" name="panchayat_id" id="panchayat_id_hidden">
-                            <input type="hidden" name="to_delete" id="to_delete">
-                            <!-- hidden inputs -->
-                            <button type="button" class="btn btn-secondary" onclick="submitdatafromajaxonscheme()"><i class="fas fa-check"></i>&nbsp;&nbsp;{{$phrase->save}}</button>
-                        </form>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label for="block_id">{{$phrase->block}}<span style="color:red;margin-left:5px;">*</span></label>
+                            <select name="block_id" id="block_id" class="form-control">
+                                <option value="">---Select---</option>
+                                @foreach( $block_datas as $block_data )
+                                <option value="{{ $block_data->geo_id }}">{{ $block_data->geo_name }}</option>
+                                @endforeach
+                            </select>
+                            <div class="invalid-feedback" id="block_id_error_msg"></div>
+                        </div>
                     </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label for="panchayat_id">{{$phrase->panchayat}} <span style="color:red;margin-left:5px;">*</span></label>
+                            <select name="panchayat_id" id="panchayat_id" class="form-control">
+                                <option value="">--Select--</option>
+                            </select>
+                            <div class="invalid-feedback" id="panchayat_id_error_msg"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div style="height: 30px;"></div>
+                        <button type="button" class="btn btn-secondary go-button" onclick="go()"><i class="fas fa-search"></i>&nbsp;&nbsp;Go</button>
+                    </div>
+                </div>
+                <!--end of row-->
+            </form>
+        </div>
+
+
+        <div class="enter-datas-block" id="to_append_table" style="display: none;">
+            <!-- <button type="button" class="btn" style="margin-left:1.5%;background: #0f85e2!important;color:#fff;"><i class="fas fa-location-arrow"></i>&nbsp;&nbsp;Entered Datas</button> -->
+            <div class="card-body" style="background: #f2f6ff; border: 1px solid #a5bbf6;margin: 0 -10px 0 -10px;">
+                <h4 class="title-1">Scheme Work Datas</h4>
+                <div>
+                    <form action="{{url('scheme-performance/store')}}" id="savedataonschemepertable" method="POST" enctype="multipart/form-data" autocomplete="off" onsubmit="return check_performamance_status();">
+                        @csrf
+                        <table class="table">
+                            <thead id="to_append_thead" style="background: #cedcff">
+                            </thead>
+                            <tbody id="to_append_tbody">
+                                <!-- append details -->
+                            </tbody>
+                        </table>
+                        <div style="text-align: right;">
+                            <button type="button" class="btn btn-secondary btn-sm btn-circle" onclick="appendRow()">{{$phrase->add}}&nbsp;&nbsp;<i class="fa fa-plus-circle" aria-hidden="true"></i></button>
+                        </div>
+                        <hr />
+                        <!-- hidden inputs -->
+                        <input type="hidden" name="scheme_id" id="scheme_id_hidden">
+                        <input type="hidden" name="year_id" id="year_id_hidden">
+                        <input type="hidden" name="panchayat_id" id="panchayat_id_hidden">
+                        <input type="hidden" name="to_delete" id="to_delete">
+                        <!-- hidden inputs -->
+                        <button type="button" class="btn btn-secondary" onclick="submitdatafromajaxonscheme()"><i class="fas fa-check"></i>&nbsp;&nbsp;{{$phrase->save}}</button>
+                    </form>
                 </div>
             </div>
         </div>

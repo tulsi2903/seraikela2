@@ -256,7 +256,8 @@ Route::get('scheme-performance/get-panchayat-datas-for-borders','SchemePerforman
 Route::post('scheme_performance/savebl_pl_connectivity','SchemePerformanceController@savebl_pl_connectivity'); /* End Spans Across Borders */
 Route::get('scheme-performance/check_matching_erformance/{id}/{result}','SchemeReviewDuplicateDataCheckController@insert_mathcingperformance');
 
-Route::get('matching-schemes','CheckMatchingPerformanceController@index');
+Route::any('matching-schemes','CheckMatchingPerformanceController@index');
+Route::get('matching-schemes/get-panchayat-datas','CheckMatchingPerformanceController@get_panchayat_datas');
 // Route::get('get/matching-schemes/details','CheckMatchingPerformanceController@get_matching_entries');
 // Route::post('scheme_performance/status_update','CheckMatchingPerformanceController@get_data');
 // Route::get('matching-schemes/get-undo-datas','CheckMatchingPerformanceController@undo_results');

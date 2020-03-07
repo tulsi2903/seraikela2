@@ -440,30 +440,43 @@ class SchemeReviewController extends Controller
 
                             // for status
                             if ($performance_data->status == 0) {
-                                array_push($tabular_data_tmp, "In progess");
-                                $map_datas_tmp["status"] = "In progess";
-                                $map_datas_tmp["road_color"] = "#3232FF";
+                                array_push($tabular_data_tmp, "Inprogess");
+                                $map_datas_tmp["status"] = "Inprogess";
+                                $map_datas_tmp["bg_color"] = "#428ccb";
+                                $map_datas_tmp["border_color"] = "#206bab";
                                 if ($performance_data->connectivity_status == 1) {
                                     $map_datas_tmp["road_color"] = "#43F40B";
                                 }
                             } else if ($performance_data->status == 1) {
                                 array_push($tabular_data_tmp, "Completed");
                                 $map_datas_tmp["status"] = "Completed";
-                                $map_datas_tmp["road_color"] = "#3c3c3c";
+                                $map_datas_tmp["bg_color"] = "#4aaa49";
+                                $map_datas_tmp["border_color"] = "#1f8b1d";
                                 if ($performance_data->connectivity_status == 1) {
                                     $map_datas_tmp["road_color"] = "#43F40B";
                                 }
                             } else if ($performance_data->status == 2) {
                                 array_push($tabular_data_tmp, "Sanctioned");
                                 $map_datas_tmp["status"] = "Sanctioned";
-                                $map_datas_tmp["road_color"] = "#ed3900";
+                                $map_datas_tmp["bg_color"] = "#59c2de";
+                                $map_datas_tmp["border_color"] = "#2aa1c0";
                                 if ($performance_data->connectivity_status == 1) {
                                     $map_datas_tmp["road_color"] = "#43F40B";
                                 }
                             } else if ($performance_data->status == 3) {
-                                array_push($tabular_data_tmp, "Cancel");
-                                $map_datas_tmp["status"] = "Cancel";
-                                $map_datas_tmp["road_color"] = "#FF0000";
+                                array_push($tabular_data_tmp, "Cancelled");
+                                $map_datas_tmp["status"] = "Cancelled";
+                                $map_datas_tmp["bg_color"] = "#d7544c";
+                                $map_datas_tmp["border_color"] = "#c94037";
+                                if ($performance_data->connectivity_status == 1) {
+                                    $map_datas_tmp["road_color"] = "#43F40B";
+                                }
+                            }
+                            else{ // ==4, and other
+                                array_push($tabular_data_tmp, "Open");
+                                $map_datas_tmp["status"] = "Open";
+                                $map_datas_tmp["bg_color"] = "#f0ad4d";
+                                $map_datas_tmp["border_color"] = "#d38f2e";
                                 if ($performance_data->connectivity_status == 1) {
                                     $map_datas_tmp["road_color"] = "#43F40B";
                                 }
@@ -628,33 +641,43 @@ class SchemeReviewController extends Controller
 
             // for status
             if ($performance_data->status == 0) {
-                array_push($tabular_data_tmp, "Incomplete");
-                $map_datas_tmp["status"] = "In progess";
-                $map_datas_tmp["road_color"] = "#3232FF";
+                array_push($tabular_data_tmp, "Inprogess");
+                $map_datas_tmp["status"] = "Inprogess";
+                $map_datas_tmp["bg_color"] = "#428ccb";
+                $map_datas_tmp["border_color"] = "#206bab";
                 if ($performance_data->connectivity_status == 1) {
                     $map_datas_tmp["road_color"] = "#43F40B";
                 }
-            } 
-            else if ($performance_data->status == 1) {
+            } else if ($performance_data->status == 1) {
                 array_push($tabular_data_tmp, "Completed");
                 $map_datas_tmp["status"] = "Completed";
-                $map_datas_tmp["road_color"] = "#3c3c3c";
+                $map_datas_tmp["bg_color"] = "#4aaa49";
+                $map_datas_tmp["border_color"] = "#1f8b1d";
                 if ($performance_data->connectivity_status == 1) {
                     $map_datas_tmp["road_color"] = "#43F40B";
                 }
-            } 
-            else if ($performance_data->status == 2) {
+            } else if ($performance_data->status == 2) {
                 array_push($tabular_data_tmp, "Sanctioned");
                 $map_datas_tmp["status"] = "Sanctioned";
-                $map_datas_tmp["road_color"] = "#ed3900";
+                $map_datas_tmp["bg_color"] = "#59c2de";
+                $map_datas_tmp["border_color"] = "#2aa1c0";
                 if ($performance_data->connectivity_status == 1) {
                     $map_datas_tmp["road_color"] = "#43F40B";
                 }
-            } 
-            else if ($performance_data->status == 3) {
-                array_push($tabular_data_tmp, "Cancel");
-                $map_datas_tmp["status"] = "Cancel";
-                $map_datas_tmp["road_color"] = "#FF0000";
+            } else if ($performance_data->status == 3) {
+                array_push($tabular_data_tmp, "Cancelled");
+                $map_datas_tmp["status"] = "Cancelled";
+                $map_datas_tmp["bg_color"] = "#d7544c";
+                $map_datas_tmp["border_color"] = "#c94037";
+                if ($performance_data->connectivity_status == 1) {
+                    $map_datas_tmp["road_color"] = "#43F40B";
+                }
+            }
+            else{ // ==4, and other
+                array_push($tabular_data_tmp, "Open");
+                $map_datas_tmp["status"] = "Open";
+                $map_datas_tmp["bg_color"] = "#f0ad4d";
+                $map_datas_tmp["border_color"] = "#d38f2e";
                 if ($performance_data->connectivity_status == 1) {
                     $map_datas_tmp["road_color"] = "#43F40B";
                 }
@@ -881,6 +904,4 @@ class SchemeReviewController extends Controller
             exit;
         }
     }
-
-
 }

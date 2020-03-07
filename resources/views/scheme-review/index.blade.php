@@ -1040,7 +1040,13 @@
                     </div>
                     <!-- map-view -->
                     <div class="tab-pane fade printable-area" id="map-view-tab" role="tabpanel">
-                        <!-- <h4>Map View&nbsp;<button type="button" class="btn btn-secondary btn-sm print-button" onclick="printReview('map')">Print&nbsp;<i class="fa fa-print" aria-hidden="true"></i></button></h4> -->
+                        <div style="padding: 10px 10px 10px 10px; text-align: right; background: #e8eeff;border-radius: 5px 5px 0 0;">
+                            <span class="fas fa-square" style="color: #59c2de;"></span> Sanctioned&nbsp;|&nbsp;
+                            <span class="fas fa-square" style="color: #428ccb;"></span> Inprogess&nbsp;|&nbsp;
+                            <span class="fas fa-square" style="color: #4aaa49;"></span> Completed&nbsp;|&nbsp;
+                            <span class="fas fa-square" style="color: #d7544c;"></span> Cancel&nbsp;|&nbsp;
+                            <span class="fas fa-square" style="color: #f0ad4d;"></span> Open
+                        </div>
                         <div id="map-view">
                             <div id="mapCanvas" style="width: 100%; height: 600px; border-radius: 3px; border: 1px solid rgb(140, 140, 140); box-shadow: -2px 6px 10px 0px #00000052;"></div>
                             <div id="gallery-view-outer">
@@ -1359,7 +1365,7 @@
                 // $("#search-results-block").removeClass("active-search");
             },
             success: function (data) {
-                // console.log(data);
+                console.log(data);
                 // resetting all view's blocks/divs/inputs
                 resetTabularView();
                 resetMapView();
@@ -1623,16 +1629,16 @@
             if (this.coordinates_details.length > 1) {
                 var border = new google.maps.Polyline({
                     path: this.coordinates_details,
-                    strokeColor: '#191919', // border color
+                    strokeColor: this.border_colour, // border color
                     strokeOpacity: 1.0,
-                    strokeWeight:  13// You can change the border weight here
+                    strokeWeight:  15// You can change the border weight here
                 });         
                 var flightPath = new google.maps.Polyline({
                     path: this.coordinates_details,
                     geodesic: true,
-                    strokeColor: this.road_color,
+                    strokeColor: this.bg_color,
                     strokeOpacity: 1.0,
-                    strokeWeight: 10,
+                    strokeWeight: 13,
                 });
                 for(var c=0;c<this.coordinates_details.length;c++)
                 {
