@@ -490,7 +490,7 @@ class SchemePerformanceController extends Controller
     {
         /* settings */
         // change this as your need
-        $check_duplicacy_while_import = false;
+        $check_duplicacy_while_import = true;
         /* settings */
 
         $geo_names = array();

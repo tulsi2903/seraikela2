@@ -88,7 +88,13 @@ class SchemeReviewDuplicateDataCheckController extends Controller
         }
 
         // scheme_asset_id
-        $scheme_asset_id_selected = $request->scheme_asset_id;
+        if($request->scheme_asset_id){
+            $scheme_asset_id_selected = $request->scheme_asset_id;
+        }
+        else{
+            $scheme_asset_id_selected = SchemeStructure::find($request->scheme_id)->scheme_asset_id;
+        }
+        // $scheme_asset_id_selected = $request->scheme_asset_id;
 
         // panchayat id
         $panchayat_ids_to_test = GeoStructure::where('level_id', 4)->get()->pluck('geo_id');
@@ -492,9 +498,15 @@ class SchemeReviewDuplicateDataCheckController extends Controller
 
     // get distance from 1 point to another
     public function get_distance($lat1, $long1, $lat2, $long2){
-        $coordinate1 = new Coordinate($lat1, $long1);
-        $coordinate2 = new Coordinate($lat2, $long2);
-        return $coordinate1->getDistance($coordinate2, new Haversine());
+        if($lat1 && $long1 && $lat2 && $long2)
+        {
+            $coordinate1 = new Coordinate($lat1, $long1);
+            $coordinate2 = new Coordinate($lat2, $long2);
+            return $coordinate1->getDistance($coordinate2, new Haversine());
+        }
+        else{
+            return 500000;
+        }
     }
 
     public function get_angle($lat1, $long1, $lat2, $long2){
