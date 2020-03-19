@@ -55,12 +55,12 @@
 			<div class="col-md-6"><br><br>
 				<div class="content-detail" style="padding: 3em;margin-top:-4em;">
 					<h4>District Scheme & Resource Management</h4>
-					<p>The website provides Information on a single dashboard where you can monitor and evaluate the various Projects, Schemes & programs with respect to time, geography, department and asset progress that are rendered by Jharkhand State and implemented in the district. Also, you can further review and generate reports. And can print, email and export the data in PDF or Excel format. It provides you with 24x7 availability to all the department growing individually for the growth of the district in an efficient, reliable, transparent and integrated manner. It is our endeavor to continue the enhancement and enrichment of our state on a regular basis. Finally, this technology will play a vital role in the State’s socio-economic arena.</p><br>
+					<p>The website provides Information on a single dashboard where you can monitor and evaluate the various Projects, Schemes & programs with respect to time, geography, department and asset progress that are rendered by Jharkhand State and implemented in the district. Also, you can further review and generate reports. And can print, email and export the data in PDF or Excel format. It provides you with 24x7 availability to all the department growing individually for the growth of the district in an efficient, reliable, transparent and integrated manner. It is our endeavour  to continue the enhancement and enrichment of our state on a regular basis. Finally, this technology will play a vital role in the State’s socio-economic arena.</p><br>
 					<center><img src="{{url('public/images/icons circle.png')}}" style="height: 500px; margin-top: 1em;"></center>
 				</div>
 			</div>
 
-			<div class="col-md-6" style="background: #0000004a;min-height: 1040px;margin-top: -3em;width: 50%;">
+			<div class="col-md-6" style="background: #0000004a;min-height: 1000px;margin-top: -4em;width: 50%;">
 				<!-- <div class="main-agileinfo" style="    width: 67%;">
 					<div class="agileits-top">
 						<center><img src="http://jiada.baba.software/public/form/images/toplogo.png" style="height: 100%;"></center>
@@ -98,13 +98,13 @@
 					<div class="field-group">
 						<span class="fa fa-user" aria-hidden="true"></span>
 						<div class="wthree-field">
-							<input name="username" id="username" type="text" value="{{ old('username') }}" placeholder="Username" autocomplete="username" required aria-required="true" autofocus>
+							<input name="username" id="username" type="text" maxlength="30" value="{{ old('username') }}" placeholder="Username" autocomplete="off" required aria-required="true" autofocus>
 						</div>
 					</div>
 					<div class="field-group">
 						<span class="fa fa-lock" aria-hidden="true"></span>
 						<div class="wthree-field">
-							<input name="password" id="password" type="password" aria-required="true" placeholder="Password" required>
+							<input name="password" id="password" maxlength="30" type="password" aria-required="true" placeholder="Password" autocomplete="off" required>
 						</div>
 					</div>
 					<div class="wthree-field">

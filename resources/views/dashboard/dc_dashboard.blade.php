@@ -194,7 +194,7 @@
 @media only screen and (min-width: 480px){
     .card-category {
         margin-top: 8px;
-        font-size: 12px;
+        font-size: 10px;
         color: #FFEB3B;
         margin-bottom: -4px;
         word-break: normal;
@@ -207,7 +207,7 @@
 
     .card-category {
         margin-top: 8px;
-        font-size: 15px;
+        font-size: 12px;
         color: #FFEB3B;
         margin-bottom: -4px;
         word-break: normal;
@@ -338,7 +338,7 @@
                                         echo "<img src='".$value[1]."' style='height: 35px;margin-right: 15px;'>".$value[0]."</th>";
                                     }
                                     else{
-                                        echo "<th style='text-align: center'></th>";
+                                        echo "<th style='text-align: center'>Block Name </th>";
                                     }
                                 } 
                                 ?>
@@ -757,7 +757,7 @@
                                     toAppend += `<img src='` + value[1] + `' style='height: 35px;margin-right: 15px;'>` + value[0] + `</th>`;
                                 }
                                 else {
-                                    toAppend += `<th style='text-align: center'></th>`;
+                                    toAppend += `<th style='text-align: center'>Block Name</th>`;
                                 }
                             }
 

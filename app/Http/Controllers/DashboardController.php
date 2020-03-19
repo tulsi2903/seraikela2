@@ -22,25 +22,24 @@ use App\Languages;
 class DashboardController extends Controller
 {
 
-//     public function __construct(){
-//         // $this->middleware('Auth');
-//         $this->middleware('Language');
-//  }
+    //     public function __construct(){
+    //         // $this->middleware('Auth');
+    //         $this->middleware('Language');
+    //  }
     // function to assign everything related to user logged in (after logged in user id redirected to this method, this method further redirected usaer to its dashboadr page)
     public function index()
     {
-        
 
 
-         // session store user details
+
+        // session store user details
         if (Auth::check()) {
-            if(Auth::user()->status==0)
-            {
+            if (Auth::user()->status == 0) {
                 session()->flush();
                 return redirect()->back();
             }
             session()->put('user_id', Auth::user()->id);
-            session()->put('user_full_name', Auth::user()->title.". ".Auth::user()->first_name . " " . Auth::user()->last_name);
+            session()->put('user_full_name', Auth::user()->title . ". " . Auth::user()->first_name . " " . Auth::user()->last_name);
             session()->put('user_org_id', Auth::user()->org_id);
             session()->put('user_designation', Auth::user()->userRole);
             switch (Auth::user()->userRole) {
@@ -92,40 +91,34 @@ class DashboardController extends Controller
     public function dashboard()
     {
         // return session()->get('desig_permission');
- 
+
         $transdate = date('m-d-Y');
         $month = date('m', strtotime($transdate));
-        if($month>3)
-        {
-           
-            $new_year=date("Y",strtotime("+1 year"));
-            $current_year=date('Y');
-         $year_date=$current_year."-".$new_year;
-         $year_details = Year::where('year_value',$year_date)->first();
-         if($year_details!="")
-         {
-         $year_id=$year_details->year_id;
-         }
-         else
-         {
-             $unfound_date=$year_date;
-            $previous_year=date("Y",strtotime("-1 year"));
-            $current_year=date('Y');
-            $year_date=$previous_year."-".$current_year;
-            $year_details = Year::where('year_value',$year_date)->first();
-            $year_id=$year_details->year_id;
-            $message_year=$unfound_date."This Year range  is Not Avaliable In This Systems Please Add Year.  Current data is Showing Of ".$year_date." year";
-            session()->put('message_year',$message_year);
-         }
-        }
-        else
-        {
+        if ($month > 3) {
+
+            $new_year = date("Y", strtotime("+1 year"));
+            $current_year = date('Y');
+            $year_date = $current_year . "-" . $new_year;
+            $year_details = Year::where('year_value', $year_date)->first();
+            if ($year_details != "") {
+                $year_id = $year_details->year_id;
+            } else {
+                $unfound_date = $year_date;
+                $previous_year = date("Y", strtotime("-1 year"));
+                $current_year = date('Y');
+                $year_date = $previous_year . "-" . $current_year;
+                $year_details = Year::where('year_value', $year_date)->first();
+                $year_id = $year_details->year_id;
+                $message_year = $unfound_date . "This Year range  is Not Avaliable In This Systems Please Add Year.  Current data is Showing Of " . $year_date . " year";
+                session()->put('message_year', $message_year);
+            }
+        } else {
             // $current_year=date("Y",strtotime("-1 year"));
-            $previous_year=date("Y",strtotime("-1 year"));
-            $current_year=date('Y');
-            $year_date=$previous_year."-".$current_year;
-            $year_details = Year::where('year_value',$year_date)->first();
-            $year_id=$year_details->year_id;
+            $previous_year = date("Y", strtotime("-1 year"));
+            $current_year = date('Y');
+            $year_date = $previous_year . "-" . $current_year;
+            $year_details = Year::where('year_value', $year_date)->first();
+            $year_id = $year_details->year_id;
 
             // echo $year_date;
         }
@@ -143,7 +136,7 @@ class DashboardController extends Controller
 
         $asset_count = Asset::where('org_id', '1')->count();
         $get_schemes = SchemeStructure::where('org_id', '1')->get();
-        $departments = Department::where('org_id', '1')->where('is_active',1)->get();
+        $departments = Department::where('org_id', '1')->where('is_active', 1)->get();
         $health_scheme_count = SchemeStructure::where('dept_id', '1')->count();
         $land_revenue_count = SchemeStructure::where('dept_id', '2')->count();
         $welfare_count = SchemeStructure::where('dept_id', '3')->count();
@@ -169,21 +162,19 @@ class DashboardController extends Controller
             // get block id from geo structure where officer id is assigned
             // then get all panchayat od that block
             $subdivision_id_tmp = GeoStructure::where('officer_id', Auth::user()->id)->first();
-            if($subdivision_id_tmp){
+            if ($subdivision_id_tmp) {
                 $geo_ids = GeoStructure::where('sd_id', $subdivision_id_tmp->geo_id)->where('level_id', '3')->pluck('geo_id'); // decide rows (blocks)
             }
         } else if (session()->get('user_designation') == 3) { // bdo
             // get block id from geo structure where officer id is assigned
             // then get all panchayat od that block
             $block_id_tmp = GeoStructure::where('officer_id', Auth::user()->id)->first();
-            if($block_id_tmp)
-            {
+            if ($block_id_tmp) {
                 $geo_ids = GeoStructure::where('bl_id', $block_id_tmp->geo_id)->where('level_id', '4')->pluck('geo_id'); // decide rows (panchayat)
             }
         } else if (session()->get('user_designation') == 4) { //po
             $panchayat_id_tmp = GeoStructure::where('officer_id', Auth::user()->id)->first();
-            if($panchayat_id_tmp)
-            {
+            if ($panchayat_id_tmp) {
                 $geo_ids = GeoStructure::where('geo_id', $panchayat_id_tmp->geo_id)->where('level_id', '4')->pluck('geo_id'); // decide rows (panchayat)
             }
         } else {
@@ -216,15 +207,14 @@ class DashboardController extends Controller
         $performance_table_heading_2 = [""];
         $performance_table_datas = [];
 
-        if($dashboard_scheme_performance_has_datas) {
+        if ($dashboard_scheme_performance_has_datas) {
             //=> for headings
-            foreach ($scheme_ids as $key=>$scheme_id) {
+            foreach ($scheme_ids as $key => $scheme_id) {
                 $scheme_data = SchemeStructure::find($scheme_id);
-                if($scheme_data){
-                    array_push($performance_table_heading_1, $scheme_data->scheme_short_name ."::". $scheme_data->scheme_logo);
+                if ($scheme_data) {
+                    array_push($performance_table_heading_1, $scheme_data->scheme_short_name . "::" . $scheme_data->scheme_logo);
                     array_push($performance_table_heading_2, "Sanctioned", "Completed", "Inprogress");
-                }
-                else{
+                } else {
                     unset($scheme_ids[$key]);
                 }
             }
@@ -240,7 +230,7 @@ class DashboardController extends Controller
                     {
                         $performance_data = scheme_block_performance::where('block_id', $geo_id)
                             ->where('scheme_id', $scheme_id)
-                            ->where('year_id',$year_id)
+                            ->where('year_id', $year_id)
                             ->first();
                         if ($performance_data) {
                             $per = (($performance_data->completed_count) / ($performance_data->total_count)) * 100;
@@ -252,11 +242,11 @@ class DashboardController extends Controller
                             $performance_data->total_count = 0;
                             $per = 0;
                         }
-                        array_push($performance_table_datas_tmp, "<a href='scheme-review?review_for=block&scheme=" . $scheme_id . "&geo=" . $geo_id . "&year=".$year_id."&initiate=initiate'>" . $performance_data->total_count . "</a>:" . $per, $performance_data->completed_count . ":" . $per, $performance_data->incomplete_count . ":" . $per);
+                        array_push($performance_table_datas_tmp, "<a href='scheme-review?review_for=block&scheme=" . $scheme_id . "&geo=" . $geo_id . "&year=" . $year_id . "&initiate=initiate'>" . $performance_data->total_count . "</a>:" . $per, $performance_data->completed_count . ":" . $per, $performance_data->incomplete_count . ":" . $per);
                     } else if (session()->get('user_designation') == 2) { // sdo
                         $performance_data = scheme_block_performance::where('block_id', $geo_id)
                             ->where('scheme_id', $scheme_id)
-                            ->where('year_id',$year_id)
+                            ->where('year_id', $year_id)
 
                             ->first();
                         if ($performance_data) {
@@ -268,12 +258,12 @@ class DashboardController extends Controller
                             $performance_data->total_count = 0;
                             $per = 0;
                         }
-                        array_push($performance_table_datas_tmp, "<a href='scheme-review?review_for=block&scheme=" . $scheme_id . "&geo=" . $geo_id . "&year=".$year_id."&initiate=initiate'>" . $performance_data->total_count . "</a>:" . $per, $performance_data->completed_count . ":" . $per, $performance_data->incomplete_count . ":" . $per);
+                        array_push($performance_table_datas_tmp, "<a href='scheme-review?review_for=block&scheme=" . $scheme_id . "&geo=" . $geo_id . "&year=" . $year_id . "&initiate=initiate'>" . $performance_data->total_count . "</a>:" . $per, $performance_data->completed_count . ":" . $per, $performance_data->incomplete_count . ":" . $per);
                         // array_push($performance_table_datas_tmp, $performance_data->incomplete_count . ":" . $per, $performance_data->completed_count . ":" . $per, $performance_data->total_count . ":" . $per);
                     } else if (session()->get('user_designation') == 3) { // panchayat
                         $performance_datas = SchemePerformance::where('panchayat_id', $geo_id)
                             ->where('scheme_id', $scheme_id)
-                            ->where('year_id',$year_id)
+                            ->where('year_id', $year_id)
 
                             ->get();
 
@@ -290,11 +280,11 @@ class DashboardController extends Controller
                             $per = 0;
                         }
                         // array_push($performance_table_datas_tmp, $incomplete_count.":".$per, $completed_count.":".$per, "<a href='scheme-review?review_for=block&scheme=".$scheme_id."&geo=".$geo_id."&year=4&initiate=initiate'>".$total_count."</a>:".$per);
-                        array_push($performance_table_datas_tmp,$total_count . ":" . $per, $completed_count . ":" . $per, $incomplete_count . ":" . $per );
+                        array_push($performance_table_datas_tmp, $total_count . ":" . $per, $completed_count . ":" . $per, $incomplete_count . ":" . $per);
                     } else if (session()->get('user_designation') == 4) { // po
                         $performance_datas = SchemePerformance::where('panchayat_id', $geo_id)
                             ->where('scheme_id', $scheme_id)
-                            ->where('year_id',$year_date)
+                            ->where('year_id', $year_date)
                             ->get();
 
                         if ($performance_datas) {
@@ -317,7 +307,7 @@ class DashboardController extends Controller
         }
         /** for dc dashboard ends **/
         // return $performance_table_heading_1;
-        return view('dashboard.dc_dashboard')->with(compact('subdivision_count', 'year_id','block_count', 'panchayat_count', 'asset_count', 'scheme_count', 'block_details', 'scheme_performance_details', 'villages_count', 'get_schemes', 'departments', 'health_scheme_count', 'year_details', 'land_revenue_count', 'welfare_count', 'education_count', 'land_acquisition_count', 'election_count', 'agriculture_count', 'social_welfare_count', 'drinking_water_and_sanitation_count', 'social_security_scheme_count','dashboard_scheme_performance_has_datas', 'performance_table_heading_1', 'performance_table_heading_2', 'performance_table_datas'));
+        return view('dashboard.dc_dashboard')->with(compact('subdivision_count', 'year_id', 'block_count', 'panchayat_count', 'asset_count', 'scheme_count', 'block_details', 'scheme_performance_details', 'villages_count', 'get_schemes', 'departments', 'health_scheme_count', 'year_details', 'land_revenue_count', 'welfare_count', 'education_count', 'land_acquisition_count', 'election_count', 'agriculture_count', 'social_welfare_count', 'drinking_water_and_sanitation_count', 'social_security_scheme_count', 'dashboard_scheme_performance_has_datas', 'performance_table_heading_1', 'performance_table_heading_2', 'performance_table_datas'));
     }
 
     public function get_department_wise_asset_data()
@@ -348,14 +338,14 @@ class DashboardController extends Controller
                 'status' => 0
             ));
         }
-            
-        $language_change = User::where('id',Auth::user()->id)->update(array('language'=>$id));
+
+        $language_change = User::where('id', Auth::user()->id)->update(array('language' => $id));
         return back();
     }
 
 
-    
-        public function scheme_performance_for_dashborad($year = "")
+
+    public function scheme_performance_for_dashborad($year = "")
     {
         // return $year;
         /** dashboard scheme performance **/
@@ -410,13 +400,12 @@ class DashboardController extends Controller
 
         if ($dashboard_scheme_performance_has_datas) {
             //=> for headings
-            foreach ($scheme_ids as $key=>$scheme_id) {
+            foreach ($scheme_ids as $key => $scheme_id) {
                 $scheme_data = SchemeStructure::find($scheme_id);
-                if($scheme_data){
-                    array_push($performance_table_heading_1, $scheme_data->scheme_short_name ."::". $scheme_data->scheme_logo);
+                if ($scheme_data) {
+                    array_push($performance_table_heading_1, $scheme_data->scheme_short_name . "::" . $scheme_data->scheme_logo);
                     array_push($performance_table_heading_2, "Sanctioned", "Completed", "Inprogress");
-                }
-                else{
+                } else {
                     unset($scheme_ids[$key]);
                 }
             }
@@ -444,7 +433,7 @@ class DashboardController extends Controller
                             $performance_data->total_count = 0;
                             $per = 0;
                         }
-                        array_push($performance_table_datas_tmp, "<a href='scheme-review?review_for=block&scheme=" . $scheme_id . "&geo=" . $geo_id . "&year=".$year."&initiate=initiate'>" . $performance_data->total_count . "</a>:" . $per, $performance_data->completed_count . ":" . $per, $performance_data->incomplete_count . ":" . $per);
+                        array_push($performance_table_datas_tmp, "<a href='scheme-review?review_for=block&scheme=" . $scheme_id . "&geo=" . $geo_id . "&year=" . $year . "&initiate=initiate'>" . $performance_data->total_count . "</a>:" . $per, $performance_data->completed_count . ":" . $per, $performance_data->incomplete_count . ":" . $per);
 
                         // array_push($performance_table_datas_tmp, $performance_data->incomplete_count . ":" . $per, $performance_data->completed_count . ":" . $per, "<a href='scheme-review?review_for=block&scheme=" . $scheme_id . "&geo=" . $geo_id . "&year=".$year."&initiate=initiate'>" . $performance_data->total_count . "</a>:" . $per);
                     } else if (session()->get('user_designation') == 2) { // sdo
@@ -462,7 +451,7 @@ class DashboardController extends Controller
                             $performance_data->total_count = 0;
                             $per = 0;
                         }
-                        array_push($performance_table_datas_tmp, "<a href='scheme-review?review_for=block&scheme=" . $scheme_id . "&geo=" . $geo_id . "&year=".$year."&initiate=initiate'>" . $performance_data->total_count . "</a>:" . $per, $performance_data->completed_count . ":" . $per, $performance_data->incomplete_count . ":" . $per);
+                        array_push($performance_table_datas_tmp, "<a href='scheme-review?review_for=block&scheme=" . $scheme_id . "&geo=" . $geo_id . "&year=" . $year . "&initiate=initiate'>" . $performance_data->total_count . "</a>:" . $per, $performance_data->completed_count . ":" . $per, $performance_data->incomplete_count . ":" . $per);
 
                         // array_push($performance_table_datas_tmp, $performance_data->incomplete_count . ":" . $per, $performance_data->completed_count . ":" . $per, $performance_data->total_count . ":" . $per);
                     } else if (session()->get('user_designation') == 3) { // panchayat
@@ -485,7 +474,7 @@ class DashboardController extends Controller
                             $per = 0;
                         }
                         // array_push($performance_table_datas_tmp, $incomplete_count.":".$per, $completed_count.":".$per, "<a href='scheme-review?review_for=block&scheme=".$scheme_id."&geo=".$geo_id."&year=4&initiate=initiate'>".$total_count."</a>:".$per);
-                        array_push($performance_table_datas_tmp,$total_count . ":" . $per, $completed_count . ":" . $per, $incomplete_count . ":" . $per );
+                        array_push($performance_table_datas_tmp, $total_count . ":" . $per, $completed_count . ":" . $per, $incomplete_count . ":" . $per);
                     } else if (session()->get('user_designation') == 4) { // bdo
                         $performance_datas = SchemePerformance::where('panchayat_id', $geo_id)
                             ->where('scheme_id', $scheme_id)
@@ -515,33 +504,33 @@ class DashboardController extends Controller
         /** for dc dashboard ends **/
     }
 
-    public function get_block_performance_percentage_data(Request $request){
+    public function get_block_performance_percentage_data(Request $request)
+    {
         $to_send = [];
-    
+
         $geo_ids = GeoStructure::where('level_id', 3)->get()->pluck('geo_id');
-    
-        foreach($geo_ids as $geo_id){
+
+        foreach ($geo_ids as $geo_id) {
             // $performance_data = scheme_block_performance::where('block_id', $geo_id)
             //                                         ->where('scheme_id', 117)
             //                                         ->first();
             $performance_data = scheme_block_performance::where('block_id', $geo_id)
-                                                    ->where('scheme_id', 2)
-                                                    ->first();
-    
-            if($performance_data){
-                $per = (($performance_data->completed_count) / ($performance_data->total_count))*100;
+                ->where('scheme_id', 2)
+                ->first();
+
+            if ($performance_data) {
+                $per = (($performance_data->completed_count) / ($performance_data->total_count)) * 100;
                 $per = round($per);
-            }
-            else{
+            } else {
                 $per = 0;
             }
-    
+
             $to_send_tmp["geo_id"] = $geo_id;
             $to_send_tmp["percentage"] = $per;
-    
+
             array_push($to_send, $to_send_tmp);
         }
-        
+
         return $to_send;
     }
 }

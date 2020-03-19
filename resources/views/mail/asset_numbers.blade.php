@@ -541,7 +541,7 @@
                                                     <tbody>
                                                         <?php $count=1; ?>
                                                        
-                                                            @foreach($user{'results'} as $data)
+                                                            @foreach($user['results'] as $data)
                                                                 <tr>
                                                                     <td  style="border: 1px solid #acabab;padding: 10px;background: #fff;padding-left: 1em;">{{$count++}}</td>
                                                                     <td  style="border: 1px solid #acabab;padding: 10px;background: #fff;padding-left: 1em;">{{@$data->year_value}}</td>

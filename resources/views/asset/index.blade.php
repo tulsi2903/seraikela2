@@ -16,10 +16,12 @@
         color: #fff !important;
         margin-top: 1em;
     }
+
     .btn-toggle {
         color: #fff !important;
         margin-top: 1em;
     }
+
     #printable-info-details {
         visibility: hidden;
         height: 0px;
@@ -28,23 +30,34 @@
         top: 20px;
         width: 100vw !important; */
     }
-    
+
     @media print {
         #printable-area {
-            margin-top: 250px !important;
+            margin-top: 200px !important;
+            font-size: small;
+            width: 100% !important;
+
         }
+
         .no-print,
         .no-print * {
             display: none !important;
         }
+
         #printable-info-details {
             visibility: visible;
             position: fixed;
+            margin-left: 100px !important;
+            font-size:medium;
+
+
         }
+
         #print-button,
         #print-button * {
             visibility: hidden;
         }
+
         .card-title-print-1 {
             visibility: visible !important;
             position: fixed;
@@ -56,6 +69,7 @@
             width: 100vw !important;
             height: 100vw !important;
         }
+
         .card-title-print-2 {
             visibility: visible !important;
             position: fixed;
@@ -67,6 +81,7 @@
             width: 100vw !important;
             height: 100vw !important;
         }
+
         .card-title-print-3 {
             visibility: visible !important;
             position: fixed;
@@ -78,10 +93,12 @@
             width: 100vw !important;
             height: 100vw !important;
         }
+
         .action-buttons {
             display: none;
         }
     }
+
     .logo-header .logo {
         color: #575962;
         opacity: 1;
@@ -102,7 +119,7 @@
             <div class="card-head-row card-tools-still-right" style="background:#fff;">
                 <h4 class="card-title">{{$phrase->resource}} </h4>
                 <div class="card-tools">
-                    <button type="button" data-toggle="tooltip" title="{{$phrase->send_email}}" class="btn btn-icon btn-round btn-success"  onclick="openmodel();" ><i class="fa fa-envelope" aria-hidden="true"></i></button>
+                    <button type="button" data-toggle="tooltip" title="{{$phrase->send_email}}" class="btn btn-icon btn-round btn-success" onclick="openmodel();"><i class="fa fa-envelope" aria-hidden="true"></i></button>
                     <button type="button" data-toggle="tooltip" title="{{$phrase->print}}" class="btn btn-icon btn-round btn-default" onclick="printViewone();"><i class="fa fa-print" aria-hidden="true"></i></button>
                     <button type="button" target="_BLANK" data-toggle="tooltip" title="{{$phrase->export_pdf}}" onclick="exportSubmit('print_pdf');" class="btn btn-icon btn-round btn-warning"><i class="fas fa-file-export"></i></button>
                     <button type="button" data-toggle="tooltip" title="{{$phrase->export_excel}}" onclick="exportSubmit('excel_sheet');" class="btn btn-icon btn-round btn-success"><i class="fas fa-file-excel"></i></button>
@@ -198,47 +215,47 @@
                             <div class="invalid-feedback" id="asset_icon_error_msg"></div>
                         </div>
                     </div>
-               
-              
-                
+
+
+
                 </div>
-            <div class="row">
-                   
-                         <div class="col-md-12">
-                            <div class="card-header">
-                                <div class="card-head-row card-tools-still-right">
-                                    <h4 class="card-title" style="margin-left: -20px;">{{$phrase->sub_resources}} </h4>
-                                    <div class="card-tools">
-                                        <button type="button" onclick="append_table_data('add',null);" class="btn btn-secondary btn-sm btn-circle">{{$phrase->add}} <i class="fa fa-plus-circle" aria-hidden="true"></i></button>
-                                    </div>
+                <div class="row">
+
+                    <div class="col-md-12">
+                        <div class="card-header">
+                            <div class="card-head-row card-tools-still-right">
+                                <h4 class="card-title" style="margin-left: -20px;">{{$phrase->sub_resources}} </h4>
+                                <div class="card-tools">
+                                    <button type="button" onclick="append_table_data('add',null);" class="btn btn-secondary btn-sm btn-circle">{{$phrase->add}} <i class="fa fa-plus-circle" aria-hidden="true"></i></button>
                                 </div>
-                            </div>  
-                            <br>
-                            <div class="table-responsive">
-                                <table class="display table table-striped table-hover" >
-                                    <thead style="    background: #d6dcff;">
-                                        <tr>
-                                            <th>{{$phrase->name}} </th>
-                                            <th>{{$phrase->type}} </th>
-                                            <th style="padding: 5px;">{{$phrase->icon}}</th>
-                                            <th></th>
-                                            <th>{{$phrase->action}}</th>
-                                        </tr>
-                                    </thead>
-                                  
-                                    <tbody id="append-name-child">
-    
-                                    </tbody>
-                                </table>
                             </div>
                         </div>
+                        <br>
+                        <div class="table-responsive">
+                            <table class="display table table-striped table-hover">
+                                <thead style="    background: #d6dcff;">
+                                    <tr>
+                                        <th>{{$phrase->name}} </th>
+                                        <th>{{$phrase->type}} </th>
+                                        <th style="padding: 5px;">{{$phrase->icon}}</th>
+                                        <th></th>
+                                        <th>{{$phrase->action}}</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody id="append-name-child">
+
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-              
-                    <hr />
+                </div>
+
+                <hr />
                 <div class="row">
                     <div class="col-md-4">
                         <div class="form-group">
-                          
+
                             <input type="text" name="hidden_input_purpose" id="hidden_input_purpose" value="add" hidden>
                             <input type="text" name="hidden_input_id" id="hidden_input_id" value="NA" hidden>
                             <input type="text" name="deleted_asset_child_id" id="deleted_asset_child_id" value="" hidden>
@@ -261,7 +278,7 @@
                         <p class="card-title-print-1">Title: Resources </p>
                         <p class="card-title-print-2">Date & Time:
                             <?php  date_default_timezone_set('Asia/Kolkata'); $currentDateTime = date('d-m-Y H:i:s'); echo $currentDateTime; ?>
-                                <p class="card-title-print-3">User Name: {{session()->get('user_full_name')}}</p>
+                            <p class="card-title-print-3">User Name: {{session()->get('user_full_name')}}</p>
                     </div>
                     <table class="table table-datatable" id="printable-area">
                         <thead style="background: #d6dcff;color: #000;">
@@ -282,7 +299,7 @@
                         <tr>
                             <td width="40px;">{{$count++}}
 
-                                <input type="text" value="{{$data->asset_id }}" name="asset_id_to_export[]" hidden >
+                                <input type="text" value="{{$data->asset_id }}" name="asset_id_to_export[]" hidden>
 
                             </td>
                             <td>@if($data->asset_icon) <img src="{{$data->asset_icon}}" style="height: 50px;"> @endif</td>
@@ -300,7 +317,7 @@
                             <td>{{$data->dept_name}}</td>
                             @if($desig_permissions["mod13"]["del"] || $desig_permissions["mod13"]["edit"])
                             <td class="action-buttons">
-                            @if($desig_permissions["mod13"]["edit"])<a href="javascirpt:void();" onclick="editAssetAjax('{{$data->asset_id}}')" class="btn btn-secondary btn-sm" data-toggle="tooltip" title="{{$phrase->edit}}"><i class="fas fa-edit"></i></a>@endif
+                                @if($desig_permissions["mod13"]["edit"])<a href="javascirpt:void();" onclick="editAssetAjax('{{$data->asset_id}}')" class="btn btn-secondary btn-sm" data-toggle="tooltip" title="{{$phrase->edit}}"><i class="fas fa-edit"></i></a>@endif
 
                                 &nbsp;&nbsp;@if($desig_permissions["mod13"]["del"])<a href="{{url('asset/delete')}}/{{$data->asset_id}}" class="btn btn-danger btn-sm delete-button" data-toggle="tooltip" title="{{$phrase->delete}}"><i class="fas fa-trash-alt"></i></a>@endif
                             </td>
@@ -320,13 +337,14 @@
             </div>
         </div>
     </div>
-                <!-- export starts -->
-                    <form action="{{url('asset/view_diffrent_formate')}}" method="POST" enctype="multipart/form-data" id="export-form"> <!-- for for edit, if inline edit form append then this form action/method will triggered -->
-                    @csrf
-                    <input type="text" name="asset_id"  hidden>
-                    <input type="text" name="print"  hidden> <!-- hidden input for export (pdf/excel) -->
-                    </form>
-                <!-- export ends -->
+    <!-- export starts -->
+    <form action="{{url('asset/view_diffrent_formate')}}" method="POST" enctype="multipart/form-data" id="export-form">
+        <!-- for for edit, if inline edit form append then this form action/method will triggered -->
+        @csrf
+        <input type="text" name="asset_id" hidden>
+        <input type="text" name="print" hidden> <!-- hidden input for export (pdf/excel) -->
+    </form>
+    <!-- export ends -->
 </div>
 
 <script>
@@ -534,7 +552,7 @@
         });
     }
     //child icon image delete
-    function to_delete_child(image_path, e,resource_id) {
+    function to_delete_child(image_path, e, resource_id) {
         swal({
             title: 'Are you sure?',
             // text: "You won't be able to revert this!",
@@ -750,7 +768,7 @@
                                 to_append += `<div id="asset_icon_delete_child_div" style="padding:5px 0; ">
                                     <div style="display: inline-block;position:relative;padding:3px;border:1px solid #c4c4c4; border-radius:3px;">
                                         <img src=`+ '{{url("")}}/' + data.childs_parent[i].asset_icon + ` style="height:55px;">
-                                        <span onclick="to_delete_child('`+ data.childs_parent[i].asset_icon + `',this,'`+ data.childs_parent[i].asset_id + `')" style="position:absolute;top:0;right:0; background: rgba(0,0,0,0.5); cursor: pointer; padding: 3px 3px;" class="text-white" onclick=""><i class="fas fa-trash"></i></span>
+                                        <span onclick="to_delete_child('`+ data.childs_parent[i].asset_icon + `',this,'` + data.childs_parent[i].asset_id + `')" style="position:absolute;top:0;right:0; background: rgba(0,0,0,0.5); cursor: pointer; padding: 3px 3px;" class="text-white" onclick=""><i class="fas fa-trash"></i></span>
                                     </div>
                                 </div>`
                             }
@@ -801,23 +819,21 @@
 </script>
 
 <script>
-    function exportSubmit(type)
-    {
+    function exportSubmit(type) {
         $("input[name='print']").val(type);
-        var values = $("input[name='asset_id_to_export[]']").map(function(){return $(this).val();}).get();
+        var values = $("input[name='asset_id_to_export[]']").map(function () { return $(this).val(); }).get();
         $("input[name='asset_id']").val(values);
         document.getElementById('export-form').submit();
     }
 </script>
 <script>
-function openmodel()
-{
-    // alert("afj;l");
-    var search_element=$( "input[type=search]" ).val();
-    $('#create-email').modal('show');
-    $('#dept_search').val(search_element);
-    // alert(search_element);
-}
+    function openmodel() {
+        // alert("afj;l");
+        var search_element = $("input[type=search]").val();
+        $('#create-email').modal('show');
+        $('#dept_search').val(search_element);
+        // alert(search_element);
+    }
 
 </script>
 
