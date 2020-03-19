@@ -149,38 +149,33 @@ class EmailController extends Controller
             $send_subject = $request->subject;
             $details = json_decode($request->data);
             $geo_ids = [];
-        if (session()->get('user_designation') == 1) // dc
-        {
-            $geo_ids = GeoStructure::where('level_id', 4)->pluck('geo_id'); // panchayat_ids
-        } 
-        else if (session()->get('user_designation') == 2) { // sdo
-            $subdivision_id_tmp = GeoStructure::where('officer_id', Auth::user()->id)->first();
-            if($subdivision_id_tmp){
-                $geo_ids = GeoStructure::where('sd_id', $subdivision_id_tmp->geo_id)->where('level_id', '4')->pluck('geo_id'); // panchayat_ids
-            }
-        } 
-        else if (session()->get('user_designation') == 3) { // bdo
-            $block_id_tmp = GeoStructure::where('officer_id', Auth::user()->id)->first();
-            if($block_id_tmp)
+            if (session()->get('user_designation') == 1) // dc
             {
-                $geo_ids = GeoStructure::where('bl_id', $block_id_tmp->geo_id)->where('level_id', '4')->pluck('geo_id'); // decide rows (panchayat)
+                $geo_ids = GeoStructure::where('level_id', 4)->pluck('geo_id'); // panchayat_ids
+            } else if (session()->get('user_designation') == 2) { // sdo
+                $subdivision_id_tmp = GeoStructure::where('officer_id', Auth::user()->id)->first();
+                if ($subdivision_id_tmp) {
+                    $geo_ids = GeoStructure::where('sd_id', $subdivision_id_tmp->geo_id)->where('level_id', '4')->pluck('geo_id'); // panchayat_ids
+                }
+            } else if (session()->get('user_designation') == 3) { // bdo
+                $block_id_tmp = GeoStructure::where('officer_id', Auth::user()->id)->first();
+                if ($block_id_tmp) {
+                    $geo_ids = GeoStructure::where('bl_id', $block_id_tmp->geo_id)->where('level_id', '4')->pluck('geo_id'); // decide rows (panchayat)
+                }
+            } else if (session()->get('user_designation') == 4) { //po
+                $panchayat_id_tmp = GeoStructure::where('officer_id', Auth::user()->id)->first();
+                if ($panchayat_id_tmp) {
+                    $geo_ids = GeoStructure::where('geo_id', $panchayat_id_tmp->geo_id)->where('level_id', '4')->pluck('geo_id'); // decide rows (panchayat)
+                }
             }
-        } 
-        else if (session()->get('user_designation') == 4) { //po
-            $panchayat_id_tmp = GeoStructure::where('officer_id', Auth::user()->id)->first();
-            if($panchayat_id_tmp)
-            {
-                $geo_ids = GeoStructure::where('geo_id', $panchayat_id_tmp->geo_id)->where('level_id', '4')->pluck('geo_id'); // decide rows (panchayat)
-            }
-        }
-        $asset_ids = Asset::where('parent_id', -1)->get()->pluck('asset_id');
+            $asset_ids = Asset::where('parent_id', -1)->get()->pluck('asset_id');
             $details_scheme_type = DB::table('asset_numbers')
-            ->join('year', 'asset_numbers.year', '=', 'year.year_id')
-            ->join('asset', 'asset_numbers.asset_id', '=', 'asset.asset_id')
-            ->join('geo_structure', 'asset_numbers.geo_id', '=', 'geo_structure.geo_id')
-            ->whereIn('asset_numbers.asset_id', $asset_ids)
-            ->whereIn('asset_numbers.geo_id', $geo_ids)
-            ->select('asset_numbers.*', 'year.year_value', 'asset.asset_name', 'geo_structure.geo_name');
+                ->join('year', 'asset_numbers.year', '=', 'year.year_id')
+                ->join('asset', 'asset_numbers.asset_id', '=', 'asset.asset_id')
+                ->join('geo_structure', 'asset_numbers.geo_id', '=', 'geo_structure.geo_id')
+                ->whereIn('asset_numbers.asset_id', $asset_ids)
+                ->whereIn('asset_numbers.geo_id', $geo_ids)
+                ->select('asset_numbers.*', 'year.year_value', 'asset.asset_name', 'geo_structure.geo_name');
             if ($request->search_query != "") {
                 $details_scheme_type = $details_scheme_type->where('asset.asset_name', 'LIKE', "%{$request->search_query}%")->orWhere('geo_structure.geo_name', 'LIKE', "%{$request->search_query}%")->get();
             } else {
@@ -328,7 +323,7 @@ class EmailController extends Controller
             return redirect('scheme-structure');
         } elseif ($request->scheme_asset == "scheme_asset") {
 
-
+            
             $email_from = $request->from;
             $email_to = $request->to;
             $email_cc = $request->cc;
@@ -342,7 +337,6 @@ class EmailController extends Controller
             } else {
                 $details_scheme_assets = $details_scheme_assets->get();
             }
-
 
             $user = array('email_from' => $email_from, 'email_to' => $email_to, 'cc' => $email_cc, 'subject' => $request->subject, 'content' => $request->message, 'results' => $details_scheme_assets);
             Mail::send('mail.scheme-asset', ['user' => $user], function ($message) use ($user) {

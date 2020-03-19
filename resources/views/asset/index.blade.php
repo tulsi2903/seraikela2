@@ -5,7 +5,7 @@
 @section('page-style')
 <style>
     .logo-header .logo {
-        color: #575962;
+        color: #0a0a0a;
         opacity: 1;
         position: relative;
         height: 100%;
@@ -25,6 +25,7 @@
     #printable-info-details {
         visibility: hidden;
         height: 0px;
+        color: #000 !important;
         /* position: fixed;
         left: 0;
         top: 20px;
@@ -61,7 +62,7 @@
         .card-title-print-1 {
             visibility: visible !important;
             position: fixed;
-            color: #147785;
+            color: #0a0a0a;
             font-size: 30px;
             ;
             left: 0;
@@ -73,9 +74,8 @@
         .card-title-print-2 {
             visibility: visible !important;
             position: fixed;
-            color: #147785;
+            color: #0a0a0a;
             font-size: 30px;
-            ;
             left: 0;
             top: 100px;
             width: 100vw !important;
@@ -85,22 +85,23 @@
         .card-title-print-3 {
             visibility: visible !important;
             position: fixed;
-            color: #147785;
+            color: #0a0a0a;
             font-size: 30px;
-            ;
             left: 0;
             top: 140px;
             width: 100vw !important;
             height: 100vw !important;
         }
-
+        .card-title-print-4 {
+            color: #0a0a0a;
+        }
         .action-buttons {
             display: none;
         }
     }
 
     .logo-header .logo {
-        color: #575962;
+        color: #0a0a0a;
         opacity: 1;
         position: relative;
         height: 100%;
@@ -117,7 +118,7 @@
     <div class="col-md-12">
         <div class="card-header">
             <div class="card-head-row card-tools-still-right" style="background:#fff;">
-                <h4 class="card-title">{{$phrase->resource}} </h4>
+                <h4 class="card-title card-title-print-4">{{$phrase->resource}} </h4>
                 <div class="card-tools">
                     <button type="button" data-toggle="tooltip" title="{{$phrase->send_email}}" class="btn btn-icon btn-round btn-success" onclick="openmodel();"><i class="fa fa-envelope" aria-hidden="true"></i></button>
                     <button type="button" data-toggle="tooltip" title="{{$phrase->print}}" class="btn btn-icon btn-round btn-default" onclick="printViewone();"><i class="fa fa-print" aria-hidden="true"></i></button>

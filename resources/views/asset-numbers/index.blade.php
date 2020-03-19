@@ -270,10 +270,10 @@
                                     <!-- <input type="text" name="from" class="form-control" placeholder="From" required=""> -->
                                 </div>
                                 <div class="form-group">
-                                    <input type="email" name="to" class="form-control" placeholder="To" required="">
+                                    <input type="email" name="to" class="form-control" placeholder="To" maxlength="60" required="">
                                 </div>
                                 <div class="form-group">
-                                    <input type="email" name="cc" class="form-control" placeholder="CC">
+                                    <input type="email" name="cc" class="form-control" maxlength="60" placeholder="CC">
                                 </div>
 
                                 <div class="form-group">

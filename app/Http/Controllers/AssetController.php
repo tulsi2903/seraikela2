@@ -598,7 +598,8 @@ class AssetController extends Controller
                 $value->createdDate,
             );
         }
-        \Excel::create('Resource_Category', function ($excel) use ($data) {
+        // return $data;
+        @\Excel::create('Resource_Category', function ($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Resource Category Sheet');

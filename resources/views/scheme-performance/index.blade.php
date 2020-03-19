@@ -138,7 +138,7 @@
         <div class="enter-datas-block" id="to_append_table" style="display: none;">
             <!-- <button type="button" class="btn" style="margin-left:1.5%;background: #0f85e2!important;color:#fff;"><i class="fas fa-location-arrow"></i>&nbsp;&nbsp;Entered Datas</button> -->
             <div class="card-body" style="background: #f2f6ff; border: 1px solid #a5bbf6;margin: 0 -10px 0 -10px;">
-                <h4 class="title-1">Scheme Work Datas</h4>
+                <h4 class="title-1">Scheme Work Data</h4>
                 <div>
                     <form action="{{url('scheme-performance/store')}}" id="savedataonschemepertable" method="POST" enctype="multipart/form-data" autocomplete="off" onsubmit="return check_performamance_status();">
                         @csrf
@@ -186,19 +186,19 @@
                     <div class="row">
                         <div class="card-body p-t-30" style="padding: 11px;">
                             <div class="form-group">
-                                <input type="file" name="galleryFile[]" id="galleryFile" class="form-control" multiple>
+                                <input type="file" name="galleryFile[]" accept="image/gif,image/jpeg,image/jpg" id="galleryFile" class="form-control" required multiple>
                             </div>
                         </div>
-                        <div id="show_image_for_location" style="padding: 2em;">
-                            <!-- append images -->
+                        <p class="invalid-feedback" id="galleryFile_error_msg"></p>
+
+                        <div id="show_image_for_location" >
                         </div>
                     </div>
                 </div>
                 <input type="hidden" class="form-control" name="scheme_performance_id" id="scheme_performance_id"> <!--  scheme_performance_id -->
-
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-info waves-effect waves-light" onclick="submitgalleryAjax()">Save</button>
+                    <button type="button" class="btn btn-info waves-effect waves-light" onclick="return submitgalleryAjax()">Save</button>
                 </div>
             </form>
         </div>
@@ -532,6 +532,7 @@
 <script>
     function update_image(id) {
         $("#galleryFile").val("");
+
         var scheme_performance = $('#scheme_performance_id').val(id);
         $('#create-gallery').modal('show');
         $.ajax({
@@ -851,12 +852,24 @@
     function submitgalleryAjax() {
         var formElement = $('#FormsavegalleryforLoacation')[0];
         var form_data = new FormData(formElement);
-
+        var gallery_element=$("#galleryFile").val();
+        if(gallery_element!="")
+        {
+            $("#galleryFile").removeClass('is-invalid');
+                $("#galleryFile_error_msg").html("");
+        }
+        else
+        {
+        $("#galleryFile").addClass('is-invalid');
+        $("#galleryFile_error_msg").html("Please Upload Image");
+            return false
+        }
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
+        
         $.ajax({
             url: "{{url('scheme_performance/galleryFile_update')}}",
             data: form_data,

@@ -167,7 +167,7 @@
                 <div class="row">
                     <div class="col-6 scheme-form-elements">
                         <div class="form-group">
-                            <label for="" style="text-transform: uppercase;">{{$phrase->attributes}}</label>
+                            <label for="" > @if(Auth::user()->language == 1) {{"Attributes"}} @else {{$phrase->attributes}} @endif</label>
                             <!-- <div class="card-body" style="background: white; min-height: 250px; border-radius: 3px; border: 1px solid #adadad;" id="ind_att" style="display: none;">
                                 <div class="row">
                                     

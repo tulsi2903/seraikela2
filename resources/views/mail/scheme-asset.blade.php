@@ -536,7 +536,7 @@
                                                     <th style="padding-top: 10px;padding-bottom:5px;text-align: left;background-color:#6f8fdd;color: white;padding-left: 1em;">SI NO.</th>
                                                     <th style="padding-top: 10px;padding-bottom:5px;text-align: left;background-color:#6f8fdd;color: white;padding-left: 1em;">Scheme Name</th>
                                                     <th style="padding-top: 10px;padding-bottom:5px;text-align: left;background-color:#6f8fdd;color: white;padding-left: 1em;">Geo Related</th>
-                                                    <th style="padding-top: 10px;padding-bottom:5px;text-align: left;background-color:#6f8fdd;color: white;padding-left: 1em;">Multiple Geo Related</th>
+                                                    <th style="padding-top: 10px;padding-bottom:5px;text-align: left;background-color:#6f8fdd;color: white;padding-left: 1em;">Radius</th>
                                                 </tr>
                                                 <?php $count=1; ?>
                                                 @foreach($user['results'] as $data)
@@ -546,23 +546,16 @@
                                                         <td style="border: 1px solid #acabab;padding: 10px;background: #fff;padding-left: 1em;">{{@$data->scheme_asset_name}}</td>
                                                         <td style="border: 1px solid #acabab;padding: 10px;background: #fff;padding-left: 1em;">
                                                             <?php
-                                                                if(@$data->geo_related == 1){
+                                                                if($data->geo_related == 1){
                                                                     echo "Yes";
                                                                 }
                                                                 else 
                                                                 {
                                                                     echo "No";
                                                                 }?>
-                                                        </td>
-                                                        <td style="border: 1px solid #acabab;padding: 10px;background: #fff;padding-left: 1em;">
-                                                            <?php
-                                                                if(@$data->multiple_geo_tags == 1){
-                                                                    echo "yes";
-                                                                }
-                                                                else 
-                                                                {
-                                                                    echo "no";
-                                                                }?>
+														</td>
+														@php $uom_name=DB::table('uom')->where('uom_id',$data->uom_type_id)->value('uom_name'); @endphp
+                                                        <td style="border: 1px solid #acabab;padding: 10px;background: #fff;padding-left: 1em;">{{$data->radius}} @if($uom_name!=""){{$uom_name}} @else {{"Meter"}} @endif
                                                         </td>
                                                     </tr>
                                                     @endforeach

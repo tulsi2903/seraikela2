@@ -419,7 +419,7 @@ class SchemeStructureController extends Controller
                     else {
                         $value->status = "Inactive";
                     }
-                    $value->createdDate = date('d/m/Y',strtotime($value->createdDate));
+                    $value->createdDate = date('d/m/Y',strtotime($value->created_at));
                     $data[] = array(
                         $key + 1,
                         $value->scheme_name,

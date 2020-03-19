@@ -134,7 +134,7 @@
                 <div class="col-md-3">
                     <div class="form-group" id="current_value_hide" style="display:none;">
                         <label for="current_value">{{$phrase->current_value}}</label>
-                        <input type="text" name="current_value" id="current_value" value="{{$data->current_value}}" class="form-control" autocomplete="off">
+                        <input type="text" name="current_value" id="current_value" maxlength="10"  value="{{$data->current_value}}" class="form-control" autocomplete="off">
                         <div class="invalid-feedback" id="current_value_error_msg"></div>
                     </div>
                 </div>
@@ -330,6 +330,19 @@
 
             }
         }
+        // function current_value_validate() {
+        //     var current_value_val = $("#current_value").val();
+        //     if (current_value_val == "") {
+        //         current_value_error = true;
+        //         $("#current_value").addClass('is-invalid');
+        //         $("#current_value_error_msg").html("Plz Enter Number Value");
+        //     }
+        //     else {
+        //         current_value_error = false;
+        //         $("#current_value").removeClass('is-invalid');
+
+        //     }
+        // }
 
         // for gallery section
         function images_validate() {
@@ -458,6 +471,18 @@
             // detecting change in current value
             $("#current_value").change(function () {
                 appendLocation();
+                var current_value=$("#current_value").val();
+                intRegex = /[0-9 -()+]+$/;
+                if((current_value.length < 0) && (!intRegex.test(current_value)))
+                {
+                    $("#current_value").addClass('is-invalid');
+                    $("#current_value_error_msg").html("Plz Enter Number Value");
+                }
+                else
+                {
+                    $("#current_value").removeClass('is-invalid');
+                    $("#current_value_error_msg").html("");
+                }
             });
         });
 

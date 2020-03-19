@@ -94,7 +94,7 @@
                     <!-- <a href="#" data-toggle="tooltip" title="{{$phrase->send_email}}"><button type="button" class="btn btn-icon btn-round btn-success" data-target="#create-email" data-toggle="modal"><i class="fa fa-envelope" aria-hidden="true"></i></button></a> -->
                     <!-- <a href="#" data-toggle="tooltip" title="{{$phrase->print}}"><button type="button" class="btn btn-icon btn-round btn-default" id="print-button" onclick="printView();"><i class="fa fa-print" aria-hidden="true"></i></button></a> -->
                     <button type="button" data-toggle="tooltip" title="{{$phrase->send_email}}" class="btn btn-icon btn-round btn-default" onclick="printViewone();"><i class="fa fa-print" aria-hidden="true"></i></button>
-                    <button type="button" data-toggle="tooltip" title="{{$phrase->export_pdf}} onclick="exportSubmit('print_pdf');" class="btn btn-icon btn-round btn-warning"><i class="fas fa-file-export"></i></button>
+                    <button type="button" data-toggle="tooltip" title="{{$phrase->export_pdf}}" onclick="exportSubmit('print_pdf');" class="btn btn-icon btn-round btn-warning"><i class="fas fa-file-export"></i></button>
                     <button type="button" data-toggle="tooltip" title="{{$phrase->export_excel}}" onclick="exportSubmit('excel_sheet');" class="btn btn-icon btn-round btn-success"><i class="fas fa-file-excel"></i></button>
                     <!-- <a href="{{url('scheme-structure/pdf/pdfURL')}}" data-toggle="tooltip" title="{{$phrase->export_pdf}}"><button type="button" class="btn btn-icon btn-round btn-warning"><i class="fas fa-file-export"></i></button></a>
                     <a href="{{url('scheme-structure/export/excelURL')}}" data-toggle="tooltip" title="{{$phrase->export_excel}}"><button type="button" class="btn btn-icon btn-round btn-primary"><i class="fas fa-file-excel"></i></button></a> -->
@@ -241,10 +241,10 @@
                                     <!-- <input type="text" name="from" class="form-control" placeholder="From" required=""> -->
                                 </div>
                                 <div class="form-group">
-                                    <input type="text" name="to" class="form-control" placeholder="{{$phrase->to}}" required="">
+                                    <input type="email" maxlength="60" name="to" class="form-control" placeholder="{{$phrase->to}}" required="">
                                 </div>
                                 <div class="form-group">
-                                    <input type="text" name="cc" class="form-control" placeholder="{{$phrase->cc}}">
+                                    <input type="email" maxlength="60" name="cc" class="form-control" placeholder="{{$phrase->cc}}">
                                 </div>
 
                                 <div class="form-group">

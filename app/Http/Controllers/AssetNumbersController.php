@@ -570,7 +570,6 @@ class AssetNumbersController extends Controller
 
         $content = "<table cellspacing=\"0\" cellpadding=\"4\" border=\"1\" ><tr>";
         $content .= "<th style='border: solid 1px #000000;' colspan=\"7\" align=\"left\" ><b>Resource Number</b></th></tr>";
-
         /* ========================================================================= */
         /*                Total width of the pdf table is 1017px                     */
         /* ========================================================================= */
