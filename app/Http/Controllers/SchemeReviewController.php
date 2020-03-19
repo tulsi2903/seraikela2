@@ -1004,7 +1004,7 @@ class SchemeReviewController extends Controller
 
         $user = array('email_from' => $email_from, 'email_to' => $email_to, 'cc' => $email_cc, 'subject' => $send_subject);
 
-        return view("mail.scheme-review")->with(compact('export_datas_pdf'));
+        // return view("mail.scheme-review")->with(compact('export_datas_pdf'));
 
         Mail::send('mail.scheme-review', ['export_datas_pdf' => $export_datas_pdf], function ($message) use ($user) {
             $email_to = explode(',', $user['email_to']);
