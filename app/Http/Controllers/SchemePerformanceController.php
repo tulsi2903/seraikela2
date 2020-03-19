@@ -564,13 +564,23 @@ class SchemePerformanceController extends Controller
             if (count($readExcelHeader) != 0) {
                 $excelSheetHeadings = $readExcelHeader->first()->keys()->toArray(); /* this is for excel sheet heading */
             }
-
-            if (count($readExcel) != 0) {
-                if (count($readExcel) <= 250) {
+            $excelArray=array();
+            foreach ($readExcel as $key_a => $row_a) {
+                if($row_a['sno.']!="")
+                {
+                $si_no_arary[]= $row_a['sno.'];
+                $excelArray[]=$row_a;
+                }
+            }
+            if (count($excelArray) != 0) {
+                if (count($excelArray) <= 250) {
                     sort($tableHeadingsAndAtributes);
                     sort($excelSheetHeadings);
                     $unserializedAtributesData = array();
-                    // print_r($readExcel);
+                    // print_r($tableHeadingsAndAtributes);
+                    // echo "<br>";
+                    // print_r($excelSheetHeadings);
+                    // exit;
                     $temp_temp=array_key_last($excelSheetHeadings);
                     if($excelSheetHeadings[$temp_temp]=="")// Checking last Index Is Null Or Not
                     {
@@ -581,7 +591,7 @@ class SchemePerformanceController extends Controller
                     /* validation for matching of headings */
                     if ($tableHeadingsAndAtributes == $excelSheetHeadings) { /* Check for missmatch headings*/
 
-                        foreach ($readExcel as $excel_key => $excel_value) {
+                        foreach ($excelArray as $excel_key => $excel_value) {
                             foreach ($excel_value as $key => $value) {
                                 foreach ($schemeAtributes as $attribute_key => $attribute_value) {
 
@@ -603,7 +613,7 @@ class SchemePerformanceController extends Controller
                         $ErrorTxt = "";
                         $coordinate_error = 0;
                         $total_record = 0;
-                        foreach ($readExcel as $key => $row) { /* Insert Data By using for each one by one */
+                        foreach ($excelArray as $key => $row) { /* Insert Data By using for each one by one */
                             $block_name =  preg_replace('/\s+/', ' ', trim(strtolower($row['block_name'])));
                             $panchayat_name =   preg_replace('/\s+/', ' ', trim(strtolower($row['panchayat_name'])));
                             $status =   preg_replace('/\s+/', '', trim(strtolower($row['status'])));

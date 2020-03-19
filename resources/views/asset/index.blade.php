@@ -860,10 +860,10 @@
                                 <!-- <input type="text" name="from" class="form-control" placeholder="From" required=""> -->
                             </div>
                             <div class="form-group">
-                                <input type="text" name="to" class="form-control" placeholder="{{$phrase->to}}" required="">
+                                <input type="email" name="to" maxlength="60" class="form-control" placeholder="{{$phrase->to}}" required="">
                             </div>
                             <div class="form-group">
-                                <input type="text" name="cc" class="form-control" placeholder="{{$phrase->cc}}">
+                                <input type="email" name="cc"  maxlength="60" class="form-control" placeholder="{{$phrase->cc}}">
                             </div>
 
                             <div class="form-group">

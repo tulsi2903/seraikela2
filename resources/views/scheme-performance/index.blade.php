@@ -213,7 +213,7 @@
             <div class="modal-header" style="border-top: 2px solid #5269a3">
                 <h4 class="modal-title mt-0" style="font-family: 'Bree Serif', serif;color:#000;">Coordinates</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
+                    <span aria-hidden="true">x</span>
                 </button>
             </div>
             <form action="{{url('scheme_performance/coordinatesupdate')}}" method="post" id="FormsaveImagescoordinatesLoacation" enctype="multipart/form-data" autocomplete="off">
