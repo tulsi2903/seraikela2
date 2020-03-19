@@ -15,6 +15,7 @@ use DB;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\AssetReviewSectionExport;
 use PDF;
+use Mail;
 
 class AssetReviewController extends Controller
 {
@@ -28,7 +29,7 @@ class AssetReviewController extends Controller
        $department_datas = Department::orderBy('dept_name')->get();
        $year_datas = Year::select('year_id','year_value')->where('status', 1)->get();
        // return view('asset-review.index')->with(compact('block_datas','department_datas','year_datas'));
-       return view('asset-review.index-new')->with(compact('block_datas','department_datas','year_datas'));
+       return view('asset-review.index')->with(compact('block_datas','department_datas','year_datas'));
     }
 
     public function show(Request $request){
@@ -456,6 +457,106 @@ class AssetReviewController extends Controller
         $AssetReviewdateTime = date('d-m-Y H:i A');
         $pdf = PDF::loadView('department/Createpdfs', compact('AssetReviewdata', 'AssetReviewdateTime'));
         return $pdf->download('Asset Review.pdf');
+    }
+
+    public function export_any(Request $request){
+        $review_datas = json_decode($request->to_export_datas); // recieved
+        $year_count = json_decode($request->to_export_datas)->year_count; // received
+
+        $export_datas = []; // use to export
+        $export_datas_pdf = ""; // use to export
+        $sheet_titles =[]; // use to export/ sheet title
+
+        foreach($review_datas as $review_data){
+            $block_wise_data = [["Resources Review", "Date: ".date("d-m-Y H:s A")],[]];
+            $sheet_titles[] = $review_data->block_name;
+            $export_datas_pdf .= "<tr><td colspan=\"".count($review_data->count_datas[0])."\"></td></tr>";
+            $export_datas_pdf .= "<tr><td colspan=\"".count($review_data->count_datas[0])."\"></td></tr>";
+            $export_datas_pdf .= "<tr><td style=\"text-align: center;font-size: 150%;\" colspan=\"".count($review_data->count_datas[0])."\"><b>Block: ".$review_data->block_name."</b></td></tr>";
+            
+            for($i=0;$i<count($review_data->count_datas);$i++){
+                $data_tmp=[];
+                $export_datas_pdf .= "<tr>";
+               
+                for($j=0;$j<count($review_data->count_datas[$i]);$j++)
+                {
+                    array_push($data_tmp, $review_data->count_datas[$i][$j]);
+                    $export_datas_pdf .= "<td>".$review_data->count_datas[$i][$j]."</td>";
+                }
+
+                $block_wise_data[] = $data_tmp;
+                $export_datas_pdf .= "</tr>";
+            }
+
+            $export_datas[] = $block_wise_data;
+        }
+
+        if($request->type=="excel"){
+            \Excel::create('Resources-Review-Data', function ($excel) use ($export_datas, $sheet_titles, $i) {
+                for($i=0;$i<count($sheet_titles);$i++){
+                    $excel->sheet($sheet_titles[$i], function ($sheet) use ($export_datas, $i) {
+                        $sheet->fromArray($export_datas[$i], null, 'A1', true, false);
+                        $sheet->setColumnFormat(array('I1' => '@'));
+                    });
+                }
+            })->download('xls');
+        }
+        else if($request->type=="pdf"){
+            $doc_details = array(
+                "title" => "Designation",
+                "author" => 'IT-Scient',
+                "topMarginValue" => 10,
+                "mode" => 'L'
+            );
+
+            $pdfbuilder = new \PdfBuilder($doc_details);
+
+            $content = "<table cellspacing=\"0\" cellpadding=\"4\" border=\"1\" ><tr>";
+            $content .= "<th style='border: solid 1px #000000;' colspan=\"".count(($review_datas[0]->count_datas[0]))."\" align=\"left\" ><b>Resources Review Export</b></th></tr>";
+            $content .= "<tr><th style='border: solid 1px #000000;' colspan=\"".count(($review_datas[0]->count_datas[0]))."\" align=\"left\" >Date: ".date("d-m-Y H:s A")."</th></tr>";
+            $content .= "<tbody>";
+            $content .= $export_datas_pdf;
+            $content .= "</tbody>";
+            $content .= "</table>";
+            $pdfbuilder->table($content, array('border' => '1', 'align' => ''));
+            $pdfbuilder->output('Resources-Review-Data.pdf');
+            exit;
+        }
+    }
+
+    public function send_email(Request $request){
+        $review_datas = json_decode($request->to_export_datas); // recieved
+
+
+
+        $email_from = $request->from;
+        $email_to = $request->to;
+        $email_cc = $request->cc;
+        $send_subject = $request->subject;
+
+        $user = array('email_from' => $email_from, 'email_to' => $email_to, 'cc' => $email_cc, 'subject' => $send_subject);
+
+        // return view("mail.resources-review")->with(compact('review_datas'));
+
+        Mail::send('mail.resources-review', ['review_datas' => $review_datas], function ($message) use ($user) {
+            $email_to = explode(',', $user['email_to']);
+            foreach ($email_to as $key => $value) {
+                $message->to($email_to[$key]);
+            }
+
+            if (@$user['cc']) {
+                $email_cc = explode(',', $user['cc']);
+                foreach ($email_cc as $key => $value) {
+                    $message->cc($email_cc[$key]);
+                }
+            }
+
+            // $message->attachData($pdf->output(), "department.pdf");
+            $message->subject($user['subject']);
+            $message->from('dsrm.skla@gmail.com', 'DSRM Mailer');
+            echo "Email sent successfully";
+        });
+
     }
 }
 

@@ -16,6 +16,7 @@ use App\SchemeAsset;
 use App\Group;
 use App\asset_subcat;
 use DB;
+use Mail;
 
 class SchemeReviewController extends Controller
 {
@@ -719,13 +720,28 @@ class SchemeReviewController extends Controller
             if ($scheme_data->scheme_is == 2) {
                 if ($performance_data->scheme_asset_id != "") {
                     $SchemeAsset_deatails = SchemeAsset::where('scheme_asset_id', $performance_data->scheme_asset_id)->first();
-                    $map_datas_tmp["scheme_map_marker"] = $SchemeAsset_deatails->mapmarkericon;
+                    if (file_exists($SchemeAsset_deatails->mapmarkericon)) {
+                        $map_datas_tmp["scheme_map_marker"] = $SchemeAsset_deatails->mapmarkericon;
+                    }
+                    else{
+                        $map_datas_tmp["scheme_map_marker"] = null;
+                    }
                 } else {
-                    $map_datas_tmp["scheme_map_marker"] = $scheme_data->scheme_map_marker;
+                    if (file_exists($scheme_data->scheme_map_marker)) {
+                        $map_datas_tmp["scheme_map_marker"] = $scheme_data->scheme_map_marker;
+                    }
+                    else{
+                        $map_datas_tmp["scheme_map_marker"] = null;
+                    }
                 }
             } else {
                 // for map marker
-                $map_datas_tmp["scheme_map_marker"] = $scheme_data->scheme_map_marker;
+                if (file_exists($scheme_data->scheme_map_marker)) {
+                    $map_datas_tmp["scheme_map_marker"] = $scheme_data->scheme_map_marker;
+                }
+                else{
+                    $map_datas_tmp["scheme_map_marker"] = null;
+                }
             }
 
             // final push
@@ -762,7 +778,7 @@ class SchemeReviewController extends Controller
         // dd($review_datas[0]->performance_datas[3]);
 
         foreach($review_datas as $review_data){
-            $block_wise_data = [];
+            $block_wise_data = [["Scheme Review", "Date: ".date("d-m-Y H:s A")],[]];
             $sheet_titles[] = $review_data->block_name;
             $export_datas_pdf .= "<tr><td colspan=\"".count($review_data->performance_datas[3])."\"></td></tr>";
             $export_datas_pdf .= "<tr><td style=\"text-align: center;font-size: 150%;\" colspan=\"".count($review_data->performance_datas[3])."\"><b>Block: ".$review_data->block_name."</b></td></tr>";
@@ -881,6 +897,7 @@ class SchemeReviewController extends Controller
 
             $content = "<table cellspacing=\"0\" cellpadding=\"4\" border=\"1\" ><tr>";
             $content .= "<th style='border: solid 1px #000000;' colspan=\"".count($export_datas[0][3])."\" align=\"left\" ><b>Scheme Review Export</b></th></tr>";
+            $content .= "<tr><th style='border: solid 1px #000000;' colspan=\"".count(($export_datas[0][3]))."\" align=\"left\" >Date: ".date("d-m-Y H:s A")."</th></tr>";
             
 
             /* ========================================================================= */
@@ -903,5 +920,106 @@ class SchemeReviewController extends Controller
             $pdfbuilder->output('Scheme-Review-Datas.pdf');
             exit;
         }
+    }
+
+    public function send_email(Request $request){
+        $review_datas = json_decode($request->to_export_datas)->datas; // recieved
+        $year_count = json_decode($request->to_export_datas)->year_count; // received
+        $export_datas_pdf = ""; // 
+
+        // dd($review_datas);
+
+        foreach($review_datas as $review_data){
+            $block_wise_data = [["Scheme Review", "Date: ".date("d-m-Y H:s A")],[]];
+            $sheet_titles[] = $review_data->block_name;
+            $export_datas_pdf .= "<tr><td style='padding-top: 10px;padding-bottom:5px;text-align: left;background-color:transparent;color: white;padding-left: 1em;' colspan='".count($review_data->performance_datas[3])."'></td></tr>";
+            $export_datas_pdf .= "<tr><td style='padding-top: 10px;padding-bottom:5px;text-align: left;background-color:#6f8fdd;color: white;padding-left: 1em;' colspan='".count($review_data->performance_datas[3])."'><b>Block: ".$review_data->block_name."</b></td></tr>";
+            
+            for($i=0;$i<count($review_data->performance_datas);$i++){
+                $export_datas_pdf .= "<tr>";
+                for($j=0;$j<count($review_data->performance_datas[$i]);$j++)
+                {
+                    if($i==0){
+                        // scheme names
+                        if($j!=0){
+                            $export_datas_pdf .= "<td style='border: 1px solid #acabab;padding: 10px;background: #fff;padding-left: 1em;'><b>".explode(":",$review_data->performance_datas[$i][$j])[0]."</b></td>";
+                            for($tmp=0;$tmp<(($year_count*3)-1);$tmp++){
+                                $export_datas_pdf .= "<td style='border: 1px solid #acabab;padding: 10px;background: #fff;padding-left: 1em;'></td>";
+                            }
+                        }
+                        else{
+                            $export_datas_pdf .= "<td style='border: 1px solid #acabab;padding: 10px;background: #fff;padding-left: 1em;'>".$review_data->performance_datas[$i][$j]."</td>";
+                        }
+                    }
+                    else if($i==1){
+                        // years
+                        if($j!=0){
+                            $export_datas_pdf .= "<td style='border: 1px solid #acabab;padding: 10px;background: #fff;padding-left: 1em;'><b>".$review_data->performance_datas[$i][$j]."</b></td>";
+                            $export_datas_pdf .= "<td style='border: 1px solid #acabab;padding: 10px;background: #fff;padding-left: 1em;'></td>";
+                            $export_datas_pdf .= "<td style='border: 1px solid #acabab;padding: 10px;background: #fff;padding-left: 1em;'></td>";
+                        }
+                        else{
+                            $export_datas_pdf .= "<td style='border: 1px solid #acabab;padding: 10px;background: #fff;padding-left: 1em;'><b>".$review_data->performance_datas[$i][$j]."</b></td>";
+                        }
+                    }
+                    else if($i==2){
+                        // status
+                        $colours = ["#c2f7fd","#ffcccc","#e2ffbc"];
+                        if($j!=0){
+                            $export_datas_pdf .= "<td style='border: 1px solid #acabab;padding: 10px;background:".$colours[$j%3].";padding-left: 1em;'><b>".$review_data->performance_datas[$i][$j]."</b></td>";
+                        }
+                        else{
+                            $export_datas_pdf .= "<td style='border: 1px solid #acabab;padding: 10px;background: #fff;padding-left: 1em;'><b>".$review_data->performance_datas[$i][$j]."</b></td>";
+                        }
+                    }
+                    else{
+                        // values
+                        if($j!=0){
+                            if(preg_match('~>\K[^<>]*(?=<)~', $review_data->performance_datas[$i][$j], $only_text))
+                            {
+                                $export_datas_pdf .= "<td style='border: 1px solid #acabab;padding: 10px;background: #fff;padding-left: 1em;'>".(int)$only_text[0]."</td>";
+                            }
+                            else{
+                                $export_datas_pdf .= "<td style='border: 1px solid #acabab;padding: 10px;background: #fff;padding-left: 1em;'>".$review_data->performance_datas[$i][$j]."</td>";
+                            }
+                        }
+                        else{
+                            $export_datas_pdf .= "<td style='border: 1px solid #acabab;padding: 10px;background: #fff;padding-left: 1em;'>".$review_data->performance_datas[$i][$j]."</td>";
+                        }
+                    }
+                }
+                $export_datas_pdf .= "</tr>";
+            }
+        }
+
+
+        $email_from = $request->from;
+        $email_to = $request->to;
+        $email_cc = $request->cc;
+        $send_subject = $request->subject;
+
+        $user = array('email_from' => $email_from, 'email_to' => $email_to, 'cc' => $email_cc, 'subject' => $send_subject);
+
+        return view("mail.scheme-review")->with(compact('export_datas_pdf'));
+
+        Mail::send('mail.scheme-review', ['export_datas_pdf' => $export_datas_pdf], function ($message) use ($user) {
+            $email_to = explode(',', $user['email_to']);
+            foreach ($email_to as $key => $value) {
+                $message->to($email_to[$key]);
+            }
+
+            if (@$user['cc']) {
+                $email_cc = explode(',', $user['cc']);
+                foreach ($email_cc as $key => $value) {
+                    $message->cc($email_cc[$key]);
+                }
+            }
+
+            // $message->attachData($pdf->output(), "department.pdf");
+            $message->subject($user['subject']);
+            $message->from('dsrm.skla@gmail.com', 'DSRM Mailer');
+            echo "Email sent successfully";
+        });
+
     }
 }

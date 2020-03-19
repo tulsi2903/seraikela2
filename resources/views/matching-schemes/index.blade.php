@@ -91,7 +91,7 @@
 <div class="card">
     <div class="card-header">
         <div class="card-head-row card-tools-still-right" style="background:#fff;">
-            <h4 class="card-title">Matching Schemes Datas</h4>
+            <h4 class="card-title">Matching Schemes Data</h4>
             <div class="card-tools">
                 <!-- <a href="{{url('scheme-geo-target')}}" class="btn btn-sm btn-secondary" style="float:right;"><i class="fas fa-arrow-left"></i>&nbsp;&nbsp;Back</a> -->
             </div>
@@ -99,8 +99,8 @@
     </div>
     <div class="card-body">
         <div class="search-form">
-            <h4 class="title-1">Search Duplicate Work Datas</h4>
-            <form action="{{url('matching-schemes')}}" method="POST">
+            <h4 class="title-1">Search Duplicate Work Data</h4>
+            <form action="{{url('matching-schemes')}}" id="matching-scheme-form" method="POST">
                 @csrf
                 <div class="row">
                     <div class="col-md-4">
@@ -195,46 +195,54 @@
 
         <div class="row">
             <div class="col-12">
-                @if(count($datas)==0)
+                @if(count($datas)==0 && $search)
                     <div style="text-align: center;"><i class="fas fa-info-circle"></i> No work data to show, please refine your search queries</div>
-                @else
-                    <h4 class="title-1">Work Datas</h4>
-                    <table class="display table table-datatable table-striped table-hover">
-                        <thead>
-                            <tr style="background: #d6dcff;color: #000;">
-                                <th>#</th>
-                                <th>Schemes</th>
-                                <th>Year</th>
-                                <th>Location</th>
-                                <th>Asset</th>
-                                <th>No of Matching Work Datas</th>
-                                <th>Attributes</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <?php $count=1; ?>
-                        <tbody>
-                            @foreach($datas as $data)
-                            <tr>
-                                <td>{{$count++}}</td>
-                                <td>{{$data->scheme_name}}({{$data->scheme_short_name}})</td>
-                                <td>{{$data->year_value}}</td>
-                                <td>Block: {{$data->geo_name}}<br/>Panchayat: {{$data->panchayat_name}}</td>
-                                <td>{{$data->scheme_asset_name}}</td>
-                                <td>
-                                    <?php $matching_array=explode(',',$data['matching_performance_id']);
-                                        $matching_count=count($matching_array);
-                                        echo $matching_count;
-                                    ?>
-                                </td>
-                                <td>{!! $data->attribute !!}</td>
-                                <td>
-                                    <a href="javascript:void(0);" class="btn btn-sm btn-secondary" onclick="get_view_data({{$data->id}})" title="Click to view duplicate work data"><i class="fas fa-eye"></i>&nbsp;View</a>
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                @endif
+                @if(count($datas)!=0)
+                    <div id="all-performance-tabular-data">
+                        <table class="display table table-datatable table-striped table-hover">
+                            <thead>
+                                <tr style="background: #d6dcff;color: #000;">
+                                    <th>#</th>
+                                    <th>Schemes</th>
+                                    <th>Year</th>
+                                    <th>Location</th>
+                                    <th>Asset</th>
+                                    <th>No of Matching Work Datas</th>
+                                    <th>Attributes</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <?php $count=1; ?>
+                            <tbody>
+                                @foreach($datas as $data)
+                                <tr>
+                                    <td>{{$count++}}</td>
+                                    <td>{{$data->scheme_name}}({{$data->scheme_short_name}})</td>
+                                    <td>{{$data->year_value}}</td>
+                                    <td>Block: {{$data->geo_name}}<br/>Panchayat: {{$data->panchayat_name}}</td>
+                                    <td>{{$data->scheme_asset_name}}</td>
+                                    <td>
+                                        <?php $matching_array=explode(',',$data['matching_performance_id']);
+                                            $matching_count=count($matching_array);
+                                            echo $matching_count;
+                                        ?>
+                                    </td>
+                                    <td>{!! $data->attribute !!}</td>
+                                    <td>
+                                        @if($data->status==1)
+                                            <span class="badge badge-success">Duplicate</span>
+                                        @elseif($data->status==2)
+                                            <span class="badge badge-danger">Not Duplicate</span>
+                                        @else
+                                            <a href="javascript:void(0);" class="btn btn-sm btn-secondary" onclick="get_view_data({{$data->id}})" title="Click to view & change duplicate work data"><i class="fas fa-edit"></i>&nbsp;Change</a>
+                                        @endif
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 @endif
             </div>
         </div>
@@ -288,6 +296,10 @@
     $(document).ready(function(){
         $("#block_id").change(function(){
             get_panchayat_datas();
+        });
+
+        $("#matching-scheme-form input, #matching-scheme-form select").change(function(){
+            $("#all-performance-tabular-data").fadeOut(300);
         });
     });
 
@@ -351,31 +363,56 @@
                                 <td>` + data.matching_performance_datas[i].attribute + `</td>
                                 <td>`;
 
-                                append+=`
-                                    <select name="status[]" class="form-control">
-                                        <option value="probable_duplicate"
-                                        `;
-                                        if(data.matching_performance_datas[i].type=="probable_duplicate"){
-                                            append+=` selected`;
-                                        }
-                                        append+=`>Probable Duplicate</option>
-                                        <option value="duplicate"
-                                        `;
-                                        if(data.matching_performance_datas[i].type=="duplicate"){
-                                            append+=` selected`;
-                                        }
-                                        append+=`>Duplicate</option>
-                                        <option value="not_duplicate"
-                                        `;
-                                        if(data.matching_performance_datas[i].type=="not_duplicate"){
-                                            append+=` selected`;
-                                        }
-                                        append+=`>Not Duplicate</option>
-                                    </select>
-                                `;
+                                if(data.action_performed==1 || data.action_performed==2){
+                                    if(data.matching_performance_datas[i].type=="probable_duplicate"){
+                                        append+=`Probable Duplicate`;
+                                    }
+                                    else if(data.matching_performance_datas[i].type=="duplicate"){
+                                        append+=`Duplicate`;
+                                    }
+                                    else if(data.matching_performance_datas[i].type=="not_duplicate"){
+                                        append+=`Not Duplicate`;
+                                    }
+                                    else{
+                                        append+=`-`;
+                                    }
+                                }
+                                else{
+                                    append+=`
+                                        <select name="status[]" class="form-control">
+                                            <option value="probable_duplicate"
+                                            `;
+                                            if(data.matching_performance_datas[i].type=="probable_duplicate"){
+                                                append+=` selected`;
+                                            }
+                                            append+=`>Probable Duplicate</option>
+                                            <option value="duplicate"
+                                            `;
+                                            if(data.matching_performance_datas[i].type=="duplicate"){
+                                                append+=` selected`;
+                                            }
+                                            append+=`>Duplicate</option>
+                                            <option value="not_duplicate"
+                                            `;
+                                            if(data.matching_performance_datas[i].type=="not_duplicate"){
+                                                append+=` selected`;
+                                            }
+                                            append+=`>Not Duplicate</option>
+                                        </select>
+                                    `;
+                                }
                     
                     append += `</td>`;
-                    append += `<td><input class="form-control" name="comment[]" value="`+(data.matching_performance_datas[i].comment || '')+`" placeholder="comment"></td>`;
+                    if(data.action_performed==1 || data.action_performed==2){
+                        append += `<td>`+(data.matching_performance_datas[i].comment || '')+`</td>`;
+                    }
+                    else{
+                        append += `<td><input class="form-control" name="comment[]" value="`+(data.matching_performance_datas[i].comment || '')+`" placeholder="comment"></td>`;
+                    }
+                }
+
+                if(data.action_performed==1){
+                    $("#duplicate-form .modal-footer").hide(0);
                 }
                 $("#duplicate-form-tbody").append(append);
                 $("#to-update-data-id").val(id);
@@ -427,6 +464,7 @@
                             }
                         },
                     }).then((ok) => {
+                        $("#matching-scheme-form").submit();
                         reset_duplicate_form(); // resetting form
                         if (ok) {
                             // document.location.reload();
@@ -444,9 +482,8 @@
                         },
                     });
 
-                  
+                  $(".custom-loader").fadeOut(300);
                 }
-                $(".custom-loader").fadeOut(300);
             }
         });
 

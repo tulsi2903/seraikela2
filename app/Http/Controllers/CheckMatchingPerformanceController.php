@@ -69,7 +69,7 @@ class CheckMatchingPerformanceController extends Controller
                          $to_search_panchayat_id = [$request->panchayat_id];
                     }
                }
-
+               $search = true;
           }
 
           $datas = CheckMatchingPerformance::leftJoin('scheme_performance', 'chck_matching_performance.scheme_performance_id', '=', 'scheme_performance.scheme_performance_id')
@@ -103,7 +103,7 @@ class CheckMatchingPerformanceController extends Controller
                $data->attribute = rtrim($attr_string, ',<br/>');
           }
           
-          return view('matching-schemes.index')->with(compact('datas', 'scheme_datas', 'year_datas', 'block_datas', 'panchayat_datas', 'to_search_scheme_id', 'to_search_year_id', 'to_search_block_id', 'to_search_panchayat_id'));
+          return view('matching-schemes.index')->with(compact('search', 'datas', 'scheme_datas', 'year_datas', 'block_datas', 'panchayat_datas', 'to_search_scheme_id', 'to_search_year_id', 'to_search_block_id', 'to_search_panchayat_id'));
      }
 
      public function get_matching_entries($id = "")
@@ -183,6 +183,7 @@ class CheckMatchingPerformanceController extends Controller
           $not_duplicate = explode(",", $check_matching_performance_datas->not_duplicate);
           $duplicate = explode(",", $check_matching_performance_datas->duplicate);
           $comment = unserialize($check_matching_performance_datas->comment);
+          $action_performed = $check_matching_performance_datas->status;
 
           $matching_performance_datas = SchemePerformance::leftJoin('year', 'scheme_performance.year_id', '=', 'year.year_id')
                ->leftJoin('scheme_assets', 'scheme_performance.scheme_asset_id', '=', 'scheme_assets.scheme_asset_id')
@@ -235,7 +236,7 @@ class CheckMatchingPerformanceController extends Controller
                $response="no_data";
           }
 
-          return ["matching_performance_datas"=>$matching_performance_datas, "response"=>$response];
+          return ["matching_performance_datas"=>$matching_performance_datas, "response"=>$response, 'action_performed'=>(int)$action_performed];
           // return ['Data' => $get_data, 'Matching' => $datas, 'tmp_matching' => $tmp_matching, 'id' => $request->id, 'scheme_performance_id_to_append' => $scheme_performance_id_to_append, 'append_comment' => $append_comment];
      }
 
@@ -288,9 +289,11 @@ class CheckMatchingPerformanceController extends Controller
           $to_change_status = 4; // open
           if($matching_performance_ids == $not_duplicate){
                $to_change_status = 2; // santioned
+               CheckMatchingPerformance::where('id', $id)->update(["status"=>2]);
           }
           else if($matching_performance_ids == $duplicate){
                $to_change_status = 3; // cancel
+               CheckMatchingPerformance::where('id', $id)->update(["status"=>1]);
           }
           $scheme_performance_update = SchemePerformance::find(CheckMatchingPerformance::find($id)->scheme_performance_id);
           if($scheme_performance_update)

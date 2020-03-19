@@ -7,7 +7,7 @@
 					@if(session()->get('dashboard_title')=='My District')
 					<p>  {{$phrase->my_district}}</p>
 					@elseif(session()->get('dashboard_title')=='My SubDivision')
-					<p>   {{$phrase->my_sub_divisin}}</p>
+					<p>   {{$phrase->my_sub_division}}</p>
 					@elseif(session()->get('dashboard_title')=='My Block')
 					<p>   {{$phrase->my_block}}</p>
 					@else

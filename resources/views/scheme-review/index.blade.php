@@ -1018,7 +1018,7 @@
                         </ul>
                     </div>
                     <div style="display: inline-block; width: 50%; float: right; text-align: right; margin-top: -5px;">
-                        <a href="#" data-toggle="tooltip" title="Send Mail"><button type="button" class="btn btn-icon btn-round btn-success"><i class="fa fa-envelope" aria-hidden="true"></i></button></a>
+                        <a href="#" data-toggle="tooltip" title="Send Mail" onclick="openMailModel()"><button type="button" class="btn btn-icon btn-round btn-success"><i class="fa fa-envelope" aria-hidden="true"></i></button></a>
                         <a href="#" data-toggle="tooltip" title="Print"><button type="button" class="btn btn-icon btn-round btn-default" id="print-button" onclick="printView();"><i class="fa fa-print" aria-hidden="true"></i></button></a>
                         <a href="{{url('scheme-review/export')}}" class="review-export-as" data-type="pdf" data-toggle="tooltip" title="Export as PDF"><button type="button" class="btn btn-icon btn-round btn-warning"><i class="fas fa-file-export"></i></button></a>
                         <a href="{{url('scheme-review/export')}}" class="review-export-as" data-type="excel" data-toggle="tooltip" title="Export as Excel"><button type="button" class="btn btn-icon btn-round btn-success"><i class="fas fa-file-excel"></i></button></a>
@@ -1861,13 +1861,57 @@
             $("#export-form textarea").val(JSON.stringify(to_export_datas));
             $("#to_export_datas_type").val($(this).data("type"));
             $("#export-form").submit();
-            // var href = this.href;
-            // if (to_export_datas.length != 0) {
-            //     console.log(JSON.stringify(to_export_datas));
-            //     window.location.href = "" + href + "?datas=" + JSON.stringify(to_export_datas);
-            // }
         });
     });
+</script>
+
+<!-- mail -->
+<div id="create-email" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title mt-0">{{$phrase->send_email}}</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="{{url('scheme-review/send-email')}}" method="post" target="_blank" id="FormValidation" enctype="multipart/form-data" autocomplete="off" onsubmit="sendMail()">
+                @csrf
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="card-body p-t-30" style="padding: 11px;">
+                            <div class="form-group">
+                                <input type="text" name="to" class="form-control" placeholder="{{$phrase->to}}" required="">
+                            </div>
+                            <div class="form-group">
+                                <input type="text" name="cc" class="form-control" placeholder="{{$phrase->cc}}">
+                            </div>
+                            <div class="form-group">
+                                <label for="subject" class="control-label">{{$phrase->subject}} <font color="red">*</font></label>
+                                <input type="text" class="form-control" id="subject" name="subject" placeholder="{{$phrase->subject}}" required="" aria-required="true">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">{{$phrase->close}}</button>
+                    <button type="submit" class="btn btn-info waves-effect waves-light" onclick="return sendMail()">{{$phrase->send}}</button>
+                    <textarea type="text" name="to_export_datas" class="form-control" hidden></textarea>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function sendMail(){
+        $("#create-email textarea[name='to_export_datas']").val(JSON.stringify(to_export_datas));
+        return true;
+    }
+    function openMailModel() {
+        $('#create-email').modal('show');
+    }
 </script>
 
 
