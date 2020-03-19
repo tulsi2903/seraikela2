@@ -134,7 +134,7 @@
                 <div class="col-md-3">
                     <div class="form-group" id="current_value_hide" style="display:none;">
                         <label for="current_value">{{$phrase->current_value}}</label>
-                        <input type="text" name="current_value" id="current_value" maxlength="10"  value="{{$data->current_value}}" class="form-control" autocomplete="off">
+                        <input type="text" name="current_value" id="current_value" maxlength="2"  value="{{$data->current_value}}" class="form-control" autocomplete="off">
                         <div class="invalid-feedback" id="current_value_error_msg"></div>
                     </div>
                 </div>
