@@ -768,6 +768,8 @@ class SchemeReviewController extends Controller
 
     // export to excel
     public function export(Request $request){
+        ini_set('memory_limit', '-1');
+
         $review_datas = json_decode($request->to_export_datas)->datas; // recieved
         $year_count = json_decode($request->to_export_datas)->year_count; // received
 
@@ -923,6 +925,8 @@ class SchemeReviewController extends Controller
     }
 
     public function send_email(Request $request){
+        ini_set('memory_limit', '-1');
+        
         $review_datas = json_decode($request->to_export_datas)->datas; // recieved
         $year_count = json_decode($request->to_export_datas)->year_count; // received
         $export_datas_pdf = ""; // 

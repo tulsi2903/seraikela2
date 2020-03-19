@@ -1459,7 +1459,8 @@
 
 
 <!-- for map-view -->
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCuYbCxfGw_c6lasAlpExIOFj55MVY6xSo"></script>
+<!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCuYbCxfGw_c6lasAlpExIOFj55MVY6xSo"></script> -->
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD8Qlgy2lNnUKtBO2EM8FHJkj-vzGxI-80"></script>
 <script>
     var marker_icon = null;
     function initializeMapView(index) {

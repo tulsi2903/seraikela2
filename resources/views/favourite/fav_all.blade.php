@@ -10,6 +10,7 @@
 
 
 @section('page-content')
+<?php  $desig_permissions = session()->get('desig_permission'); // assigning desig_permission so we can use ?>
 
 <!-------------------------------------------------starting of body---------------------------------------------------->
         <div class="card">
