@@ -555,7 +555,10 @@ class AssetReviewController extends Controller
             // $message->attachData($pdf->output(), "department.pdf");
             $message->subject($user['subject']);
             $message->from('dsrm.skla@gmail.com', 'DSRM Mailer');
-            echo "Email sent successfully";
+            echo "<script>
+            window.opener = self;
+            window.close();
+            </script>";
         });
 
     }

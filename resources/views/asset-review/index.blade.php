@@ -1625,6 +1625,17 @@
 <script>
     function sendMail(){
         $("#create-email textarea[name='to_export_datas']").val(JSON.stringify(to_export_datas));
+        setTimeout(function(){
+            $('#create-email').modal('hide');
+            swal("Success!", "Email sent successfully!", {
+                icon : "success",
+                buttons: {
+                    confirm: {
+                        className : 'btn btn-success'
+                    }
+                },
+            });
+        }, 500);
         return true;
     }
     function openMailModel() {
