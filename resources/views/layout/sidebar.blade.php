@@ -119,7 +119,7 @@
 				@endif
 
 
-				@if(array_key_exists("mod22", $desig_permissions))
+				@if(array_key_exists("mod21", $desig_permissions))
 				<li class="nav-item"><a href="{{url('favourites')}}"><i class="fa fa-star" aria-hidden="true"></i><p>{{$phrase->favourite}}</p></a></li>
 				@endif
 

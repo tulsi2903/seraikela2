@@ -460,6 +460,7 @@ class AssetReviewController extends Controller
     }
 
     public function export_any(Request $request){
+        ini_set('memory_limit', '-1');
         $review_datas = json_decode($request->to_export_datas); // recieved
         $year_count = json_decode($request->to_export_datas)->year_count; // received
 

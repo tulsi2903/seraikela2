@@ -646,7 +646,8 @@
 
 
 <!-- for map-view -->
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCuYbCxfGw_c6lasAlpExIOFj55MVY6xSo"></script>
+<!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCuYbCxfGw_c6lasAlpExIOFj55MVY6xSo"></script> -->
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD8Qlgy2lNnUKtBO2EM8FHJkj-vzGxI-80"></script>
 <script>
     function initializeMapView(map_view_blocks, map_view_assets){
         $("#map-view-block-title").html(review_for);

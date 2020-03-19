@@ -9,6 +9,8 @@
 @endsection
 
 @section('page-content')
+<?php  $desig_permissions = session()->get('desig_permission'); // assigning desig_permission so we can use ?>
+
 <div class="card">
     <div class="col-md-12">
         <div class="card-header">
