@@ -30,7 +30,7 @@
                     @if(Auth::user()->language == 1)
                         <h3>Import Guide For Resource Number</h3>
                         <p>
-                            i. &nbsp;&nbsp;We can import recource number data using excel sheet. Here we are providing two types of upload sheet(Excel).
+                            i. &nbsp;&nbsp;We can import resource number data using excel sheet. Here we are providing two types of upload sheet(Excel).
                             <br>
                             ii. &nbsp;<span style="color:#FFC107;">Download Format</span> button downloads an upload sheet format in which we can add a Resource.
                             <br>

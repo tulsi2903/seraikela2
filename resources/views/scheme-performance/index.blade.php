@@ -558,7 +558,6 @@
                 if (data.gallery.length > 0) {
                     var to_append = `<div class="row">
                                 <div class="col-12">
-                                    <div><label>Previous Images</label></div>
                                      <div class="form-group">
                                    `;
                     for (var i = 0; i < data.gallery.length; i++) {
