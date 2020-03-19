@@ -296,6 +296,7 @@ class GeoStructureController extends Controller
       // abhishek 
       public function view_diffrent_formate(Request $request)
       {
+        ini_set('memory_limit', '-1');
         //   return $request;
           $department=array();
           $type="";
