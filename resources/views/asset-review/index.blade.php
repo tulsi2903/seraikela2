@@ -1599,10 +1599,10 @@
                     <div class="row">
                         <div class="card-body p-t-30" style="padding: 11px;">
                             <div class="form-group">
-                                <input type="text" name="to" class="form-control" placeholder="{{$phrase->to}}" required="">
+                                <input  type="email" maxlength="60"name="to" class="form-control" placeholder="{{$phrase->to}}" required="">
                             </div>
                             <div class="form-group">
-                                <input type="text" name="cc" class="form-control" placeholder="{{$phrase->cc}}">
+                                <input  type="email" maxlength="60"name="cc" class="form-control" placeholder="{{$phrase->cc}}">
                             </div>
                             <div class="form-group">
                                 <label for="subject" class="control-label">{{$phrase->subject}} <font color="red">*</font></label>

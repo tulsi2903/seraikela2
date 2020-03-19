@@ -238,6 +238,10 @@
                                     });
                                 });
                             </script>
+                             <?php
+                            session()->forget('alert-class');
+                            session()->forget('alert-content');
+                        ?>
                         @endif
                         @if(session()->get('alert-class')=="alert-danger")
                             <script>
@@ -252,11 +256,12 @@
                                     });
                                 });
                             </script>
-                        @endif
-                        <?php
+                             <?php
                             session()->forget('alert-class');
                             session()->forget('alert-content');
                         ?>
+                        @endif
+                       
                     @endif
                     @yield('page-content')
 					<!-- <div class="page-header">
