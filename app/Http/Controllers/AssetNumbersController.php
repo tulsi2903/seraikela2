@@ -851,7 +851,7 @@ class AssetNumbersController extends Controller
         }
         
         //  echo "<pre>";
-        //     // // // echo $readExcel[1]['main_resource_sno'];
+        //     // // // echo $excelArray[1]['main_resource_sno'];
         //    print_r($geo_names);
         //             // print_r($tableHeadingsAndAtributes);
         //             exit;
@@ -864,7 +864,9 @@ class AssetNumbersController extends Controller
         }
             
         if ($_FILES['excel_for_asset_number']['tmp_name']) {
-            $readExcel = \Excel::load($_FILES['excel_for_asset_number']['tmp_name'], function ($reader) { })->get()->toArray();
+            $readExcel = \Excel::load($_FILES['excel_for_asset_number']['tmp_name'], function ($reader) { 
+
+            })->get()->toArray();
             $readExcelHeader = \Excel::load($_FILES['excel_for_asset_number']['tmp_name'])->get();
             if(count($readExcelHeader) != 0){
                 $excelSheetHeadings = $readExcelHeader->first()->keys()->toArray(); /* this is for excel sheet heading */
@@ -875,15 +877,21 @@ class AssetNumbersController extends Controller
            // print_r($excelSheetHeadings1);
                     // print_r($tableHeadingsAndAtributes);
                     // exit;
+                $excelArray=array();
             foreach ($readExcel as $key_a => $row_a) {
+                if($row_a['sno.']!="")
+                {
                 $si_no_arary[]= $row_a['sno.'];
+                $excelArray[]=$row_a;
+                }
             }
-            
+            // return $excelArray;
             $tableHeadingsAndAtributes = array('sno.', 'year', 'resource_name', 'panchayat_name', 'current_value',0);
             $tableHeadingsAndAtributes_location = array('sno.', 'year', 'resource_name','main_resource_sno','count', 'panchayat_name', 'locationlandmark', 'latitude', 'longitude');
+            // return count($si_no_arary);
             try {
             
-                if(count($readExcel) != 0)
+                if(count($excelArray) != 0)
                 {
                     $excelSheetHeadings1 = $excelSheetHeadings;
                     sort($tableHeadingsAndAtributes);
@@ -891,7 +899,7 @@ class AssetNumbersController extends Controller
                     sort($excelSheetHeadings1);
                     
                     if ($tableHeadingsAndAtributes == $excelSheetHeadings1 || $tableHeadingsAndAtributes_location == $excelSheetHeadings1) { /* Check for missmatch headings*/
-                        if(count($readExcel)<=250)
+                        if(count($excelArray)<=250)
                         { 
                             $getUserName = User::where('id',Session::get('user_id'))->first();
                             date_default_timezone_set('Asia/Kolkata');
@@ -902,7 +910,7 @@ class AssetNumbersController extends Controller
                             $ErrorTxt = "";
                             // echo "<pre>";    
                             // print_r($geo_names);
-                            foreach ($readExcel as $key => $row) { /* Insert Data By using for each one by one */
+                            foreach ($excelArray as $key => $row) { /* Insert Data By using for each one by one */
 
                                 $panchayat_name = trim(ucwords($row['panchayat_name'])," ");
 
@@ -998,13 +1006,13 @@ class AssetNumbersController extends Controller
                                             $noOfSuccess++;
                                             $aseetNo = $row['main_resource_sno'];
                                             
-                                            $fetch_panchayat_id1 = GeoStructure::where('geo_name', $readExcel[$aseetNo - 1]['panchayat_name'])->where('level_id', '4')->value('geo_id'); /* for Panchayat ID */
-                                            $fetch_asset_id1 = Asset::where('asset_name', $readExcel[$aseetNo - 1]['resource_name'])->value('asset_id'); /* for asset ID */
-                                            $fetch_year_id1 = Year::where('year_value', $readExcel[$aseetNo - 1]['year'])->value('year_id'); /* for Year ID */
+                                            $fetch_panchayat_id1 = GeoStructure::where('geo_name', $excelArray[$aseetNo - 1]['panchayat_name'])->where('level_id', '4')->value('geo_id'); /* for Panchayat ID */
+                                            $fetch_asset_id1 = Asset::where('asset_name', $excelArray[$aseetNo - 1]['resource_name'])->value('asset_id'); /* for asset ID */
+                                            $fetch_year_id1 = Year::where('year_value', $excelArray[$aseetNo - 1]['year'])->value('year_id'); /* for Year ID */
                                             $fetch_asset_loc_id = AssetGeoLocation::where('year', $fetch_year_id1)
                                                     ->where('asset_id', $fetch_asset_id1)
                                                     ->where('geo_id', $fetch_panchayat_id1)
-                                                    ->where('location_name', $readExcel[$aseetNo - 1]['locationlandmark'])
+                                                    ->where('location_name', $excelArray[$aseetNo - 1]['locationlandmark'])
                                                     ->first();
                                             $childdatasValue = Asset::where('parent_id', $fetch_asset_id1)->get();
                                             $fetch_asset_number_edit_child = AssetNumbers::where('asset_id', $fetch_asset_id)->where('asset_geo_loc_id',$fetch_asset_loc_id->asset_geo_loc_id)->where('geo_id', $fetch_panchayat_id)->first();
@@ -1120,7 +1128,7 @@ class AssetNumbersController extends Controller
                             $txt = "District Resource and Scheme Management\n";
                             $txt .= "----------------------------------------------------------------------------------------------------------------------------------\n";
                             $txt .= "DATE: ". date('d/m/Y h:i A')."\n";
-                            $txt .= "TOTAL RECORD COUNT: ". count($readExcel)."\n";
+                            $txt .= "TOTAL RECORD COUNT: ". count($excelArray)."\n";
                             $txt .= "TOTAL SUCCESS COUNT: ".$noOfSuccess."\n";
                             $txt .= "TOTAL FAIL COUNT: ".$noOfFails."\n";
                             $txt .= "USER NAME: ". $getUserName->first_name." ". $getUserName->middle_name." ". $getUserName->last_name." \n";
@@ -1155,7 +1163,7 @@ class AssetNumbersController extends Controller
                                 session()->put('alert-content', 'Resources Numbers details has been saved');
                                 session()->put('to-download', 'yes');
                                 session()->put('currentdate', date('d/m/Y h:i A'));
-                                session()->put('totalCount', count($readExcel));
+                                session()->put('totalCount', count($excelArray));
                                 session()->put('totalsuccess', $noOfSuccess);
                                 session()->put('totalfail', $noOfFails);
                                 return back();
