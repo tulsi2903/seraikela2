@@ -44,23 +44,51 @@
 	}
 	.content-bottom {
     margin: 9em;
-    position: fixed;
-	width: 35%;
+	width: 75%;
 }
+.login_detail{
+		background: #0000004a;
+		min-height: 1011px;
+		margin-top: -3em;
+		width: 50%;
+
+	}
+
+	@media only screen and (max-width: 600px) {
+	.login_detail {
+    background: #00000000;
+    width: 85%;
+	}
+	.content-bottom {
+		margin: 3em;
+		width: 100%;
+	}
+	img .img_demo{
+		height: 367px;
+		margin-top: 1em;
+
+	}
+	/* .text-detail{
+		display:none;
+	} */
+	}
 </style>
 <body>
 	<!-- main -->
 	<div class="main-w3layouts wrapper">
 		<div class="row">
-			<div class="col-md-6"><br><br>
+			<div class="col-md-6 text-detail"><br><br>
 				<div class="content-detail" style="padding: 3em;margin-top:-4em;">
 					<h4>District Scheme & Resource Management</h4>
+					
 					<p>The website provides Information on a single dashboard where you can monitor and evaluate the various Projects, Schemes & programs with respect to time, geography, department and asset progress that are rendered by Jharkhand State and implemented in the district. Also, you can further review and generate reports. And can print, email and export the data in PDF or Excel format. It provides you with 24x7 availability to all the department growing individually for the growth of the district in an efficient, reliable, transparent and integrated manner. It is our endeavour  to continue the enhancement and enrichment of our state on a regular basis. Finally, this technology will play a vital role in the State’s socio-economic arena.</p><br>
-					<center><img src="{{url('public/images/icons circle.png')}}" style="height: 500px; margin-top: 1em;"></center>
+					
+					<center><img src="{{url('public/images/icons circle.png')}}"  style="height: 400px; margin-top: 1em;"></center>
+				
 				</div>
 			</div>
 
-			<div class="col-md-6" style="background: #0000004a;min-height: 1000px;margin-top: -4em;width: 50%;">
+			<div class="col-md-6 login_detail">
 				<!-- <div class="main-agileinfo" style="    width: 67%;">
 					<div class="agileits-top">
 						<center><img src="http://jiada.baba.software/public/form/images/toplogo.png" style="height: 100%;"></center>
