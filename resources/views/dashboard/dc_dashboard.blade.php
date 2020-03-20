@@ -665,7 +665,7 @@
                 
             },
             error: function (xhr){
-                alert("error" + xhr.status + "," + xhr.statusText);
+                // alert("error" + xhr.status + "," + xhr.statusText);
             },
             success: function (data){
                 console.log(data);
@@ -738,7 +738,7 @@
                     $(".custom-loader").fadeIn(300);
                 },
                 error: function (xhr) {
-                    alert("error" + xhr.status + "," + xhr.statusText);
+                    // alert("error" + xhr.status + "," + xhr.statusText);
                     $(".custom-loader").fadeOut(300);
                 },
                 success: function (data) {
