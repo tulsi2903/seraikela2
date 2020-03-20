@@ -29,6 +29,8 @@
     @media print {
         #printable-area {
             margin-top: 250px !important;
+            font-size: small;
+            width: 100% !important;
         }
 
         .no-print,
@@ -39,6 +41,8 @@
         #printable-info-details {
             visibility: visible;
             position: fixed;
+            margin-left: 100px !important;
+            font-size:medium;
         }
 
         #print-button,
@@ -49,9 +53,9 @@
         .card-title-print-1 {
             visibility: visible !important;
             position: fixed;
-            color: #147785;
+            color: #0a0a0a;
             font-size: 30px;
-            ;
+           
             left: 0;
             top: 50px;
             width: 100vw !important;
@@ -61,7 +65,7 @@
         .card-title-print-2 {
             visibility: visible !important;
             position: fixed;
-            color: #147785;
+            color: #0a0a0a;
             font-size: 30px;
             ;
             left: 0;
@@ -73,7 +77,7 @@
         .card-title-print-3 {
             visibility: visible !important;
             position: fixed;
-            color: #147785;
+            color: #0a0a0a;
             font-size: 30px;
             ;
             left: 0;
