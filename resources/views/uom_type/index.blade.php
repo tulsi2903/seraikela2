@@ -4,7 +4,72 @@
 
 @section('page-style')
     <style>
-        
+         #printable-info-details {
+        visibility: hidden;
+        height: 0px;
+        /* position: fixed;
+        left: 0;
+        top: 20px;
+        width: 100vw !important; */
+    }
+        @media print {
+        #printable-area {
+            margin-top: 250px !important;
+            font-size: small;
+            width: 100% !important;
+
+        }
+        .no-print,
+        .no-print * {
+            display: none !important;
+        }
+        #printable-info-details {
+            visibility: visible;
+            position: fixed;
+            margin-left: 100px !important;
+            font-size:medium;
+        }
+        #print-button,
+        #print-button * {
+            visibility: hidden;
+        }
+        .card-title-print-1 {
+            visibility: visible !important;
+            position: fixed;
+            color: #0a0a0a;
+            font-size: 30px;
+           
+            left: 0;
+            top: 30px;
+            width: 100vw !important;
+            height: 100vw !important;
+        }
+        .card-title-print-2 {
+            visibility: visible !important;
+            position: fixed;
+            color: #0a0a0a;
+            font-size: 30px;
+            
+            left: 0;
+            top: 100px;
+            width: 100vw !important;
+            height: 100vw !important;
+        }
+        .card-title-print-3 {
+            visibility: visible !important;
+            position: fixed;
+            color: #0a0a0a;
+            font-size: 30px;
+            
+            left: 0;
+            top: 140px;
+            width: 100vw !important;
+            height: 100vw !important;
+        }
+        .action-buttons {
+            display: none;
+        }
+    }
     </style>
 @endsection
 
@@ -19,9 +84,9 @@
                     <div class="card-head-row card-tools-still-right" style="background:#fff;">
                         <h4 class="card-title">{{$phrase->uom_type}} </h4>
                         <div class="card-tools">
-                            <!-- <a href="#" data-toggle="tooltip" title="{{$phrase->send_email}}"><button type="button" class="btn btn-icon btn-round btn-success" data-target="#create-email" data-toggle="modal"><i class="fa fa-envelope" aria-hidden="true"></i></button></a>
+                            <a href="#" data-toggle="tooltip" title="{{$phrase->send_email}}"><button type="button" class="btn btn-icon btn-round btn-success" data-target="#create-email" data-toggle="modal"><i class="fa fa-envelope" aria-hidden="true"></i></button></a>
                             <a href="#" data-toggle="tooltip" title="{{$phrase->print}}"><button type="button" class="btn btn-icon btn-round btn-default" id="print-button" onclick="printView();"><i class="fa fa-print" aria-hidden="true"></i></button></a>
-                            <a href="" target="_BLANK" data-toggle="tooltip" title="{{$phrase->export_pdf}}"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button></a>
+                            <!-- <a href="" target="_BLANK" data-toggle="tooltip" title="{{$phrase->export_pdf}}"><button type="button" class="btn btn-icon btn-round btn-warning" ><i class="fas fa-file-export"></i></button></a>
                             <a href="" data-toggle="tooltip" title="{{$phrase->export_excel}}"><button type="button" class="btn btn-icon btn-round btn-primary" ><i class="fas fa-file-excel"></i></button></a> -->
                             @if($desig_permissions["mod22"]["add"])
                                 <a id="toggle1" class="btn btn-secondary uom-add-button" href="javascript:void();" role="button"><span class="btn-label"><i class="fa fa-plus"></i></span>&nbsp;{{$phrase->add}}</a>
@@ -58,6 +123,12 @@
                         <form action="{{url('uom_type/store')}}" method="POST"> <!-- for for edit, if inline edit form append then this form action/method will triggered -->
                         @csrf
                             <table class="table table-datatable" id="printable-area">
+                                <div id="printable-info-details">
+                                    <p class="card-title-print-1">Title: Uom Type</p>
+                                    <p class="card-title-print-2">Date & Time:
+                                        <?php date_default_timezone_set('Asia/Kolkata'); $currentDateTime = date('d-m-Y H:i:s'); echo $currentDateTime; ?>
+                                            <p class="card-title-print-3">User Name: {{session()->get('user_full_name')}}</p>
+                                </div>
                                 <thead style="background: #d6dcff;color: #000;">
                                     <tr>
                                         <th>#</th>
@@ -116,7 +187,7 @@
                     <div class="row">
                         <div class="card-body p-t-30" style="padding: 11px;">
                             <div class="form-group">
-                                <input type="hidden" name="uom" value="uom"> 
+                                <input type="hidden" name="uom_type" value="uom_type"> 
                                 <input type="hidden" name="data" value="{{$datas}}">
                                 <!-- <input type="text" name="from" class="form-control" placeholder="From" required=""> -->
                             </div> 

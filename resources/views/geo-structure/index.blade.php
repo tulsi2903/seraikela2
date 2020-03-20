@@ -17,6 +17,8 @@
 
             #printable-area{
                 margin-top: 250px !important;
+                font-size: small;
+            width: 100% !important;
             }
 
             .no-print, .no-print *
@@ -26,6 +28,8 @@
             #printable-info-details{
                 visibility: visible;
                 position: fixed;
+                margin-left: 100px !important;
+            font-size:medium;
             }
             #print-button, #print-button *{
                 visibility: hidden;
@@ -33,7 +37,7 @@
             .card-title-print-1{
                 visibility: visible !important;
                 position: fixed;
-                color: #147785;
+                color: #0a0a0a;
                 font-size: 30px;;
                 left: 0;
                 top: 50px;
@@ -43,7 +47,7 @@
             .card-title-print-2{
                 visibility: visible !important;
                 position: fixed;
-                 color: #147785;
+                 color: #0a0a0a;
                  font-size: 30px;;
                 left: 0;
                 top: 100px;
@@ -53,7 +57,7 @@
             .card-title-print-3{
                 visibility: visible !important;
                 position: fixed;
-                 color: #147785;
+                 color: #0a0a0a;
                  font-size: 30px;;
                 left: 0;
                 top: 140px;
@@ -263,7 +267,6 @@
                                                          @if($desig_permissions["mod12"]["del"])
                                                         <a href="{{url('geo-structure/delete')}}/{{$data->geo_id}}" class="btn btn-danger btn-sm delete-button" data-toggle="tooltip" title="{{$phrase->delete}}"><i class="fas fa-trash-alt"></i></a>
                                                         @endif
-                                                       
                                                     </td>
                                                     @endif
                                                 </tr>
@@ -362,15 +365,11 @@
 <script>
     function printViewone()
     {
+        $("#printable-area").removeClass('table-datatable');
+        // alert("fdfsdf");
         window.print();
     }
 </script>
- <script>
-    var temp="rohit kumar singh";
-    // document.write("Hello " + "<br>"+ temp);
-    // alert("hello " + temp);
- </script>
-
 <script>
     $(document).ready(function(){
     $('.table table-datatable').dataTable( {

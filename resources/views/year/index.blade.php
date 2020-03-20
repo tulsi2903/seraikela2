@@ -268,7 +268,7 @@
                         </div>
 
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">{{$phrase->subject}}</button>
+                            <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Close</button>
                             <button type="submit" class="btn btn-info waves-effect waves-light">{{$phrase->send}}</button>
                         </div>
                     </form>
@@ -439,7 +439,7 @@
             if (edit_to_value_val == "") {
                 edit_to_value_error = true;
                 $("#edit_to_value").addClass('is-invalid');
-                $("#edit_to_value_error_msg").html("From should not be blank");
+                $("#edit_to_value_error_msg").html("To should not be blank");
             } else {
                 edit_to_value_error = false;
                 $("#edit_to_value").removeClass('is-invalid');

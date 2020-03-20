@@ -700,7 +700,7 @@ class EmailController extends Controller
                 session()->put('alert-content', 'Email send');
             });
             return redirect('mgnrega');
-        } elseif ($request->category == "uom_type") {
+        } elseif ($request->uom_type == "uom_type") {
 
             $email_from = $request->from;
             $email_to = $request->to;
@@ -709,8 +709,7 @@ class EmailController extends Controller
             $details = json_decode($request->data);
 
             $user = array('email_from' => $email_from, 'email_to' => $email_to, 'cc' => $email_cc, 'subject' => $request->subject, 'content' => $request->message, 'results' => $details);
-
-            Mail::send('mail.uom', ['user' => $user], function ($message) use ($user) {
+            Mail::send('mail.uom_type', ['user' => $user], function ($message) use ($user) {
                 $email_to = explode(',', $user['email_to']);
                 foreach ($email_to as $key => $value) {
                     $message->to($email_to[$key]);
@@ -727,7 +726,7 @@ class EmailController extends Controller
                 session()->put('alert-class', 'alert-success');
                 session()->put('alert-content', 'Email send');
             });
-            return redirect('uom');
+            return redirect('uom_type');
         }
     }
 
