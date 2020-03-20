@@ -146,7 +146,8 @@ class UomController extends Controller
         $content .= "<thead>";
         $content .= "<tr>";
         $content .= "<th style=\"border: solid 1px #000000;width: 50px;\" align=\"center\"><b>Sl.No.</b></th>";
-        $content .= "<th style=\"border: solid 1px #000000;width: 559px;\" align=\"center\"><b>Name</b></th>";
+        $content .= "<th style=\"border: solid 1px #000000;width: 277px;\" align=\"center\"><b>Name</b></th>";
+        $content .= "<th style=\"border: solid 1px #000000;width: 277px;\" align=\"center\"><b>Conversion Unit</b></th>";
         $content .= "<th style=\"border: solid 1px #000000;width: 100px;\" align=\"center\"><b>Date</b></th>";
         $content .= "</tr>";
         $content .= "</thead>";
@@ -155,8 +156,8 @@ class UomController extends Controller
             $index = $key + 1;
             $content .= "<tr>";
             $content .= "<td style=\"border: solid 1px #000000;width: 50px;\" align=\"right\">" . $index . "</td>";
-            $content .= "<td style=\"border: solid 1px #000000;width: 559px;\" align=\"left\">" . $row->uom_name . "</td>";
-            $content .= "<td style=\"text-align:center;\">";
+            $content .= "<td style=\"border: solid 1px #000000;width: 277px;\" align=\"left\">" . $row->uom_name . "</td>";
+            $content .= "<td style=\"border: solid 1px #000000;width: 277px;\" align=\"left\">";
             $content .= "1 " . $row->uom_name . " = <b>" . $row->conversion_unit . "</b>";
             if ($row->uom_type_id == 1) {
                 $content .= " meter";

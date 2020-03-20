@@ -16,6 +16,8 @@
     @media print {
         #printable-area {
             margin-top: 250px !important;
+            font-size: small;
+            width: 100% !important;
         }
         .no-print,
         .no-print * {
@@ -24,6 +26,8 @@
         #printable-info-details {
             visibility: visible;
             position: fixed;
+            margin-left: 100px !important;
+            font-size:medium;
         }
         #print-button,
         #print-button * {
@@ -32,7 +36,7 @@
         .card-title-print-1 {
             visibility: visible !important;
             position: fixed;
-            color: #147785;
+            color: #0a0a0a;
             font-size: 30px;
             ;
             left: 0;
@@ -43,7 +47,7 @@
         .card-title-print-2 {
             visibility: visible !important;
             position: fixed;
-            color: #147785;
+            color: #0a0a0a;
             font-size: 30px;
             ;
             left: 0;
@@ -54,7 +58,7 @@
         .card-title-print-3 {
             visibility: visible !important;
             position: fixed;
-            color: #147785;
+            color: #0a0a0a;
             font-size: 30px;
             ;
             left: 0;
@@ -244,10 +248,10 @@
                                         <!-- <input type="text" name="from" class="form-control" placeholder="From" required=""> -->
                                     </div>
                                     <div class="form-group">
-                                        <input type="email" name="to" class="form-control" placeholder="To" required="">
+                                        <input type="email"  maxlength="60" name="to" class="form-control" placeholder="To" required="">
                                     </div>
                                     <div class="form-group">
-                                        <input type="text" name="cc" class="form-control" placeholder="CC">
+                                        <input type="text" maxlength="60" name="cc" class="form-control" placeholder="CC">
                                     </div>
 
                                     <div class="form-group">

@@ -8,6 +8,72 @@
             padding-top: 5px !important;
             padding-bottom: 5px !important;
         }
+        #printable-info-details {
+        visibility: hidden;
+        height: 0px;
+        /* position: fixed;
+        left: 0;
+        top: 20px;
+        width: 100vw !important; */
+    }
+    @media print {
+        #printable-area {
+            margin-top: 250px !important;
+            font-size: small;
+            width: 100% !important;
+
+        }
+        .no-print,
+        .no-print * {
+            display: none !important;
+        }
+        #printable-info-details {
+            visibility: visible;
+            position: fixed;
+            margin-left: 100px !important;
+            font-size:medium;
+        }
+        #print-button,
+        #print-button * {
+            visibility: hidden;
+        }
+        .card-title-print-1 {
+            visibility: visible !important;
+            position: fixed;
+            color: #0a0a0a;
+            font-size: 30px;
+           
+            left: 0;
+            top: 30px;
+            width: 100vw !important;
+            height: 100vw !important;
+        }
+        .card-title-print-2 {
+            visibility: visible !important;
+            position: fixed;
+            color: #0a0a0a;
+            font-size: 30px;
+            
+            left: 0;
+            top: 100px;
+            width: 100vw !important;
+            height: 100vw !important;
+        }
+        .card-title-print-3 {
+            visibility: visible !important;
+            position: fixed;
+            color: #0a0a0a;
+            font-size: 30px;
+            
+            left: 0;
+            top: 140px;
+            width: 100vw !important;
+            height: 100vw !important;
+        }
+        .action-buttons {
+            display: none;
+        }
+    }
     </style>
 @endsection
 
@@ -88,6 +154,12 @@
                         </form>
                     </div>
                     <div class="table-responsive table-hover table-sales">
+                        <div id="printable-info-details">
+                            <p class="card-title-print-1">Title: Uom Details </p>
+                            <p class="card-title-print-2">Date & Time:
+                                <?php date_default_timezone_set('Asia/Kolkata'); $currentDateTime = date('d-m-Y H:i:s'); echo $currentDateTime; ?>
+                                    <p class="card-title-print-3">User Name: {{session()->get('user_full_name')}}</p>
+                        </div>
                         <form action="{{url('uom/store')}}" method="POST"> <!-- for for edit, if inline edit form append then this form action/method will triggered -->
                         @csrf
                             <table class="table table-datatable" id="printable-area">
