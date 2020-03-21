@@ -46,6 +46,7 @@ Route::group(['middleware' => 'auth:api'], function(){
     Route::post('get-scheme-asset', 'API\SchemePerformanceController@get_scheme_asset');
     Route::post('get-scheme-performance-datas', 'API\SchemePerformanceController@get_scheme_performabnce_datas');
     Route::post('store-scheme-performance-datas', 'API\SchemePerformanceController@store_scheme_performance_datas');
+    Route::post('store-scheme-performance-gallery', 'API\SchemePerformanceController@store_scheme_performance_gallery');
 
 
     // for getting/ storing resources datas

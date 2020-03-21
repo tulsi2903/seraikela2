@@ -118,6 +118,7 @@ class SchemePerformanceController extends Controller
 
     public function store_scheme_performance_datas(Request $request){
         $received_datas = $request;
+        $saved_id = [];
         // return $received_datas["scheme_id"];
         // return [
         //     "scheme_id"=>1,
@@ -215,6 +216,7 @@ class SchemePerformanceController extends Controller
             $scheme_performance->created_by = Auth::user()->id;
             $scheme_performance->updated_by = Auth::user()->id;
             if($scheme_performance->save()){
+                $saved_id[] = $scheme_performance->scheme_performance_id;
                 $total_save_success+=1;
             }
         }
@@ -249,10 +251,14 @@ class SchemePerformanceController extends Controller
         }
 
         if($total_data == $total_save_success){
-            return response()->json(['success'=>'data_saved'], 201);
+            return response()->json(['success'=>'data_saved', 'last_saved_id'=>$saved_id], 201);
         }
         else{
-            return response()->json(['error'=>'no_data_found'], 204);
+            return response()->json(['error'=>'no_data_found', 'last_saved_id'=>null], 204);
         }
+    }
+
+    public function store_scheme_performance_gallery(Request $request){
+        
     }
 }
