@@ -224,45 +224,50 @@
 		<div class="main-panel">
 			<div class="content">
 				<div class="page-inner">
-                    @if(session()->exists('alert-class')&&session()->exists('alert-content'))
-                        @if(session()->get('alert-class')=="alert-success")
-                            <script>
-                                $(document).ready(function(){
-                                    swal("Success!", "{{session()->get('alert-content')}}", {
-                                        icon : "success",
-                                        buttons: {
-                                            confirm: {
-                                                className : 'btn btn-success'
-                                            }
-                                        },
-                                    });
-                                });
-                            </script>
-                             <?php
-                            session()->forget('alert-class');
-                            session()->forget('alert-content');
-                        ?>
-                        @endif
-                        @if(session()->get('alert-class')=="alert-danger")
-                            <script>
-                                $(document).ready(function(){
-                                    swal("Error Occured!", "{{session()->get('alert-content')}}", {
-                                        icon : "error",
-                                        buttons: {
-                                            confirm: {
-                                                className : 'btn btn-danger'
-                                            }
-                                        },
-                                    });
-                                });
-                            </script>
-                             <?php
-                            session()->forget('alert-class');
-                            session()->forget('alert-content');
-                        ?>
-                        @endif
-                       
-                    @endif
+                    <script>
+                        $(document).ready(function(){
+                            response_data = new Object();
+                            $.ajax({
+                                url: "{{url('alert-messages')}}",
+                                data: { 'ok': "ok" },
+                                method: "GET",
+                                contentType: 'application/json',
+                                dataType: "json",
+                                beforeSend: function (data) {
+                                    
+                                },
+                                error: function (xhr){
+                                    // alert("error" + xhr.status + "," + xhr.statusText);
+                                },
+                                success: function (data){
+                                    response_data = data;
+                                    if(response_data.type=="success")
+                                    {
+                                        swal("Success!", response_data.message, {
+                                            icon : "success",
+                                            buttons: {
+                                                confirm: {
+                                                    className : 'btn btn-success'
+                                                }
+                                            },
+                                        });
+                                    }
+                                    else if(response_data.type=="error"){
+                                        swal("Error Occured!", response_data.message, {
+                                            icon : "error",
+                                            buttons: {
+                                                confirm: {
+                                                    className : 'btn btn-danger'
+                                                }
+                                            },
+                                        });
+                                    }
+                                    response_data = {type: "none"};
+                                }
+                            });
+                        });
+                    </script>
+
                     @yield('page-content')
 					<!-- <div class="page-header">
 						<h4 class="page-title">Dashboard</h4>

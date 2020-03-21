@@ -374,4 +374,5 @@ Route::get('block/panchyat_data','UoMType_Controller@show_panchayat_datas');
 
 /* testing urls */
 Route::get('test-php-geo','TestPhpGeo@index');
+Route::get('alert-messages', 'DashboardController@alert_messages');
 

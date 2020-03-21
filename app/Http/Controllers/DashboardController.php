@@ -18,6 +18,7 @@ use App\scheme_block_performance;
 use App\User;
 use DB;
 use App\Languages;
+use Session;
 
 class DashboardController extends Controller
 {
@@ -532,5 +533,30 @@ class DashboardController extends Controller
         }
 
         return $to_send;
+    }
+
+
+    // for error-success messages
+    public function alert_messages(){
+        $to_return = ["type"=>"none"];
+        if(session()->exists('alert-class')&&session()->exists('alert-content')){
+            if(session()->get('alert-class')=="alert-success"){
+                $to_return = ["type"=>"success", "message"=>session()->get('alert-content')];
+            }
+            else if(session()->get('alert-class')=="alert-danger"){
+                $to_return = ["type"=>"error", "message"=>session()->get('alert-content')];
+            }
+            else{
+                $to_return = ["type"=>"none"];
+            }
+
+            session()->forget('alert-class');
+            session()->forget('alert-content');
+        }
+        else{
+            $to_return = ["type"=>"none"];
+        }
+
+        return $to_return;
     }
 }
