@@ -175,9 +175,9 @@ class SchemePerformanceController extends Controller
 
             // for coordinates
             $coordinates = [];
-            for($i=0;$i<count($data["latitude"]);$i++){
-                $coordinates[] = ["latitude"=>$data["latitude"][$i],"longitude"=>$data["longitude"][$i]];
-            }
+            // for($i=0;$i<count($data["latitude"]);$i++){
+            //     $coordinates[] = ["latitude"=>$data["latitude"][$i],"longitude"=>$data["longitude"][$i]];
+            // }
             $coordinates = serialize($coordinates);
 
             // for gallery
@@ -259,6 +259,92 @@ class SchemePerformanceController extends Controller
     }
 
     public function store_scheme_performance_gallery(Request $request){
-        
+        $gallery = [];
+        $gallery_response = [];
+        $scheme_performance_id = "";
+        if($request->id){
+            if(SchemePerformance::find($request->id))
+            {
+                $scheme_performance_id = $request->id;
+                if($request->hasFile('images')) {
+                    foreach ($request->file('images') as $file) {
+                        $upload_directory = "public/uploaded_documents/scheme_performance/";
+                        $images_tmp_name = "scheme_performance-" . time() . rand(1000, 5000) . '.' . strtolower($file->getClientOriginalExtension());
+                        $file->move("public/uploaded_documents/scheme_performance/", $images_tmp_name);   // move the file to desired folder
+                        $gallery[] =  $upload_directory . $images_tmp_name;    // array push
+                        $gallery_response[] = url('') ."/". $upload_directory . $images_tmp_name;
+                    }
+                    SchemePerformance::where("scheme_performance_id", $scheme_performance_id)->update(["gallery"=>serialize($gallery)]);
+                    return response()->json(['success'=>'saved_successfully', "images"=>$gallery_response], 200);
+                }
+                else{
+                    return response()->json(['error'=>'failed'], 204);
+                }
+            }
+            else{
+                return response()->json(['success'=>'no_data_found'], 200);
+            }
+        }
+
+        return response()->json(['success'=>'no_data_found'], 204);
+    }
+
+    public function store_scheme_performance_coordinates(Request $request){
+        $coordinates = [];
+        if($request->id){
+            if(SchemePerformance::find($request->id))
+            {
+                $scheme_performance_id = $request->id;
+                $coordinates_received = $request->coordinates;
+
+                if(count($coordinates_received)>0)
+                {
+                    for($i=0;$i<count($coordinates_received);$i++){
+                        $coordinates[] = ["latitude"=>$coordinates_received[$i]["latitude"],"longitude"=>$coordinates_received[$i]["longitude"]];
+                    }
+                    SchemePerformance::where("scheme_performance_id", $scheme_performance_id)->update(["coordinates"=>serialize($coordinates)]);
+                    return response()->json(['success'=>'saved_successfully', "coordinates"=>$coordinates], 200);
+                }
+                else{
+                    return response()->json(['success'=>'no_coordinates_received'], 200);
+                }
+                
+            }
+            else{
+                return response()->json(['success'=>'no_data_found'], 200);
+            }
+        }
+
+        return response()->json(['success'=>'no_data_found'], 204);
+    }
+
+    public function store_scheme_performance_connectivity(Request $request){
+        $connectivity = [];
+        if($request->id){
+            if(SchemePerformance::find($request->id))
+            {
+                $scheme_performance_id = $request->id;
+                $connectivity_received = $request->connectivity;
+
+                if(count($connectivity_received)>0)
+                {   
+                    for($i=0;$i<count($connectivity_received);$i++){
+                        $connectivity[] = ["conn_block_id"=>$connectivity_received[$i]["block_id"],"conn_panchayat_id"=>$connectivity_received[$i]["panchayat_id"]];
+                    }
+
+                    SchemePerformance::where("scheme_performance_id", $scheme_performance_id)->update(["borders_connectivity"=>serialize($connectivity)]);
+                    return response()->json(['success'=>'saved_successfully', "connectivity"=>$connectivity_received], 200);
+                }
+                else{
+                    return response()->json(['success'=>'no_connectivity_received'], 200);
+                }
+                
+            }
+            else{
+                return response()->json(['success'=>'no_data_found'], 200);
+            }
+        }
+
+        return response()->json(['success'=>'no_data_found'], 204);
     }
 }
