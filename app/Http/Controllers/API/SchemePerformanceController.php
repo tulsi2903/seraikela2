@@ -165,11 +165,18 @@ class SchemePerformanceController extends Controller
         foreach($datas as $data)
         {
             $attribute = []; // to store
+            // algo works before: deprecated
+            // foreach($scheme_attributes as $scheme_attribute){
+            //     // $scheme_attribute["id"];
+            //     if(isset($data[$scheme_attribute["id"]])){
+            //         $attribute[] = [$scheme_attribute["id"]=>$data[$scheme_attribute["id"]]];
+            //     }
+            // }
+            $i = 0;
             foreach($scheme_attributes as $scheme_attribute){
                 // $scheme_attribute["id"];
-                if(isset($data[$scheme_attribute["id"]])){
-                    $attribute[] = [$scheme_attribute["id"]=>$data[$scheme_attribute["id"]]];
-                }
+                $attribute[] = [$scheme_attribute["id"]=>$data["attributes_value"][$i]];
+                $i++;
             }
             $attribute = serialize($attribute);
 
