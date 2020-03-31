@@ -216,7 +216,7 @@ class SchemePerformanceController extends Controller
             $scheme_performance->created_by = Auth::user()->id;
             $scheme_performance->updated_by = Auth::user()->id;
             if($scheme_performance->save()){
-                $saved_id[] = $scheme_performance->scheme_performance_id;
+                $saved_id[] = ["id"=>$scheme_performance->scheme_performance_id];
                 $total_save_success+=1;
             }
         }
@@ -291,6 +291,7 @@ class SchemePerformanceController extends Controller
 
     public function store_scheme_performance_coordinates(Request $request){
         $coordinates = [];
+        $coordinates_to_return = [];
         if($request->id){
             if(SchemePerformance::find($request->id))
             {
@@ -300,10 +301,13 @@ class SchemePerformanceController extends Controller
                 if(count($coordinates_received)>0)
                 {
                     for($i=0;$i<count($coordinates_received);$i++){
-                        $coordinates[] = ["latitude"=>$coordinates_received[$i]["latitude"],"longitude"=>$coordinates_received[$i]["longitude"]];
+                        $latitude = substr($coordinates_received[$i]["latitude"], 0, 9);
+                        $longitude = substr($coordinates_received[$i]["longitude"], 0, 9);
+                        $coordinates_to_return[] = ["latitude"=>(string)$latitude, "longitude"=>(string)$longitude];
+                        $coordinates[] = ["latitude"=>$latitude, "longitude"=>$longitude];
                     }
                     SchemePerformance::where("scheme_performance_id", $scheme_performance_id)->update(["coordinates"=>serialize($coordinates)]);
-                    return response()->json(['success'=>'saved_successfully', "coordinates"=>$coordinates], 200);
+                    return response()->json(['success'=>'saved_successfully', "coordinates"=>$coordinates_to_return], 200);
                 }
                 else{
                     return response()->json(['success'=>'no_coordinates_received'], 200);
