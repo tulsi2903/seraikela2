@@ -44,11 +44,13 @@ Route::group(['middleware' => 'auth:api'], function(){
     Route::post('get-schemes', 'API\SchemePerformanceController@get_schemes');
     Route::post('get-scheme-attributes', 'API\SchemePerformanceController@get_scheme_attributes');
     Route::post('get-scheme-asset', 'API\SchemePerformanceController@get_scheme_asset');
-    Route::post('get-scheme-performance-datas', 'API\SchemePerformanceController@get_scheme_performabnce_datas');
+    Route::post('get-scheme-performance-datas', 'API\SchemePerformanceController@get_scheme_performance_datas');
+    Route::post('get-scheme-performance-details', 'API\SchemePerformanceController@get_scheme_performance_details');
     Route::post('store-scheme-performance-datas', 'API\SchemePerformanceController@store_scheme_performance_datas');
     Route::post('store-scheme-performance-gallery', 'API\SchemePerformanceController@store_scheme_performance_gallery');
     Route::post('store-scheme-performance-coordinates', 'API\SchemePerformanceController@store_scheme_performance_coordinates');
     Route::post('store-scheme-performance-connectivity', 'API\SchemePerformanceController@store_scheme_performance_connectivity');
+    Route::post('delete-scheme-performance', 'API\SchemePerformanceController@delete_scheme_performance');
 
 
     // for getting/ storing resources datas
