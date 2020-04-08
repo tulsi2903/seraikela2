@@ -198,7 +198,7 @@ class SchemePerformanceController extends Controller
                 {
                     $gallery = [];
                     foreach(unserialize($scheme_performance_data->gallery) as $item){
-                        $gallery[] = url('')."/".$item;
+                        $gallery[] = ["url"=>url('')."/".$item];
                     }
                     $to_return_tmp['data'][] = ["name"=>"gallery", "key"=>"gallery",  "value"=>$gallery];
                 }
@@ -450,30 +450,57 @@ class SchemePerformanceController extends Controller
             if(SchemePerformance::find($request->id))
             {
                 $scheme_performance_id = $request->id;
+                // to delete
+                if($request->to_delete){
+                    $response = "saved_successfully";
+                    $response_code = 201;
+                    $to_delete_arr = explode(',', $request->to_delete);
+                    $orig_gallery = unserialize(SchemePerformance::find($scheme_performance_id)->gallery);
+                    $to_update_gallery = [];
+                    foreach($to_delete_arr as $item){
+                        $item = str_replace(url('')."/", "", trim($item));
+                        $images_list[] = $item;
+                        if(in_array($item, $orig_gallery)){
+                            array_splice($orig_gallery, array_search($item, $orig_gallery), 1);
+                        }
+                    }
+                    SchemePerformance::where("scheme_performance_id", $scheme_performance_id)->update(["gallery"=>serialize($orig_gallery)]);
+                }
+
                 if($request->hasFile('images')) {
                     foreach ($request->file('images') as $file) {
                         $upload_directory = "public/uploaded_documents/scheme_performance/";
                         $images_tmp_name = "scheme_performance-" . time() . rand(1000, 5000) . '.' . strtolower($file->getClientOriginalExtension());
                         $file->move("public/uploaded_documents/scheme_performance/", $images_tmp_name);   // move the file to desired folder
                         $gallery[] =  $upload_directory . $images_tmp_name;    // array push
-                        $gallery_response[] = url('') ."/". $upload_directory . $images_tmp_name;
                     }
-                    SchemePerformance::where("scheme_performance_id", $scheme_performance_id)->update(["gallery"=>serialize(array_merge(unserialize(SchemePerformance::find($scheme_performance_id)->gallery), $gallery))]);
+                    $gallery_pre = unserialize(SchemePerformance::find($scheme_performance_id)->gallery);
+                    if(!$gallery_pre || count($gallery_pre)==0){
+                        $gallery_pre = [];
+                    }
+                    SchemePerformance::where("scheme_performance_id", $scheme_performance_id)->update([
+                        "gallery"=>serialize(
+                            array_merge(
+                                $gallery_pre, $gallery
+                            )
+                        )
+                    ]);
                     $response_code = 201;
                     $response = "saved_successfully";
-
-                    // for gallery listing
-                    $i=1;
-                    foreach(unserialize(SchemePerformance::where("scheme_performance_id", $scheme_performance_id)->first()->gallery) as $item){
-                        $images_list[] = ["id"=> $i, "url"=> $item];
-                        $i++;
-                    }
-
-                    
                 }
                 else{
-                    $response = 'images_not_received';
+                    if(!$request->to_delete){
+                        $response = 'images_not_received';
+                    }
                 }
+
+                // for gallery listing, if id exist
+                $i=1;
+                foreach(unserialize(SchemePerformance::where("scheme_performance_id", $scheme_performance_id)->first()->gallery) as $item){
+                    $gallery_response[] = ["url"=>url('') ."/". $item];
+                    $i++;
+                }
+
             }
             else{
                 $response = 'no_performance_data_found';
@@ -482,12 +509,14 @@ class SchemePerformanceController extends Controller
         else{
             $response = "id_not_received";
         }
+        
 
-        return response()->json(['response'=>$response, 'images'=>$gallery_response, 'images_list'=> $images_list], $response_code);
+        return response()->json(['response'=>$response, 'images'=>$gallery_response], $response_code);
     }
 
     public function store_scheme_performance_coordinates(Request $request){
         $received_datas = json_decode($request->getContent());
+        $response_coordinates = [];
         $response = "intialized";
         $response_code = 400; // bad request
 
@@ -523,8 +552,14 @@ class SchemePerformanceController extends Controller
                     }
                 }
                 else{
-                    $response = 'coordinates_format_error';
+                    // $response = 'coordinates_format_error';
+                    SchemePerformance::where("scheme_performance_id", $scheme_performance_id)->update(["coordinates"=>serialize($coordinates)]);
+                    $response_code = 201;
+                    $response = "saved_successfully";
                 }
+
+                // to send response, if id exists
+                $response_coordinates = unserialize(SchemePerformance::find($request->id)->coordinates);
             }
             else{
                 $response = 'no_performance_data_found';
@@ -533,11 +568,19 @@ class SchemePerformanceController extends Controller
         else{
             $response = "id_not_received";
         }
-        return response()->json(['response'=>$response, 'request'=>$received_datas], $response_code);
+
+        if(count($response_coordinates)==0){
+            // $response_coordinates = new Stdobj;
+            $response_coordinates = [
+                (object)["latitude"=> "","longitude"=> ""]
+            ];
+        }
+        return response()->json(['response'=>$response, 'coordinates'=>$response_coordinates], $response_code);
     }
 
     public function store_scheme_performance_connectivity(Request $request){
         $received_datas = json_decode($request->getContent());
+        $response_connectivity  = [];
         $response = "intialized";
         $response_code = 400; // bad request
         $connectivity = [];
@@ -570,9 +613,17 @@ class SchemePerformanceController extends Controller
                     }
                 }
                 else{
-                    $response = 'no_connectivity_details_received';
+                    // $response = 'no_connectivity_details_received';
+                    SchemePerformance::where("scheme_performance_id", $scheme_performance_id)->update(["borders_connectivity"=>serialize($connectivity)]);
+                    $response_code = 201;
+                    $response = "saved_successfully";
                 }
-                
+
+
+                // to send response, if id exists
+                foreach(unserialize(SchemePerformance::where("scheme_performance_id", $scheme_performance_id)->first()->borders_connectivity) as $item){
+                    $response_connectivity[] = ["block_id"=>$item["conn_block_id"], "panchayat_id"=>$item["conn_panchayat_id"]];
+                }
             }
             else{
                 $response = 'no_performance_data_found';
@@ -582,7 +633,14 @@ class SchemePerformanceController extends Controller
             $response = "id_not_received";
         }
 
-        return response()->json(['response'=>$response, 'request'=>$received_datas], $response_code);
+        if(count($response_connectivity)==0){
+            // $response_coordinates = new Stdobj;
+            $response_connectivity = [
+                (object)["block_id"=> "","panchayat_id"=> ""]
+            ];
+        }
+
+        return response()->json(['response'=>$response, 'connectivity'=>$response_connectivity], $response_code);
     }
 
     public function delete_scheme_performance(Request $request){
