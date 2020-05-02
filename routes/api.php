@@ -45,6 +45,7 @@ Route::group(['middleware' => 'auth:api'], function(){
     Route::post('get-scheme-attributes', 'API\SchemePerformanceController@get_scheme_attributes');
     Route::post('get-scheme-asset', 'API\SchemePerformanceController@get_scheme_asset');
     Route::post('get-scheme-performance-datas', 'API\SchemePerformanceController@get_scheme_performance_datas');
+    Route::post('get-scheme-performance-datas-new', 'API\SchemePerformanceController@get_scheme_performance_datas_new');
     Route::post('get-scheme-performance-details', 'API\SchemePerformanceController@get_scheme_performance_details');
     Route::post('store-scheme-performance-datas', 'API\SchemePerformanceController@store_scheme_performance_datas');
     Route::post('store-scheme-performance-gallery', 'API\SchemePerformanceController@store_scheme_performance_gallery');
