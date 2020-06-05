@@ -225,7 +225,11 @@ class SchemePerformanceController extends Controller
                 {
                     $connectivity = [];
                     foreach(unserialize($scheme_performance_data->borders_connectivity) as $item){
-                        $connectivity[] = ["block_id"=>(int)$item["conn_block_id"], "panchayat_id"=>(int)$item["conn_panchayat_id"]];
+                        if($block_name_tmp = GeoStructure::where('geo_id', (int)$item["conn_block_id"])->first()){
+                            if($panchayat_name_tmp = GeoStructure::where('geo_id', (int)$item["conn_panchayat_id"])->first()){
+                                $connectivity[] = ["block_id"=>(int)$item["conn_block_id"], "block_name"=>$block_name_tmp->geo_name, "panchayat_id"=>(int)$item["conn_panchayat_id"], "panchayat_name"=>$panchayat_name_tmp->geo_name];
+                            }
+                        }
                     }
                     $to_return_tmp['data'][] = ["name"=>"connectivity", "key"=>"connectivity", "value"=>$connectivity];
                 }
