@@ -259,170 +259,6 @@ class SchemePerformanceController extends Controller
         return response()->json(['response'=>$response, "total_data"=>$total_data, 'page'=>$page, 'performance_data'=>$to_return], $response_code);
     }
 
-    // new
-    public function get_scheme_performance_datas_new(Request $request){
-        $response = "intialized";
-        $response_code = 400; // bad request
-        $error = false;
-        $page = 1;
-        $total_data = 0;
-
-        $to_return  = []; // has to return
-
-        // validation starts //
-        if($request->year_id){
-            $year_id = $request->year_id;
-        }
-        else{
-            $response = "year_id_not_received";
-            $error = true;
-        }
-        if($request->scheme_id){
-            $scheme_id = $request->scheme_id;
-        }
-        else{
-            $response = "scheme_id_not_received";
-            $error = true;
-        }
-        if($request->panchayat_id){
-            $panchayat_id = $request->panchayat_id;
-        }
-        else{
-            $response = "panchayat_id_not_received";
-            $error = true;
-        }
-        if($request->search){
-            $search = $request->search;
-        }
-        else{
-            $search = "";
-        }
-        // validations ends //
-        // page
-        if($request->page){
-            $page = (int)$request->page;
-        }
-
-        if(!$error)
-        {
-            $scheme_performance_datas_collection = SchemePerformance::where('scheme_id', $scheme_id)->where('year_id', $year_id)->where('panchayat_id', $panchayat_id);
-
-            if($search){
-                $scheme_performance_datas_collection = $scheme_performance_datas_collection
-                                                    ->where('attribute', 'like', '%' . $search . '%')
-                                                    ->orWhere('comments', 'like', '%' . $search . '%');
-            }
-
-            $total_data = $scheme_performance_datas_collection->count();
-            $scheme_performance_datas = $scheme_performance_datas_collection->skip(($page - 1) * 20)->take($page * 20)->get();
-            $scheme_attributes = unserialize(SchemeStructure::where('scheme_id', $scheme_id)->first()->attributes);
-
-            foreach($scheme_performance_datas as $scheme_performance_data){
-                $to_return_tmp = [];
-
-                //
-                $to_return_tmp['id'] = $scheme_performance_data->scheme_performance_id;
-
-                // for attributes starts
-                $performance_attributes = [];
-                $per_attr_tmps = unserialize($scheme_performance_data->attribute);
-                $i=0;
-                $attr_index = ["attr_one","attr_two","attr_three","attr_four","attr_five","attr_six","attr_seven"];
-                foreach($per_attr_tmps as $per_attr_tmp) {
-                    $performance_attributes[key($per_attr_tmp)] = $per_attr_tmp[key($per_attr_tmp)];
-                }
-                foreach($scheme_attributes as $scheme_attribute){
-                    if($performance_attributes[$scheme_attribute['id']]){
-                        $to_return_tmp['data'][] = ["name"=>$scheme_attribute['name'], "key"=>$scheme_attribute["id"], "value"=>$performance_attributes[$scheme_attribute['id']]];
-                    }
-                    else{
-                        $to_return_tmp['data'][] = ["name"=>$scheme_attribute['name'], "key"=>$scheme_attribute["id"], "value"=>""];
-                    }
-                    $i++;
-                }
-                // for attributes ends
-
-                // for status
-                if ($scheme_performance_data->status == 0) {
-                    $to_return_tmp['data'][] = ["name"=>"status", "key"=>"status",  "value"=>"Inprogess"];
-                } else if ($performance_data->status == 1) {
-                    $to_return_tmp['data'][] = ["name"=>"status", "key"=>"status",  "value"=>"Completed"];
-                } else if ($performance_data->status == 2) {
-                    $to_return_tmp['data'][] = ["name"=>"status", "key"=>"status",  "value"=>"Sanctioned"];
-                } else if ($performance_data->status == 3) {
-                    $to_return_tmp['data'][] = ["name"=>"status", "key"=>"status",  "value"=>"Cancelled"];
-                }
-                else{ // ==4, and other
-                    $to_return_tmp['data'][] = ["name"=>"status", "key"=>"status",  "value"=>"Open"];
-                }
-
-                // for comment
-                $to_return_tmp['data'][] = ["name"=>"comment", "key"=>"comment", "value"=>$scheme_performance_data->comments];
-
-                // for assets
-                if($scheme_performance_data->scheme_asset_id) {
-                    $to_return_tmp['data'][] = ["name"=>"asset", "key"=>"scheme_asset_id", "value"=>SchemeAsset::find($scheme_performance_data->scheme_asset_id)->scheme_asset_name];
-                } 
-                else {
-                    $to_return_tmp['data'][] = ["name"=>"asset", "key"=>"scheme_asset_id", "value"=>SchemeAsset::find(SchemeStructure::where('scheme_id', $scheme_id)->first()->scheme_asset_id)->scheme_asset_name];
-                }
-
-                // for coordinates
-                if(unserialize($scheme_performance_data->coordinates))
-                {
-                    $to_return_tmp['data'][] = ["name"=>"coordinates", "key"=>"coordinates",  "coordinates_list"=>unserialize($scheme_performance_data->coordinates)];
-                }
-                else{
-                    $to_return_tmp["data"][] = ["name"=>"coordinates", "key"=>"coordinates",  "coordinates_list"=>[]];
-                }
-
-                // for gallery
-                if(unserialize($scheme_performance_data->gallery))
-                {
-                    $gallery = [];
-                    foreach(unserialize($scheme_performance_data->gallery) as $item){
-                        $gallery[] = ["url"=>url('')."/".$item];
-                    }
-                    $to_return_tmp['data'][] = ["name"=>"gallery", "key"=>"gallery",  "gallery_list"=>$gallery];
-                }
-                else{
-                    $to_return_tmp['data'][] = ["name"=>"gallery", "key"=>"gallery",  "gallery_list"=>[]];
-                }
-
-                // coonectivity details
-                if(unserialize($scheme_performance_data->borders_connectivity))
-                {
-                    $connectivity = [];
-                    foreach(unserialize($scheme_performance_data->borders_connectivity) as $item){
-                        $connectivity[] = ["block_id"=>(int)$item["conn_block_id"], "panchayat_id"=>(int)$item["conn_panchayat_id"]];
-                    }
-                    $to_return_tmp['data'][] = ["name"=>"connectivity", "key"=>"connectivity", "connectivity_list"=>$connectivity];
-                }
-                else{
-                    $to_return_tmp['data'][] = ["name"=>"connectivity", "key"=>"connectivity", "connectivity_list"=>[]];
-                }
-
-
-                // final appending to to_return
-                $to_return[] = $to_return_tmp;
-            }
-        }
-
-
-        // return after validate
-        if(!$error){
-            if(count($to_return)>0){
-                $response = "success";
-                $response_code = 200;
-            }
-            else{
-                $response = "No data found";
-                $response_code = 200;
-            }
-        }
-
-        return response()->json(['response'=>$response, "total_data"=>$total_data, 'page'=>$page, 'performance_data'=>$to_return], $response_code);
-    }
 
     public function get_scheme_performance_details(Request $request){
         $response = "intialized";
@@ -442,6 +278,14 @@ class SchemePerformanceController extends Controller
                 $to_return["panchayat_id"] = $scheme_performance_data->subdivision_id;
                 $to_return["subdivision_id"] = $scheme_performance_data->subdivision_id;
 
+                // for assets
+                if($scheme_performance_data->scheme_asset_id) {
+                    $to_return['scheme_asset_id'] = (Int)$scheme_performance_data->scheme_asset_id;
+                } 
+                else {
+                    $to_return['scheme_asset_id'] = null;
+                }
+
                 // for attributes
                 $scheme_attributes = unserialize(SchemeStructure::where('scheme_id', $scheme_performance_data->scheme_id)->first()->attributes);
                 $performance_attributes = [];
@@ -451,12 +295,20 @@ class SchemePerformanceController extends Controller
                 }
                 $attr_index = ["attr_one","attr_two","attr_three","attr_four","attr_five","attr_six","attr_seven"];
                 foreach($scheme_attributes as $scheme_attribute){
+                    $to_return_attributes = [];
                     if($performance_attributes[$scheme_attribute['id']]){
-                        $to_return[$scheme_attribute['id']] = $performance_attributes[$scheme_attribute['id']];
+                        // $to_return_attributes[$scheme_attribute['id']] = $performance_attributes[$scheme_attribute['id']];
+                        $to_return_attributes["key"] = $scheme_attribute['id'];
+                        $to_return_attributes["name"] = $scheme_attribute['name'];
+                        $to_return_attributes["value"] = $performance_attributes[$scheme_attribute['id']];
                     }
                     else{
-                        $to_return[$scheme_attribute['id']] = "";
+                        // $to_return_attributes[$scheme_attribute['id']] = "";
+                        $to_return_attributes["key"] = $scheme_attribute['id'];
+                        $to_return_attributes["name"] = $scheme_attribute['name'];
+                        $to_return_attributes["value"] = "";
                     }
+                    $to_return["attributes"][] = $to_return_attributes;
                 }
                 // for attributes ends
 
@@ -495,12 +347,12 @@ class SchemePerformanceController extends Controller
                     $to_return["connectivity"] = [];
                 }
 
-                // $to_return["id"] = $scheme_performance_data->block_id;
-                // $to_return["id"] = $scheme_performance_data->panchayat_id;
-                // $to_return["id"] = $scheme_performance_data->attribute = unserialize($scheme_performance_data->attribute);
-                // $to_return["id"] = $scheme_performance_data->coordinates = unserialize($scheme_performance_data->coordinates);
-                // $to_return["id"] = $scheme_performance_data->gallery = unserialize($scheme_performance_data->gallery);
-                // $to_return["id"] = $scheme_performance_data->borders_connectivity = unserialize($scheme_performance_data->borders_connectivity);
+                // for comment
+                $to_return['comments'] = $scheme_performance_data->comments;
+
+                // for status
+                $to_return['status'] = (Int)$scheme_performance_data->status;
+
                 $response = "success";
                 $response_code = 200; // bad request
             }
