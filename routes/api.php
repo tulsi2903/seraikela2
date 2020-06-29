@@ -57,6 +57,7 @@ Route::group(['middleware' => 'auth:api'], function(){
     // for getting/ storing resources datas
     Route::post('get-resources', 'API\ResourcesController@get_resources');
     Route::post('get-resources-count', 'API\ResourcesController@get_resources_count');
+    Route::post('get-single-details', 'API\ResourcesController@get_single_details');
     Route::post('store-resources-numbers', 'API\ResourcesController@store_resources_numbers');
     Route::post('store-resources-numbers-images', 'API\ResourcesController@store_resources_images');
 });

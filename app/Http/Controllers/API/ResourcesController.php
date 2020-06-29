@@ -141,6 +141,59 @@ class ResourcesController extends Controller
         return response()->json(['status' => $response_status, "message"=> $response_message, 'data'=>$datas_to_send], 200);
     }
 
+    // individual details according to asset_geo_loc_id
+    public function get_single_details(Request $request)
+    {
+        $response_message = ""; // response message
+        $response_status = true; // true ok, false something went wrong // initially its true means no error, so if any one of the error events occurred it will changes to false
+        $datas_to_send = [];
+
+        // received id's
+        if($request->asset_geo_loc_id){
+            $asset_geo_loc_id = $request->asset_geo_loc_id;
+        }
+        else{
+            $response_status = false;
+            $response_message = "No id selected!";
+        }
+
+        if($response_status)
+        {
+            // getting previus asset_location
+            $asset_location = AssetGeoLocation::select('asset_geo_loc_id', 'location_name', 'latitude', 'longitude', 'asset_id')
+            ->where('asset_geo_loc_id', $asset_geo_loc_id)
+            ->first();
+
+            if($asset_location)
+            {
+                $asset_location->images = [];
+                $img_array = [];
+                if($images_check = AssetGallery::where('asset_geo_loc_id', $asset_location->asset_geo_loc_id)->first()){
+                    if(unserialize($images_check->images)){
+                        $images_array = unserialize($images_check->images);
+                        foreach($images_array as $img){
+                            $img_array[] = url('')."/".$img;
+                        }
+                        $asset_location->images = $img_array;
+                    }
+                }
+                
+                // for child resources counts
+                $child_asset_datas_tmp = AssetNumbers::where('asset_geo_loc_id', $asset_location->asset_geo_loc_id)->get();
+                $child_asset_datas_arr = [];
+                foreach($child_asset_datas_tmp as $child_asset_data_tmp){
+                    $child_asset_datas_arr[] = ["sub_resource_id"=>$child_asset_data_tmp->asset_id, "sub_resource_name"=>Asset::where('asset_id', $child_asset_data_tmp->asset_id)->first()->asset_name, "current_value"=>$child_asset_data_tmp->current_value];
+                }
+                $asset_location->sub_resources_data = $child_asset_datas_arr;
+
+                $datas_to_send[] = $asset_location;
+            }
+        }
+
+        // return after validate
+        return response()->json(['status' => $response_status, "message"=> $response_message, 'data'=>$datas_to_send], 200);
+    }
+
     function store_resources_numbers(Request $request){
         $response_message = ""; // response message
         $response_status = true; // true ok, false something went wrong // initially its true means no error, so if any one of the error events occurred it will changes to false

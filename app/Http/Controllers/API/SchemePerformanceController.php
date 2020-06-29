@@ -145,7 +145,7 @@ class SchemePerformanceController extends Controller
             }
 
             $total_data = $scheme_performance_datas_collection->count();
-            $scheme_performance_datas = $scheme_performance_datas_collection->skip(($page - 1) * 20)->take($page * 20)->get();
+            $scheme_performance_datas = $scheme_performance_datas_collection->skip(($page - 1) * 30)->take($page * 30)->get();
             $scheme_attributes = unserialize(SchemeStructure::where('scheme_id', $scheme_id)->first()->attributes);
 
             foreach($scheme_performance_datas as $scheme_performance_data){
@@ -176,11 +176,11 @@ class SchemePerformanceController extends Controller
                 // for status
                 if ($scheme_performance_data->status == 0) {
                     $to_return_tmp['data'][] = ["name"=>"status", "key"=>"status",  "value"=>"Inprogess"];
-                } else if ($performance_data->status == 1) {
+                } else if ($scheme_performance_data->status == 1) {
                     $to_return_tmp['data'][] = ["name"=>"status", "key"=>"status",  "value"=>"Completed"];
-                } else if ($performance_data->status == 2) {
+                } else if ($scheme_performance_data->status == 2) {
                     $to_return_tmp['data'][] = ["name"=>"status", "key"=>"status",  "value"=>"Sanctioned"];
-                } else if ($performance_data->status == 3) {
+                } else if ($scheme_performance_data->status == 3) {
                     $to_return_tmp['data'][] = ["name"=>"status", "key"=>"status",  "value"=>"Cancelled"];
                 }
                 else{ // ==4, and other
@@ -256,7 +256,7 @@ class SchemePerformanceController extends Controller
             }
         }
 
-        return response()->json(['response'=>$response, "total_data"=>$total_data, 'page'=>$page, 'performance_data'=>$to_return], $response_code);
+        return response()->json(['response'=>$response, "total_data"=>$total_data, 'page'=>$page, 'per_page'=>30, 'performance_data'=>$to_return], $response_code);
     }
 
 
@@ -413,8 +413,8 @@ class SchemePerformanceController extends Controller
         $scheme_performance->subdivision_id = (int)$subdivision_id;
 
         $scheme_performance->attribute = $attribute;
-        $scheme_performance->coordinates = null;
-        $scheme_performance->gallery = null;
+        // $scheme_performance->coordinates = null;
+        // $scheme_performance->gallery = null;
 
         $scheme_performance->scheme_asset_id = (int)$scheme_asset_id;
         $scheme_performance->status = (int)$status;
